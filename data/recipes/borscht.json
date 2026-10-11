@@ -16,7 +16,7 @@
   "servings": null,
   "leftover_friendly": true,
   "leftover_note": null,
-  "banner_image": null,
+  "banner_image": "assets/images/borscht.jpg",
   "ingredients": [
     {
       "section": null,
