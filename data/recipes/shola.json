@@ -12,15 +12,15 @@
     "one-pot",
     "shabbat"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 0,
+  "cook_minutes": 0,
+  "servings": "",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/shola.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "2",
@@ -75,7 +75,8 @@
     "Add the cilantro and mix."
   ],
   "pairings": [],
-  "notes": "'4 chickens cut up' kept as written; cilantro appears in the prep but not in the ingredient list.",
-  "source": null,
-  "tags_need_review": false
+  "notes": "'4 chickens cut up' kept as written; cilantro appears in the prep but not in the ingredient list. [bridge test]",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null
 }
