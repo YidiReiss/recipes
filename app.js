@@ -246,7 +246,9 @@ function weekStripHTML() {
     const parts = [];
     ['lunch', 'dinner'].forEach(m => {
       const s = ds[m];
-      if (s && s.recipe && !s.skipped && byId[s.recipe]) parts.push(byId[s.recipe].title);
+      if (!s || s.skipped) return;
+      if (s.recipe && byId[s.recipe]) parts.push(byId[s.recipe].title);
+      else if (s.custom) parts.push(s.custom);
     });
     out.push(
       '<a class="week-day" href="#/planner">' +
@@ -943,7 +945,7 @@ async function saveNewRecipe() {
 
 
 /* ---------------- Meal planner ---------------- */
-const blankSlot = () => ({ recipe: null, skipped: false, note: '' });
+const blankSlot = () => ({ recipe: null, custom: null, skipped: false, note: '' });
 
 function mondayOf(offset) {
   const d = new Date();
@@ -982,10 +984,13 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
     const r = byId[slot.recipe];
     body = '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>' +
       (slot.note ? ' <span class="slot-note">— ' + esc(slot.note) + '</span>' : '');
+  } else if (slot.custom) {
+    body = '<span class="slot-custom">' + esc(slot.custom) + '</span>' +
+      (slot.note ? ' <span class="slot-note">— ' + esc(slot.note) + '</span>' : '');
   } else {
     body = '<span class="slot-skipped">—</span>';
   }
-  const has = slot.recipe || slot.skipped || slot.note;
+  const has = slot.recipe || slot.custom || slot.skipped || slot.note;
   const btns = canEdit
     ? ' <button class="link-btn" data-slot="' + key + '|' + di + '|' + meal + '" type="button">' +
       (has ? 'Edit' : 'Add') + '</button>' +
@@ -997,19 +1002,52 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
 }
 
 function slotEditorHTML(slot) {
-  const opts = recipes.length
-    ? '<option value="">—</option>' + recipes.map(r =>
-        '<option value="' + esc(r.id) + '"' + (slot.recipe === r.id ? ' selected' : '') + '>' +
-        esc(r.title) + '</option>').join('')
-    : '<option value="">—</option>';
+  const currentLabel = (slot.recipe && byId[slot.recipe]) ? byId[slot.recipe].title
+    : (slot.custom || '');
+  const currentRid = (slot.recipe && byId[slot.recipe]) ? slot.recipe : '';
   return '<div class="slot-editor">' +
-    '<select id="se-recipe"' + (recipes.length ? '' : ' disabled') + ' aria-label="Recipe">' + opts + '</select>' +
-    (recipes.length ? '' : '<div class="slot-note">No recipes yet — add one first.</div>') +
+    '<div class="combo-wrap">' +
+      '<input type="text" id="se-meal" placeholder="Type a recipe or your own dish…" autocomplete="off" ' +
+      'value="' + esc(currentLabel) + '" data-rid="' + esc(currentRid) + '" aria-label="Meal">' +
+      '<div class="combo-list" id="se-suggest" hidden></div>' +
+    '</div>' +
+    '<div class="slot-note">Pick a recipe from the list, or just type your own — it saves as-is.</div>' +
     '<label><input type="checkbox" id="se-skipped"' + (slot.skipped ? ' checked' : '') + '> Skipped</label> ' +
     '<input type="text" id="se-note" placeholder="Note (optional)" value="' + esc(slot.note || '') + '">' +
     '<div><button class="btn" id="se-save" type="button">Save</button> ' +
     '<button class="btn secondary" id="se-cancel" type="button">Cancel</button></div>' +
     '<div class="form-status" id="se-status"></div></div>';
+}
+
+/* Searchable combobox for the meal slot: filters recipes as you type,
+   or keeps free text as a custom entry. */
+function wireCombo(input) {
+  const list = $('#se-suggest');
+  if (!list) return;
+  const draw = () => {
+    const q = input.value.trim().toLowerCase();
+    const matches = recipes
+      .filter(r => !q || r.title.toLowerCase().includes(q))
+      .slice(0, 8);
+    if (!matches.length) { list.hidden = true; list.innerHTML = ''; return; }
+    list.innerHTML = matches.map(r =>
+      '<button type="button" class="combo-item" data-rid="' + esc(r.id) + '">' +
+        esc(r.title) + '</button>'
+    ).join('');
+    list.hidden = false;
+  };
+  input.addEventListener('input', () => { input.dataset.rid = ''; draw(); });
+  input.addEventListener('focus', draw);
+  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
+  list.addEventListener('mousedown', e => {
+    const b = e.target.closest('[data-rid]');
+    if (!b) return;
+    e.preventDefault();
+    input.value = b.textContent;
+    input.dataset.rid = b.dataset.rid;
+    list.hidden = true;
+    input.focus();
+  });
 }
 
 function renderPlanner(app) {
@@ -1064,12 +1102,27 @@ function renderPlanner(app) {
       return persistWeek(k, null, () => renderPlanner(app));
     }
   });
+
+  const mealInput = $('#se-meal');
+  if (mealInput) wireCombo(mealInput);
 }
 
 function saveSlot(key) {
   const st = $('#se-status');
   const slot = getWeek(key).days[editingSlot.di][editingSlot.meal];
-  slot.recipe = $('#se-recipe').value || null;
+  const mealInput = $('#se-meal');
+  const rid = mealInput ? mealInput.dataset.rid : '';
+  const text = mealInput ? mealInput.value.trim() : '';
+  if (rid && byId[rid]) {
+    slot.recipe = rid;
+    slot.custom = null;
+  } else if (text) {
+    slot.recipe = null;
+    slot.custom = text;
+  } else {
+    slot.recipe = null;
+    slot.custom = null;
+  }
   slot.skipped = $('#se-skipped').checked;
   slot.note = $('#se-note').value.trim();
   persistWeek(key, st, () => { editingSlot = null; renderPlanner($('#app')); });
