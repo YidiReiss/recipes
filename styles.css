@@ -742,3 +742,71 @@ footer.site-footer {
   /* Planner: slightly tighter day cards */
   .day-card { padding: 0.7rem 0.8rem; }
 }
+
+/* ---------------- Homepage ---------------- */
+.hero { text-align: center; padding: 1.2rem 0 0.4rem; }
+.hero h1 { font-size: 1.9rem; margin: 0 0 0.9rem; }
+.hero-search { max-width: 560px; margin: 0 auto; }
+.hero-search input[type="search"] {
+  width: 100%; font-size: 1.15rem; padding: 0.85rem 1.1rem;
+  border: 2px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.hero-search input[type="search"]:focus { outline: none; border-color: var(--accent); }
+
+.home-section { margin: 1.8rem 0; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.7rem; }
+.section-head h2 { font-size: 1.25rem; margin: 0; }
+.link-btn { background: none; border: none; color: var(--accent); font-size: 0.95rem; cursor: pointer; padding: 0; text-decoration: none; }
+.link-btn:hover { text-decoration: underline; }
+.muted { color: var(--ink-soft); }
+
+/* Week strip */
+.week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
+.week-day {
+  display: block; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 0.55rem 0.6rem; text-decoration: none;
+  color: var(--ink); min-height: 4.2rem;
+}
+.week-day:hover { border-color: var(--accent); }
+.wd-name { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.25rem; }
+.wd-meals { display: block; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Category tiles */
+.cat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.7rem; }
+.cat-tile {
+  position: relative; border: none; border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; padding: 0; height: 96px; background: var(--cream-dark); box-shadow: var(--shadow);
+}
+.cat-tile img, .cat-tile .tile-ph {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.cat-tile .tile-ph { background: linear-gradient(135deg, var(--cream-dark), var(--line)); }
+.cat-tile::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(30, 20, 12, 0.72), rgba(30, 20, 12, 0.05) 65%);
+}
+.tile-label {
+  position: absolute; left: 0.6rem; bottom: 0.5rem; z-index: 1;
+  color: #fff8f0; font-weight: 700; font-size: 0.95rem; text-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+.tile-label em { font-style: normal; font-weight: 400; opacity: 0.85; font-size: 0.8rem; }
+
+/* Shopping list */
+.shop-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.15rem 1.2rem; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 0.9rem 1.1rem;
+}
+.shop-item { display: flex; align-items: baseline; gap: 0.55rem; padding: 0.28rem 0; cursor: pointer; font-size: 0.95rem; }
+.shop-item input[type="checkbox"] { width: 1.05rem; height: 1.05rem; accent-color: var(--accent); flex: none; transform: translateY(2px); }
+.shop-item input[type="checkbox"]:checked + span { text-decoration: line-through; color: var(--ink-soft); }
+
+@media (max-width: 640px) {
+  .hero h1 { font-size: 1.5rem; }
+  .week-strip { grid-template-columns: repeat(7, minmax(86px, 1fr)); overflow-x: auto; padding-bottom: 0.3rem; }
+  .week-day { min-height: 3.8rem; }
+  .cat-tiles { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .cat-tile { height: 78px; }
+  .shop-list { grid-template-columns: 1fr; }
+}
