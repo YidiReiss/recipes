@@ -1,0 +1,76 @@
+{
+  "id": "sauteed-zucchini-and-cherry-tomatoes",
+  "title": "Sauteed Zucchini and Cherry Tomatoes",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 15,
+  "servings": "4",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "extra virgin olive oil"
+        },
+        {
+          "qty": "1",
+          "unit": "small",
+          "item": "red onion, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "zucchini (2-3 medium)"
+        },
+        {
+          "qty": "1",
+          "unit": "pint",
+          "item": "cherry or grape tomatoes, halved"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "freshly ground black pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "fresh chopped basil, plus more for garnish if desired"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the olive oil over medium heat in a large sauté pan.",
+    "Add the red onions and cook, stirring frequently, until very soft and pale purple in color, 7-8 minutes. Do not brown.",
+    "Add the zucchini, tomatoes, garlic, salt, and pepper and cook, stirring frequently, for 3-5 minutes, or until the zucchini are cooked but still crisp and the tomatoes have started to burst, creating a little sauce.",
+    "Stir in the fresh basil, then taste and adjust the seasoning if necessary.",
+    "Transfer to a serving dish and garnish with more fresh basil if desired."
+  ],
+  "pairings": [],
+  "notes": "Total time: 15 minutes.",
+  "source": null,
+  "tags_need_review": false
+}

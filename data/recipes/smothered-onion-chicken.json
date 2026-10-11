@@ -1,0 +1,67 @@
+{
+  "id": "smothered-onion-chicken",
+  "title": "Smothered Onion Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 120,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "6",
+          "unit": null,
+          "item": "onions, sliced thinly"
+        },
+        {
+          "qty": "4-5",
+          "unit": "Tbsp",
+          "item": "onion soup mix"
+        },
+        {
+          "qty": "3-4",
+          "unit": "Tbsp",
+          "item": "olive or canola oil"
+        },
+        {
+          "qty": "¼-⅓",
+          "unit": "cup",
+          "item": "packed brown sugar"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt, pepper, garlic powder, paprika, maple syrup (to taste)"
+        },
+        {
+          "qty": "8",
+          "unit": null,
+          "item": "chicken bottoms, cut in half"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix the onions, onion soup mix, brown sugar, oil, and pepper in a bowl.",
+    "Put a layer of onions on the bottom of a big roasting pan. Lay the chicken on top and sprinkle with garlic powder and paprika, then cover with the rest of the onion mixture.",
+    "Cover the chicken tightly with foil and bake at around 350°F for at least an hour and a half. The longer you cook it covered, the more tender the final product will be.",
+    "Uncover, drizzle on some maple syrup, and bake for another ½ hour or so, basting at least once with the juices."
+  ],
+  "pairings": [],
+  "notes": "The chicken tastes best if you let it marinate in the onion mixture overnight, as the onions release their juices and add lots more onion flavor; if marinated overnight, increase the cooking time by another 45 minutes.",
+  "source": null,
+  "tags_need_review": false
+}

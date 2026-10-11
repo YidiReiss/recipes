@@ -1,0 +1,83 @@
+{
+  "id": "mushroom-kugel-for-passover-and-all-year-round",
+  "title": "Mushroom Kugel: For Passover and All Year Round",
+  "kosher_status": "pareve",
+  "kosher_for_passover": true,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "passover",
+    "shabbat"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 52,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "red onions, sliced"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "oil"
+        },
+        {
+          "qty": "3",
+          "unit": "pounds",
+          "item": "mushrooms, peeled and sliced"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "mayonnaise"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "potato starch"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "onion soup mix"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper, to taste"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 350°F. Coat a 9-inch round baking pan with nonstick cooking spray.",
+    "Heat the oil in a skillet and sauté the onions until soft, about 8 minutes.",
+    "Add the mushrooms and sauté for an additional 2 minutes.",
+    "In a large bowl, combine the mushroom-onion mixture with the remaining ingredients. Stir well to combine.",
+    "Pour the mixture into the prepared pan.",
+    "Bake for 45-60 minutes, until the top is browned."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": "Grandma and Zaidy",
+  "tags_need_review": false
+}

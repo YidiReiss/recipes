@@ -1,0 +1,93 @@
+{
+  "id": "plov",
+  "title": "Plov",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "one-pot",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "3",
+          "unit": "tsp",
+          "item": "plof spice"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "onions"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "carrots"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "chicken (without skin)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "lamb"
+        },
+        {
+          "qty": "1/3",
+          "unit": "cup",
+          "item": "olive oil"
+        },
+        {
+          "qty": "3",
+          "unit": "cups",
+          "item": "rice"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "zeera"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": "1 1/2",
+          "unit": "tbsp",
+          "item": "salt (for soaking the rice)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the oil over high flame; add the onions and sauté for about 5-7 minutes, until soft and slightly browned.",
+    "Add the lamb and chicken and stir for about 5 minutes (add 1 tsp of the plof spice). Add a handful of carrots and stir several times, then add 2 cups of water, the rest of the carrots, 2 tsp plof spice, 1 tsp zeera, 2 tsp salt, and pepper. Boil, then lower the flame, cover, and simmer for 20 minutes.",
+    "Wash the rice, add 1½ tbsp of salt, and leave in water for 15 minutes. Drain the rice and add it to the pot over high flame with 1 cup of water. Boil and mix — make holes and mix (do this many times), pulling the rice in from the sides, until the water level decreases.",
+    "Lower the flame to 2, cover with aluminum foil and then the lid, and cook for 15 minutes. Mix up the rice, then cover for another 10-15 minutes."
+  ],
+  "pairings": [],
+  "notes": "'3 chicken — without shin' interpreted as chicken without skin; the cut of chicken and amount of lamb are not specified.",
+  "source": null,
+  "tags_need_review": false
+}

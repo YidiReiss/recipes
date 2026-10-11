@@ -1,0 +1,76 @@
+{
+  "id": "sheet-pan-garlic-butter-mushrooms",
+  "title": "Sheet Pan Garlic Butter Mushrooms",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 15,
+  "servings": "6",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "avocado oil"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "freshly squeezed lemon juice"
+        },
+        {
+          "qty": "½-1",
+          "unit": "tsp",
+          "item": "oregano"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "freshly ground pepper, to taste"
+        },
+        {
+          "qty": "3",
+          "unit": "pounds",
+          "item": "cremini mushrooms"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "butter (called for in the instructions; amount not listed)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 375°F. Lightly oil a baking sheet or coat with nonstick spray.",
+    "In a small bowl, whisk together the butter, garlic, lemon juice, and oregano; season with salt and pepper to taste.",
+    "Place the mushrooms in a single layer on the prepared baking sheet. Stir in the butter mixture and gently toss to combine.",
+    "Place into the oven and bake for 12-15 minutes, or until browned and tender, tossing occasionally.",
+    "Serve immediately."
+  ],
+  "pairings": [],
+  "notes": "The ingredient list calls for avocado oil, but the instructions say to whisk together butter, garlic, lemon juice, and oregano — no butter amount is given in the ingredient list.",
+  "source": null,
+  "tags_need_review": true
+}

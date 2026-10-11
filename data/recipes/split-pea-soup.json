@@ -1,0 +1,106 @@
+{
+  "id": "split-pea-soup",
+  "title": "Split Pea Soup",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "soup"
+  ],
+  "tags": [
+    "comfort",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 120,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "8",
+          "unit": "cups",
+          "item": "chicken consommé"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "ham bone (optional but preferred)"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "onions, chopped"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "carrots, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "butter"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "dry split peas"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "diced ham"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "bay leaves"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "onion powder"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "minced garlic"
+        },
+        {
+          "qty": "1-2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "celery"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "large russet potato, diced into cubes"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Put the consommé, onions, carrots, and ham bone in a large soup pot and bring to a boil.",
+    "Add all the remaining ingredients except the potato. Reduce the heat and let the soup simmer for approximately 2 hours, stirring occasionally.",
+    "Add the potato about 40 minutes before eating. When the potato pieces are done, you're ready to eat! It's as easy as that."
+  ],
+  "pairings": [],
+  "notes": "Doc updated quantities: 8 cups water → chicken consommé, 2 cups split peas → 1 cup, 1½ tbsp onion powder → 1 tsp. Contains ham bone and diced ham — not kosher as written; substitute beef or omit for a kosher version.",
+  "source": null,
+  "tags_need_review": true
+}

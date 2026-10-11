@@ -1,0 +1,86 @@
+{
+  "id": "taco-salad",
+  "title": "Taco Salad",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "salad",
+    "main"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "lb",
+          "item": "chopped meat"
+        },
+        {
+          "qty": "1",
+          "unit": "package",
+          "item": "Ortega taco mix"
+        },
+        {
+          "qty": "1",
+          "unit": "bag",
+          "item": "romaine lettuce"
+        },
+        {
+          "qty": "4",
+          "unit": null,
+          "item": "plum or grape tomatoes"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "purple onion"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "salsa"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "mayo"
+        },
+        {
+          "qty": "4-5",
+          "unit": null,
+          "item": "Persian cucumbers"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "corn and beans (optional)"
+        },
+        {
+          "qty": "1-2",
+          "unit": null,
+          "item": "avocado, or 1 package guacamole"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Brown the meat in a skillet and add the taco seasoning.",
+    "In a bowl, add the lettuce and the rest of the ingredients.",
+    "Mix the salsa and mayo and pour on top.",
+    "Surround the bowl with taco chips. You can also layer it: lettuce, meat, tomatoes, onion."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

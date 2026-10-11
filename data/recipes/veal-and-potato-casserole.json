@@ -1,0 +1,74 @@
+{
+  "id": "veal-and-potato-casserole",
+  "title": "Veal and Potato Casserole",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "comfort",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 170,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "oil"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "onion, thinly sliced"
+        },
+        {
+          "qty": "2",
+          "unit": "pounds",
+          "item": "veal steak, cubed"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt and pepper"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "garlic powder"
+        },
+        {
+          "qty": "1 ½-2",
+          "unit": "pounds",
+          "item": "potatoes, peeled and cut into thin slices"
+        },
+        {
+          "qty": "1 ¼",
+          "unit": "cup",
+          "item": "chicken stock or bouillon"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 325 degrees F.",
+    "Heat 2 tbsp oil in a skillet over medium heat. Add onions and saute until golden brown. Remove onions and set aside.",
+    "Add veal to the skillet. Sprinkle with salt, pepper, and garlic powder. Saute until no longer pink; remove from heat.",
+    "Place one-third of potatoes in a lightly greased 2-quart round baking dish. Layer with half of veal and half of onions. Repeat layers with one-third potatoes, half of veal, and half of onions. Arrange remaining potatoes in concentric circles on top.",
+    "Pour stock over casserole, cover, and bake 2 ½ hours.",
+    "Increase temperature to 450 degrees. Uncover and bake 20 minutes, or until potatoes are golden brown."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

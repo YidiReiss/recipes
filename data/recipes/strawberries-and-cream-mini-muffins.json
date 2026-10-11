@@ -1,0 +1,88 @@
+{
+  "id": "strawberries-and-cream-mini-muffins",
+  "title": "Strawberries and Cream Mini Muffins",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "baking"
+  ],
+  "tags": [
+    "snack"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 13,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "strawberries, slightly under-ripe, diced into quarter-inch pieces"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "1 squeeze of lemon juice"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "flour"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "baking powder"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "⅓",
+          "unit": "cup",
+          "item": "sour cream"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "egg"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "powdered sugar"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 400 degrees. Line a 24-cup mini-muffin tin with paper baking cups.",
+    "Put diced strawberries into a bowl, spritz lemon juice on them and stir gently to combine.",
+    "In a medium size bowl stir together flour, sugar, and baking powder.",
+    "In a small bowl, beat together oil, sour cream, vanilla, and egg. Pour mixture over dry ingredients, stirring to combine with a wooden spoon. Fold in strawberries.",
+    "Divide batter evenly among the paper cups in the mini muffin tin. Bake for 12 to 14 minutes or until a cake tester comes out clean.",
+    "Place tin on a wire rack and leave for 5 minutes. Take out muffins and continue cooling them in the paper cups on the wire rack.",
+    "When completely cool, place powder in small sieve and shake sieve lightly to dust muffins with sugar."
+  ],
+  "pairings": [],
+  "notes": "Makes 24 mini muffins.",
+  "source": null,
+  "tags_need_review": false
+}

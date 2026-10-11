@@ -1,0 +1,89 @@
+{
+  "id": "meat-lasagna",
+  "title": "Meat Lasagna",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 45,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1 1/2",
+          "unit": "pounds",
+          "item": "ground chuck"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "ground oregano"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "ground basil"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "14.5-oz can",
+          "item": "diced tomatoes with basil, garlic, and oregano"
+        },
+        {
+          "qty": "2",
+          "unit": "15-oz cans",
+          "item": "tomato sauce"
+        },
+        {
+          "qty": "9",
+          "unit": null,
+          "item": "oven-ready lasagna noodles"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 350°F.",
+    "In a large saucepan, combine the ground chuck, sausage, onion, and garlic. Cook over medium heat until the meat is browned and crumbled; drain.",
+    "Return the meat to the pan and add the oregano, basil, salt, and pepper. Add the tomatoes, tomato sauce, and paste. Bring to a boil, reduce the heat, and simmer 30-35 minutes.",
+    "Spoon ¼ of the sauce into the bottom of a 13x9x2-inch baking pan. Place 3 uncooked lasagna noodles on top of the sauce — do not overlap the noodles. Top with ¼ of the sauce and repeat the layers.",
+    "Bake for 45 minutes."
+  ],
+  "pairings": [],
+  "notes": "No cheese appears in this recipe as written. Sausage appears in the prep but not in the ingredient list; tomato paste is mentioned in the prep but not listed in the ingredients either.",
+  "source": null,
+  "tags_need_review": false
+}

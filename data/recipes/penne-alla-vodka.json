@@ -1,0 +1,100 @@
+{
+  "id": "penne-alla-vodka",
+  "title": "Penne Alla Vodka",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 30,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "12-16",
+          "unit": "ounces",
+          "item": "penne noodles, cooked"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "butter"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "4",
+          "unit": "cloves",
+          "item": "garlic, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "medium",
+          "item": "onion, chopped"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "crushed red pepper flakes"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "vodka"
+        },
+        {
+          "qty": "1",
+          "unit": "15-ounce can",
+          "item": "tomato sauce"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt and pepper, to taste"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "heavy cream"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "grated parmesan, for serving"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "basil (optional)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Cook the noodles according to the package directions.",
+    "Melt the butter and olive oil together in a saucepan over medium heat.",
+    "Add the onions, garlic, and red pepper flakes. Cook until the onion is translucent, about 7 to 10 minutes.",
+    "Add the vodka and allow the alcohol to cook out, about 15 minutes.",
+    "Add the tomato sauce, salt, and pepper. Bring to a simmer for an additional 5 minutes.",
+    "Add the heavy cream and stir to combine. Don't allow the sauce to become too hot or the cream could break or curdle.",
+    "Bring the sauce to a simmer again and remove from heat.",
+    "Combine the sauce with the noodles and toss to coat.",
+    "Top with grated parmesan and serve immediately."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

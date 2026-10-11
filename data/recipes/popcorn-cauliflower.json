@@ -1,0 +1,76 @@
+{
+  "id": "popcorn-cauliflower",
+  "title": "Popcorn Cauliflower",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "kid-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 32,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "heads",
+          "item": "cauliflower, cut into florets"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "sugar"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "onion powder"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "turmeric"
+        },
+        {
+          "qty": "7",
+          "unit": "Tbsp",
+          "item": "olive oil"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 450°F.",
+    "Line a jelly roll pan or baking sheet with parchment paper.",
+    "In a large bowl, combine the salt, sugar, spices, and oil. Add the cauliflower florets and toss to evenly coat.",
+    "Place in a single layer on the prepared sheet.",
+    "Roast uncovered for 30-35 minutes, until the largest piece can be pierced with a fork. If the tops are starting to get too brown, toss the cauliflower during the baking process."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

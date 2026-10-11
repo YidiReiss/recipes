@@ -1,0 +1,71 @@
+{
+  "id": "margherita-pizza",
+  "title": "Margherita Pizza",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "baking"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 15,
+  "servings": 4,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "lb",
+          "item": "fresh store-bought pizza dough, at room temperature"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "8",
+          "unit": "oz",
+          "item": "fresh mozzarella, thinly sliced"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "beefsteak tomatoes (8 oz each), sliced"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "freshly ground black pepper"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "fresh basil leaves"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Place a cast-iron pizza stone on the center rack of the oven and preheat the oven to 500°F.",
+    "Stretch the dough into a 14-inch round on a sheet of parchment. Drizzle with the olive oil and top evenly with the mozzarella and tomatoes. Sprinkle evenly with the salt and pepper.",
+    "Transfer the pizza and parchment to the hot pizza stone. Bake until the crust is golden and the cheese is beginning to brown in spots, 13 to 15 minutes.",
+    "Transfer the pizza to a cutting board, top with the basil, and cut into slices."
+  ],
+  "pairings": [],
+  "notes": "Doc updated olive oil from ¼ cup to 2 tbsp.",
+  "source": null,
+  "tags_need_review": false
+}

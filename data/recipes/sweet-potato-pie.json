@@ -1,0 +1,80 @@
+{
+  "id": "sweet-potato-pie",
+  "title": "Sweet Potato Pie",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert",
+    "baking"
+  ],
+  "tags": [
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 50,
+  "servings": "10-12",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "15.75 ounce can",
+          "item": "sweet potatoes, or 1 cup mashed from a larger can"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "soy milk"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "dark brown sugar"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "all-purpose flour"
+        },
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "eggs"
+        },
+        {
+          "qty": "1½",
+          "unit": "tsp",
+          "item": "ground cinnamon"
+        },
+        {
+          "qty": "⅛",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1",
+          "unit": "9 inch",
+          "item": "ready-to-bake pie crust"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 400°F.",
+    "With your can opener, open the can of sweet potatoes. Pour into a strainer over the sink to drain out all of the liquid.",
+    "Place the sweet potatoes in a medium mixing bowl. Mash them with the back of a fork or a potato masher.",
+    "Add the soy milk, brown sugar, flour, eggs, cinnamon, and salt.",
+    "With an electric mixer at medium speed, mix all the ingredients until the mixture becomes a smooth batter.",
+    "Place the pie crust on a cookie sheet, put it in the hot oven, and bake for 10 minutes.",
+    "Turn the oven temperature down to 350°F and bake for another 40 minutes.",
+    "Carefully remove the sweet potato pie from the oven. Slice and serve."
+  ],
+  "pairings": [],
+  "notes": "Makes 10-12 servings.",
+  "source": null,
+  "tags_need_review": false
+}

@@ -1,0 +1,85 @@
+{
+  "id": "roasted-sweet-potatoes-and-brussels-sprouts",
+  "title": "Roasted Sweet Potatoes and Brussels Sprouts",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "quick",
+    "healthy"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 15,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "brussels sprouts, trimmed"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "sweet potato (1 pound), peeled and chopped into 1-2 inch pieces"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, smashed"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "olive oil"
+        },
+        {
+          "qty": "3/4",
+          "unit": "tsp",
+          "item": "cumin"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper, to taste"
+        },
+        {
+          "qty": "1-2",
+          "unit": "tbsp",
+          "item": "red wine vinegar, to taste"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat your oven to 400°F.",
+    "Trim the brussels sprouts by cutting off the little brown ends; pull off any yellow leaves. Cut any large ones in half and add to a large bowl.",
+    "Peel the sweet potato and chop into 1-2 inch pieces; add to the bowl.",
+    "Smash 2 cloves of garlic and add to the bowl.",
+    "Pour the olive oil over the vegetables, add the cumin, garlic powder, salt, and pepper to taste, and stir to coat.",
+    "Line a large sheet pan with foil and drizzle a little olive oil on it, rubbing it all over (or spray well with nonstick spray). Pour the veggies onto the pan.",
+    "Roast at 400°F for about 15 minutes — the veggies are done when browned and a fork slides in easily.",
+    "Transfer to a serving bowl and toss with 1-2 tablespoons of red wine vinegar to taste."
+  ],
+  "pairings": [],
+  "notes": "Doc updated: oil ⅓ cup → ¼ cup, cumin 1 tsp → ¾ tsp, garlic salt → ¼ tsp garlic powder, salt 1 tsp → ¼ tsp, roast time 30-40 min → 15 min.",
+  "source": null,
+  "tags_need_review": false
+}

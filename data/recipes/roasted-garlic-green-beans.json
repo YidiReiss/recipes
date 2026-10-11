@@ -1,0 +1,60 @@
+{
+  "id": "roasted-garlic-green-beans",
+  "title": "Roasted Garlic Green Beans",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": 5,
+  "cook_minutes": 25,
+  "servings": 4,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "green beans, trimmed and washed"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, pressed"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt, or to taste"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "pepper, or to taste"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 400°F.",
+    "Place the green beans in a large bowl. Add the oil and garlic and toss to coat.",
+    "Cover a cookie sheet with foil and spray with nonstick cooking spray. Spread the green beans in a single layer on the cookie sheet.",
+    "Roast for 20-30 minutes, or until the green beans are browned and cooked."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

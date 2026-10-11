@@ -1,0 +1,60 @@
+{
+  "id": "roasted-potatoes",
+  "title": "Roasted Potatoes",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "shabbat",
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 30,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "potatoes (quantity not specified)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "onion soup mix (a good amount, sprinkled)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "garlic, hot paprika, Jerusalem spice, cumin, coriander, and black pepper (sprinkled to taste)"
+        },
+        {
+          "qty": "2-3",
+          "unit": "Tbsp",
+          "item": "oil"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Wash the potatoes.",
+    "Cut the potatoes into smaller pieces.",
+    "Put the potatoes on a baking tray.",
+    "Sprinkle a good amount of onion soup mix over the potatoes.",
+    "Sprinkle garlic, hot paprika, Jerusalem spice, cumin, coriander, and black pepper over the potatoes.",
+    "Cover the potatoes with a drizzle of oil (2-3 tablespoons).",
+    "Preheat the oven to 400\u00b0F.",
+    "Roast for 30 minutes and check with a fork to see if done."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": "Kayla",
+  "tags_need_review": false
+}

@@ -1,0 +1,74 @@
+{
+  "id": "mediterranean-roasted-whole-fish",
+  "title": "Mediterranean Roasted Whole Fish",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "fish"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 10,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "whole Branzino fish (or other mild white fish), cleaned, deboned and butterflied"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "slices lemon (thinly sliced rounds)"
+        },
+        {
+          "qty": "4",
+          "unit": null,
+          "item": "leaves fresh basil"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "crushed fresh garlic"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "crushed red pepper"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt and pepper"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Ask your fishmonger to clean, debone and butterfly your fish! Preheat the oven to 500 degrees.",
+    "Place the fish on a sheet pan. Open up the fish. Coat the flesh with 1 tsp of olive oil and salt and pepper.",
+    "On the bottom half of the fish, spread the crushed garlic and red pepper flakes. Layer the basil on next, followed by 3 lemon slices.",
+    "Close the fish back up and with a sharp knife, score the skin of the top of the fish 3 times (this will prevent the fish from curling up).",
+    "Coat the outer skin with the remaining tsp of olive oil. Lightly salt and pepper the skin.",
+    "Roast the fish for about 10 min. The flesh should flake but still be moist and the skin should be crisp.",
+    "If you like, drizzle a tiny bit more olive oil over the finished fish and serve."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

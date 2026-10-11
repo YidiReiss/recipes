@@ -1,0 +1,103 @@
+{
+  "id": "sarkaneez",
+  "title": "Sarkaneez",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "shabbat",
+    "one-pot",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion, sliced"
+        },
+        {
+          "qty": "4",
+          "unit": null,
+          "item": "chicken thighs, cut up"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "carrot, julienned then chopped"
+        },
+        {
+          "qty": "3/4",
+          "unit": "tsp",
+          "item": "cumin seeds"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "chickpeas (or 1 can)"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "water (for the oven version use 1/4 cup)"
+        },
+        {
+          "qty": "5",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt (for the garlic sauce)"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "2 1/2",
+          "unit": "cups",
+          "item": "rice"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the oil; add the onion and chicken and mix for 5 minutes. Add the carrots, chickpeas, salt, cumin, and water. Bring to a boil, then lower the heat.",
+    "Add the rice and mix, then bring to a boil again and lower to a simmer for about 20-25 minutes. Add the garlic and mix.",
+    "Alternatively, mix everything together and place in a 350°F oven for 1 hour, mix, then bake again for 30 minutes. Add the garlic at the end of cooking.",
+    "For the garlic: in a small saucepan, heat the oil until hot. Add the garlic with salt and cook for 30 seconds. Take off the flame and add to the rice."
+  ],
+  "pairings": [],
+  "notes": "Stovetop method says 'Add 3 cups rice' while the ingredient list says 2½ cups — kept both as written. Oven temp written as '35 degree' — interpreted as 350°F.",
+  "source": null,
+  "tags_need_review": false
+}

@@ -1,0 +1,83 @@
+{
+  "id": "potato-kugel",
+  "title": "Potato Kugel",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side",
+    "baking"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 195,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "4.5",
+          "unit": "lb",
+          "item": "idaho potatoes"
+        },
+        {
+          "qty": "5",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "½",
+          "unit": null,
+          "item": "zucchini"
+        },
+        {
+          "qty": "1",
+          "unit": "small-medium",
+          "item": "onion"
+        },
+        {
+          "qty": "2 ¼",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "white pepper"
+        },
+        {
+          "qty": "5",
+          "unit": "oz",
+          "item": "canola oil (to top line of cup)"
+        },
+        {
+          "qty": "5",
+          "unit": "oz",
+          "item": "water"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 350.",
+    "Cut onion in 4, put into food processor and chop up with S-blade.",
+    "Add in the eggs, salt, and sprinkle white pepper all around and mix.",
+    "Add oil into a 9x13 tin and put into the oven.",
+    "Replace the S-blade with the grinder blade and grind in the potatoes and zucchini until it's full.",
+    "Put the batter into a bowl and mix.",
+    "Pour hot oil into batter while mixing.",
+    "Pour water into the batter and mix.",
+    "Broil on 525 for 4-5 minutes, or until the top browns.",
+    "Switch oven to bake 350 and let it bake for 3 ¼ hours."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

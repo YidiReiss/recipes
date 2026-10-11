@@ -1,0 +1,129 @@
+{
+  "id": "stuffed-cabbage",
+  "title": "Stuffed Cabbage",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 60,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "cabbage (frozen, then defrosted)"
+        },
+        {
+          "qty": "1",
+          "unit": "package",
+          "item": "ground veal"
+        },
+        {
+          "qty": "1/2",
+          "unit": null,
+          "item": "onion, minced"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "tomato, chopped"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "tomato sauce"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "cilantro"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "dill"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "water (or more if needed)"
+        },
+        {
+          "qty": "1 1/2",
+          "unit": "cups",
+          "item": "rice"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt and pepper"
+        }
+      ]
+    },
+    {
+      "section": "Sauce",
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "chicken neck"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "garbanzo beans (optional)"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "tomato, chopped"
+        },
+        {
+          "qty": "1/2",
+          "unit": null,
+          "item": "onion"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "water"
+        },
+        {
+          "qty": "2",
+          "unit": "cans",
+          "item": "tomato sauce"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "honey (add to sauce)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix the meat, onion, tomato, cilantro, dill, water, rice, salt, and pepper. Stuff the cabbage leaves with the mixture.",
+    "Sauté the onion and chicken necks for 10 minutes. Add the tomato and ½ of the garbanzo beans, then add half the stuffed cabbage, then the rest of the chickpeas, then the rest of the stuffed cabbage.",
+    "In a separate bowl, mix the water, tomato sauce, and honey, then pour over the cabbage.",
+    "Cover with a plate, bring to a boil, then turn down the heat while keeping bubbles forming on top.",
+    "Cook for 1 hour or more."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

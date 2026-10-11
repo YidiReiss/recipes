@@ -1,0 +1,110 @@
+{
+  "id": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+  "title": "Salmon Loaf En Croute with Cucumber Dill Sauce",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "fish"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 45,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Salmon Loaf En Croute",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "(16 oz) can",
+          "item": "red or pink salmon, boned, skinned, and drained"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "dry bread crumbs (plain or seasoned)"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "mayonnaise"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "chopped onion"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "⅓",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "½",
+          "unit": "(17.2 oz) package",
+          "item": "frozen puff pastry, thawed"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "egg, lightly beaten"
+        }
+      ]
+    },
+    {
+      "section": "Cucumber Dill Sauce",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "cucumber, seeded and diced"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "mayonnaise"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "chopped onion"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "chopped fresh dill or 1 tsp dried dill"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "water"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350 degrees F.",
+    "Combine salmon, bread crumbs, mayonnaise, onion, salt, and pepper in a large bowl, mixing well.",
+    "Place puff pastry sheet on a lightly floured surface and spoon salmon mixture down the middle section. Fold the right side over salmon; then fold the left side, overlapping puff pastry. Seal edges.",
+    "Place loaf, seam side down, on an ungreased 13 x 9 inch baking dish. Brush with eggs.",
+    "Bake for 45 min or until golden brown.",
+    "Before serving, pour some of the cucumber dill sauce over the top of the loaf with the remaining sauce served on the side.",
+    "Cucumber dill sauce: Combine cucumber, mayonnaise, onion and dill. Gradually add enough water to desired consistency; cover and chill. Serve in a small dish or in a fresh lemon basket."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": true
+}

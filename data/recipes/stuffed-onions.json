@@ -1,0 +1,85 @@
+{
+  "id": "stuffed-onions",
+  "title": "Stuffed Onions",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 180,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "7",
+          "unit": null,
+          "item": "large onions, peeled"
+        },
+        {
+          "qty": "1 1/2",
+          "unit": "cups",
+          "item": "rice"
+        },
+        {
+          "qty": "1",
+          "unit": "package",
+          "item": "ground veal"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "cilantro (about 8 stems), cut up"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "water (and more if needed)"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "chickpeas"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "chicken neck"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Fill a pot halfway with water. Slit the onions halfway and place in the pot; cover and boil for about 20-25 minutes. Drain the water and wait until cool.",
+    "Meanwhile, wash the rice and mix well with the veal, pepper, salt, cilantro, and water.",
+    "Once the onions are cool, stuff them with the mixture.",
+    "For the sauce: add 2-3 tbsp oil to a pot and heat, then add the remaining small onions (what you didn't use for stuffing) and cook until browned. Add the chicken necks and brown them.",
+    "Add 1 cup water, 1 tsp salt, pepper, half the garbanzo beans, then half the stuffed onions, then the rest of the garbanzo beans, then the rest of the onions.",
+    "Place a plate on top. Once boiled, lower the heat and leave it for 3 hours — make sure it slow-boils."
+  ],
+  "pairings": [],
+  "notes": "Also called Osh Pyozee. Doc updated salt from 1 tbsp to 1 tsp.",
+  "source": null,
+  "tags_need_review": false
+}

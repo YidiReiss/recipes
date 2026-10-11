@@ -1,0 +1,104 @@
+{
+  "id": "sausage-peppers-and-onions",
+  "title": "Sausage, Peppers, and Onions",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "one-pot",
+    "weeknight"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 20,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "4",
+          "unit": "links",
+          "item": "Italian sausage (sweet, hot, or a couple of both)"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "green pepper, sliced into 2-3 inch long strips"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "red pepper, sliced into 2-3 inch long strips"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "bell pepper of another color (yellow, orange, purple), sliced into 2-3 inch long strips"
+        },
+        {
+          "qty": "4",
+          "unit": "cloves",
+          "item": "garlic, sliced into slivers"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "sweet or yellow onion, sliced into 1/4-inch half moons"
+        },
+        {
+          "qty": "1",
+          "unit": "15-oz can",
+          "item": "crushed tomatoes (or tomato sauce — mom)"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "dried oregano"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "Marsala or red wine (optional)"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "red pepper flakes (optional)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt, to taste"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "basil (added)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the olive oil over medium heat in a large pan that has a lid. When the oil is hot, add the sausages and brown them slowly, turning them occasionally so they brown on all sides — if they sizzle and crackle too much, turn the heat down. You want a gentle browning, not a sear.",
+    "When the sausages are browned, remove from the pan and set aside.",
+    "Increase the heat to high and add the onion and peppers. Toss so they get coated with the oil and sear them as well as you can, stirring every so often — you want some blackening. Once the onions and peppers soften, sprinkle some salt on them.",
+    "Once you get some searing on the onions and peppers, add the garlic and cook for 1 more minute.",
+    "Add the Marsala or red wine if you are using it, and with a wooden spoon scrape the bottom of the pan to release all the browned and blackened bits. Let the wine cook down by half.",
+    "Add the tomatoes, oregano, and red pepper flakes and stir well to combine. Add the sausages back in. Bring to a simmer, then reduce the heat to low, cover, and simmer until the peppers are soft and the sausages are cooked through, about 20 minutes."
+  ],
+  "pairings": [],
+  "notes": "Italian sausage links are typically pork — use kosher sausage.",
+  "source": null,
+  "tags_need_review": true
+}

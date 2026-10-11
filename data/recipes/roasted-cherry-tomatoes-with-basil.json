@@ -1,0 +1,58 @@
+{
+  "id": "roasted-cherry-tomatoes-with-basil",
+  "title": "Roasted Cherry Tomatoes with Basil",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [],
+  "prep_minutes": null,
+  "cook_minutes": 25,
+  "servings": "3",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1½",
+          "unit": "pounds",
+          "item": "medium to large cherry tomatoes, stemmed (about 4 cups)"
+        },
+        {
+          "qty": "1½",
+          "unit": "Tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "kosher salt (scant)"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "fresh basil leaves, stacked 4 to 5 at a time, rolled up, and thinly sliced"
+        },
+        {
+          "qty": "6",
+          "unit": null,
+          "item": "garlic cloves, unpeeled (optional)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Place a rack in the center of the oven. Preheat the oven to 500°F.",
+    "Place the tomatoes in the smallest pan that will hold them comfortably. Drizzle the olive oil over them. Rub the oil over the tomatoes and pan. Sprinkle with the salt. Roast for 10 minutes. Shake the pan to move the tomatoes around.",
+    "Roast for 15 minutes more.",
+    "Add the basil and toss lightly. Serve warm."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

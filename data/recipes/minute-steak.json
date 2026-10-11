@@ -1,0 +1,78 @@
+{
+  "id": "minute-steak",
+  "title": "Minute Steak",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "comfort",
+    "one-pot"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 60,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "minute steak (1 package)"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "package",
+          "item": "mushrooms, quartered"
+        },
+        {
+          "qty": "3-4",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "potatoes, cut into chunks"
+        },
+        {
+          "qty": "1",
+          "unit": "8-oz can",
+          "item": "tomato sauce"
+        },
+        {
+          "qty": "1",
+          "unit": "can",
+          "item": "water (use the tomato sauce can)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "spices: crushed pepper, cumin, coriander, pepper, salt"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat some oil in a pan over medium flame. Add the minute steak and brown both sides, then take it off and put it on a plate.",
+    "Add the onion and sauté until soft, a few minutes (it will turn yellowish).",
+    "Add the mushrooms and garlic and cook until the mushrooms start to brown. Add the potatoes and sauté for about 2 minutes.",
+    "Add the tomato sauce, water, and spices.",
+    "Add the meat back. Bring to a boil, then lower the flame and simmer for about 1 hour, until the meat is soft (check with a fork)."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

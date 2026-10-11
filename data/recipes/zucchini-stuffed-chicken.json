@@ -1,0 +1,79 @@
+{
+  "id": "zucchini-stuffed-chicken",
+  "title": "Zucchini Stuffed Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "shabbat"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 50,
+  "servings": "4",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "3½",
+          "unit": "pound",
+          "item": "chicken, quartered"
+        },
+        {
+          "qty": "3",
+          "unit": "medium",
+          "item": "zucchinis"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "margarine"
+        },
+        {
+          "qty": "3",
+          "unit": "slices",
+          "item": "day-old bread"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "egg, slightly beaten"
+        },
+        {
+          "qty": "⅛",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "honey"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Rinse the chicken, remove excess fat, and pat dry.",
+    "Shred the unpeeled zucchini in a food processor or grate on the large holes of a hand grater.",
+    "In a 1½-quart saucepan, melt the margarine and add the zucchini. Cook, stirring, for about 3 minutes. Remove from heat. Grate or shred the bread into crumbs and add to the zucchini.",
+    "Stir in the egg and seasonings, mixing well.",
+    "Preheat the oven to 400°F.",
+    "Carefully loosen the skin on each chicken quarter to form a pocket and spoon ¼ of the stuffing into each.",
+    "Brush each quarter with honey and bake for 50 minutes, until tender."
+  ],
+  "pairings": [],
+  "notes": "USE: 10-inch skillet; ½-quart saucepan; roasting pan",
+  "source": null,
+  "tags_need_review": false
+}

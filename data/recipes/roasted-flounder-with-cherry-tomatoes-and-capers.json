@@ -1,0 +1,81 @@
+{
+  "id": "roasted-flounder-with-cherry-tomatoes-and-capers",
+  "title": "Roasted Flounder with Cherry Tomatoes and Capers",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "fish"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 35,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "30",
+          "unit": "(2 ½ cups)",
+          "item": "cherry tomatoes"
+        },
+        {
+          "qty": "6",
+          "unit": "cloves",
+          "item": "garlic with skin on, crushed"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "capers (rinsed and drained)"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "balsamic vinegar"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "olive oil (plus 2 tbsp more for drizzling)"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "salt (plus ½ tsp more for the fish)"
+        },
+        {
+          "qty": "⅛",
+          "unit": "tsp",
+          "item": "pepper (plus ¼ tsp more for the fish)"
+        },
+        {
+          "qty": "6",
+          "unit": "(6 oz) filets",
+          "item": "flounder"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "fresh thyme leaves"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat oven to 400 degrees F. In a small bowl, combine cherry tomatoes, crushed garlic cloves, capers, balsamic vinegar, 3 tbsp olive oil, ¼ tsp salt, and ⅛ tsp pepper.",
+    "Transfer to a large roasting pan in a single layer and roast until the tomatoes begin to shrivel, 20 to 25 minutes.",
+    "Add flounder filets to the pan, resting the filets on the tomatoes. Season the filets with ½ tsp salt and ¼ tsp pepper. Drizzle with 2 tbsp olive oil. Sprinkle with fresh thyme leaves.",
+    "Bake until firm and opaque, about 10 minutes."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

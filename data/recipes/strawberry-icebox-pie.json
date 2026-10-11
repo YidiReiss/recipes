@@ -1,0 +1,72 @@
+{
+  "id": "strawberry-icebox-pie",
+  "title": "Strawberry Icebox Pie",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert"
+  ],
+  "tags": [
+    "no-bake",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "¾ cup plus 2 tbsp",
+          "unit": null,
+          "item": "sugar (changed to ½ cup)"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "unsweetened cranberry juice"
+        },
+        {
+          "qty": "2",
+          "unit": "quarts",
+          "item": "fresh strawberries, hulled and thinly sliced (several small whole strawberries reserved for garnish)"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "cornstarch"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "prebaked graham cracker crust (homemade or store bought)"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "heavy whipping cream"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "In a medium saucepan over medium-high heat, combine ¾ cup sugar, cranberry juice, 2 cups strawberries, cornstarch and salt.",
+    "Gently mash strawberries and bring to a boil. Reduce to a simmer and cook, stirring frequently, until very thick, 1 to 2 minutes.",
+    "Remove from heat and cool slightly. Stir in remaining sliced strawberries and pour into crust. Cover with plastic, refrigerate until set, 6 to 8 hours or up to 1 day.",
+    "Beat cream until soft peaks form. Add remaining sugar and beat until soft peaks return, an additional 30 seconds.",
+    "Spread whipped cream over pie, leaving a 1 ½ border. Garnish with whole berries."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}
