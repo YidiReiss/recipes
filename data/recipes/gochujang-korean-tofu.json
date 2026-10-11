@@ -1,1 +1,128 @@
-{"banner_image":null,"categories":["main","tofu"],"cook_minutes":30,"id":"gochujang-korean-tofu","ingredients":[{"items":[{"item":"extra firm tofu, drained","qty":"1","unit":"16 ounce block"},{"item":"tamari or soy sauce","qty":"1","unit":"tablespoon"},{"item":"cornstarch","qty":"1","unit":"tablespoon"},{"item":"gluten free breadcrumbs (or regular breadcrumbs)","qty":"3","unit":"tablespoons"}],"section":"Tofu"},{"items":[{"item":"low sodium tamari or soy sauce","qty":"1/4","unit":"cup"},{"item":"gochujang (Korean red chili paste); check label if gluten free matters","qty":"1/4","unit":"cup"},{"item":"tomato paste","qty":"1","unit":"tablespoon"},{"item":"vegetable broth or water","qty":"2","unit":"tablespoons"},{"item":"honey (use maple syrup to make it fully vegan)","qty":"3","unit":"tablespoons"},{"item":"toasted sesame oil","qty":"1","unit":"tablespoon"},{"item":"rice vinegar","qty":"1","unit":"tablespoon"},{"item":"garlic, minced","qty":"2","unit":"teaspoons"},{"item":"fresh ginger, grated","qty":"1","unit":"teaspoon"},{"item":"cornstarch","qty":"1","unit":"teaspoon"},{"item":"water","qty":"1","unit":"teaspoon"}],"section":"Sauce"}],"instructions":["Heat the oven to 400 degrees F. Drain the tofu, wrap it in a towel, and press lightly to remove excess liquid.","Cut the tofu into about 1 inch cubes and add to a bowl.","Toss the cubes with the soy sauce, then the cornstarch, then the breadcrumbs, until well coated.","Spread on a parchment-lined baking sheet so the pieces do not touch, and bake 25 minutes, then turn off the oven and let sit 5 more minutes to crisp.","While the tofu bakes, whisk all the sauce ingredients except the 1 teaspoon each of water and cornstarch in a small pot.","Whisk the 1 teaspoon cornstarch with the 1 teaspoon water in a small bowl, stir into the pot, and heat over low/medium, whisking, until the sauce bubbles and thickens. Remove from heat and let it thicken further.","Let the baked tofu cool 5 minutes, then transfer to a bowl and toss with half the sauce, reserving the rest for serving.","Serve over rice with cucumber, carrot, avocado, and sesame seeds; also good with broccoli. Stick with low sodium soy sauce so it does not get too salty.","Air fryer option: cook at 375 degrees F for 15 minutes, shaking every 5 minutes, then toss with the sauce."],"kosher_for_passover":false,"kosher_status":"pareve","leftover_friendly":false,"leftover_note":"Loses its crispness within a few hours, so don't prep the tofu ahead; the sauce can be made ahead and the tofu cooked when ready to serve.","notes":"Source page bills it as vegan and gluten free; the listed version uses honey (pareve; swap maple syrup for a fully vegan version) and is gluten free only if GF-certified tamari and breadcrumbs are used.","pairings":["Rice","Cucumber salad"],"pdf":"pdfs/gochujang-korean-tofu.pdf","prep_minutes":15,"servings":"4","source":"Eat With Clarity — https://eatwithclarity.com/gochujang-korean-tofu/","tags":["vegan","spicy","gluten-free","crispy"],"tags_need_review":false,"title":"Crispy Gochujang Korean Tofu"}
+{
+  "banner_image": null,
+  "categories": [
+    "main",
+    "tofu"
+  ],
+  "cook_minutes": 30,
+  "id": "gochujang-korean-tofu",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "extra firm tofu, drained",
+          "qty": "1",
+          "unit": "16 ounce block"
+        },
+        {
+          "item": "tamari or soy sauce",
+          "qty": "1",
+          "unit": "tablespoon"
+        },
+        {
+          "item": "cornstarch",
+          "qty": "1",
+          "unit": "tablespoon"
+        },
+        {
+          "item": "gluten free breadcrumbs (or regular breadcrumbs)",
+          "qty": "3",
+          "unit": "tablespoons"
+        }
+      ],
+      "section": "Tofu"
+    },
+    {
+      "items": [
+        {
+          "item": "low sodium tamari or soy sauce",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "gochujang (Korean red chili paste); check label if gluten free matters",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "tomato paste",
+          "qty": "1",
+          "unit": "tablespoon"
+        },
+        {
+          "item": "vegetable broth or water",
+          "qty": "2",
+          "unit": "tablespoons"
+        },
+        {
+          "item": "honey (use maple syrup to make it fully vegan)",
+          "qty": "3",
+          "unit": "tablespoons"
+        },
+        {
+          "item": "toasted sesame oil",
+          "qty": "1",
+          "unit": "tablespoon"
+        },
+        {
+          "item": "rice vinegar",
+          "qty": "1",
+          "unit": "tablespoon"
+        },
+        {
+          "item": "garlic, minced",
+          "qty": "2",
+          "unit": "teaspoons"
+        },
+        {
+          "item": "fresh ginger, grated",
+          "qty": "1",
+          "unit": "teaspoon"
+        },
+        {
+          "item": "cornstarch",
+          "qty": "1",
+          "unit": "teaspoon"
+        },
+        {
+          "item": "water",
+          "qty": "1",
+          "unit": "teaspoon"
+        }
+      ],
+      "section": "Sauce"
+    }
+  ],
+  "instructions": [
+    "Heat the oven to 400 degrees F. Drain the tofu, wrap it in a towel, and press lightly to remove excess liquid.",
+    "Cut the tofu into about 1 inch cubes and add to a bowl.",
+    "Toss the cubes with the soy sauce, then the cornstarch, then the breadcrumbs, until well coated.",
+    "Spread on a parchment-lined baking sheet so the pieces do not touch, and bake 25 minutes, then turn off the oven and let sit 5 more minutes to crisp.",
+    "While the tofu bakes, whisk all the sauce ingredients except the 1 teaspoon each of water and cornstarch in a small pot.",
+    "Whisk the 1 teaspoon cornstarch with the 1 teaspoon water in a small bowl, stir into the pot, and heat over low/medium, whisking, until the sauce bubbles and thickens. Remove from heat and let it thicken further.",
+    "Let the baked tofu cool 5 minutes, then transfer to a bowl and toss with half the sauce, reserving the rest for serving.",
+    "Serve over rice with cucumber, carrot, avocado, and sesame seeds; also good with broccoli. Stick with low sodium soy sauce so it does not get too salty.",
+    "Air fryer option: cook at 375 degrees F for 15 minutes, shaking every 5 minutes, then toss with the sauce."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "leftover_friendly": false,
+  "leftover_note": "Loses its crispness within a few hours, so don't prep the tofu ahead; the sauce can be made ahead and the tofu cooked when ready to serve.",
+  "notes": "Source page bills it as vegan and gluten free; the listed version uses honey (pareve; swap maple syrup for a fully vegan version) and is gluten free only if GF-certified tamari and breadcrumbs are used.",
+  "pairings": [
+    "Rice",
+    "Cucumber salad"
+  ],
+  "pdf": "data/recipes/pdfs/gochujang-korean-tofu.pdf",
+  "prep_minutes": 15,
+  "servings": "4",
+  "source": "Eat With Clarity \u2014 https://eatwithclarity.com/gochujang-korean-tofu/",
+  "tags": [
+    "vegan",
+    "spicy",
+    "gluten-free",
+    "crispy"
+  ],
+  "tags_need_review": false,
+  "title": "Crispy Gochujang Korean Tofu"
+}
