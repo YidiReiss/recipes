@@ -178,6 +178,124 @@ function route() {
   return renderHome(app);
 }
 
+/* ---------------- Home ---------------- */
+
+/* Aggregate this week's planned recipes into a shopping list. */
+function parseQty(q) {
+  if (q == null) return null;
+  const s = String(q).trim();
+  if (!s) return null;
+  const frac = s.match(/^(\d+)\s*\/\s*(\d+)$/);
+  if (frac && +frac[2]) return (+frac[1]) / (+frac[2]);
+  if (/^\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+  return null;
+}
+function thisWeekKey() { return ymd(mondayOf(0)); }
+function plannedRecipeIds(week) {
+  const ids = [];
+  week.days.forEach(d => {
+    ['lunch', 'dinner'].forEach(m => {
+      const s = d[m];
+      if (s && s.recipe && !s.skipped && byId[s.recipe]) ids.push(s.recipe);
+    });
+  });
+  return ids;
+}
+function buildShoppingList() {
+  const week = getWeek(thisWeekKey());
+  const ids = plannedRecipeIds(week);
+  const map = new Map();
+  ids.forEach(id => {
+    const r = byId[id];
+    (r.ingredients || []).forEach(sec => {
+      (sec.items || []).forEach(it => {
+        const item = (it.item || '').trim();
+        if (!item) return;
+        const unitRaw = (it.unit || '').trim();
+        const nkey = item.toLowerCase() + '|' + unitRaw.toLowerCase();
+        let e = map.get(nkey);
+        if (!e) {
+          e = { item, unit: unitRaw, qty: 0, hasNum: false, texts: [] };
+          map.set(nkey, e);
+        }
+        const n = parseQty(it.qty);
+        if (n !== null) { e.qty += n; e.hasNum = true; }
+        else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
+      });
+    });
+  });
+  return [...map.values()].map(e => {
+    let q = '';
+    if (e.hasNum) q = String(Math.round(e.qty * 100) / 100);
+    if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
+    return {
+      key: e.item.toLowerCase() + '|' + e.unit.toLowerCase(),
+      label: [q, e.unit, e.item].filter(Boolean).join(' ')
+    };
+  }).sort((a, b) => a.label.localeCompare(b.label));
+}
+
+function weekStripHTML() {
+  const mon = mondayOf(0);
+  const week = getWeek(thisWeekKey());
+  const out = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon);
+    d.setDate(d.getDate() + i);
+    const ds = week.days[i];
+    const parts = [];
+    ['lunch', 'dinner'].forEach(m => {
+      const s = ds[m];
+      if (s && s.recipe && !s.skipped && byId[s.recipe]) parts.push(byId[s.recipe].title);
+    });
+    out.push(
+      '<a class="week-day" href="#/planner">' +
+        '<span class="wd-name">' + d.toLocaleDateString('en-US', { weekday: 'short' }) + '</span>' +
+        '<span class="wd-meals">' + (parts.length ? esc(parts.join(' · ')) : '<em>—</em>') + '</span>' +
+      '</a>'
+    );
+  }
+  return out.join('');
+}
+
+function tilesHTML() {
+  const tile = (label, count, img, act) =>
+    '<button type="button" class="cat-tile" data-tile="' + esc(act) + '">' +
+      (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '<span class="tile-ph"></span>') +
+      '<span class="tile-label">' + esc(label) + ' <em>' + count + '</em></span></button>';
+  const out = [];
+  ['meat', 'dairy', 'pareve'].forEach(k => {
+    const rs = recipes.filter(r => r.kosher_status === k);
+    if (!rs.length) return;
+    const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
+    out.push(tile(k[0].toUpperCase() + k.slice(1), rs.length, img, 'kosher:' + k));
+  });
+  allCats().slice(0, 6).forEach(c => {
+    const rs = recipes.filter(r => (r.categories || []).includes(c));
+    if (!rs.length) return;
+    const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
+    out.push(tile(c, rs.length, img, 'cat:' + c));
+  });
+  return out.join('');
+}
+
+function shoppingListHTML() {
+  const items = buildShoppingList();
+  if (!items.length) {
+    return '<p class="muted">Nothing planned yet — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
+  }
+  const key = 'shopchecked-' + thisWeekKey();
+  let checked = [];
+  try { checked = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
+  const lis = items.map(it =>
+    '<label class="shop-item"><input type="checkbox" data-shop="' + esc(it.key) + '"' +
+      (checked.includes(it.key) ? ' checked' : '') + '>' +
+      '<span>' + esc(it.label) + '</span></label>'
+  ).join('');
+  return '<div class="shop-list" data-shopkey="' + esc(key) + '">' + lis + '</div>' +
+    '<div style="margin-top:.6rem"><button class="btn secondary" id="shop-copy" type="button">Copy list</button></div>';
+}
+
 /* ---------------- Home: search / filter / grid ---------------- */
 const allTags = () => [...new Set(recipes.flatMap(r => r.tags || []))].sort();
 const allCats = () => [...new Set(recipes.flatMap(r => r.categories || []))].sort();
@@ -185,9 +303,30 @@ const allCats = () => [...new Set(recipes.flatMap(r => r.categories || []))].sor
 function renderHome(app) {
   const tags = allTags(), cats = allCats();
   app.innerHTML =
-    '<div class="search-row no-print">' +
-      '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
-      'value="' + esc(filters.q) + '" aria-label="Search recipes"></div>' +
+    '<section class="hero">' +
+      '<h1>What are we cooking?</h1>' +
+      '<div class="search-row hero-search no-print">' +
+        '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
+        'value="' + esc(filters.q) + '" aria-label="Search recipes"></div>' +
+    '</section>' +
+
+    '<section class="home-section">' +
+      '<div class="section-head"><h2>This week</h2>' +
+      '<a class="link-btn" href="#/planner">Open planner →</a></div>' +
+      '<div class="week-strip">' + weekStripHTML() + '</div>' +
+    '</section>' +
+
+    '<section class="home-section">' +
+      '<div class="section-head"><h2>Shopping list</h2></div>' +
+      '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
+    '</section>' +
+
+    '<section class="home-section">' +
+      '<div class="section-head"><h2>Browse recipes</h2></div>' +
+      '<div class="cat-tiles no-print">' + tilesHTML() + '</div>' +
+    '</section>' +
+
+    '<section id="browse">' +
     '<div class="no-print" id="filter-toggle-wrap"><button class="btn secondary" id="filter-toggle" type="button">Show filters</button></div>' +
     '<div class="filters no-print" id="filters">' +
       '<div class="filter-field"><label for="f-kosher">Kosher</label><select id="f-kosher">' +
@@ -219,7 +358,9 @@ function renderHome(app) {
     '<p class="result-count" id="result-count"></p>' +
     '<div class="no-print" style="margin:0 0 1rem"><a class="btn" href="#/add">+ Add recipe</a> ' +
     '<a class="btn secondary" href="#/submit">Submit a link or photo</a></div>' +
-    '<div class="card-grid" id="grid"></div>';
+    '<div class="card-grid" id="grid"></div></section>';
+
+  $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
   $('#f-kosher').addEventListener('change', e => { filters.kosher = e.target.value; drawGrid(); });
@@ -237,6 +378,61 @@ function renderHome(app) {
   });
   if (window.innerWidth < 700) { fz.style.display = 'none'; }
   else { ft.style.display = 'none'; }
+
+  // Category tiles act as quick filters.
+  const tiles = document.querySelector('.cat-tiles');
+  if (tiles) tiles.addEventListener('click', e => {
+    const btn = e.target.closest('[data-tile]');
+    if (!btn) return;
+    const [kind, val] = btn.dataset.tile.split(/:(.+)/);
+    if (kind === 'kosher') {
+      filters.kosher = val;
+      const sel = $('#f-kosher');
+      if (sel) sel.value = val;
+    } else if (kind === 'cat') {
+      filters.category = val;
+      // ensure the option exists in the select
+      const sel = $('#f-cat');
+      if (sel && ![...sel.options].some(o => o.value === val && o.text === val)) {
+        const opt = document.createElement('option');
+        opt.textContent = val;
+        sel.appendChild(opt);
+      }
+      if (sel) sel.value = val;
+    }
+    drawGrid();
+    const browse = $('#browse');
+    if (browse) browse.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Shopping list: persist checks, copy button.
+  const shopWrap = $('#shop-wrap');
+  if (shopWrap) {
+    const list = shopWrap.querySelector('.shop-list');
+    if (list) {
+      const skey = list.dataset.shopkey;
+      list.addEventListener('change', e => {
+        const cb = e.target.closest('[data-shop]');
+        if (!cb) return;
+        let cur = [];
+        try { cur = JSON.parse(localStorage.getItem(skey) || '[]'); } catch (err) {}
+        const k = cb.dataset.shop;
+        if (cb.checked && !cur.includes(k)) cur.push(k);
+        if (!cb.checked) cur = cur.filter(x => x !== k);
+        try { localStorage.setItem(skey, JSON.stringify(cur)); } catch (err) {}
+      });
+    }
+    const copyBtn = $('#shop-copy');
+    if (copyBtn) copyBtn.addEventListener('click', () => {
+      const lines = buildShoppingList().map(it => '• ' + it.label);
+      const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
+      const done = () => toast('Shopping list copied');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => toast('Copy failed'));
+      } else { toast('Copy not supported here'); }
+    });
+  }
+
   drawGrid();
 }
 
