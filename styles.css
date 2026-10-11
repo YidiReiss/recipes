@@ -653,3 +653,92 @@ footer.site-footer {
 
   a { color: #000; text-decoration: none; }
 }
+
+/* ---------- Mobile compact (<=640px) ----------
+   Denser cards, compact filters, tighter header.
+   Desktop layout above 640px is untouched. */
+
+@media (max-width: 640px) {
+  /* Header: title + edit button on row one, nav on its own row */
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    padding: 0.55rem 0.75rem;
+  }
+  .site-title { font-size: 1.02rem; }
+  .edit-toggle {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.78rem;
+  }
+  .main-nav {
+    order: 3;
+    flex: 1 1 100%;
+  }
+  .main-nav a {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.88rem;
+  }
+
+  /* Page chrome */
+  .wrap { padding: 0.9rem 0.75rem 2.5rem; }
+  .search-row { margin-bottom: 0.6rem; }
+  .search-row input[type="search"] {
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  /* Compact filters: two fields per row */
+  .filters {
+    gap: 0.5rem;
+    padding: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+  .filter-field { flex: 1 1 44%; min-width: 0; }
+  .filter-field label { font-size: 0.68rem; }
+  .filter-field select,
+  .filter-field input[type="number"] {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.45rem;
+    max-width: none;
+    width: 100%;
+  }
+  .check-row {
+    flex: 1 1 auto;
+    font-size: 0.85rem;
+    padding-bottom: 0.15rem;
+  }
+  .result-count { font-size: 0.85rem; margin-bottom: 0.6rem; }
+
+  /* Compact cards: horizontal list-card treatment —
+     thumbnail left, text right. Much denser on small screens. */
+  .card-grid { gap: 0.6rem; }
+  .card { flex-direction: row; align-items: center; }
+  .card img,
+  .card .banner-fallback {
+    flex: 0 0 84px;
+    width: 84px;
+    height: 84px;
+    margin: 0.6rem 0 0.6rem 0.6rem;
+    border-radius: 8px;
+    align-self: center;
+    padding: 0;
+  }
+  .card .banner-fallback span { display: none; }
+  .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.6rem 0.75rem;
+  }
+  .card-body h2 { font-size: 0.98rem; margin-bottom: 0.15rem; }
+  .card-meta { font-size: 0.78rem; margin-bottom: 0.3rem; }
+  .badge { font-size: 0.68rem; }
+
+  /* Recipe page: smaller hero + title */
+  .recipe-title { font-size: 1.55rem; }
+  .recipe-hero img { max-height: 220px; }
+  .recipe-hero .banner-fallback { min-height: 140px; font-size: 1.5rem; }
+  .recipe-section h2 { font-size: 1.2rem; }
+
+  /* Planner: slightly tighter day cards */
+  .day-card { padding: 0.7rem 0.8rem; }
+}
