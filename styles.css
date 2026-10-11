@@ -810,3 +810,20 @@ footer.site-footer {
   .cat-tile { height: 78px; }
   .shop-list { grid-template-columns: 1fr; }
 }
+
+/* Meal slot combobox (searchable, free-text) */
+.combo-wrap { position: relative; }
+.combo-wrap #se-meal { width: 100%; }
+.combo-list {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 30;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  max-height: 230px; overflow-y: auto; box-shadow: var(--shadow); margin-top: 2px;
+}
+.combo-item {
+  display: block; width: 100%; text-align: left; background: none; border: none;
+  padding: 0.6rem 0.8rem; font-size: 0.95rem; cursor: pointer; color: var(--ink);
+  border-bottom: 1px solid var(--cream-dark);
+}
+.combo-item:last-child { border-bottom: none; }
+.combo-item:hover, .combo-item:focus { background: var(--cream-dark); }
+.slot-custom { font-weight: 600; }
