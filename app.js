@@ -190,7 +190,7 @@ function parseQty(q) {
   if (/^\d+(\.\d+)?$/.test(s)) return parseFloat(s);
   return null;
 }
-function thisWeekKey() { return ymd(mondayOf(0)); }
+function thisWeekKey() { return ymd(sundayOf(0)); }
 function plannedRecipeIds(week) {
   const ids = [];
   week.days.forEach(d => {
@@ -236,7 +236,7 @@ function buildShoppingList() {
 }
 
 function weekStripHTML() {
-  const mon = mondayOf(0);
+  const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
   const out = [];
   for (let i = 0; i < 7; i++) {
@@ -947,10 +947,10 @@ async function saveNewRecipe() {
 /* ---------------- Meal planner ---------------- */
 const blankSlot = () => ({ recipe: null, custom: null, skipped: false, note: '' });
 
-function mondayOf(offset) {
+function sundayOf(offset) {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + offset * 7);
+  d.setDate(d.getDate() - d.getDay() + offset * 7);
   return d;
 }
 const ymd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
@@ -1039,7 +1039,7 @@ function wireCombo(input) {
   input.addEventListener('input', () => { input.dataset.rid = ''; draw(); });
   input.addEventListener('focus', draw);
   input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
-  list.addEventListener('mousedown', e => {
+  list.addEventListener('pointerdown', e => {
     const b = e.target.closest('[data-rid]');
     if (!b) return;
     e.preventDefault();
@@ -1052,7 +1052,7 @@ function wireCombo(input) {
 
 function renderPlanner(app) {
   document.title = 'Meal Planner — Reiss Family Recipes';
-  const mon = mondayOf(plannerOffset);
+  const mon = sundayOf(plannerOffset);
   const key = ymd(mon);
   const week = getWeek(key);
   const canEdit = editingEnabled();
@@ -1065,8 +1065,8 @@ function renderPlanner(app) {
     const ds = week.days[i];
     days += '<div class="day-card"><h3>' + dayName(d) +
       ' <span style="color:var(--ink-soft);font-weight:400;font-size:.9rem">' + prettyDate(d) + '</span></h3>' +
-      slotHTML(key, i, 'lunch', ds.lunch, canEdit, i === 5) +   // Saturday lunch = Shabbat
-      slotHTML(key, i, 'dinner', ds.dinner, canEdit, i === 4) + // Friday dinner = Shabbat
+      slotHTML(key, i, 'lunch', ds.lunch, canEdit, i === 6) +   // Saturday lunch = Shabbat
+      slotHTML(key, i, 'dinner', ds.dinner, canEdit, i === 5) + // Friday dinner = Shabbat
       '</div>';
   }
 
