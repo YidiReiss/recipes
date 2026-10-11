@@ -8,13 +8,18 @@
      data/meal-plan.json          -> { weeks: { "YYYY-MM-DD": {...} } }
 
    Editing + meal planner persist through the GitHub Contents API
-   using an editor key (fine-grained token) stored in localStorage.
+   using a baked-in edit key (edit-token.js sets window.RECIPES_EDIT_TOKEN),
+   scoped to this repo only. No login, no per-device setup — editing is on.
    ============================================================ */
 'use strict';
 
 /* ---------------- Config ---------------- */
 const REPO = { owner: 'YidiReiss', repo: 'recipes', branch: 'main' };
-const LS_KEY = 'rc_editor_key'; // editor key lives only in this browser
+/* Baked-in edit key (edit-token.js). Scoped to this repo only. */
+function bakedEditKey() {
+  try { return window.RECIPES_EDIT_TOKEN || ''; } catch (e) { return ''; }
+}
+const editingEnabled = () => true; // editing is always on; no login gate
 const KNOWN_CATEGORIES = ['main', 'side', 'soup', 'salad', 'fish', 'chicken',
                           'meat', 'dessert', 'baking', 'breakfast'];
 
@@ -60,62 +65,6 @@ function closeModal() {
   if (m) m.remove();
 }
 
-/* ---------------- Editor key ---------------- */
-const editorKey = () => localStorage.getItem(LS_KEY) || '';
-const editingEnabled = () => !!editorKey();
-
-function updateEditToggle() {
-  const b = $('#edit-toggle');
-  const on = editingEnabled();
-  b.textContent = on ? 'Editing on ✓' : 'Enable editing';
-  b.classList.toggle('on', on);
-}
-
-function openKeyModal() {
-  closeModal();
-  const bd = document.createElement('div');
-  bd.className = 'modal-backdrop';
-  bd.id = 'modal';
-  bd.innerHTML =
-    '<div class="modal" role="dialog" aria-modal="true" aria-label="Enable editing">' +
-      '<h2>Enable editing</h2>' +
-      '<p>Paste your editor key below. It is stored only in this browser, ' +
-      'and only this device will show edit controls.</p>' +
-      '<div class="form-status" id="key-status"></div>' +
-      '<input type="password" id="key-input" placeholder="Editor key" autocomplete="off">' +
-      '<div class="modal-actions">' +
-        '<button class="btn secondary" id="key-cancel" type="button">Cancel</button>' +
-        '<button class="btn" id="key-save" type="button">Save</button>' +
-      '</div>' +
-    '</div>';
-  document.body.appendChild(bd);
-  $('#key-cancel').onclick = closeModal;
-  bd.addEventListener('click', e => { if (e.target === bd) closeModal(); });
-  $('#key-save').onclick = async () => {
-    const v = $('#key-input').value.trim();
-    if (!v) return;
-    const st = $('#key-status');
-    st.className = 'form-status';
-    st.textContent = 'Checking…';
-    try {
-      // Validates the token itself; the recipes repo may not exist yet.
-      const res = await fetch('https://api.github.com/user', {
-        headers: { 'Authorization': 'Bearer ' + v, 'Accept': 'application/vnd.github+json' }
-      });
-      if (!res.ok) throw new Error('bad');
-      localStorage.setItem(LS_KEY, v);
-      closeModal();
-      updateEditToggle();
-      route();
-      toast('Editing enabled on this device.');
-    } catch (e) {
-      st.className = 'form-status error';
-      st.textContent = 'That key didn’t work. Check it and try again.';
-    }
-  };
-  setTimeout(() => { const i = $('#key-input'); if (i) i.focus(); }, 50);
-}
-
 /* ---------------- GitHub Contents API ---------------- */
 const GH = 'https://api.github.com';
 
@@ -123,7 +72,7 @@ async function ghGet(path) {
   const res = await fetch(
     GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path +
     '?ref=' + encodeURIComponent(REPO.branch),
-    { headers: { 'Authorization': 'Bearer ' + editorKey(), 'Accept': 'application/vnd.github+json' } }
+    { headers: { 'Authorization': 'Bearer ' + bakedEditKey(), 'Accept': 'application/vnd.github+json' } }
   );
   if (res.status === 401) throw new Error('key');
   if (res.status === 404) throw new Error('missing'); // file doesn't exist yet
@@ -132,7 +81,7 @@ async function ghGet(path) {
   return { sha: j.sha, text: fromB64(j.content || '') };
 }
 
-async function ghPut(path, text, message) {
+async function ghPutRaw(path, b64content, message) {
   let sha = null;
   try {
     const got = await ghGet(path);
@@ -143,7 +92,7 @@ async function ghPut(path, text, message) {
   }
   const url = GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path;
   const headers = {
-    'Authorization': 'Bearer ' + editorKey(),
+    'Authorization': 'Bearer ' + bakedEditKey(),
     'Accept': 'application/vnd.github+json',
     'Content-Type': 'application/json'
   };
@@ -151,7 +100,7 @@ async function ghPut(path, text, message) {
     method: 'PUT',
     headers,
     body: JSON.stringify(Object.assign(
-      { message, content: toB64(text), branch: REPO.branch },
+      { message, content: b64content, branch: REPO.branch },
       s ? { sha: s } : {}
     ))
   });
@@ -165,6 +114,10 @@ async function ghPut(path, text, message) {
   }
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
+}
+async function ghPut(path, text, message) { return ghPutRaw(path, toB64(text), message); }
+async function ghPutB64(path, b64, message) {
+  return ghPutRaw(path, String(b64).replace(/\s+/g, ''), message);
 }
 
 /* ---------------- Badges + banners ---------------- */
@@ -198,17 +151,6 @@ function loadError() {
 }
 
 async function boot() {
-  $('#edit-toggle').addEventListener('click', () => {
-    if (editingEnabled()) {
-      localStorage.removeItem(LS_KEY);
-      updateEditToggle();
-      route();
-      toast('Editing disabled on this device.');
-    } else {
-      openKeyModal();
-    }
-  });
-
   try {
     const idxRes = await fetch('data/recipes/index.json');
     if (!idxRes.ok) throw new Error('no manifest');
@@ -230,7 +172,6 @@ async function boot() {
     mealPlan = (mp && typeof mp.weeks === 'object') ? mp : { weeks: {} };
   } catch (e) { mealPlan = { weeks: {} }; }
 
-  updateEditToggle();
   window.addEventListener('hashchange', route);
   route();
 }
@@ -247,6 +188,8 @@ function route() {
   document.title = 'Reiss Family Recipes';
   if (h.startsWith('#/recipe/')) return renderRecipe(app, decodeURIComponent(h.slice(9)));
   if (h.startsWith('#/edit/')) return renderEdit(app, decodeURIComponent(h.slice(7)));
+  if (h === '#/add') return renderAdd(app);
+  if (h === '#/submit') return renderSubmit(app);
   if (h === '#/planner') return renderPlanner(app);
   return renderHome(app);
 }
@@ -261,7 +204,8 @@ function renderHome(app) {
     '<div class="search-row no-print">' +
       '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
       'value="' + esc(filters.q) + '" aria-label="Search recipes"></div>' +
-    '<div class="filters no-print">' +
+    '<div class="no-print" id="filter-toggle-wrap"><button class="btn secondary" id="filter-toggle" type="button">Show filters</button></div>' +
+    '<div class="filters no-print" id="filters">' +
       '<div class="filter-field"><label for="f-kosher">Kosher</label><select id="f-kosher">' +
         '<option value="all">All</option>' +
         ['meat', 'dairy', 'pareve'].map(k =>
@@ -289,6 +233,8 @@ function renderHome(app) {
       '<label class="check-row"><input type="checkbox" id="f-left"' + (filters.leftovers ? ' checked' : '') + '> Good leftovers</label>' +
     '</div>' +
     '<p class="result-count" id="result-count"></p>' +
+    '<div class="no-print" style="margin:0 0 1rem"><a class="btn" href="#/add">+ Add recipe</a> ' +
+    '<a class="btn secondary" href="#/submit">Submit a link or photo</a></div>' +
     '<div class="card-grid" id="grid"></div>';
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
@@ -299,6 +245,14 @@ function renderHome(app) {
   $('#f-sort').addEventListener('change', e => { filters.sort = e.target.value; drawGrid(); });
   $('#f-kfp').addEventListener('change', e => { filters.kfp = e.target.checked; drawGrid(); });
   $('#f-left').addEventListener('change', e => { filters.leftovers = e.target.checked; drawGrid(); });
+  const fz = $('#filters'), ft = $('#filter-toggle');
+  ft.addEventListener('click', () => {
+    const hidden = fz.style.display === 'none';
+    fz.style.display = hidden ? '' : 'none';
+    ft.textContent = hidden ? 'Hide filters' : 'Show filters';
+  });
+  if (window.innerWidth < 700) { fz.style.display = 'none'; }
+  else { ft.style.display = 'none'; }
   drawGrid();
 }
 
@@ -372,7 +326,6 @@ function renderRecipe(app, id) {
     return;
   }
   document.title = r.title + ' — Reiss Family Recipes';
-  const canEdit = editingEnabled();
 
   const ingHTML = (r.ingredients || []).map(s =>
     (s.section ? '<h3>' + esc(s.section) + '</h3>' : '') +
@@ -420,9 +373,10 @@ function renderRecipe(app, id) {
         ? '<p class="source-line">' + esc([r.notes, r.source].filter(Boolean).join(' — ')) + '</p>'
         : '') +
       '<div class="actions no-print">' +
-        (canEdit ? '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' : '') +
+        '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
+        (r.pdf ? '<a class="btn" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
         '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
-        '<button class="btn" id="print-btn" type="button">Print / PDF</button>' +
+        '<button class="btn' + (r.pdf ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
       '</div>' +
     '</article>';
 
@@ -432,6 +386,32 @@ function renderRecipe(app, id) {
 
 async function shareRecipe(r) {
   const url = location.href; // includes #/recipe/<id>; no login gate, so links work for everyone
+  // When the recipe has a pre-generated PDF, share the file itself.
+  if (r.pdf) {
+    try {
+      const res = await fetch(r.pdf);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      const name = String(r.pdf).split('/').pop().split('?')[0] || 'recipe.pdf';
+      const file = new File([blob], name, { type: blob.type || 'application/pdf' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: r.title, text: r.title + ' — Reiss Family Recipes' });
+        return;
+      }
+      // No file sharing: download the PDF so it can be shared from the Files app.
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(file);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+      toast('PDF downloaded — share it from your files.');
+      return;
+    } catch (e) {
+      console.warn('PDF share failed, falling back to link share.', e);
+    }
+  }
+  // No PDF (or PDF path failed): the link share / clipboard behavior.
   const data = { title: r.title, text: r.title + ' — Reiss Family Recipes', url };
   if (navigator.share) {
     try { await navigator.share(data); } catch (e) { /* user dismissed */ }
@@ -446,32 +426,31 @@ async function shareRecipe(r) {
 }
 
 /* ---------------- Edit form ---------------- */
-function renderEdit(app, id) {
-  const r = byId[id];
-  if (!r) {
-    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
-      '<div class="empty-state"><h2>Recipe not found</h2></div>';
-    return;
-  }
-  if (!editingEnabled()) {
-    app.innerHTML =
-      '<a class="back-link" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
-      '<div class="planner-locked"><strong>Editing is disabled on this device.</strong><br>' +
-      'Use “Enable editing” (top right) and paste your editor key first.</div>';
-    return;
-  }
-  editDraft = JSON.parse(JSON.stringify(r)); // working copy
-  // Normalize optional fields so real recipes with missing keys still edit cleanly.
-  editDraft.ingredients = editDraft.ingredients || [];
-  editDraft.instructions = editDraft.instructions || [];
-  editDraft.pairings = editDraft.pairings || [];
-  editDraft.tags = editDraft.tags || [];
-  editDraft.categories = editDraft.categories || [];
-  document.title = 'Edit: ' + r.title + ' — Reiss Family Recipes';
+function blankRecipe() {
+  return {
+    id: '', title: '', kosher_status: 'pareve', kosher_for_passover: false,
+    categories: [], prep_minutes: 0, cook_minutes: 0, servings: '',
+    ingredients: [{ section: '', items: [{ qty: '', unit: '', item: '' }] }],
+    instructions: [''], pairings: [], tags: [], tags_need_review: false,
+    leftover_friendly: false, leftover_note: '', banner_image: '', pdf: null,
+    notes: '', source: ''
+  };
+}
 
-  app.innerHTML =
-    '<a class="back-link no-print" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
-    '<h1 class="recipe-title">Edit recipe</h1>' +
+function normalizeDraft(d) {
+  d.ingredients = d.ingredients || [];
+  d.instructions = d.instructions || [];
+  d.pairings = d.pairings || [];
+  d.tags = d.tags || [];
+  d.categories = d.categories || [];
+  d.pdf = d.pdf || null;
+  d.banner_image = d.banner_image || '';
+  return d;
+}
+
+/* Shared recipe form: used by Edit and by Add. Values come from r. */
+function recipeFormHTML(r, cancelHref) {
+  return (
     '<form class="edit-form no-print" id="edit-form" onsubmit="return false">' +
       '<div class="field"><label for="e-title">Title</label>' +
         '<input type="text" id="e-title" value="' + esc(r.title) + '"></div>' +
@@ -501,6 +480,11 @@ function renderEdit(app, id) {
         '<input type="text" id="e-tags" value="' + esc((r.tags || []).join(', ')) + '"></div>' +
       '<div class="field"><label for="e-banner">Banner image path (blank = automatic title card)</label>' +
         '<input type="text" id="e-banner" value="' + esc(r.banner_image || '') + '" placeholder="assets/images/my-photo.jpg"></div>' +
+      '<div class="field"><label for="e-photo">Photo &mdash; pick from your phone or computer</label>' +
+        '<input type="file" id="e-photo" accept="image/*">' +
+        '<div class="form-hint">Optional. Uploads with the recipe and becomes its banner.</div></div>' +
+      '<div class="field"><label for="e-pdf">PDF file path (blank = none)</label>' +
+        '<input type="text" id="e-pdf" value="' + esc(r.pdf || '') + '" placeholder="pdfs/my-recipe.pdf"></div>' +
       '<div class="field"><label for="e-leftnote">Leftovers note</label>' +
         '<input type="text" id="e-leftnote" value="' + esc(r.leftover_note || '') + '"></div>' +
       '<div class="field"><label>Ingredients</label><div id="ing-editor"></div>' +
@@ -516,10 +500,39 @@ function renderEdit(app, id) {
       '<div class="form-status" id="edit-status"></div>' +
       '<div class="actions" style="margin-bottom:0">' +
         '<button class="btn" id="edit-save" type="button">Save recipe</button>' +
-        '<a class="btn secondary" href="#/recipe/' + encodeURIComponent(id) + '">Cancel</a>' +
+        '<a class="btn secondary" href="' + cancelHref + '">Cancel</a>' +
       '</div>' +
-    '</form>';
+    '</form>'
+  );
+}
 
+function renderEdit(app, id) {
+  const r = byId[id];
+  if (!r) {
+    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
+      '<div class="empty-state"><h2>Recipe not found</h2></div>';
+    return;
+  }
+  editDraft = normalizeDraft(JSON.parse(JSON.stringify(r))); // working copy
+  document.title = 'Edit: ' + r.title + ' — Reiss Family Recipes';
+  app.innerHTML =
+    '<a class="back-link no-print" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
+    '<h1 class="recipe-title">Edit recipe</h1>' +
+    recipeFormHTML(r, '#/recipe/' + encodeURIComponent(id));
+  wireRecipeForm(() => saveRecipe(id));
+}
+
+function renderAdd(app) {
+  editDraft = blankRecipe();
+  document.title = 'Add recipe — Reiss Family Recipes';
+  app.innerHTML =
+    '<a class="back-link no-print" href="#/">← All recipes</a>' +
+    '<h1 class="recipe-title">Add recipe</h1>' +
+    recipeFormHTML(editDraft, '#/');
+  wireRecipeForm(saveNewRecipe);
+}
+
+function wireRecipeForm(onSave) {
   drawIngEditor();
   drawStepsEditor();
   drawPairEditor();
@@ -529,7 +542,78 @@ function renderEdit(app, id) {
   };
   $('#step-add').onclick = () => { editDraft.instructions.push(''); drawStepsEditor(); };
   $('#pair-add').onclick = () => { editDraft.pairings.push({ recipe_id: '', note: '' }); drawPairEditor(); };
-  $('#edit-save').onclick = () => saveRecipe(id);
+  $('#edit-save').onclick = onSave;
+}
+
+/* Read every e-* field into d; drop empties so the JSON stays clean. */
+function collectRecipeForm(d) {
+  d.title = $('#e-title').value.trim();
+  d.kosher_status = $('#e-kosher').value;
+  d.prep_minutes = Math.max(0, parseInt($('#e-prep').value, 10) || 0);
+  d.cook_minutes = Math.max(0, parseInt($('#e-cook').value, 10) || 0);
+  d.servings = $('#e-serv').value.trim();
+  d.kosher_for_passover = $('#e-kfp').checked;
+  d.leftover_friendly = $('#e-left').checked;
+  d.categories = [...document.querySelectorAll('.e-cat')].filter(c => c.checked).map(c => c.value);
+  d.tags = $('#e-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+  d.banner_image = $('#e-banner').value.trim();
+  d.pdf = $('#e-pdf').value.trim() || null;
+  d.leftover_note = $('#e-leftnote').value.trim();
+  d.notes = $('#e-notes').value.trim();
+  d.source = $('#e-source').value.trim();
+  // ingredients / instructions / pairings already live in the draft via input sync
+  d.ingredients = d.ingredients
+    .map(s => ({ section: (s.section || '').trim(), items: s.items.filter(i => (i.item || '').trim()) }))
+    .filter(s => s.items.length);
+  d.instructions = d.instructions.map(s => (s || '').trim()).filter(Boolean);
+  d.pairings = d.pairings.filter(p => p.recipe_id);
+}
+
+function slugify(t) {
+  return String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'recipe';
+}
+
+function readAsDataURL(blob) {
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(fr.result);
+    fr.onerror = rej;
+    fr.readAsDataURL(blob);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = src;
+  });
+}
+
+/* If a photo was picked, shrink it and upload it, then point banner_image at it. */
+async function maybeUploadPhoto(d) {
+  const inp = $('#e-photo');
+  if (!inp || !inp.files || !inp.files[0]) return;
+  let img;
+  try {
+    img = await loadImage(await readAsDataURL(inp.files[0]));
+  } catch (e) {
+    throw new Error('Could not read that photo — try a JPG or PNG.');
+  }
+  const MAX = 1600;
+  const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+  const w = Math.max(1, Math.round(img.width * scale));
+  const h = Math.max(1, Math.round(img.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+  if (!blob) throw new Error('Could not read that photo — try a JPG or PNG.');
+  const b64 = String(await readAsDataURL(blob)).split(',')[1];
+  const path = 'assets/images/' + d.id + '.jpg';
+  await ghPutB64(path, b64, 'Add photo for ' + d.title);
+  d.banner_image = path;
 }
 
 function drawIngEditor() {
@@ -618,27 +702,7 @@ function drawPairEditor() {
 async function saveRecipe(id) {
   const st = $('#edit-status');
   const d = editDraft;
-  d.title = $('#e-title').value.trim();
-  d.kosher_status = $('#e-kosher').value;
-  d.prep_minutes = Math.max(0, parseInt($('#e-prep').value, 10) || 0);
-  d.cook_minutes = Math.max(0, parseInt($('#e-cook').value, 10) || 0);
-  d.servings = $('#e-serv').value.trim();
-  d.kosher_for_passover = $('#e-kfp').checked;
-  d.leftover_friendly = $('#e-left').checked;
-  d.categories = [...document.querySelectorAll('.e-cat')].filter(c => c.checked).map(c => c.value);
-  d.tags = $('#e-tags').value.split(',').map(t => t.trim()).filter(Boolean);
-  d.banner_image = $('#e-banner').value.trim();
-  d.leftover_note = $('#e-leftnote').value.trim();
-  d.notes = $('#e-notes').value.trim();
-  d.source = $('#e-source').value.trim();
-  // ingredients / instructions / pairings already live in the draft via input sync;
-  // drop empties so the JSON stays clean.
-  d.ingredients = d.ingredients
-    .map(s => ({ section: s.section.trim(), items: s.items.filter(i => i.item.trim()) }))
-    .filter(s => s.items.length);
-  d.instructions = d.instructions.map(s => s.trim()).filter(Boolean);
-  d.pairings = d.pairings.filter(p => p.recipe_id);
-
+  collectRecipeForm(d);
   if (!d.title) {
     st.className = 'form-status error';
     st.textContent = 'Give the recipe a title first.';
@@ -647,6 +711,7 @@ async function saveRecipe(id) {
   st.className = 'form-status';
   st.textContent = 'Saving…';
   try {
+    await maybeUploadPhoto(d);
     await ghPut('data/recipes/' + id + '.json', JSON.stringify(d, null, 2), 'Update recipe: ' + d.title);
     const i = recipes.findIndex(x => x.id === id);
     if (i >= 0) recipes[i] = d;
@@ -657,10 +722,45 @@ async function saveRecipe(id) {
   } catch (e) {
     st.className = 'form-status error';
     st.textContent = e.message === 'key'
-      ? 'Editor key invalid. Re-enter it via “Enable editing”.'
+      ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
       : 'Save failed: ' + e.message;
   }
 }
+
+async function saveNewRecipe() {
+  const st = $('#edit-status');
+  const d = editDraft;
+  collectRecipeForm(d);
+  if (!d.title) {
+    st.className = 'form-status error';
+    st.textContent = 'Give the recipe a title first.';
+    return;
+  }
+  let id = slugify(d.title), n = 2;
+  while (byId[id]) id = slugify(d.title) + '-' + (n++);
+  d.id = id;
+  d.tags_need_review = false;
+  st.className = 'form-status';
+  st.textContent = 'Saving…';
+  try {
+    await maybeUploadPhoto(d);
+    await ghPut('data/recipes/' + id + '.json', JSON.stringify(d, null, 2), 'Add recipe: ' + d.title);
+    const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
+    idx.push(id);
+    await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
+    recipes.push(d);
+    byId[id] = d;
+    toast('Saved — the site rebuilds in about a minute.');
+    location.hash = '#/recipe/' + encodeURIComponent(id);
+  } catch (e) {
+    st.className = 'form-status error';
+    st.textContent = e.message === 'key'
+      ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
+      : 'Save failed: ' + e.message;
+  }
+}
+
+
 
 /* ---------------- Meal planner ---------------- */
 const blankSlot = () => ({ recipe: null, skipped: false, note: '' });
@@ -762,9 +862,6 @@ function renderPlanner(app) {
       ? '<div class="no-print" style="text-align:center;margin-bottom:1rem">' +
         '<button class="link-btn" id="wk-today" type="button">Back to this week</button></div>'
       : '') +
-    (canEdit ? '' :
-      '<div class="planner-locked no-print">Enable editing (top right) to plan meals. ' +
-      'The plan is shared — you both see the same week.</div>') +
     '<div id="days">' + days + '</div>';
 
   $('#wk-prev').onclick = () => { plannerOffset--; renderPlanner(app); };
@@ -805,10 +902,118 @@ async function persistWeek(key, statusEl, done) {
     if (done) done();
   } catch (e) {
     const msg = e.message === 'key'
-      ? 'Editor key invalid. Re-enter it via “Enable editing”.'
+      ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
       : 'Save failed: ' + e.message;
     if (statusEl) { statusEl.className = 'form-status error'; statusEl.textContent = msg; }
     else toast(msg);
+  }
+}
+
+/* ---------------- Submit a recipe (inbox) ----------------
+   Paste a link and/or attach a photo. It lands in data/inbox/ and the
+   intake checker (every 30 min) turns it into a recipe + standardized PDF.
+   Nava uses the same box — no setup, no login. */
+function renderSubmit(app) {
+  document.title = 'Submit a recipe — Reiss Family Recipes';
+  app.innerHTML =
+    '<a class="back-link no-print" href="#/">← All recipes</a>' +
+    '<h1 class="recipe-title">Submit a recipe</h1>' +
+    '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, or both. ' +
+    'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
+    'If something can\u2019t be figured out, it\u2019ll be marked below so you know.</p>' +
+    '<form class="edit-form no-print" id="submit-form" onsubmit="return false">' +
+      '<div class="field"><label for="s-url">Link (optional)</label>' +
+        '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
+      '<div class="field"><label for="s-photo">Photo (optional)</label>' +
+        '<input type="file" id="s-photo" accept="image/*">' +
+        '<div class="form-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
+      '<div class="field"><label for="s-note">Note (optional)</label>' +
+        '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
+      '<div class="form-status" id="submit-status"></div>' +
+      '<div class="actions" style="margin-bottom:0">' +
+        '<button class="btn" id="submit-send" type="button">Submit</button>' +
+        '<a class="btn secondary" href="#/">Cancel</a>' +
+      '</div>' +
+    '</form>' +
+    '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
+    '<div id="inbox-list"><p>Loading…</p></div>';
+  $('#submit-send').onclick = sendSubmission;
+  loadInboxList();
+}
+
+async function loadInboxList() {
+  const host = $('#inbox-list');
+  if (!host) return;
+  let idx = [];
+  try {
+    const r = await fetch('data/inbox/index.json');
+    if (r.ok) idx = await r.json();
+  } catch (e) { /* no inbox yet */ }
+  if (!idx.length) {
+    host.innerHTML = '<p>Nothing submitted yet.</p>';
+    return;
+  }
+  const badge = s => s === 'done' ? '✓ added'
+    : s === 'failed' ? '⚠ needs attention'
+    : s === 'working' ? '… working on it' : '… in the inbox';
+  host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s =>
+    '<li><strong>' + badge(s.status) + '</strong> — ' +
+    esc(s.url ? s.url : 'photo') +
+    (s.recipe_id ? ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>' : '') +
+    (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
+    '</li>'
+  ).join('') + '</ul>';
+}
+
+async function sendSubmission() {
+  const st = $('#submit-status');
+  const url = $('#s-url').value.trim();
+  const note = $('#s-note').value.trim();
+  const file = ($('#s-photo').files || [])[0] || null;
+  if (!url && !file) {
+    st.className = 'form-status error';
+    st.textContent = 'Add a link, a photo, or both.';
+    return;
+  }
+  st.className = 'form-status';
+  st.textContent = 'Submitting…';
+  const id = 'inbox-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e4).toString(36);
+  try {
+    let imagePath = null;
+    if (file) {
+      const img = await loadImage(await readAsDataURL(file));
+      const MAX = 1600;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+      if (!blob) throw new Error('Could not read that photo — try a JPG or PNG.');
+      const b64 = String(await readAsDataURL(blob)).split(',')[1];
+      imagePath = 'data/inbox/' + id + '.jpg';
+      await ghPutB64(imagePath, b64, 'Inbox photo ' + id);
+    }
+    const entry = {
+      id, url: url || null, image: imagePath, note: note || null,
+      status: 'pending', created_at: new Date().toISOString(),
+      recipe_id: null, fail_reason: null
+    };
+    await ghPut('data/inbox/' + id + '.json', JSON.stringify(entry, null, 2), 'Inbox submission ' + id);
+    let idx = [];
+    try { idx = JSON.parse((await ghGet('data/inbox/index.json')).text); } catch (e) { idx = []; }
+    idx.push(entry);
+    await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2), 'Inbox index ' + id);
+    st.className = 'form-status ok';
+    st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
+    $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
+    toast('Submitted!');
+    loadInboxList();
+  } catch (e) {
+    st.className = 'form-status error';
+    st.textContent = e.message === 'key'
+      ? 'Couldn\u2019t submit — editing isn\u2019t set up yet.'
+      : 'Submit failed: ' + e.message;
   }
 }
 
