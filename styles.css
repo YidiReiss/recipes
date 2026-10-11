@@ -827,3 +827,15 @@ footer.site-footer {
 .combo-item:last-child { border-bottom: none; }
 .combo-item:hover, .combo-item:focus { background: var(--cream-dark); }
 .slot-custom { font-weight: 600; }
+
+/* Shopping day picker (planner) */
+.shop-day-row {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  margin: 0 0 1rem; font-size: 0.95rem;
+}
+.shop-day-row label { font-weight: 700; }
+.shop-day-row input[type="date"] {
+  font-size: 0.95rem; padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line); border-radius: 7px; background: var(--card);
+}
+.week-day.is-shop { border-color: var(--accent); background: #fff6ec; }
