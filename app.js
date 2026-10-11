@@ -7,18 +7,17 @@
      data/recipes/<id>.json       -> one recipe per file
      data/meal-plan.json          -> { weeks: { "YYYY-MM-DD": {...} } }
 
-   Editing + meal planner persist through the GitHub Contents API
-   using a baked-in edit key (edit-token.js sets window.RECIPES_EDIT_TOKEN),
-   scoped to this repo only. No login, no per-device setup — editing is on.
+   Editing + meal planner persist through a private write bridge
+   (a Cloudflare Worker holding the GitHub token securely server-side).
+   Reads are direct from the public repo; writes POST to the bridge.
+   No login, no per-device setup, no token in the repo — editing is on.
    ============================================================ */
 'use strict';
 
 /* ---------------- Config ---------------- */
 const REPO = { owner: 'YidiReiss', repo: 'recipes', branch: 'main' };
-/* Baked-in edit key (edit-token.js). Scoped to this repo only. */
-function bakedEditKey() {
-  try { return window.RECIPES_EDIT_TOKEN || ''; } catch (e) { return ''; }
-}
+/* Private write bridge — set to the deployed Worker URL. */
+const BRIDGE = 'https://recipe-bridge.leibreiss.workers.dev';
 const editingEnabled = () => true; // editing is always on; no login gate
 const KNOWN_CATEGORIES = ['main', 'side', 'soup', 'salad', 'fish', 'chicken',
                           'meat', 'dessert', 'baking', 'breakfast'];
@@ -65,59 +64,44 @@ function closeModal() {
   if (m) m.remove();
 }
 
-/* ---------------- GitHub Contents API ---------------- */
+/* ---------------- Write bridge ----------------
+   Reads go straight to the public repo (no auth needed).
+   Every write POSTs to the private bridge, which holds the GitHub
+   token securely and commits on the site's behalf. */
 const GH = 'https://api.github.com';
+
+async function bridgeSave(path, content, message, encoding) {
+  const res = await fetch(BRIDGE + '/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, content, message, encoding: encoding || 'utf8' })
+  });
+  if (!res.ok) {
+    let detail = '';
+    try { detail = (await res.text()).slice(0, 160); } catch (e) {}
+    throw new Error('save failed (' + res.status + ') ' + detail);
+  }
+  return res.json();
+}
 
 async function ghGet(path) {
   const res = await fetch(
     GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path +
     '?ref=' + encodeURIComponent(REPO.branch),
-    { headers: { 'Authorization': 'Bearer ' + bakedEditKey(), 'Accept': 'application/vnd.github+json' } }
+    { headers: { 'Accept': 'application/vnd.github+json' } }
   );
-  if (res.status === 401) throw new Error('key');
   if (res.status === 404) throw new Error('missing'); // file doesn't exist yet
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const j = await res.json();
   return { sha: j.sha, text: fromB64(j.content || '') };
 }
 
-async function ghPutRaw(path, b64content, message) {
-  let sha = null;
-  try {
-    const got = await ghGet(path);
-    sha = got.sha;
-  } catch (e) {
-    if (e.message === 'key') throw e; // bad key / repo — surface it
-    sha = null; // file may not exist yet -> create it
-  }
-  const url = GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path;
-  const headers = {
-    'Authorization': 'Bearer ' + bakedEditKey(),
-    'Accept': 'application/vnd.github+json',
-    'Content-Type': 'application/json'
-  };
-  const send = s => fetch(url, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(Object.assign(
-      { message, content: b64content, branch: REPO.branch },
-      s ? { sha: s } : {}
-    ))
-  });
-  let res = await send(sha);
-  if (res.status === 401 || res.status === 404) throw new Error('key');
-  if ((res.status === 409 || res.status === 422) && sha) {
-    // SHA conflict (someone else saved first): re-fetch once and retry.
-    const fresh = await ghGet(path);
-    res = await send(fresh.sha);
-    if (res.status === 401 || res.status === 404) throw new Error('key');
-  }
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+async function ghPut(path, text, message) {
+  return bridgeSave(path, text, message || ('Update ' + path + ' via recipe site'));
 }
-async function ghPut(path, text, message) { return ghPutRaw(path, toB64(text), message); }
 async function ghPutB64(path, b64, message) {
-  return ghPutRaw(path, String(b64).replace(/\s+/g, ''), message);
+  return bridgeSave(path, String(b64).replace(/\s+/g, ''),
+    message || ('Upload ' + path + ' via recipe site'), 'base64');
 }
 
 /* ---------------- Badges + banners ---------------- */
