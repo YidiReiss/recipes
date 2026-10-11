@@ -1,0 +1,69 @@
+{
+  "id": "broccoli-cranberry-salad",
+  "title": "Broccoli Cranberry Salad",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "salad",
+    "side"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "bunch",
+          "item": "broccoli florets, uncooked"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "red onion, diced small"
+        },
+        {
+          "qty": "3½",
+          "unit": "oz",
+          "item": "craisins or dried cranberries"
+        },
+        {
+          "qty": "4",
+          "unit": "oz",
+          "item": "cashews, sliced"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "cider vinegar"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "sugar"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "mayonnaise"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Whisk together the cider vinegar, sugar, and mayonnaise. Pour over the broccoli, onions, and craisins.",
+    "Add the cashews before serving."
+  ],
+  "pairings": [],
+  "notes": "The doc says 'Add chase before serving' — read as cashews.",
+  "source": null,
+  "tags_need_review": false
+}

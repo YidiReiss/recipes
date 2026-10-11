@@ -1,0 +1,115 @@
+{
+  "id": "lagman",
+  "title": "Lagman",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "comfort",
+    "one-pot",
+    "shabbat"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 45,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "large onions, sliced"
+        },
+        {
+          "qty": "1",
+          "unit": "lb",
+          "item": "meat, diced (strip steak or round steak)"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "celery stalk, diced"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "red pepper, diced"
+        },
+        {
+          "qty": "1-2",
+          "unit": null,
+          "item": "potatoes, diced"
+        },
+        {
+          "qty": "1-2",
+          "unit": null,
+          "item": "carrots, sliced"
+        },
+        {
+          "qty": "5",
+          "unit": "cloves",
+          "item": "garlic, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "zera"
+        },
+        {
+          "qty": "1",
+          "unit": "large can",
+          "item": "V8 hot and spicy (or 2 small cans)"
+        },
+        {
+          "qty": "1",
+          "unit": "14-oz can",
+          "item": "tomato sauce"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "hot or sweet paprika"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "cayenne pepper"
+        },
+        {
+          "qty": "6",
+          "unit": "cups",
+          "item": "water"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "1 tsp salt and 1/2 tsp pepper"
+        },
+        {
+          "qty": "1/3-1/2",
+          "unit": "cup",
+          "item": "oil"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the oil slightly, add the onion, and fry until golden brown, about 10 minutes.",
+    "Add the garlic, mix a few times, then add the meat and fry for 10-15 minutes.",
+    "Add the zera and salt and mix a few times.",
+    "Add the celery, red pepper, carrots, and potatoes and cook for about 7 minutes.",
+    "Add the V8, tomato sauce, paprika, and cayenne pepper and boil for 7 minutes.",
+    "Add the 6 cups of water, bring to a boil, then simmer covered for 45 minutes."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

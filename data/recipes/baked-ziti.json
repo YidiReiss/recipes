@@ -1,0 +1,82 @@
+{
+  "id": "baked-ziti",
+  "title": "Baked Ziti",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "comfort",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 42,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "box (1 lb/500 g)",
+          "item": "penne pasta"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "kosher salt, divided"
+        },
+        {
+          "qty": "2",
+          "unit": "(15 oz) cans",
+          "item": "tomato sauce (marinara)"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "ricotta cheese (changed to ½)"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "unsalted butter, cubed, divided"
+        },
+        {
+          "qty": "4",
+          "unit": "cups",
+          "item": "shredded mozzarella cheese, divided"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "coarsely ground black pepper"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "crushed red pepper flakes, optional"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350 degrees F.",
+    "Bring a large pot of water to a boil. Add 1 tablespoon salt and pasta.",
+    "Meanwhile, butter a 9x13 inch baking dish or aluminum pan.",
+    "Directly into the pan add tomato sauce, ricotta cheese, 2 tablespoons butter, 2 cups shredded cheese, remaining salt, pepper, and red pepper flakes.",
+    "Before draining pasta, remove ½ cup pasta water and add to the pan, stirring to combine.",
+    "Drain pasta. Add cooked pasta to the pan and stir to fully coat every single piece.",
+    "Top mixture with remaining 2 cups shredded cheese.",
+    "Dot the remaining tablespoon of cubed butter over the top.",
+    "Bake for 40-45 minutes until the top is golden brown and bubbly.",
+    "Serve hot and enjoy!"
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

@@ -1,0 +1,76 @@
+{
+  "id": "crispy-coated-garlic-chicken",
+  "title": "Crispy Coated Garlic Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 90,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "chickens (3 ½-4 lb each), cut into 8 pieces"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "olive oil"
+        },
+        {
+          "qty": "8",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "corn flake crumbs"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "paprika"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Place chicken in a large, shallow container. Combine oil and garlic; pour over chicken, tossing to coat. Cover and marinate 8 hours or overnight.",
+    "Preheat the oven to 350. Line a large, shallow roasting pan with foil; grease well with a thin layer of olive oil.",
+    "Combine crumbs, garlic powder, salt, pepper, and paprika in a shallow bowl. Dredge chicken in crumb mixture and place in the prepared pan.",
+    "Bake uncovered for 1 ½ hours or until done."
+  ],
+  "pairings": [],
+  "notes": "Chicken must marinate 8 hours or overnight before baking.",
+  "source": null,
+  "tags_need_review": false
+}

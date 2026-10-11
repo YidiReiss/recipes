@@ -1,0 +1,76 @@
+{
+  "id": "cornflake-chicken",
+  "title": "Cornflake Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "quick",
+    "baked"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 12,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "chicken pieces"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "full-fat mayonnaise"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "onion powder"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "cumin"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "chili powder"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "cornflakes, crushed slightly (for coating)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix the mayonnaise and seasonings together.",
+    "Dip the chicken in the mayo mixture, then coat in the crushed cornflakes.",
+    "Place in the oven at 400°F for 12 minutes."
+  ],
+  "pairings": [],
+  "notes": "Doc says '½ tsp onion' and '½ tsp garlic' — interpreted as onion powder and garlic powder.",
+  "source": null,
+  "tags_need_review": false
+}

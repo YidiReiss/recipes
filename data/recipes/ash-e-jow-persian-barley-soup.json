@@ -1,0 +1,103 @@
+{
+  "id": "ash-e-jow-persian-barley-soup",
+  "title": "Ash-e-jow (Persian Barley Soup)",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup",
+    "main"
+  ],
+  "tags": [
+    "comfort",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 90,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "quarts",
+          "item": "chicken stock"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "1",
+          "unit": "medium",
+          "item": "onion, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "uncooked pearl barley"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "turmeric"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "lime, juiced"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "tomato paste"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt, to taste"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "ground black pepper, to taste"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "diced carrots (4-5 carrots)"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "fresh parsley, chopped"
+        },
+        {
+          "qty": "8",
+          "unit": null,
+          "item": "lime wedges"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "cumin"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the chicken stock in a pot to a gentle simmer.",
+    "Heat the vegetable oil in a large pot over medium heat and sauté the onion until translucent. Add the pearl barley to the pot and stir for one minute.",
+    "Stir in the hot chicken stock, turmeric, lime juice, tomato paste, salt, and pepper. Bring the mixture to a boil, reduce the heat to low, and simmer for 1 hour.",
+    "Mix in the carrots and continue simmering for 30 minutes, or until the soup has thickened and the carrots and barley are tender. If the soup is too thick, add hot water one tablespoon at a time.",
+    "Stir in the fresh parsley. Serve with fresh lime wedges."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

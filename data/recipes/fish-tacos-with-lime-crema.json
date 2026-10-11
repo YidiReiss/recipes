@@ -1,0 +1,157 @@
+{
+  "id": "fish-tacos-with-lime-crema",
+  "title": "Fish Tacos with Lime Crema",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "fish"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 10,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Fish",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "lime juice"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "ground cumin"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "ground coriander"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "red pepper powder"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "ground black pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "white fish (such as cod, snapper, tilapia)"
+        }
+      ]
+    },
+    {
+      "section": "Lime Crema",
+      "items": [
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "sour cream"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "mayonnaise"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "fresh lime juice"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "zest from half a lime"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "salt"
+        }
+      ]
+    },
+    {
+      "section": "Slaw",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "cabbage, shredded"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "cilantro, chopped"
+        },
+        {
+          "qty": "½",
+          "unit": null,
+          "item": "green onion, sliced"
+        },
+        {
+          "qty": "1",
+          "unit": "clove",
+          "item": "garlic, minced"
+        }
+      ]
+    },
+    {
+      "section": "Tacos",
+      "items": [
+        {
+          "qty": "8",
+          "unit": "(6 inch)",
+          "item": "soft taco tortillas"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "avocado, sliced (optional)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Prepare the fish: Preheat oven to 425. In a small bowl, combine vegetable oil, lime juice, cumin, paprika, coriander, red pepper powder, garlic powder, salt and pepper. Dip the fish into the bowl and turn the fish until it is evenly coated with the marinade. Place the fish onto a lined baking tray and let it marinate in the refrigerator for about 15 min. Bake for 9-10 min until the fish is flaky when tested with a fork. Transfer the fish into a plate and break into smaller pieces using a fork.",
+    "Make the lime crema: In a large bowl, whisk together all the crema ingredients. Set aside.",
+    "Make the slaw: In a large bowl, combine all the slaw ingredients. Set aside.",
+    "Heat the soft tortillas: Heat the soft tortillas according to the package instructions, or heat in an ungreased skillet over medium heat for 30 seconds per side. You can also heat it directly on a gas burner for a few seconds to get char marks on the edges.",
+    "Assemble the tacos: Divide the fish evenly into each taco, top each taco with ¼ cup of slaw and sliced avocados. Pour 1 tbsp of crema on top."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

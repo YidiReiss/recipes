@@ -1,0 +1,89 @@
+{
+  "id": "cinnamon-rolls",
+  "title": "Cinnamon Rolls",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "baking",
+    "dessert"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 13,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Rolls",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "can",
+          "item": "crescent roll dough sheet (not regular crescent rolls)"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "unsalted butter, melted"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "granulated sugar (changed to 2 tbsp)"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "ground cinnamon (changed to ½ tbsp)"
+        }
+      ]
+    },
+    {
+      "section": "Cream Cheese Icing Glaze",
+      "items": [
+        {
+          "qty": "4",
+          "unit": "ounces",
+          "item": "cream cheese, softened (changed to 2 Tbsp)"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "powdered sugar (changed to 2 tbsp)"
+        },
+        {
+          "qty": "1 ½",
+          "unit": "tsp",
+          "item": "vanilla extract (¾ tsp)"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "unsalted butter, melted (½ tbsp)"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "milk (1 ½ tbsp)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 375 degrees F. Roll out the crescent roll sheet onto a clean kitchen work surface. Brush it with the melted butter.",
+    "In a small bowl, mix together the sugar and cinnamon. Sprinkle evenly over the dough (yes, it's a lot. Yes, use it all).",
+    "The crescent roll sheet is a rectangle, with the shorter side facing you, roll it up tightly into a roll. Slice into 6 even pieces with a serrated knife.",
+    "Grease six sections of a muffin tin well with cooking spray or more butter. Place each of the rolls cut side up into each section.",
+    "Bake for 11-15 minutes or until rolls are golden brown. Place muffin tin on a wire rack and let cool.",
+    "While the rolls are cooling, place the softened cream cheese in a medium-size bowl and cream until smooth with a hand mixer. Add the powdered sugar and vanilla, and mix to combine. Add the butter and mix to combine until smooth. Add the milk one tablespoon at a time until desired consistency. The glaze should be thick but pourable.",
+    "Take the rolls out of the muffin tin, glaze rolls, serve while still warm."
+  ],
+  "pairings": [],
+  "notes": "Makes 6 rolls, baked in a muffin tin. Doc shows reduced quantities in parentheses.",
+  "source": null,
+  "tags_need_review": false
+}

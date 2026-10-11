@@ -1,0 +1,118 @@
+{
+  "id": "chaneem",
+  "title": "Chaneem",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "comfort",
+    "shabbat"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 37,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Sauce",
+      "items": [
+        {
+          "qty": "1 1/2",
+          "unit": null,
+          "item": "onions, sliced"
+        },
+        {
+          "qty": "1/2",
+          "unit": null,
+          "item": "red pepper, chopped"
+        },
+        {
+          "qty": "2",
+          "unit": "14-oz cans",
+          "item": "tomato sauce (depends on how much you're making)"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "tomatoes, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "14-oz can",
+          "item": "water"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        }
+      ]
+    },
+    {
+      "section": "Filling",
+      "items": [
+        {
+          "qty": "8",
+          "unit": null,
+          "item": "potatoes, julienned thin and cut small"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "onions, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "salt"
+        }
+      ]
+    },
+    {
+      "section": "Dough",
+      "items": [
+        {
+          "qty": "4",
+          "unit": "cups",
+          "item": "flour"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "egg"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "water (maybe a little more)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Sauté the onions in oil until soft and slightly brown. Add the pepper and mix. Add the tomatoes and mix for about 5 minutes.",
+    "Add the salt, pepper, tomato sauce, and water. Bring to a boil, then reduce the heat and simmer covered for 35-40 minutes.",
+    "Mix the filling ingredients together.",
+    "For the dough: place the flour in a bowl and make a well. Put in the salt and egg and add the water gradually as you mix, pounding with your fist.",
+    "Wet two paper towels, squeeze them, and place on top of the dough. Let rest for about 30 minutes or more.",
+    "Divide the dough into 4 balls. Roll out with a dough spreader (to #1, 3, 5 — twice), cut into squares, and place the filling on each."
+  ],
+  "pairings": [],
+  "notes": "Doc contains no meat even though traditional chaneem usually has a meat filling; kept pareve as written — verify whether meat is intended.",
+  "source": null,
+  "tags_need_review": true
+}

@@ -1,0 +1,56 @@
+{
+  "id": "cranberry-quince",
+  "title": "Cranberry Quince",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "make-ahead"
+  ],
+  "prep_minutes": 30,
+  "cook_minutes": 120,
+  "servings": "5",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1¾",
+          "unit": "lb",
+          "item": "quinces (2 large)"
+        },
+        {
+          "qty": "4",
+          "unit": "cups",
+          "item": "water"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "1",
+          "unit": "12 oz bag",
+          "item": "fresh or frozen cranberries (do not thaw; 3½ cups)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Peel, quarter, and core the quinces, reserving the peel and cores, then cut the quarters into ¼-inch pieces. Tie up the peel and cores in cheesecloth.",
+    "Bring the water and sugar to a boil in a 4-quart heavy saucepan, stirring until the sugar is dissolved. Add the quince and the cheesecloth bundle and simmer, partially covered, until the quince is tender, about 1½ hours.",
+    "Add the cranberries and simmer, uncovered, stirring occasionally, until the cranberries burst and soften, 8 to 10 minutes.",
+    "Drain the mixture in a large medium-mesh sieve set over a bowl, discarding the cheesecloth bundle and reserving the cranberry solids. Return the cooking liquid to the pan and boil, uncovered, until syrupy and reduced to about 1½ cups, 5 to 10 minutes.",
+    "Stir together the syrup and cranberry mixture in a bowl, then cool to room temperature."
+  ],
+  "pairings": [],
+  "notes": "Special equipment: an 8-inch square of cheesecloth; kitchen string. Active time: 30 min; start to finish: 2½ hr. Makes about 5 cups.",
+  "source": null,
+  "tags_need_review": false
+}

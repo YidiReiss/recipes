@@ -1,0 +1,128 @@
+{
+  "id": "hearty-meat-and-vegetable-soup",
+  "title": "Hearty Meat and Vegetable Soup",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 150,
+  "servings": "8 to 10",
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "oil"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion, diced"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "stew meat, cut into 1-inch cubes"
+        },
+        {
+          "qty": "9",
+          "unit": "cups",
+          "item": "water"
+        },
+        {
+          "qty": "1½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "⅓",
+          "unit": "cup",
+          "item": "barley"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "lima beans"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "split peas"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "bay leaf"
+        },
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "marrow bones"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "potato, diced"
+        },
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "carrots, sliced"
+        },
+        {
+          "qty": "2",
+          "unit": "stalks",
+          "item": "celery, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "chopped fresh string beans"
+        },
+        {
+          "qty": "1",
+          "unit": "16-ounce can",
+          "item": "tomato puree"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "chopped fresh parsley"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the oil and sauté the onion and garlic in a 6-quart pot for 2 minutes.",
+    "Add the stew meat, water, salt, pepper, barley, lima beans, split peas, bay leaf, and marrow bones. Bring to a boil.",
+    "Lower the flame and simmer, covered, for 1 hour.",
+    "Add the potato, carrots, celery, string beans, tomato puree, and parsley. Cook for an additional 1½ hours.",
+    "Serve hot."
+  ],
+  "pairings": [],
+  "notes": "USE: 6-quart pot",
+  "source": "Grandma and Zaidy",
+  "tags_need_review": false
+}

@@ -1,0 +1,117 @@
+{
+  "id": "bran-surprise-muffins",
+  "title": "Bran Surprise Muffins",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "baking"
+  ],
+  "tags": [
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 22,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Filling",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "(8 oz) package",
+          "item": "cream cheese, softened (same amount as original, just reduce batter)"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "all purpose flour (not changed)"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        }
+      ]
+    },
+    {
+      "section": "Batter",
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "vegetable cooking spray"
+        },
+        {
+          "qty": "1 ¼",
+          "unit": "cups",
+          "item": "all purpose flour"
+        },
+        {
+          "qty": "¾",
+          "unit": "cups",
+          "item": "sugar"
+        },
+        {
+          "qty": "½",
+          "unit": "tbsp",
+          "item": "ground cinnamon"
+        },
+        {
+          "qty": "1 ¼",
+          "unit": "tsp",
+          "item": "baking soda"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1 ¾",
+          "unit": "cups",
+          "item": "raisin bran cereal"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "egg, lightly beaten"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "buttermilk, well shaken"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "raisins"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 400 degrees F. Spray muffin pans with cooking spray; set aside.",
+    "Combine cream cheese, sugar, 2 tbsp flour, and vanilla extract in a small bowl; set aside. This filling mixture can be covered and refrigerated for up to 1 week.",
+    "Combine flour, sugar, cinnamon, baking soda, and salt in a large bowl. Stir in cereal.",
+    "Combine eggs, buttermilk, oil, and raisins. Add the egg mixture to the flour mixture, stirring just until moistened. This batter mixture can be covered and refrigerated for up to 1 week.",
+    "Spoon 1 heaping tbsp of batter into prepared muffin pans and top with 2 tsp of cream cheese mixture. Spoon 1 heaping tbsp of batter over filling, spreading to completely cover the filling. Repeat with remaining batter and filling.",
+    "Bake for 20-25 minutes or until a toothpick inserted in the center comes out clean. Remove from pans immediately, and cool on wire racks."
+  ],
+  "pairings": [],
+  "notes": "Recipe was changed to cut in half.",
+  "source": null,
+  "tags_need_review": false
+}

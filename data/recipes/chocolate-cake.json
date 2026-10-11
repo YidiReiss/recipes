@@ -1,0 +1,72 @@
+{
+  "id": "chocolate-cake",
+  "title": "Chocolate Cake",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert",
+    "baking"
+  ],
+  "tags": [
+    "comfort",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 57,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "(15.25 oz) box",
+          "item": "chocolate cake mix"
+        },
+        {
+          "qty": "1",
+          "unit": "(3.9 oz) box",
+          "item": "instant chocolate pudding"
+        },
+        {
+          "qty": "1",
+          "unit": "(16 oz) container",
+          "item": "sour cream"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "⅓",
+          "unit": "cup",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "2",
+          "unit": "cup",
+          "item": "semi-sweet chocolate chips (changed to 1 cup)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 350 degrees F. Liberally grease a 10-inch bundt pan with butter or shortening and lightly dust with flour. Set aside.",
+    "In the bowl of your stand mixer, fitted with the paddle attachment, combine all the cake ingredients. Mix on low for 30 seconds until combined and then on medium speed until smooth, about 1 minute.",
+    "Stir in the chocolate chips and pour the batter into the prepared pan.",
+    "Bake for 55-60 minutes, until the cake is set. Allow the cake to cool in the pan for 10 minutes and then invert the pan onto a cake plate. Cool completely before frosting."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

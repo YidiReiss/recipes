@@ -1,0 +1,88 @@
+{
+  "id": "caramel-chewy-pie",
+  "title": "Caramel Chewy Pie",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert",
+    "baking"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 30,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "sticks",
+          "item": "margarine"
+        },
+        {
+          "qty": "1",
+          "unit": "8-oz",
+          "item": "Tofutti cream cheese"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "brown sugar"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "corn syrup"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "baking soda"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        },
+        {
+          "qty": "1 1/4",
+          "unit": "cups",
+          "item": "flour"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "caramel chips"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "graham pie crusts"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 350°F.",
+    "Cream together the margarine and cream cheese.",
+    "Add the sugars and the rest of the ingredients; stir in the chips.",
+    "Fill the graham pie crusts and bake for 30 minutes.",
+    "Serve warm, with ice cream."
+  ],
+  "pairings": [],
+  "notes": "Doc updated brown sugar from 1½ cups to 1 cup. Uses pareve margarine and Tofutti cream cheese, but verify the caramel chips and graham crusts are pareve.",
+  "source": null,
+  "tags_need_review": true
+}

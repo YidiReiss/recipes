@@ -1,0 +1,107 @@
+{
+  "id": "borscht",
+  "title": "Borscht",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup",
+    "main"
+  ],
+  "tags": [
+    "comfort",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 45,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "onions, sliced"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "meat, diced (strip steak or round steak)"
+        },
+        {
+          "qty": "2",
+          "unit": "medium",
+          "item": "beets, shredded"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "carrot, diced or shredded"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "parsnip, diced or shredded"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "potato, diced"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "celery stalk, diced"
+        },
+        {
+          "qty": "1/4",
+          "unit": null,
+          "item": "cabbage, shredded"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "bay leaf"
+        },
+        {
+          "qty": "2-3",
+          "unit": "cloves",
+          "item": "garlic"
+        },
+        {
+          "qty": "1",
+          "unit": "jar",
+          "item": "borscht"
+        },
+        {
+          "qty": "32",
+          "unit": "oz",
+          "item": "chicken consommé"
+        },
+        {
+          "qty": "1/3",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "salt and pepper"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat the oil in a soup pot; add the onion and fry for about 5 minutes, until slightly golden.",
+    "Add the garlic and meat and fry for about 5 minutes.",
+    "Add the beets, carrots, parsnip, celery, potatoes, and bay leaf and stir together a few times. Add the cabbage and stir.",
+    "Add the consommé, borscht, salt, and pepper; bring to a boil, then reduce the heat and simmer for about 45 minutes."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

@@ -1,0 +1,25 @@
+{
+  "id": "flanken-soup",
+  "title": "Flanken Soup",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [],
+  "instructions": [],
+  "pairings": [],
+  "notes": "Recipe content was empty in the source document; ingredients and instructions could not be extracted.",
+  "source": null,
+  "tags_need_review": true
+}

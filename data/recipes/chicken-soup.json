@@ -1,0 +1,116 @@
+{
+  "id": "chicken-soup",
+  "title": "Chicken Soup",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 180,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "pieces of chicken (thighs and legs), skin and fat removed"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "chicken bones (in a food mesh saver bag, tied twice)"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion, peeled"
+        },
+        {
+          "qty": "3-4",
+          "unit": null,
+          "item": "whole garlic cloves (depending on size)"
+        },
+        {
+          "qty": "2",
+          "unit": "cartons",
+          "item": "chicken broth (Tabatchnick wholesome chicken broth, or organic Imagine vegetarian no-chicken broth)"
+        },
+        {
+          "qty": "2-3",
+          "unit": null,
+          "item": "potatoes, cut up"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "celery, cut up"
+        },
+        {
+          "qty": "2-3",
+          "unit": null,
+          "item": "carrots, cut up (depending on size)"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "turnip, cut up"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "parsnip, cut up (optional)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "water (a few cups, if too salty)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "coriander"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "cumin"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "a little turmeric"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Take 2 pieces of chicken (including thighs and legs) and rip off the skin using a paper towel. Cut the parts of the fat that you can't rip off and chop off the chicken's tushy. Place the chicken pieces in a pot.",
+    "Place chicken bones in a food mesh saver bag and tie twice, then add to the pot.",
+    "Peel one onion and place in the pot. Put 3-4 whole garlic cloves in the pot (depending on size). Add 2 cartons of chicken broth. Cover pot and bring to a boil.",
+    "Once it boils, lower the heat and let simmer for 2 hours or longer (make sure it keeps bubbling gently).",
+    "Cut up vegetables: 2-3 potatoes, 1 celery, 2-3 carrots (depending on size), 1 turnip, 1 parsnip (not sure if I like it).",
+    "Remove chicken and bones from pot after simmering. Cut off chicken from bones (make sure to remove all bones/tendons) and then re-add chicken to the pot. Add vegetables to pot. Can also add water (may need a few cups if too salty).",
+    "Add spices: sprinkle coriander, cumin, pepper, and a little turmeric.",
+    "Bring soup back to a boil. Lower flame and cook for another hour (can add noodles 10-15 min before hour is up)."
+  ],
+  "pairings": [],
+  "notes": "Oil is easier to take off after the soup has been in the fridge. Noodles can be added 10-15 min before the last hour is up.",
+  "source": null,
+  "tags_need_review": false
+}

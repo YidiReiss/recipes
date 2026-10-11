@@ -1,0 +1,79 @@
+{
+  "id": "baked-feta-pasta",
+  "title": "Baked Feta Pasta",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "vegetarian"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 35,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "pints",
+          "item": "cherry tomatoes"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "garlic cloves, halved (we mince it)"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "olive oil"
+        },
+        {
+          "qty": "8",
+          "unit": "oz",
+          "item": "feta"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt (does not need salt)"
+        },
+        {
+          "qty": "⅓",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "16",
+          "unit": "oz",
+          "item": "rigatoni or other short pasta"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "chopped basil"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 400 degrees.",
+    "In a 13 x 9 in. baking dish, combine 2 pints cherry tomatoes, 3 halved garlic cloves and ¼ cup olive oil.",
+    "Place 8 oz feta in center, moving tomatoes so cheese sits on pan bottom.",
+    "Drizzle feta with another ¼ cup olive oil; sprinkle with 1 tsp salt and ¼ tsp pepper (we also put red pepper flakes, basil, oregano, etc).",
+    "Bake until tomatoes split and garlic softens, 30-40 minutes.",
+    "Meanwhile, cook 16 oz. rigatoni or other short pasta according to package directions for al dente.",
+    "Drain, reserving 1 cup pasta water. Stir feta mixture, lightly pressing tomatoes, until combined. Add pasta; toss to combine. Stir in enough reserved pasta water to achieve desired consistency.",
+    "Sprinkle with coarsely chopped basil."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

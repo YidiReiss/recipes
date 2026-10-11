@@ -1,0 +1,81 @@
+{
+  "id": "carrot-kugel-muffins",
+  "title": "Carrot Kugel/Muffins",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side",
+    "baking"
+  ],
+  "tags": [
+    "shabbat",
+    "pareve"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 20,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "3 baby carrot jars and 1 carrot, grated"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "vegetable cooking spray"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "all purpose flour"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "firmly packed dark brown sugar"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "1 ½",
+          "unit": "tsp",
+          "item": "baking powder"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "oil or ½ cup applesauce"
+        },
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "eggs"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350 degrees. Coat muffin pan with non-stick cooking spray.",
+    "To the carrots, add flour, sugars, baking powder, oil, eggs, and vanilla. Beat at medium speed with an electric mixer until well blended (can also be mixed by hand). Do not overbeat so batter will have small pieces of carrot for texture.",
+    "Pour mixture into the prepared pan. Bake for about 20 min for mini muffins or until a toothpick inserted in the center comes out clean."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

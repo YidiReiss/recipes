@@ -1,0 +1,97 @@
+{
+  "id": "manicotti",
+  "title": "Manicotti",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "freezer-friendly",
+    "comfort"
+  ],
+  "prep_minutes": 20,
+  "cook_minutes": 55,
+  "servings": "15",
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "1",
+          "unit": "medium",
+          "item": "zucchini, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "15 oz container",
+          "item": "part-skim ricotta cheese"
+        },
+        {
+          "qty": "1½",
+          "unit": "cups",
+          "item": "shredded provolone or mozzarella, divided"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "grated parmesan cheese"
+        },
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "eggs"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "chopped fresh parsley"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "black pepper"
+        },
+        {
+          "qty": "14",
+          "unit": "pieces",
+          "item": "manicotti, uncooked (8 oz box)"
+        },
+        {
+          "qty": "1",
+          "unit": "26 oz jar",
+          "item": "marinara sauce"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "water"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "In a large skillet, heat the oil over medium heat. Add the squash and zucchini. Cook, stirring, until the vegetables are browned, about 8 minutes. Cool for 5 minutes.",
+    "In a large bowl, combine the ricotta, 1 cup of the provolone, the parmesan, eggs, parsley, salt, and pepper. Transfer the cheese mixture to a large resealable storage bag.",
+    "Push the mixture toward one corner and twist the bag closed. Make a three-quarter-inch cut in the corner of the bag and squeeze the filling into each pasta tube.",
+    "In a bowl, combine the marinara sauce and water. Spread ⅔ cup into each of two 2-quart baking dishes. Divide the manicotti between the baking dishes, arranging in a single layer. Top with the remaining marinara sauce.",
+    "Cover one pan with foil and bake for 45 minutes. Remove the foil and sprinkle with ¼ cup provolone cheese. Bake 10 minutes more, or until the cheese melts."
+  ],
+  "pairings": [],
+  "notes": "The first instruction step mentions squash, but only zucchini appears in the ingredient list. Yield is 15 manicotti pieces (not servings of people).",
+  "source": null,
+  "tags_need_review": false
+}

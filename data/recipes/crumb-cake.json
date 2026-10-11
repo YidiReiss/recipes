@@ -1,0 +1,97 @@
+{
+  "id": "crumb-cake",
+  "title": "Crumb Cake",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "baking",
+    "dessert"
+  ],
+  "tags": [
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 35,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": "Cake",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "box",
+          "item": "yellow cake mix (18.25 oz)"
+        },
+        {
+          "qty": "1 ¼",
+          "unit": "cup",
+          "item": "sour cream"
+        },
+        {
+          "qty": "⅓",
+          "unit": "cup",
+          "item": "vegetable oil"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "ground cinnamon"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "ground nutmeg"
+        }
+      ]
+    },
+    {
+      "section": "Crumb Topping",
+      "items": [
+        {
+          "qty": "3 ¾",
+          "unit": "cups",
+          "item": "all purpose flour (changed to 1.875)"
+        },
+        {
+          "qty": "¾",
+          "unit": "cup",
+          "item": "packed light brown sugar (changed to .375)"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "cinnamon (changed to 1 tsp)"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "nutmeg"
+        },
+        {
+          "qty": "1 ½",
+          "unit": "cups",
+          "item": "unsalted butter, melted (3 sticks; changed to 1 ½ sticks)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Heat oven to 350 degrees. Grease a 15 x 10 x 1 inch baking pan. Lightly dust pan with flour; shake out any excess flour.",
+    "Cake: Combine cake mix, sour cream, oil, eggs, cinnamon and nutmeg in a large bowl. Beat according to package directions. Pour batter into the prepared pan.",
+    "Bake at 350 degrees for 20 min or until a toothpick inserted in center comes out clean.",
+    "Topping: Blend flour, brown sugar, cinnamon, nutmeg, and melted butter in medium bowl until mixture is evenly moistened and clumps together.",
+    "Remove cake from the oven. Sprinkle with crumbs (this will be a thick layer). Return to oven; bake 15 minutes or until crumbs are slightly set. Remove pan to wire rack and let cool completely."
+  ],
+  "pairings": [],
+  "notes": "The doc shows reduced quantities in parentheses; listed amounts are the original with the changed amounts in parentheses.",
+  "source": null,
+  "tags_need_review": false
+}

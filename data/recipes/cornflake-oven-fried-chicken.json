@@ -1,0 +1,73 @@
+{
+  "id": "cornflake-oven-fried-chicken",
+  "title": "Cornflake Oven-Fried Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "crispy",
+    "weeknight"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 60,
+  "servings": 4,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1 1/2",
+          "unit": "cups",
+          "item": "cornflakes cereal, finely crushed"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "large eggs, beaten"
+        },
+        {
+          "qty": "4",
+          "unit": null,
+          "item": "(8-oz.) bone-in, skin-on chicken thighs"
+        },
+        {
+          "qty": "6",
+          "unit": null,
+          "item": "(5-oz.) skin-on chicken drumsticks and thighs"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "black pepper"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "unsalted butter"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 375°F. Place the cornflakes in a large resealable plastic bag and crush finely using a meat mallet or rolling pin. Place the beaten eggs in a shallow bowl.",
+    "Season the chicken with the salt and pepper. Dip each piece in the eggs, letting the excess drip off, then dredge in the cornflakes, shaking the bag and pressing gently so they adhere; transfer to a plate.",
+    "Place the butter in a 13x9-inch ceramic baking dish and place in the preheated oven until melted, 8 to 10 minutes.",
+    "Arrange the chicken evenly in the baking dish, skin side down, and bake until golden brown and crispy on the bottoms, about 25 minutes.",
+    "Flip the chicken and bake until a thermometer inserted into the thickest portion registers 165°F, about 25 minutes. Transfer to a platter and serve immediately."
+  ],
+  "pairings": [],
+  "notes": "Doc updated quantities: cornflakes changed from 6 cups to 1½ cups, chicken changed from 4 drumsticks/thighs to 6, kosher salt changed from 1 tbsp to 1 tsp. Recipe pairs butter with chicken — verify intended fat (butter vs. margarine).",
+  "source": null,
+  "tags_need_review": true
+}

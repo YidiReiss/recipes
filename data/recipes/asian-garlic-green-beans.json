@@ -1,0 +1,68 @@
+{
+  "id": "asian-garlic-green-beans",
+  "title": "Asian Garlic Green Beans",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 8,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "pound",
+          "item": "fresh green beans"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "toasted sesame oil"
+        },
+        {
+          "qty": "3",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "shallot, chopped"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "teriyaki sauce"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "sesame seeds, chopped peanuts, or slivered almonds, for topping (optional)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Trim the ends off the green beans. Mince the garlic and chop the shallot.",
+    "Add the sesame oil to a large skillet over medium to medium-high heat. Let heat for a couple of minutes until hot.",
+    "Carefully add the shallot and garlic. Heat for 20-30 seconds.",
+    "Add the green beans and stir well to coat.",
+    "Sauté until just tender, about 5-6 minutes, stirring often so the garlic doesn't burn.",
+    "Add the teriyaki sauce. Toss to combine and cook 1-2 minutes.",
+    "When serving, don't forget the garlic/shallot pieces on the bottom of the pan — huge flavor!"
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

@@ -1,0 +1,91 @@
+{
+  "id": "chocolate-chip-cookies",
+  "title": "Chocolate Chip Cookies",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert",
+    "baking"
+  ],
+  "tags": [
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 9,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "salted butter, softened"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "white (granulated) sugar"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "light brown sugar, packed"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "pure vanilla extract"
+        },
+        {
+          "qty": "2",
+          "unit": "large",
+          "item": "eggs"
+        },
+        {
+          "qty": "3",
+          "unit": "cups",
+          "item": "all-purpose flour"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "baking soda"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "baking powder"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "sea salt"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "chocolate chips (or chunks, or chopped chocolate)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 375°F. Line a baking pan with parchment paper and set aside.",
+    "In a separate bowl, mix the flour, baking soda, salt, and baking powder. Set aside.",
+    "Cream together the butter and sugar until combined.",
+    "Beat in the eggs and vanilla until fluffy.",
+    "Mix in the dry ingredients until combined.",
+    "Add the chocolate chips and mix well.",
+    "Roll 2-3 tablespoons (depending on how large you like your cookies) of dough at a time into balls and place them evenly spaced on your prepared cookie sheets. (Alternatively, use a small cookie scoop.)",
+    "Bake in the preheated oven for approximately 8-10 minutes. Take them out when they are just barely starting to turn brown.",
+    "Let them sit on the baking pan for 2 minutes before removing to the cooling rack."
+  ],
+  "pairings": [],
+  "notes": "The ingredient list calls for 2 cups of chocolate chips, but step 6 says 'a 12 oz package of chocolate chips'.",
+  "source": "Aunt Ellana",
+  "tags_need_review": false
+}

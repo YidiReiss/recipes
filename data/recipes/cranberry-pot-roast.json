@@ -1,0 +1,78 @@
+{
+  "id": "cranberry-pot-roast",
+  "title": "Cranberry Pot Roast",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 105,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "3",
+          "unit": "lbs",
+          "item": "brisket or top of rib"
+        },
+        {
+          "qty": "2",
+          "unit": "stalks",
+          "item": "celery, sliced"
+        },
+        {
+          "qty": "1",
+          "unit": "medium",
+          "item": "onion, diced"
+        },
+        {
+          "qty": "1",
+          "unit": "medium",
+          "item": "red pepper, diced"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "1",
+          "unit": "16-ounce can",
+          "item": "cranberry sauce"
+        },
+        {
+          "qty": "1",
+          "unit": "16-ounce can",
+          "item": "marinara sauce (sometimes omitted)"
+        },
+        {
+          "qty": "1",
+          "unit": "clove",
+          "item": "garlic, diced"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "In a 3-quart saucepan, brown the meat for 5 minutes on each side. Remove from the saucepan.",
+    "Place the prepared vegetables in the saucepan with ½ cup of water and simmer over low flame until soft.",
+    "Add the cranberry sauce and marinara to the veggies and heat until bubbly. Add the garlic.",
+    "Place the meat in the pot and simmer over low flame for 1½ to 2 hours. Allow the meat to cool and then slice.",
+    "Return the slices to the pot and warm. Everyone enjoys this cranberry pot roast!"
+  ],
+  "pairings": [],
+  "notes": "Ps. Browning the meat for a longer amount of time adds extra flavor.",
+  "source": "Grandma and Zaidy",
+  "tags_need_review": false
+}

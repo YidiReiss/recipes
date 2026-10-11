@@ -1,0 +1,93 @@
+{
+  "id": "crispy-baked-chicken-wings",
+  "title": "Crispy Baked Chicken Wings",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "baked",
+    "crispy",
+    "game-day"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 60,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "4",
+          "unit": "pounds",
+          "item": "chicken wings, halved at joints, wingtips discarded"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "baking powder"
+        },
+        {
+          "qty": "3/4",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "coarsely cracked black pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "garlic powder"
+        }
+      ]
+    },
+    {
+      "section": "Buffalo Sauce",
+      "items": [
+        {
+          "qty": "2 1/2",
+          "unit": "tbsp",
+          "item": "Frank's Wings Hot Sauce"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "light brown sugar"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tbsp",
+          "item": "water"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Adjust your oven racks to the upper-middle and lower-middle positions and preheat the oven to 425°F.",
+    "Line a baking sheet with aluminum foil, place a wire rack (a cooling rack works) on top, and spray the rack with nonstick spray.",
+    "Pat the wings very dry with paper towels — it's important to dry them REALLY well — and place them in a large bowl.",
+    "Combine the salt, pepper, garlic powder, paprika, and baking powder in a small bowl, then sprinkle the seasonings over the wings and toss to coat evenly.",
+    "Arrange the wings skin side up in a single layer on the prepared wire rack.",
+    "Bake, turning every 20 minutes, until the wings are crispy and browned — total cook time may take up to 1 hour depending on the size of the wings.",
+    "Remove from the oven, let stand for 5 minutes, transfer the wings to a bowl, and toss with the Buffalo sauce.",
+    "For the Buffalo sauce: stir all the sauce ingredients together in a medium saucepan over medium heat and mix well until the sugar has dissolved.",
+    "Remove from the heat and let cool to room temperature before tossing with the wings (or make the sauce ahead of time and refrigerate)."
+  ],
+  "pairings": [],
+  "notes": "Original note: ¾ tsp salt (do ¼ tsp).",
+  "source": null,
+  "tags_need_review": false
+}

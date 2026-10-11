@@ -1,0 +1,86 @@
+{
+  "id": "coca-cola-meatballs",
+  "title": "Coca Cola Meatballs",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 55,
+  "servings": "15",
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "500",
+          "unit": "g",
+          "item": "lean ground beef (just over 1 pound)"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "seasoned breadcrumbs"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "egg"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "water"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion, minced in chopper, divided"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "fresh garlic, crushed"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "tomato sauce (thick ketchup)"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "Coca-Cola"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "Worcestershire sauce"
+        },
+        {
+          "qty": "½",
+          "unit": null,
+          "item": "green bell pepper"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 180°C (350°F). Spray a 20 x 30 cm (8 x 12 inch) oven dish with cooking spray.",
+    "In a large mixing bowl, combine the beef, breadcrumbs, egg, water, half of the chopped onion (and half of the green bell pepper, if using), half the salt and half the black pepper. Mix well and form into balls; place in a single layer in the prepared oven dish.",
+    "In a small bowl, mix together the remaining onion, salt, and pepper. Add the garlic, tomato sauce, Coca-Cola, Worcestershire sauce, and the green bell pepper. Pour over the meatballs.",
+    "Bake 50-60 minutes (turning twice), until the sauce is bubbly and the meatballs are fully cooked."
+  ],
+  "pairings": [],
+  "notes": "Salt and black pepper are referenced in the instructions ('half the Salt and half the Black Pepper') but no amounts are given in the ingredient list.",
+  "source": null,
+  "tags_need_review": false
+}

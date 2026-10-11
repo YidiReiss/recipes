@@ -1,0 +1,69 @@
+{
+  "id": "manti",
+  "title": "Manti",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "freezer-friendly",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 52,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "lbs",
+          "item": "meat, chopped (round steak or strip steak)"
+        },
+        {
+          "qty": "2",
+          "unit": "medium",
+          "item": "onions, chopped"
+        },
+        {
+          "qty": "2",
+          "unit": "packages",
+          "item": "dumpling wrappers"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "steamer (equipment)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Combine chopped meat, onions, salt, and pepper.",
+    "Use a wet paper towel to dampen the dumpling wrappers.",
+    "Fill each dumpling with about 1 tablespoon of meat and seal the dumpling.",
+    "Put the dumplings on a tray lined with nonstick aluminum foil and freeze.",
+    "When ready to cook: boil water in the steamer and add about 1 tablespoon of salt to the boiling water.",
+    "Place the frozen dumplings on the steamer trays and steam for about 45 minutes to 1 hour. Put on a plate and spray some oil on each manti. Enjoy!"
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

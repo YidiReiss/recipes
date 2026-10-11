@@ -1,0 +1,70 @@
+{
+  "id": "cucumber-salad",
+  "title": "Cucumber Salad",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "salad",
+    "side"
+  ],
+  "tags": [
+    "quick",
+    "make-ahead"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": null,
+  "servings": null,
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "cucumbers, thinly sliced"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "lemon juice, fresh"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "vegetable or avocado oil"
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "sugar"
+        },
+        {
+          "qty": "2",
+          "unit": "Tbsp",
+          "item": "dill"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "sliced red onion"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix the cucumbers and salt. Cover with a plate that rests on the cucumber and weigh it down with a 1-lb can. Let stand for 1-2 hours. Drain.",
+    "Mix the lemon juice, oil, and sugar. Add to the cucumber with the dill and onion. Mix and refrigerate."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

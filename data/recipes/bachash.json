@@ -1,0 +1,80 @@
+{
+  "id": "bachash",
+  "title": "Bachash",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "one-pot"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 90,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": null,
+          "unit": null,
+          "item": "meat or chicken, finely diced"
+        },
+        {
+          "qty": "3",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pepper"
+        },
+        {
+          "qty": "2",
+          "unit": "cups",
+          "item": "rice, washed"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "1",
+          "unit": "large",
+          "item": "onion, chopped"
+        },
+        {
+          "qty": "1",
+          "unit": "bunch",
+          "item": "cilantro"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "dill (1 bunch; or a lot of dried dill, or a little parsley)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix everything together, then add the oil and water. Cover with heavy-duty aluminum foil.",
+    "Bake at 350°F for 1 hour. Uncover, mix again, add a little water to the corners, cover, and bake for 30 minutes at 300°F."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

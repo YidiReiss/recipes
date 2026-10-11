@@ -1,0 +1,70 @@
+{
+  "id": "forty-clove-garlic-chicken",
+  "title": "Forty Clove Garlic Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "shabbat",
+    "comfort"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 105,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "1",
+          "unit": "(3 ½-4 lb)",
+          "item": "chicken, quartered or cut into 8 pieces"
+        },
+        {
+          "qty": "¼-½",
+          "unit": "tsp",
+          "item": "freshly ground pepper"
+        },
+        {
+          "qty": "¼-½",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "40",
+          "unit": "cloves",
+          "item": "garlic, unpeeled"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "balsamic vinegar"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "garnish: 3-4 sprigs fresh rosemary"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 375 degrees F.",
+    "Place chicken in the bottom of the baking dish. Sprinkle it with pepper and paprika.",
+    "Place garlic around and on top of chicken. Sprinkle chicken and garlic with vinegar.",
+    "Bake, uncovered and basting occasionally, for 1 ½ to 2 hours or until chicken is done. Place chicken on a serving platter, reserving pan juices.",
+    "Remove several garlic cloves for garnish. Press remaining garlic in a sieve or colander using the back of a large spoon. Discard peels.",
+    "Add several teaspoons of the garlic puree to the juices in the pan, stirring well. Spoon sauce over chicken. Garnish the plate with the reserved garlic cloves and rosemary.",
+    "Serve any extra garlic puree with toasted French bread."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}

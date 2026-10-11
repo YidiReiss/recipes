@@ -1,0 +1,112 @@
+{
+  "id": "brisket-with-vegetables-and-dried-fruit",
+  "title": "Brisket with Vegetables and Dried Fruit",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "tags": [
+    "shabbat",
+    "make-ahead",
+    "freezer-friendly"
+  ],
+  "prep_minutes": null,
+  "cook_minutes": 195,
+  "servings": null,
+  "leftover_friendly": true,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "4",
+          "unit": null,
+          "item": "onions, sliced"
+        },
+        {
+          "qty": "3",
+          "unit": "cloves",
+          "item": "garlic, chopped"
+        },
+        {
+          "qty": "4-6",
+          "unit": "pounds",
+          "item": "beef brisket"
+        },
+        {
+          "qty": "1 ½",
+          "unit": "cups",
+          "item": "red wine (changed to ¾ cup and then water for rest)"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "dry onion soup mix"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "tomato paste"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "brown sugar"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "carrots, peeled and cut into 1 ½ inch pieces"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "parsnips, peeled and cut into 1 ½ inch pieces"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "dried apricots (don't have to use)"
+        },
+        {
+          "qty": "½",
+          "unit": "cup",
+          "item": "dried pitted prunes (don't have to use)"
+        },
+        {
+          "qty": "¼",
+          "unit": "cup",
+          "item": "chopped fresh parsley"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 500 degrees F.",
+    "Heat oil in a skillet over medium-high heat. Add onions and garlic; saute 15 min or until lightly browned.",
+    "Spoon onions into bottom of large roasting pan; add brisket, fat side up. Pour wine over meat, cover, and bake for 30 min.",
+    "Combine soup mix, tomato paste, brown sugar, and water in a small bowl; pour over meat. Arrange carrots, parsnips, apricots, and prunes around meat.",
+    "Reduce oven temperature to 325.",
+    "Bake 2 ½ to 3 hours, covered, or until the brisket is very tender.",
+    "Remove from the oven and let it stand for 20 minutes. Remove brisket from pan and slice thinly across the grain. Arrange meat slices on a platter; spoon fruit and vegetables around the brisket.",
+    "Skim fat from pan drippings and spoon over meat; sprinkle with parsley."
+  ],
+  "pairings": [],
+  "notes": "Brisket may be prepared 2 days ahead. Cover and refrigerate unsliced brisket. To serve, slice thinly and place in a roasting pan. Remove solid fat from sauce and spoon over slices. Cover and bake at 325 for 30 min or until meat is thoroughly heated.",
+  "source": null,
+  "tags_need_review": false
+}

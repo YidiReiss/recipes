@@ -1,0 +1,80 @@
+{
+  "id": "authentic-italian-bruschetta",
+  "title": "Authentic Italian Bruschetta",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "appetizer"
+  ],
+  "tags": [
+    "quick"
+  ],
+  "prep_minutes": 10,
+  "cook_minutes": 5,
+  "servings": "8",
+  "leftover_friendly": false,
+  "leftover_note": null,
+  "banner_image": null,
+  "ingredients": [
+    {
+      "section": null,
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "vine ripe tomatoes, diced"
+        },
+        {
+          "qty": "5",
+          "unit": null,
+          "item": "fresh basil leaves, chiffonade"
+        },
+        {
+          "qty": "3",
+          "unit": "Tbsp",
+          "item": "extra virgin olive oil, divided"
+        },
+        {
+          "qty": "½",
+          "unit": "tsp",
+          "item": "dried oregano"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "pinch of salt"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "balsamic vinegar"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "Italian-style baguette, sliced"
+        },
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "whole garlic clove"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "purple onion (added; amount not specified)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Combine the diced tomato with the fresh basil, dried oregano, a pinch of salt, 1 to 1⅓ tablespoons of the olive oil, and a splash (1 teaspoon) of balsamic vinegar. Chill.",
+    "Slice the baguette into ¼ to ½-inch slices. Cut off the end of the garlic clove and rub the garlic onto each side of each piece of bread. Drizzle both sides of the sliced bread with a little olive oil (or use a brush to brush it on).",
+    "Toast on a grill or in a hot skillet until browned on both sides.",
+    "Top the hot bread with the cold tomato bruschetta and serve immediately."
+  ],
+  "pairings": [],
+  "notes": null,
+  "source": null,
+  "tags_need_review": false
+}
