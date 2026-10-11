@@ -191,19 +191,28 @@ function parseQty(q) {
   return null;
 }
 function thisWeekKey() { return ymd(sundayOf(0)); }
-function plannedRecipeIds(week) {
+/* Day-date (yyyy-mm-dd) of each slot index for a week starting at `mon`. */
+function weekDayYmd(mon, i) {
+  const d = new Date(mon);
+  d.setDate(d.getDate() + i);
+  return ymd(d);
+}
+function shoppingFromYmd() {
+  const week = getWeek(thisWeekKey());
+  return week.shoppingDay || null;
+}
+function buildShoppingList() {
+  const mon = sundayOf(0);
+  const week = getWeek(thisWeekKey());
+  const from = shoppingFromYmd();
   const ids = [];
-  week.days.forEach(d => {
+  week.days.forEach((d, i) => {
+    if (from && weekDayYmd(mon, i) < from) return; // already cooked — had the ingredients
     ['lunch', 'dinner'].forEach(m => {
       const s = d[m];
       if (s && s.recipe && !s.skipped && byId[s.recipe]) ids.push(s.recipe);
     });
   });
-  return ids;
-}
-function buildShoppingList() {
-  const week = getWeek(thisWeekKey());
-  const ids = plannedRecipeIds(week);
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
@@ -238,11 +247,13 @@ function buildShoppingList() {
 function weekStripHTML() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
+  const shopDay = week.shoppingDay || null;
   const out = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(mon);
     d.setDate(d.getDate() + i);
     const ds = week.days[i];
+    const isShop = shopDay && weekDayYmd(mon, i) === shopDay;
     const parts = [];
     ['lunch', 'dinner'].forEach(m => {
       const s = ds[m];
@@ -251,8 +262,9 @@ function weekStripHTML() {
       else if (s.custom) parts.push(s.custom);
     });
     out.push(
-      '<a class="week-day" href="#/planner">' +
-        '<span class="wd-name">' + d.toLocaleDateString('en-US', { weekday: 'short' }) + '</span>' +
+      '<a class="week-day' + (isShop ? ' is-shop' : '') + '" href="#/planner">' +
+        '<span class="wd-name">' + d.toLocaleDateString('en-US', { weekday: 'short' }) +
+        (isShop ? ' 🛒' : '') + '</span>' +
         '<span class="wd-meals">' + (parts.length ? esc(parts.join(' · ')) : '<em>—</em>') + '</span>' +
       '</a>'
     );
@@ -281,10 +293,19 @@ function tilesHTML() {
   return out.join('');
 }
 
+function shoppingFromLabel() {
+  const from = shoppingFromYmd();
+  if (!from) return '';
+  return ' <span class="muted" style="font-weight:400;font-size:.85rem">— from ' +
+    esc(new Date(from + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })) +
+    ' onward</span>';
+}
 function shoppingListHTML() {
   const items = buildShoppingList();
+  const from = shoppingFromYmd();
   if (!items.length) {
-    return '<p class="muted">Nothing planned yet — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
+    return '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
+      ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   }
   const key = 'shopchecked-' + thisWeekKey();
   let checked = [];
@@ -319,7 +340,7 @@ function renderHome(app) {
     '</section>' +
 
     '<section class="home-section">' +
-      '<div class="section-head"><h2>Shopping list</h2></div>' +
+      '<div class="section-head"><h2>Shopping list' + shoppingFromLabel() + '</h2></div>' +
       '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
     '</section>' +
 
@@ -1076,6 +1097,13 @@ function renderPlanner(app) {
       '<h2>' + esc(label) + '</h2>' +
       '<button class="btn secondary" id="wk-next" type="button">Next ›</button>' +
     '</div>' +
+    '<div class="shop-day-row no-print">' +
+      '<label for="shop-day">🛒 Shopping day</label>' +
+      '<input type="date" id="shop-day" value="' + esc(week.shoppingDay || '') + '">' +
+      '<button class="link-btn" id="shop-day-clear" type="button"' +
+        (week.shoppingDay ? '' : ' hidden') + '>Clear</button>' +
+      '<span class="muted" style="font-size:.85rem">List covers this day onward</span>' +
+    '</div>' +
     (plannerOffset !== 0
       ? '<div class="no-print" style="text-align:center;margin-bottom:1rem">' +
         '<button class="link-btn" id="wk-today" type="button">Back to this week</button></div>'
@@ -1086,6 +1114,17 @@ function renderPlanner(app) {
   $('#wk-next').onclick = () => { plannerOffset++; renderPlanner(app); };
   const today = $('#wk-today');
   if (today) today.onclick = () => { plannerOffset = 0; renderPlanner(app); };
+
+  const shopDay = $('#shop-day');
+  if (shopDay) shopDay.addEventListener('change', () => {
+    getWeek(key).shoppingDay = shopDay.value || null;
+    persistWeek(key, null, () => renderPlanner(app));
+  });
+  const shopClear = $('#shop-day-clear');
+  if (shopClear) shopClear.addEventListener('click', () => {
+    getWeek(key).shoppingDay = null;
+    persistWeek(key, null, () => renderPlanner(app));
+  });
 
   $('#days').addEventListener('click', e => {
     const t = e.target;
