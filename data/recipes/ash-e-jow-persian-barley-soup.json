@@ -61,12 +61,14 @@
         {
           "qty": null,
           "unit": null,
-          "item": "salt, to taste"
+          "item": "salt",
+          "prep": "to taste"
         },
         {
           "qty": null,
           "unit": null,
-          "item": "ground black pepper, to taste"
+          "item": "ground black pepper",
+          "prep": "to taste"
         },
         {
           "qty": "1",

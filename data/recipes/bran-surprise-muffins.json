@@ -22,7 +22,8 @@
         {
           "qty": "1",
           "unit": "(8 oz) package",
-          "item": "cream cheese, softened"
+          "item": "cream cheese",
+          "prep": "softened"
         },
         {
           "qty": "¼",
@@ -88,7 +89,8 @@
         {
           "qty": "1",
           "unit": "cup",
-          "item": "buttermilk, well shaken"
+          "item": "buttermilk",
+          "prep": "well shaken"
         },
         {
           "qty": "¼",

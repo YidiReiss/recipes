@@ -34,7 +34,8 @@
         {
           "qty": "3",
           "unit": "Tbsp",
-          "item": "extra virgin olive oil, divided"
+          "item": "extra virgin olive oil",
+          "prep": "divided"
         },
         {
           "qty": "½",

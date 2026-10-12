@@ -63,7 +63,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "lemon wedges, for serving"
+          "item": "lemon wedges",
+          "prep": "for serving"
         }
       ]
     }

@@ -142,7 +142,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "avocado, sliced (optional)"
+          "item": "avocado",
+          "prep": "sliced"
         }
       ]
     }

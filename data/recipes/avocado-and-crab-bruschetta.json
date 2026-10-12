@@ -33,7 +33,8 @@
         {
           "qty": "2",
           "unit": "Tbsp",
-          "item": "freshly squeezed lemon juice, divided"
+          "item": "freshly squeezed lemon juice",
+          "prep": "divided"
         },
         {
           "qty": "2",

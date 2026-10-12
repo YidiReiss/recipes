@@ -28,7 +28,8 @@
         {
           "qty": "2",
           "unit": "Tbsp",
-          "item": "kosher salt, divided"
+          "item": "kosher salt",
+          "prep": "divided"
         },
         {
           "qty": "2",
@@ -43,12 +44,14 @@
         {
           "qty": "3",
           "unit": "Tbsp",
-          "item": "unsalted butter, cubed, divided"
+          "item": "unsalted butter",
+          "prep": "cubed, divided"
         },
         {
           "qty": "4",
           "unit": "cup",
-          "item": "shredded mozzarella cheese, divided"
+          "item": "shredded mozzarella cheese",
+          "prep": "divided"
         },
         {
           "qty": "1",
@@ -58,7 +61,8 @@
         {
           "qty": "½",
           "unit": "tsp",
-          "item": "crushed red pepper flakes, optional"
+          "item": "crushed red pepper flakes",
+          "prep": "optional"
         }
       ]
     }

@@ -65,7 +65,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper, to taste"
+          "item": "pepper",
+          "prep": "to taste"
         }
       ]
     }

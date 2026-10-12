@@ -61,12 +61,14 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper, to taste"
+          "item": "pepper",
+          "prep": "to taste"
         },
         {
           "qty": "1-2",
           "unit": "tbsp",
-          "item": "red wine vinegar, to taste"
+          "item": "red wine vinegar",
+          "prep": "to taste"
         }
       ]
     }

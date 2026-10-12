@@ -48,7 +48,8 @@
         {
           "qty": "¼",
           "unit": "tsp",
-          "item": "freshly ground pepper, to taste"
+          "item": "freshly ground pepper",
+          "prep": "to taste"
         },
         {
           "qty": "3",

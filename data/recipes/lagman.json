@@ -31,7 +31,8 @@
         {
           "qty": "1",
           "unit": "lb",
-          "item": "meat, diced (strip steak or round steak)"
+          "item": "meat (strip steak or round steak)",
+          "prep": "diced"
         },
         {
           "qty": "1",
