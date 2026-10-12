@@ -24,7 +24,8 @@
         {
           "qty": "6",
           "unit": null,
-          "item": "onions, sliced thinly"
+          "item": "onions",
+          "prep": "sliced thinly"
         },
         {
           "qty": "4-5",
@@ -49,7 +50,8 @@
         {
           "qty": "8",
           "unit": null,
-          "item": "chicken bottoms, cut in half"
+          "item": "chicken bottoms",
+          "prep": "cut in half"
         }
       ]
     }
