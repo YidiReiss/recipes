@@ -34,7 +34,8 @@
         {
           "qty": "1",
           "unit": "medium",
-          "item": "onion, diced"
+          "item": "onion",
+          "prep": "diced"
         },
         {
           "qty": "1",
@@ -49,7 +50,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "lime, juiced"
+          "item": "lime",
+          "prep": "juiced"
         },
         {
           "qty": "1/4",
@@ -74,7 +76,8 @@
         {
           "qty": "1/2",
           "unit": "cup",
-          "item": "fresh parsley, chopped"
+          "item": "fresh parsley",
+          "prep": "chopped"
         },
         {
           "qty": "8",
