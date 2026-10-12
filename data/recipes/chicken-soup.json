@@ -24,7 +24,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "pieces of chicken (thighs and legs), skin and fat removed"
+          "item": "pieces of chicken (thighs and legs)",
+          "prep": "skin and fat removed"
         },
         {
           "qty": null,
@@ -34,7 +35,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, peeled"
+          "item": "onion",
+          "prep": "peeled"
         },
         {
           "qty": "3-4",
@@ -49,12 +51,14 @@
         {
           "qty": "2-3",
           "unit": null,
-          "item": "potatoes, cut up"
+          "item": "potatoes",
+          "prep": "cut up"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "celery, cut up"
+          "item": "celery",
+          "prep": "cut up"
         },
         {
           "qty": "2-3",
@@ -64,7 +68,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "turnip, cut up"
+          "item": "turnip",
+          "prep": "cut up"
         },
         {
           "qty": "1",
