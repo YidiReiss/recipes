@@ -1393,17 +1393,28 @@ async function sendSubmission() {
   try {
     let imagePath = null;
     if (file) {
-      const img = await loadImage(await readAsDataURL(file));
-      const MAX = 1600;
-      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(img.width * scale));
-      canvas.height = Math.max(1, Math.round(img.height * scale));
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
-      if (!blob) throw new Error('Could not read that photo — try a JPG or PNG.');
-      const b64 = String(await readAsDataURL(blob)).split(',')[1];
-      imagePath = 'data/inbox/' + id + '.jpg';
+      // Try to shrink the photo first; if the browser can't decode it
+      // (e.g. HEIC from Google Photos), upload the original bytes as-is.
+      let b64 = null, ext = 'jpg';
+      try {
+        const img = await loadImage(await readAsDataURL(file));
+        const MAX = 1600;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+        if (!blob) throw new Error('decode failed');
+        b64 = String(await readAsDataURL(blob)).split(',')[1];
+      } catch (e) {
+        const raw = String(await readAsDataURL(file)).split(',');
+        if (!raw[1]) throw new Error('Could not read that photo — try downloading it as a JPG first.');
+        b64 = raw[1];
+        const mt = (file.type || '').toLowerCase();
+        ext = mt.includes('png') ? 'png' : mt.includes('heic') ? 'heic' : mt.includes('webp') ? 'webp' : 'jpg';
+      }
+      imagePath = 'data/inbox/' + id + '.' + ext;
       await ghPutB64(imagePath, b64, 'Inbox photo ' + id);
     }
     const entry = {
