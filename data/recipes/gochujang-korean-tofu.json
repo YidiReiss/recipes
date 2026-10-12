@@ -1,5 +1,5 @@
 {
-  "banner_image": null,
+  "banner_image": "assets/images/gochujang-korean-tofu.jpg",
   "categories": [
     "main",
     "tofu"
@@ -10,9 +10,10 @@
     {
       "items": [
         {
-          "item": "extra firm tofu, drained",
+          "item": "extra firm tofu",
           "qty": "1",
-          "unit": "16 ounce block"
+          "unit": "16 ounce block",
+          "prep": "drained"
         },
         {
           "item": "tamari or soy sauce",
@@ -70,14 +71,16 @@
           "unit": "tablespoon"
         },
         {
-          "item": "garlic, minced",
+          "item": "garlic",
           "qty": "2",
-          "unit": "teaspoons"
+          "unit": "teaspoons",
+          "prep": "minced"
         },
         {
-          "item": "fresh ginger, grated",
+          "item": "fresh ginger",
           "qty": "1",
-          "unit": "teaspoon"
+          "unit": "teaspoon",
+          "prep": "grated"
         },
         {
           "item": "cornstarch",
@@ -113,10 +116,10 @@
     "Rice",
     "Cucumber salad"
   ],
-  "pdf": "data/recipes/pdfs/gochujang-korean-tofu.pdf",
+  "pdf": "pdfs/gochujang-korean-tofu.pdf",
   "prep_minutes": 15,
   "servings": "4",
-  "source": "Eat With Clarity \u2014 https://eatwithclarity.com/gochujang-korean-tofu/",
+  "source": "Eat With Clarity — https://eatwithclarity.com/gochujang-korean-tofu/",
   "tags": [
     "vegan",
     "spicy",
@@ -124,5 +127,20 @@
     "crispy"
   ],
   "tags_need_review": false,
-  "title": "Crispy Gochujang Korean Tofu"
+  "title": "Crispy Gochujang Korean Tofu",
+  "tips": [
+    {
+      "title": "Vegan swap",
+      "text": "Use maple syrup instead of honey for a fully vegan version."
+    },
+    {
+      "title": "Gluten-free",
+      "text": "Use GF-certified tamari and breadcrumbs to keep it gluten free."
+    },
+    {
+      "title": "Extra crispy",
+      "text": "Press the tofu well and don't crowd the pan — space lets the edges crisp."
+    }
+  ],
+  "photo_generated": true
 }
