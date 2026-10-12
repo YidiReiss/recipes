@@ -40,7 +40,8 @@
         {
           "qty": "½",
           "unit": "cup",
-          "item": "chopped onion"
+          "item": "onion",
+          "prep": "chopped"
         },
         {
           "qty": "½",
@@ -83,7 +84,8 @@
         {
           "qty": "3",
           "unit": "tbsp",
-          "item": "chopped onion"
+          "item": "onion",
+          "prep": "chopped"
         },
         {
           "qty": "1",
