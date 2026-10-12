@@ -24,7 +24,8 @@
         {
           "qty": "2",
           "unit": "lbs",
-          "item": "boneless skinless chicken breast, cut into ¾-inch pieces"
+          "item": "boneless skinless chicken breast",
+          "prep": "cut into ¾-inch pieces"
         },
         {
           "qty": "1/4",
@@ -59,12 +60,14 @@
         {
           "qty": "1/2",
           "unit": "tbsp",
-          "item": "fresh ginger, peeled and grated"
+          "item": "fresh ginger",
+          "prep": "peeled and grated"
         },
         {
           "qty": "3",
           "unit": "cloves",
-          "item": "garlic, grated"
+          "item": "garlic",
+          "prep": "grated"
         },
         {
           "qty": "3",
@@ -79,7 +82,8 @@
         {
           "qty": "1",
           "unit": "small",
-          "item": "onion, diced"
+          "item": "onion",
+          "prep": "diced"
         },
         {
           "qty": "3/4",
