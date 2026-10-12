@@ -20,7 +20,8 @@
         {
           "qty": "1",
           "unit": "lb",
-          "item": "fresh brussel sprouts, trimmed and halved"
+          "item": "fresh brussel sprouts",
+          "prep": "trimmed and halved"
         },
         {
           "qty": "2",
