@@ -80,7 +80,7 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
+            "recipe": "split-pea-soup",
             "custom": null,
             "skipped": false,
             "note": ""
