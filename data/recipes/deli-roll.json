@@ -1,1 +1,97 @@
-{"banner_image":"assets/images/deli-roll.jpg","categories":["appetizer"],"cook_minutes":40,"id":"deli-roll","ingredients":[{"items":[{"item":"flaky dough","qty":"1","unit":"sheet"},{"item":"mayo","qty":"1","unit":"cup"},{"item":"spicy mustard","qty":"1/2","unit":"cup"},{"item":"turkey roll","qty":"6-9","unit":"slices"},{"item":"large onion","prep":"sautéed","qty":"1","unit":null},{"item":"turkey pastrami","qty":"2","unit":"layers"},{"item":"egg","prep":"beaten, for egg wash","qty":"1","unit":null},{"item":"sesame seeds","prep":"for topping","qty":"","unit":null}],"section":""}],"instructions":["Roll out a sheet of flaky dough.","Mix 1 cup mayo with 1/2 cup spicy mustard and shmear the mix over the dough.","Lay one layer of turkey roll (about 6-9 slices) over the dough and shmear with more mayo mix.","Sauté the onion and spread it over the turkey.","Layer turkey pastrami over the onion and shmear with more mayo mix, then repeat with a second layer of pastrami.","Roll up jelly-roll style and place on a cookie sheet.","Brush with beaten egg and sprinkle with sesame seeds.","Bake at 375°F until puffed and golden, about 40 minutes."],"kosher_for_passover":false,"kosher_status":"meat","leftover_friendly":true,"leftover_note":"","notes":"Yidi's version uses sautéed onions, turkey, and pastrami. The original 'for love of food' story also suggests sauerkraut or cabbage fillings: layer drained sauerkraut, or a bag of sautéed cabbage seasoned with salt and pepper, and use turkey pastrami or corned beef. The submission was a screenshot of an Instagram story with recipe text over the photo, so the banner is an AI-generated stand-in and is flagged for replacement with a real photo.","pairings":[],"pdf":"pdfs/deli-roll.pdf","photo_generated":true,"prep_minutes":20,"servings":"1 roll","source":"for love of food (Instagram story), via Yidi","tags":["shabbat","make-ahead","freezer-friendly"],"tags_need_review":true,"tips":[{"text":"Freeze before the egg wash if making in advance.","title":"Freeze ahead"}],"title":"Deli Roll"}
+{
+  "banner_image": "assets/images/deli-roll.jpg",
+  "categories": [
+    "side"
+  ],
+  "cook_minutes": 40,
+  "id": "deli-roll",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "item": "flaky dough",
+          "qty": "2",
+          "unit": "sheets"
+        },
+        {
+          "item": "mayo",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "spicy mustard",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "turkey roll",
+          "qty": "18",
+          "unit": "slices"
+        },
+        {
+          "item": "large onion",
+          "prep": "sautéed",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "Pastrami",
+          "qty": "12",
+          "unit": "Oz"
+        },
+        {
+          "item": "egg",
+          "prep": "beaten, for egg wash",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "sesame seeds",
+          "prep": "for topping",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "qty": "1",
+          "unit": "Tbsp",
+          "item": "Olive Oil"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Roll out a sheet of flaky dough.",
+    "Mix 1/2 cup mayo with 1/4 cup spicy mustard and shmear the mix over the dough.",
+    "Lay one layer of turkey roll (about 9 slices) over the dough and shmear with more mayo mix.",
+    "Sauté the onion and spread it over the turkey.",
+    "Layer turkey pastrami over the onion and shmear with more mayo mix, then repeat with a second layer of pastrami.",
+    "Roll up jelly-roll style and place on a cookie sheet.",
+    "Brush with beaten egg and sprinkle with sesame seeds.",
+    "Bake at 375°F until puffed and golden, about 40 minutes."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "meat",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "notes": "Yidi's version uses sautéed onions, turkey, and pastrami. The original 'for love of food' story also suggests sauerkraut or cabbage fillings: layer drained sauerkraut, or a bag of sautéed cabbage seasoned with salt and pepper, and use turkey pastrami or corned beef. The submission was a screenshot of an Instagram story with recipe text over the photo, so the banner is an AI-generated stand-in and is flagged for replacement with a real photo.",
+  "pairings": [],
+  "pdf": "pdfs/deli-roll.pdf",
+  "photo_generated": true,
+  "prep_minutes": 20,
+  "servings": "2 rolls",
+  "source": "for love of food (Instagram story), via Yidi",
+  "tags": [
+    "shabbat",
+    "make-ahead",
+    "freezer-friendly"
+  ],
+  "tags_need_review": true,
+  "tips": [
+    {
+      "text": "Freeze before the egg wash if making in advance.",
+      "title": "Freeze ahead"
+    }
+  ],
+  "title": "Deli Roll"
+}
