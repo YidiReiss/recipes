@@ -307,12 +307,6 @@ const COUNT_TO_TSP = {
 /* Canonical grouping key: lowercase, no size words, singular-ish. */
 function groupKey(item) {
   let s = stripSize(item);
-  // strip leading prep words so "chopped onion" and "onion" group together
-  // (you buy an onion, you chop it after — "chopped" is not buy-info).
-  // Loop for chains like "finely diced onion".
-  const PREP_PREFIX = /^(chopped|diced|minced|sliced|grated|shredded|crushed|peeled|cubed|halved|quartered|julienned|trimmed|thinly|finely|coarsely|roughly)\s+/i;
-  let prev;
-  do { prev = s; s = s.replace(PREP_PREFIX, ''); } while (s !== prev);
   // singularize last word for grouping ("eggs"->"egg") so plurals merge
   s = s.replace(/\b(\w+)s$/, (m, w) => {
     if (w.length <= 2 || /ss$/.test(w)) return m;
