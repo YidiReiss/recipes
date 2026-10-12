@@ -34,12 +34,14 @@
         {
           "qty": "2",
           "unit": "cups",
-          "item": "onions, chopped"
+          "item": "onions",
+          "prep": "chopped"
         },
         {
           "qty": "2",
           "unit": "cups",
-          "item": "carrots, chopped"
+          "item": "carrots",
+          "prep": "chopped"
         },
         {
           "qty": "1",
