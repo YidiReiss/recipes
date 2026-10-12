@@ -158,6 +158,31 @@ async function boot() {
 
   window.addEventListener('hashchange', route);
   route();
+
+  // Keep the meal plan fresh when someone else (e.g. Nava) saves:
+  // re-fetch when the tab regains focus, unless mid-edit.
+  const maybeRefreshPlan = async () => {
+    if (editingSlot || document.hidden) return;
+    try {
+      const mp = await (await fetch('data/meal-plan.json?t=' + Date.now())).json();
+      if (mp && typeof mp.weeks === 'object') {
+        mealPlan = mp;
+        const h = location.hash || '#/';
+        if (h === '#/planner' || h === '#/' || h === '') route();
+      }
+    } catch (e) { /* keep the copy we have */ }
+  };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) maybeRefreshPlan(); });
+  window.addEventListener('focus', maybeRefreshPlan);
+}
+
+/* Re-fetch the meal plan (e.g. after someone else saves). Skips while editing. */
+async function refreshMealPlan() {
+  if (editingSlot) return;
+  try {
+    const mp = await (await fetch('data/meal-plan.json?t=' + Date.now())).json();
+    if (mp && typeof mp.weeks === 'object') mealPlan = mp;
+  } catch (e) { /* keep the copy we have */ }
 }
 
 /* ---------------- Router ---------------- */
@@ -174,7 +199,11 @@ function route() {
   if (h.startsWith('#/edit/')) return renderEdit(app, decodeURIComponent(h.slice(7)));
   if (h === '#/add') return renderAdd(app);
   if (h === '#/submit') return renderSubmit(app);
-  if (h === '#/planner') return renderPlanner(app);
+  if (h === '#/planner') {
+    // Grab the latest plan in case someone else just saved.
+    refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/planner') renderPlanner(app); });
+    return renderPlanner(app);
+  }
   return renderHome(app);
 }
 
