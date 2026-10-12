@@ -28,7 +28,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "red onion, diced small"
+          "item": "red onion",
+          "prep": "diced small"
         },
         {
           "qty": "3½",
@@ -38,7 +39,8 @@
         {
           "qty": "4",
           "unit": "oz",
-          "item": "cashews, sliced"
+          "item": "cashews",
+          "prep": "sliced"
         },
         {
           "qty": "3",
