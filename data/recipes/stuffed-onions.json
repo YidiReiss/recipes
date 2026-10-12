@@ -25,7 +25,8 @@
         {
           "qty": "7",
           "unit": null,
-          "item": "large onions, peeled"
+          "item": "large onions",
+          "prep": "peeled"
         },
         {
           "qty": "1 1/2",
@@ -40,7 +41,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "cilantro (about 8 stems), cut up"
+          "item": "cilantro (about 8 stems)",
+          "prep": "cut up"
         },
         {
           "qty": null,
