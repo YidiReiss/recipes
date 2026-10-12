@@ -23,7 +23,8 @@
         {
           "qty": "3½",
           "unit": "pound",
-          "item": "chicken, quartered"
+          "item": "chicken",
+          "prep": "quartered"
         },
         {
           "qty": "3",
@@ -43,7 +44,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "egg, slightly beaten"
+          "item": "egg",
+          "prep": "slightly beaten"
         },
         {
           "qty": "⅛",
