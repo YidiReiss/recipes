@@ -210,14 +210,63 @@ function route() {
 /* ---------------- Home ---------------- */
 
 /* Aggregate this week's planned recipes into a shopping list. */
+const UNICODE_FRACS = { '½': 1/2, '⅓': 1/3, '⅔': 2/3, '¼': 1/4, '¾': 3/4, '⅕': 1/5, '⅖': 2/5, '⅗': 3/5, '⅘': 4/5, '⅙': 1/6, '⅚': 5/6, '⅛': 1/8, '⅜': 3/8, '⅝': 5/8, '⅞': 7/8 };
 function parseQty(q) {
   if (q == null) return null;
-  const s = String(q).trim();
+  let s = String(q).trim();
   if (!s) return null;
-  const frac = s.match(/^(\d+)\s*\/\s*(\d+)$/);
+  // unicode fractions -> ascii ("1½" -> "1 1/2", "¾" -> "3/4")
+  s = s.replace(/[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, m => {
+    const v = UNICODE_FRACS[m];
+    const num = Math.round(v * 8), den = 8; // normalize to eighths then reduce below
+    return ' ' + num + '/' + den;
+  }).trim().replace(/\s+/g, ' ');
+  // mixed number "1 3/4", fraction "3/4", decimal "1.5", integer "2"
+  let total = 0, found = false;
+  const mixed = s.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (mixed && +mixed[3]) return (+mixed[1]) + (+mixed[2]) / (+mixed[3]);
+  const frac = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
   if (frac && +frac[2]) return (+frac[1]) / (+frac[2]);
-  if (/^\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+  if (/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
   return null;
+}
+function fmtQty(n) {
+  // 1.5 -> "1½", 0.75 -> "¾", 2 -> "2". Reduces to eighths.
+  if (n == null) return '';
+  const rounded = Math.round(n * 8) / 8;
+  const whole = Math.floor(rounded);
+  const frac = rounded - whole;
+  const FRAC_STR = { 0.125: '⅛', 0.25: '¼', 0.375: '⅜', 0.5: '½', 0.625: '⅝', 0.75: '¾', 0.875: '⅞' };
+  const fs = FRAC_STR[Math.round(frac * 1000) / 1000] || '';
+  if (!whole && !fs) return '0';
+  return (whole ? String(whole) : '') + fs;
+}
+/* Words that never take an "s" in a shopping list. */
+const UNCOUNTABLES = new Set(['water', 'salt', 'pepper', 'garlic', 'mayonnaise', 'flour', 'sugar', 'oil', 'milk',
+  'butter', 'cheese', 'rice', 'pasta', 'bread', 'honey', 'vinegar', 'sauce', 'ketchup', 'mustard',
+  'coca-cola', 'coke', 'coffee', 'tea', 'juice', 'broth', 'stock', 'cream', 'yogurt', 'beef', 'chicken',
+  'pork', 'fish', 'salmon', 'tuna', 'turkey', 'lamb', 'bacon', 'sausage', 'tofu', 'cornstarch']);
+function pluralize(word, qty) {
+  // Conservative: only pluralize simple countable nouns when qty > 1.
+  // Never touches parentheticals — pluralizes the head word only.
+  if (!(qty > 1)) return word;
+  const m = word.match(/^(.*?)(\s*\(.*\))?$/);
+  const head = (m[1] || '').trim(), tail = m[2] || '';
+  if (!head) return word;
+  const low = head.toLowerCase();
+  const words = low.split(/\s+/);
+  const lastWord = words.pop();
+  // Uncountable if the full phrase matches, or it's a single uncountable word.
+  // ("pepper" the spice stays singular; "bell pepper" the vegetable pluralizes.)
+  if (UNCOUNTABLES.has(low)) return word;
+  if (words.length === 0 && UNCOUNTABLES.has(lastWord)) return word;
+  if (low === 'pepper' || low === 'black pepper' || low.endsWith(' black pepper')) return word;
+  if (/s$/.test(low)) return word; // already plural (or looks it) — leave alone
+  let p = head;
+  if (/[^aeiou]y$/.test(low)) p = head.slice(0, -1) + 'ies';
+  else if (/(x|z|ch|sh)$/.test(low)) p = head + 'es';
+  else p = head + 's';
+  return (p + (tail ? ' ' + tail.trim() : '')).trim();
 }
 function thisWeekKey() { return ymd(sundayOf(0)); }
 /* Day-date (yyyy-mm-dd) of each slot index for a week starting at `mon`. */
@@ -229,79 +278,6 @@ function weekDayYmd(mon, i) {
 function shoppingFromYmd() {
   const week = getWeek(thisWeekKey());
   return week.shoppingDay || null;
-}
-/* ---- Smart ingredient normalization ----
-   "1 egg, lightly beaten" + "1 egg" -> "2 eggs". Conservative by design:
-   - Comma phrases: the comma is the recipe author marking prep ("egg, lightly beaten").
-     Only stripped when the phrase is entirely known prep words.
-   - ALWAYS_PREP: words that are NEVER product names (beaten, melted...) — safe anywhere.
-   - Never stripped from the front: "crushed tomatoes" is a product, not prep.
-   Unknown words are left alone: worst case is two lines, never a wrong merge. */
-const PREP_WORDS = [
-  'lightly beaten', 'at room temperature', 'room temperature', 'thinly sliced',
-  'roughly chopped', 'finely diced', 'finely chopped', 'coarsely chopped',
-  'for garnish', 'to taste', 'as needed', 'cut up', 'beaten', 'diced', 'chopped',
-  'sliced', 'minced', 'grated', 'shredded', 'crushed', 'peeled', 'seeded',
-  'cubed', 'halved', 'quartered', 'julienned', 'deveined', 'trimmed', 'pitted',
-  'zested', 'juiced', 'melted', 'softened', 'divided', 'optional'
-];
-const ALWAYS_PREP = [
-  'lightly beaten', 'at room temperature', 'room temperature', 'beaten',
-  'melted', 'softened', 'to taste', 'as needed', 'divided', 'optional', 'for garnish'
-];
-const PREP_ALT = PREP_WORDS.slice().sort((a, b) => b.length - a.length)
-  .map(w => w.replace(/ /g, '\\s+')).join('|');
-const ALWAYS_ALT = ALWAYS_PREP.slice().sort((a, b) => b.length - a.length)
-  .map(w => w.replace(/ /g, '\\s+')).join('|');
-const PREP_TEST = new RegExp('^(?:' + PREP_ALT + ')$', 'i');
-const ALWAYS_TRAILING = new RegExp('\\s*,?\\s*(' + ALWAYS_ALT + ')\\s*$', 'i');
-const ALWAYS_LEADING = new RegExp('^(' + ALWAYS_ALT + ')\\s+', 'i');
-
-function splitPrep(item) {
-  // -> {base, preps[]}. Strips prep-only comma phrases + always-prep words.
-  const preps = [];
-  let base = (item || '').trim();
-  const parts = base.split(',');
-  if (parts.length > 1) {
-    const head = parts[0].trim();
-    const keep = [], found = [];
-    parts.slice(1).forEach(p => {
-      const t = p.trim().replace(/\s+and\s+/gi, ' ').trim();
-      if (t && PREP_TEST.test(t)) found.push(p.trim());
-      else keep.push(p);
-    });
-    if (found.length) {
-      preps.push(...found);
-      base = [head, ...keep].join(',').trim();
-    }
-  }
-  let m, changed = true;
-  while (changed) {
-    changed = false;
-    if ((m = base.match(ALWAYS_TRAILING))) {
-      preps.push(m[1].trim()); base = base.slice(0, m.index).trim(); changed = true;
-    } else if ((m = base.match(ALWAYS_LEADING))) {
-      preps.push(m[1].trim()); base = base.slice(m[0].length).trim(); changed = true;
-    }
-  }
-  return { base, preps };
-}
-function baseForm(w) {
-  // singular-ish form for grouping ("onions"->"onion")
-  const low = w.toLowerCase();
-  if (/(tomato|potato)es$/.test(low)) return w.slice(0, -2);
-  if (/ies$/.test(low) && low.length > 4) return w.slice(0, -3) + 'ie';
-  if (/s$/.test(low) && !/(ss|us|is|as|os)$/.test(low) && low.length > 3) return w.slice(0, -1);
-  return w;
-}
-function displayForm(base, qty) {
-  if (qty !== 1) {
-    const low = base.toLowerCase();
-    if (/ie$/.test(low)) return base.slice(0, -2) + 'ies';
-    if (/(tomato|potato)$/.test(low)) return base + 'es';
-    if (!/s$/.test(low)) return base + 's';
-  }
-  return base;
 }
 function buildShoppingList() {
   const mon = sundayOf(0);
@@ -315,6 +291,7 @@ function buildShoppingList() {
       if (s && s.recipe && !s.skipped && byId[s.recipe]) ids.push(s.recipe);
     });
   });
+  // Group on the clean item name (intake already split item/prep). No heuristics.
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
@@ -322,16 +299,15 @@ function buildShoppingList() {
       (sec.items || []).forEach(it => {
         const raw = (it.item || '').trim();
         if (!raw) return;
-        const { base, preps } = splitPrep(raw);
-        if (!base) return;
         const unitRaw = (it.unit || '').trim();
-        const nkey = baseForm(base).toLowerCase() + '|' + unitRaw.toLowerCase();
+        const nkey = raw.toLowerCase() + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { base, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
+          e = { base: raw, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
           map.set(nkey, e);
         }
-        preps.forEach(p => { if (!e.preps.includes(p)) e.preps.push(p); });
+        const p = (it.prep || '').trim();
+        if (p && !e.preps.includes(p)) e.preps.push(p);
         const n = parseQty(it.qty);
         if (n !== null) { e.qty += n; e.hasNum = true; }
         else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
@@ -342,10 +318,10 @@ function buildShoppingList() {
     let q = '', qnum = 0;
     if (e.hasNum) {
       qnum = Math.round(e.qty * 100) / 100;
-      q = String(qnum);
+      q = fmtQty(qnum);
     }
     if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
-    const name = displayForm(e.base, e.hasNum ? qnum : 0);
+    const name = pluralize(e.base, e.hasNum ? qnum : 0);
     const prepNote = e.preps.length ? ' (' + e.preps.join(', ') + ')' : '';
     return {
       key: e.base.toLowerCase() + '|' + e.unit.toLowerCase(),
