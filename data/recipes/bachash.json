@@ -24,7 +24,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "meat or chicken, finely diced"
+          "item": "meat or chicken",
+          "prep": "finely diced"
         },
         {
           "qty": "3",
@@ -39,7 +40,8 @@
         {
           "qty": "2",
           "unit": "cups",
-          "item": "rice, washed"
+          "item": "rice",
+          "prep": "washed"
         },
         {
           "qty": "1/2",
@@ -49,7 +51,8 @@
         {
           "qty": "1",
           "unit": "large",
-          "item": "onion, chopped"
+          "item": "onion",
+          "prep": "chopped"
         },
         {
           "qty": "1",
