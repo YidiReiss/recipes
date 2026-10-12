@@ -34,12 +34,12 @@
         {
           "qty": "¼",
           "unit": "cup",
-          "item": "granulated sugar (changed to 2 tbsp)"
+          "item": "granulated sugar"
         },
         {
           "qty": "1",
           "unit": "tbsp",
-          "item": "ground cinnamon (changed to ½ tbsp)"
+          "item": "ground cinnamon"
         }
       ]
     },
@@ -48,13 +48,13 @@
       "items": [
         {
           "qty": "4",
-          "unit": "ounces",
-          "item": "cream cheese, softened (changed to 2 Tbsp)"
+          "unit": "oz",
+          "item": "cream cheese, softened"
         },
         {
           "qty": "½",
           "unit": "cup",
-          "item": "powdered sugar (changed to 2 tbsp)"
+          "item": "powdered sugar"
         },
         {
           "qty": "1 ½",

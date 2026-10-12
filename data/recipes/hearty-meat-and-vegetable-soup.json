@@ -40,13 +40,13 @@
         },
         {
           "qty": "1",
-          "unit": "pound",
+          "unit": "lb",
           "item": "stew meat",
           "prep": "cut into 1-inch cubes"
         },
         {
           "qty": "9",
-          "unit": "cups",
+          "unit": "cup",
           "item": "water"
         },
         {
@@ -81,7 +81,7 @@
         },
         {
           "qty": "1",
-          "unit": "pound",
+          "unit": "lb",
           "item": "marrow bones"
         },
         {
@@ -92,8 +92,8 @@
         },
         {
           "qty": "2",
-          "unit": "large",
-          "item": "carrots",
+          "unit": null,
+          "item": "large carrots",
           "prep": "sliced"
         },
         {

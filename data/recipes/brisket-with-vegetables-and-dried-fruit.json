@@ -41,13 +41,13 @@
         },
         {
           "qty": "4-6",
-          "unit": "pounds",
+          "unit": "lb",
           "item": "beef brisket"
         },
         {
           "qty": "1 ½",
-          "unit": "cups",
-          "item": "red wine (changed to ¾ cup and then water for rest)"
+          "unit": "cup",
+          "item": "red wine"
         },
         {
           "qty": "2",
@@ -84,12 +84,12 @@
         {
           "qty": "½",
           "unit": "cup",
-          "item": "dried apricots (don't have to use)"
+          "item": "dried apricots"
         },
         {
           "qty": "½",
           "unit": "cup",
-          "item": "dried pitted prunes (don't have to use)"
+          "item": "dried pitted prunes"
         },
         {
           "qty": "¼",

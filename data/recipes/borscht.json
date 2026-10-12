@@ -34,8 +34,8 @@
         },
         {
           "qty": "2",
-          "unit": "medium",
-          "item": "beets",
+          "unit": null,
+          "item": "medium beets",
           "prep": "shredded"
         },
         {

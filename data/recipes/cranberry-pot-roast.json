@@ -23,7 +23,7 @@
       "items": [
         {
           "qty": "3",
-          "unit": "lbs",
+          "unit": "lb",
           "item": "brisket or top of rib"
         },
         {
@@ -34,14 +34,14 @@
         },
         {
           "qty": "1",
-          "unit": "medium",
-          "item": "onion",
+          "unit": null,
+          "item": "medium onion",
           "prep": "diced"
         },
         {
           "qty": "1",
-          "unit": "medium",
-          "item": "red pepper",
+          "unit": null,
+          "item": "medium red pepper",
           "prep": "diced"
         },
         {
@@ -61,7 +61,7 @@
         },
         {
           "qty": "1",
-          "unit": "clove",
+          "unit": "cloves",
           "item": "garlic",
           "prep": "diced"
         }

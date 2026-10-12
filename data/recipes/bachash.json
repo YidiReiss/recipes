@@ -39,7 +39,7 @@
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "rice",
           "prep": "washed"
         },
@@ -50,8 +50,8 @@
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "onion",
+          "unit": null,
+          "item": "large onion",
           "prep": "chopped"
         },
         {

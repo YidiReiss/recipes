@@ -57,18 +57,18 @@
       "items": [
         {
           "qty": "3 ¾",
-          "unit": "cups",
-          "item": "all purpose flour (changed to 1.875)"
+          "unit": "cup",
+          "item": "all purpose flour"
         },
         {
           "qty": "¾",
           "unit": "cup",
-          "item": "packed light brown sugar (changed to .375)"
+          "item": "packed light brown sugar"
         },
         {
           "qty": "2",
           "unit": "tsp",
-          "item": "cinnamon (changed to 1 tsp)"
+          "item": "cinnamon"
         },
         {
           "qty": "½",
@@ -77,8 +77,8 @@
         },
         {
           "qty": "1 ½",
-          "unit": "cups",
-          "item": "unsalted butter, melted (3 sticks; changed to 1 ½ sticks)"
+          "unit": "cup",
+          "item": "unsalted butter, melted"
         }
       ]
     }

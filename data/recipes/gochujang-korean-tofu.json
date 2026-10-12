@@ -18,17 +18,17 @@
         {
           "item": "tamari or soy sauce",
           "qty": "1",
-          "unit": "tablespoon"
+          "unit": "tbsp"
         },
         {
           "item": "cornstarch",
           "qty": "1",
-          "unit": "tablespoon"
+          "unit": "tbsp"
         },
         {
           "item": "gluten free breadcrumbs (or regular breadcrumbs)",
           "qty": "3",
-          "unit": "tablespoons"
+          "unit": "tbsp"
         }
       ],
       "section": "Tofu"
@@ -48,49 +48,49 @@
         {
           "item": "tomato paste",
           "qty": "1",
-          "unit": "tablespoon"
+          "unit": "tbsp"
         },
         {
           "item": "vegetable broth or water",
           "qty": "2",
-          "unit": "tablespoons"
+          "unit": "tbsp"
         },
         {
           "item": "honey (use maple syrup to make it fully vegan)",
           "qty": "3",
-          "unit": "tablespoons"
+          "unit": "tbsp"
         },
         {
           "item": "toasted sesame oil",
           "qty": "1",
-          "unit": "tablespoon"
+          "unit": "tbsp"
         },
         {
           "item": "rice vinegar",
           "qty": "1",
-          "unit": "tablespoon"
+          "unit": "tbsp"
         },
         {
           "item": "garlic",
           "qty": "2",
-          "unit": "teaspoons",
+          "unit": "tsp",
           "prep": "minced"
         },
         {
           "item": "fresh ginger",
           "qty": "1",
-          "unit": "teaspoon",
+          "unit": "tsp",
           "prep": "grated"
         },
         {
           "item": "cornstarch",
           "qty": "1",
-          "unit": "teaspoon"
+          "unit": "tsp"
         },
         {
           "item": "water",
           "qty": "1",
-          "unit": "teaspoon"
+          "unit": "tsp"
         }
       ],
       "section": "Sauce"

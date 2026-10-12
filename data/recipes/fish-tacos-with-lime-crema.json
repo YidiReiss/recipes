@@ -67,7 +67,7 @@
         },
         {
           "qty": "1",
-          "unit": "pound",
+          "unit": "lb",
           "item": "white fish (such as cod, snapper, tilapia)"
         }
       ]
@@ -107,7 +107,7 @@
       "items": [
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "cabbage",
           "prep": "shredded"
         },
@@ -125,7 +125,7 @@
         },
         {
           "qty": "1",
-          "unit": "clove",
+          "unit": "cloves",
           "item": "garlic",
           "prep": "minced"
         }
