@@ -924,3 +924,13 @@ footer.site-footer {
 .shop-sub { margin: 1.25rem 0 0.25rem; font-size: 1.05rem; }
 .page-head { margin-bottom: 1rem; }
 .page-head h1 { margin-bottom: 0.15rem; }
+
+/* Multi-dish slots */
+.dish-row {
+  padding: 0.3rem 0; border-bottom: 1px solid var(--cream-dark);
+  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+}
+.dish-row:last-child { border-bottom: none; }
+.badge.leftovers {
+  background: #6b7280; font-size: 0.65rem; padding: 0.1rem 0.4rem;
+}

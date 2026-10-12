@@ -330,16 +330,35 @@ function pluralizeUnit(unit, qty) {
   if (u === 'clove') return 'cloves';
   return unit;
 }
+/* Normalize a meal slot to the dishes array format.
+   Old: { recipe: 'id', custom: 'text', skipped: bool, note: '' }
+   New: { dishes: [{ recipe, custom, leftovers, cookDate }], skipped, note } */
+function normalizeSlot(slot) {
+  if (!slot) return { dishes: [], skipped: false, note: '' };
+  if (Array.isArray(slot.dishes)) return slot;
+  const dishes = [];
+  if (slot.recipe) dishes.push({ recipe: slot.recipe, leftovers: false, cookDate: null });
+  else if (slot.custom) dishes.push({ custom: slot.custom, leftovers: false, cookDate: null });
+  return { dishes, skipped: !!slot.skipped, note: slot.note || '' };
+}
 function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
   const from = shoppingFromYmd();
   const ids = [];
   week.days.forEach((d, i) => {
-    if (from && weekDayYmd(mon, i) < from) return; // already cooked — had the ingredients
     ['lunch', 'dinner'].forEach(m => {
-      const s = d[m];
-      if (s && s.recipe && !s.skipped && byId[s.recipe]) ids.push(s.recipe);
+      const s = normalizeSlot(d[m]);
+      if (!s || s.skipped) return;
+      s.dishes.forEach(dish => {
+        if (dish.leftovers) return; // already made — don't buy ingredients
+        const rid = dish.recipe;
+        if (!rid || !byId[rid]) return;
+        // Use cook date if set (prepare in advance), else meal date
+        const effectiveDate = dish.cookDate || weekDayYmd(mon, i);
+        if (from && effectiveDate < from) return; // already cooked
+        ids.push(rid);
+      });
     });
   });
   // Group on the clean item name (intake already split item/prep), with size
@@ -717,7 +736,7 @@ function renderLanding(app) {
   const toBuyCount = items.filter(it => !(week.haveGenerated || []).includes(it.key)).length +
     (week.manualItems || []).filter(m => !m.have).length;
   const plannedCount = week.days.reduce((n, d) =>
-    n + (d.lunch && d.lunch.recipe ? 1 : 0) + (d.dinner && d.dinner.recipe ? 1 : 0), 0);
+    n + normalizeSlot(d.lunch).dishes.length + normalizeSlot(d.dinner).dishes.length, 0);
 
   app.innerHTML =
     '<section class="hero landing-hero">' +
@@ -750,16 +769,22 @@ function planCarouselHTML() {
     const date = new Date(mon);
     date.setDate(date.getDate() + i);
     const meals = [];
-    if (d.lunch && d.lunch.recipe && byId[d.lunch.recipe]) {
-      const r = byId[d.lunch.recipe];
-      meals.push('<div class="carousel-meal"><span class="carousel-meal-type">Lunch</span>' +
-        '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a></div>');
-    }
-    if (d.dinner && d.dinner.recipe && byId[d.dinner.recipe]) {
-      const r = byId[d.dinner.recipe];
-      meals.push('<div class="carousel-meal"><span class="carousel-meal-type">Dinner</span>' +
-        '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a></div>');
-    }
+    ['lunch', 'dinner'].forEach(m => {
+      const s = normalizeSlot(d[m]);
+      s.dishes.forEach(dish => {
+        const label = m === 'lunch' ? 'Lunch' : 'Dinner';
+        if (dish.recipe && byId[dish.recipe]) {
+          const r = byId[dish.recipe];
+          meals.push('<div class="carousel-meal"><span class="carousel-meal-type">' + label + '</span>' +
+            '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>' +
+            (dish.leftovers ? ' <span class="badge leftovers">Leftovers</span>' : '') + '</div>');
+        } else if (dish.custom) {
+          meals.push('<div class="carousel-meal"><span class="carousel-meal-type">' + label + '</span>' +
+            esc(dish.custom) +
+            (dish.leftovers ? ' <span class="badge leftovers">Leftovers</span>' : '') + '</div>');
+        }
+      });
+    });
     return '<div class="carousel-day"><h4>' + days[i] + '</h4>' +
       '<div class="carousel-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>' +
       (meals.length ? meals.join('') : '<span class="muted">—</span>') + '</div>';
@@ -1339,46 +1364,64 @@ function getWeek(key) {
 function slotHTML(key, di, meal, slot, canEdit, shabbat) {
   const label = (meal === 'lunch' ? 'Lunch' : 'Dinner') +
     (shabbat ? ' <span class="shabbat">· Shabbat</span>' : '');
+  const s = normalizeSlot(slot);
   let body;
   if (editingSlot && editingSlot.key === key && editingSlot.di === di && editingSlot.meal === meal) {
-    body = slotEditorHTML(slot);
-  } else if (slot.skipped) {
+    body = slotEditorHTML(s, editingSlot.dishIdx);
+  } else if (s.skipped) {
     body = '<span class="slot-skipped">Skipped</span>' +
-      (slot.note ? ' <span class="slot-note">— ' + esc(slot.note) + '</span>' : '');
-  } else if (slot.recipe && byId[slot.recipe]) {
-    const r = byId[slot.recipe];
-    body = '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>' +
-      (slot.note ? ' <span class="slot-note">— ' + esc(slot.note) + '</span>' : '');
-  } else if (slot.custom) {
-    body = '<span class="slot-custom">' + esc(slot.custom) + '</span>' +
-      (slot.note ? ' <span class="slot-note">— ' + esc(slot.note) + '</span>' : '');
+      (s.note ? ' <span class="slot-note">— ' + esc(s.note) + '</span>' : '');
+  } else if (s.dishes.length) {
+    body = s.dishes.map((dish, idx) => {
+      let dishBody;
+      if (dish.recipe && byId[dish.recipe]) {
+        const r = byId[dish.recipe];
+        dishBody = '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>';
+      } else if (dish.custom) {
+        dishBody = '<span class="slot-custom">' + esc(dish.custom) + '</span>';
+      } else {
+        dishBody = '<span class="slot-skipped">—</span>';
+      }
+      if (dish.leftovers) dishBody += ' <span class="badge leftovers">Leftovers</span>';
+      if (dish.cookDate) dishBody += ' <span class="slot-note">(cook ' + esc(dish.cookDate) + ')</span>';
+      const editBtn = canEdit
+        ? ' <button class="link-btn" data-dishedit="' + key + '|' + di + '|' + meal + '|' + idx + '" type="button">Edit</button>'
+        : '';
+      return '<div class="dish-row">' + dishBody + editBtn + '</div>';
+    }).join('');
+    if (s.note) body += ' <span class="slot-note">— ' + esc(s.note) + '</span>';
   } else {
     body = '<span class="slot-skipped">—</span>';
   }
-  const has = slot.recipe || slot.custom || slot.skipped || slot.note;
   const btns = canEdit
-    ? ' <button class="link-btn" data-slot="' + key + '|' + di + '|' + meal + '" type="button">' +
-      (has ? 'Edit' : 'Add') + '</button>' +
-      (has ? ' <button class="link-btn danger" data-clear="' + key + '|' + di + '|' + meal +
+    ? ' <button class="link-btn" data-slotadd="' + key + '|' + di + '|' + meal + '" type="button">' +
+      (s.dishes.length ? '+ Add dish' : 'Add') + '</button>' +
+      ((s.dishes.length || s.note) ? ' <button class="link-btn danger" data-clear="' + key + '|' + di + '|' + meal +
         '" type="button">Clear</button>' : '')
     : '';
   return '<div class="slot"><div class="slot-label">' + label + '</div>' +
          '<div class="slot-body">' + body + btns + '</div></div>';
 }
 
-function slotEditorHTML(slot) {
-  const currentLabel = (slot.recipe && byId[slot.recipe]) ? byId[slot.recipe].title
-    : (slot.custom || '');
-  const currentRid = (slot.recipe && byId[slot.recipe]) ? slot.recipe : '';
+function slotEditorHTML(slot, dishIdx) {
+  const s = normalizeSlot(slot);
+  const dish = (dishIdx !== undefined && s.dishes[dishIdx]) ? s.dishes[dishIdx] : {};
+  const currentLabel = (dish.recipe && byId[dish.recipe]) ? byId[dish.recipe].title
+    : (dish.custom || '');
+  const currentRid = (dish.recipe && byId[dish.recipe]) ? dish.recipe : '';
   return '<div class="slot-editor">' +
     '<div class="combo-wrap">' +
       '<input type="text" id="se-meal" placeholder="Type a recipe or your own dish…" autocomplete="off" ' +
-      'value="' + esc(currentLabel) + '" data-rid="' + esc(currentRid) + '" aria-label="Meal">' +
+      'value="' + esc(currentLabel) + '" data-rid="' + esc(currentRid) + '" aria-label="Dish">' +
       '<div class="combo-list" id="se-suggest" hidden></div>' +
     '</div>' +
     '<div class="slot-note">Pick a recipe from the list, or just type your own — it saves as-is.</div>' +
-    '<label><input type="checkbox" id="se-skipped"' + (slot.skipped ? ' checked' : '') + '> Skipped</label> ' +
-    '<input type="text" id="se-note" placeholder="Note (optional)" value="' + esc(slot.note || '') + '">' +
+    '<label><input type="checkbox" id="se-leftovers"' + (dish.leftovers ? ' checked' : '') + '> Leftovers / already made (excludes from shopping list)</label><br>' +
+    '<label><input type="checkbox" id="se-advance"' + (dish.cookDate ? ' checked' : '') + '> Prepare in advance</label> ' +
+    '<input type="date" id="se-cookdate" value="' + esc(dish.cookDate || '') + '"' +
+      (dish.cookDate ? '' : ' style="display:none"') + ' aria-label="Cook date"><br>' +
+    '<label><input type="checkbox" id="se-skipped"' + (s.skipped ? ' checked' : '') + '> Skipped</label> ' +
+    '<input type="text" id="se-note" placeholder="Note (optional)" value="' + esc(s.note || '') + '">' +
     '<div><button class="btn" id="se-save" type="button">Save</button> ' +
     '<button class="btn secondary" id="se-cancel" type="button">Cancel</button></div>' +
     '<div class="form-status" id="se-status"></div></div>';
@@ -1474,9 +1517,14 @@ function renderPlanner(app) {
     const t = e.target;
     if (t.id === 'se-save') return saveSlot(key);
     if (t.id === 'se-cancel') { editingSlot = null; return renderPlanner(app); }
-    if (t.dataset.slot) {
-      const [k, di, meal] = t.dataset.slot.split('|');
-      editingSlot = { key: k, di: +di, meal };
+    if (t.dataset.slotadd) {
+      const [k, di, meal] = t.dataset.slotadd.split('|');
+      editingSlot = { key: k, di: +di, meal, dishIdx: -1 }; // -1 = new dish
+      return renderPlanner(app);
+    }
+    if (t.dataset.dishedit) {
+      const [k, di, meal, idx] = t.dataset.dishedit.split('|');
+      editingSlot = { key: k, di: +di, meal, dishIdx: +idx };
       return renderPlanner(app);
     }
     if (t.dataset.clear) {
@@ -1487,27 +1535,50 @@ function renderPlanner(app) {
   });
 
   const mealInput = $('#se-meal');
-  if (mealInput) wireCombo(mealInput);
+  if (mealInput) {
+    wireCombo(mealInput);
+    // Prepare in advance toggle shows/hides the date picker
+    const advToggle = $('#se-advance');
+    const cookDate = $('#se-cookdate');
+    if (advToggle && cookDate) {
+      advToggle.addEventListener('change', () => {
+        cookDate.style.display = advToggle.checked ? '' : 'none';
+        if (!advToggle.checked) cookDate.value = '';
+      });
+    }
+  }
 }
 
 function saveSlot(key) {
   const st = $('#se-status');
-  const slot = getWeek(key).days[editingSlot.di][editingSlot.meal];
+  const slot = normalizeSlot(getWeek(key).days[editingSlot.di][editingSlot.meal]);
   const mealInput = $('#se-meal');
   const rid = mealInput ? mealInput.dataset.rid : '';
   const text = mealInput ? mealInput.value.trim() : '';
+  const dish = {};
   if (rid && byId[rid]) {
-    slot.recipe = rid;
-    slot.custom = null;
+    dish.recipe = rid;
   } else if (text) {
-    slot.recipe = null;
-    slot.custom = text;
-  } else {
-    slot.recipe = null;
-    slot.custom = null;
+    dish.custom = text;
+  }
+  dish.leftovers = $('#se-leftovers').checked;
+  const advChecked = $('#se-advance').checked;
+  dish.cookDate = advChecked ? ($('#se-cookdate').value || null) : null;
+
+  const idx = editingSlot.dishIdx;
+  if (idx === -1) {
+    // New dish — only add if there's content
+    if (dish.recipe || dish.custom) slot.dishes.push(dish);
+  } else if (slot.dishes[idx]) {
+    if (dish.recipe || dish.custom) {
+      slot.dishes[idx] = dish;
+    } else {
+      slot.dishes.splice(idx, 1); // removed
+    }
   }
   slot.skipped = $('#se-skipped').checked;
   slot.note = $('#se-note').value.trim();
+  getWeek(key).days[editingSlot.di][editingSlot.meal] = slot;
   persistWeek(key, st, () => { editingSlot = null; renderPlanner($('#app')); });
 }
 
