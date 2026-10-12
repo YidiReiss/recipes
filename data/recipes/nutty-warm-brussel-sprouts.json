@@ -27,7 +27,8 @@
         {
           "qty": "1",
           "unit": "clove",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1/3",
@@ -52,7 +53,8 @@
         {
           "qty": "1 1/2",
           "unit": "tbsp",
-          "item": "finely chopped walnuts, toasted"
+          "item": "finely chopped walnuts",
+          "prep": "toasted"
         }
       ]
     }
