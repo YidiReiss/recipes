@@ -54,8 +54,8 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": ""
+            "skipped": true,
+            "note": "Eating out"
           }
         },
         {
