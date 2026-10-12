@@ -82,7 +82,8 @@
         {
           "qty": "1",
           "unit": "large",
-          "item": "egg, lightly beaten"
+          "item": "egg",
+          "prep": "lightly beaten"
         },
         {
           "qty": "1",
