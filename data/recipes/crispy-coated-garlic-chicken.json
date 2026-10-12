@@ -23,7 +23,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "chickens (3 ½-4 lb each), cut into 8 pieces"
+          "item": "chickens (3 ½-4 lb each)",
+          "prep": "cut into 8 pieces"
         },
         {
           "qty": "1",
@@ -33,7 +34,8 @@
         {
           "qty": "8",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "2",
