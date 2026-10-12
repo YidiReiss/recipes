@@ -29,17 +29,20 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, diced"
+          "item": "onion",
+          "prep": "diced"
         },
         {
           "qty": "2",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1",
           "unit": "pound",
-          "item": "stew meat, cut into 1-inch cubes"
+          "item": "stew meat",
+          "prep": "cut into 1-inch cubes"
         },
         {
           "qty": "9",
@@ -84,17 +87,20 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "potato, diced"
+          "item": "potato",
+          "prep": "diced"
         },
         {
           "qty": "2",
           "unit": "large",
-          "item": "carrots, sliced"
+          "item": "carrots",
+          "prep": "sliced"
         },
         {
           "qty": "2",
           "unit": "stalks",
-          "item": "celery, diced"
+          "item": "celery",
+          "prep": "diced"
         },
         {
           "qty": "1",
