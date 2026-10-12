@@ -73,7 +73,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "ripe mango, julienned 3\" long"
+          "item": "ripe mango",
+          "prep": "julienned 3\" long"
         },
         {
           "qty": "2",
