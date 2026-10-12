@@ -23,17 +23,20 @@
         {
           "qty": "1",
           "unit": "pound",
-          "item": "brussels sprouts, trimmed"
+          "item": "brussels sprouts",
+          "prep": "trimmed"
         },
         {
           "qty": "1",
           "unit": "large",
-          "item": "sweet potato (1 pound), peeled and chopped into 1-2 inch pieces"
+          "item": "sweet potato (1 pound)",
+          "prep": "peeled and chopped into 1-2 inch pieces"
         },
         {
           "qty": "2",
           "unit": "cloves",
-          "item": "garlic, smashed"
+          "item": "garlic",
+          "prep": "smashed"
         },
         {
           "qty": "1/4",
