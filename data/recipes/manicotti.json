@@ -28,7 +28,8 @@
         {
           "qty": "1",
           "unit": "medium",
-          "item": "zucchini, chopped"
+          "item": "zucchini",
+          "prep": "chopped"
         },
         {
           "qty": "1",
