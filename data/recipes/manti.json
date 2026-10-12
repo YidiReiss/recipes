@@ -29,7 +29,8 @@
         {
           "qty": "2",
           "unit": "medium",
-          "item": "onions, chopped"
+          "item": "onions",
+          "prep": "chopped"
         },
         {
           "qty": "2",
