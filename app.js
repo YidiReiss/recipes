@@ -730,9 +730,9 @@ function renderRecipe(app, id) {
         : '') +
       '<div class="actions no-print">' +
         '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
-        (r.pdf ? '<a class="btn" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
+        (pdfUrl(r) ? '<a class="btn" href="' + esc(pdfUrl(r)) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
         '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
-        '<button class="btn' + (r.pdf ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
+        '<button class="btn' + (pdfUrl(r) ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
       '</div>' +
     '</article>';
 
@@ -740,15 +740,24 @@ function renderRecipe(app, id) {
   $('#print-btn').onclick = () => window.print();
 }
 
+/* PDF URL for a recipe: explicit r.pdf wins; otherwise every complete recipe
+   (has ingredients) has a Recipe Press PDF at pdfs/<id>.pdf by convention. */
+function pdfUrl(r) {
+  if (r.pdf) return r.pdf;
+  if (r.id && r.ingredients && r.ingredients.length) return 'pdfs/' + r.id + '.pdf';
+  return null;
+}
+
 async function shareRecipe(r) {
   const url = location.href; // includes #/recipe/<id>; no login gate, so links work for everyone
   // When the recipe has a pre-generated PDF, share the file itself.
-  if (r.pdf) {
+  const pu = pdfUrl(r);
+  if (pu) {
     try {
-      const res = await fetch(r.pdf);
+      const res = await fetch(pu);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const blob = await res.blob();
-      const name = String(r.pdf).split('/').pop().split('?')[0] || 'recipe.pdf';
+      const name = String(pu).split('/').pop().split('?')[0] || 'recipe.pdf';
       const file = new File([blob], name, { type: blob.type || 'application/pdf' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: r.title, text: r.title + ' — Reiss Family Recipes' });
