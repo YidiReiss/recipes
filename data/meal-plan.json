@@ -102,7 +102,9 @@
         }
       ],
       "manualItems": [],
-      "checkedGenerated": []
+      "haveGenerated": [
+        "egg|"
+      ]
     },
     "2026-10-04": {
       "days": [
