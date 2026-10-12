@@ -24,7 +24,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "onions, sliced"
+          "item": "onions",
+          "prep": "sliced"
         },
         {
           "qty": null,
@@ -34,32 +35,38 @@
         {
           "qty": "2",
           "unit": "medium",
-          "item": "beets, shredded"
+          "item": "beets",
+          "prep": "shredded"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "carrot, diced or shredded"
+          "item": "carrot",
+          "prep": "diced or shredded"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "parsnip, diced or shredded"
+          "item": "parsnip",
+          "prep": "diced or shredded"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "potato, diced"
+          "item": "potato",
+          "prep": "diced"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "celery stalk, diced"
+          "item": "celery stalk",
+          "prep": "diced"
         },
         {
           "qty": "1/4",
           "unit": null,
-          "item": "cabbage, shredded"
+          "item": "cabbage",
+          "prep": "shredded"
         },
         {
           "qty": "1",
