@@ -801,6 +801,11 @@ footer.site-footer {
 .shop-item { display: flex; align-items: baseline; gap: 0.55rem; padding: 0.28rem 0; cursor: pointer; font-size: 0.95rem; }
 .shop-item input[type="checkbox"] { width: 1.05rem; height: 1.05rem; accent-color: var(--accent); flex: none; transform: translateY(2px); }
 .shop-item input[type="checkbox"]:checked + span { text-decoration: line-through; color: var(--ink-soft); }
+.shop-sub { font-size: 0.95rem; margin: 0.9rem 0 0.3rem; color: var(--ink-soft); }
+.shop-add { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+.shop-add input { flex: 1; padding: 0.55rem 0.8rem; border: 1px solid var(--line); border-radius: var(--radius); font-size: 0.95rem; }
+.shop-del { margin-left: auto; background: none; border: none; color: var(--ink-soft); font-size: 1.1rem; cursor: pointer; padding: 0 0.2rem; flex: none; }
+.shop-del:hover { color: #b03a2e; }
 
 @media (max-width: 640px) {
   .hero h1 { font-size: 1.5rem; }
