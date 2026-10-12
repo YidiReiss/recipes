@@ -76,7 +76,8 @@
         {
           "qty": "1",
           "unit": "tbsp",
-          "item": "minced garlic"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1-2",

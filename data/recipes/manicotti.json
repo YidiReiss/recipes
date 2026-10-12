@@ -55,7 +55,8 @@
         {
           "qty": "1",
           "unit": "Tbsp",
-          "item": "chopped fresh parsley"
+          "item": "parsley",
+          "prep": "chopped fresh"
         },
         {
           "qty": "½",

@@ -39,7 +39,8 @@
         {
           "qty": "2",
           "unit": "tsp",
-          "item": "grated lemon peel"
+          "item": "lemon peel",
+          "prep": "grated"
         },
         {
           "qty": "1½",

@@ -94,7 +94,8 @@
         {
           "qty": "¼",
           "unit": "cup",
-          "item": "chopped fresh parsley"
+          "item": "parsley",
+          "prep": "chopped fresh"
         }
       ]
     }

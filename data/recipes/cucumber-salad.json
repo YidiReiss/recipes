@@ -55,7 +55,8 @@
         {
           "qty": "½",
           "unit": "cup",
-          "item": "sliced red onion"
+          "item": "red onion",
+          "prep": "sliced"
         }
       ]
     }

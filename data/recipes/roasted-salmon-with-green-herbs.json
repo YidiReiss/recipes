@@ -48,12 +48,14 @@
         {
           "qty": "½",
           "unit": "cup",
-          "item": "minced fresh dill"
+          "item": "dill",
+          "prep": "minced fresh"
         },
         {
           "qty": "½",
           "unit": "cup",
-          "item": "minced fresh parsley"
+          "item": "parsley",
+          "prep": "minced fresh"
         },
         {
           "qty": "¼",

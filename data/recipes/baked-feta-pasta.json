@@ -58,7 +58,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "chopped basil"
+          "item": "basil",
+          "prep": "chopped"
         }
       ]
     }
