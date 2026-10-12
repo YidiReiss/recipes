@@ -34,27 +34,32 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "green pepper, sliced into 2-3 inch long strips"
+          "item": "green pepper",
+          "prep": "sliced into 2-3 inch long strips"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "red pepper, sliced into 2-3 inch long strips"
+          "item": "red pepper",
+          "prep": "sliced into 2-3 inch long strips"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "bell pepper of another color (yellow, orange, purple), sliced into 2-3 inch long strips"
+          "item": "bell pepper of another color (yellow, orange, purple)",
+          "prep": "sliced into 2-3 inch long strips"
         },
         {
           "qty": "4",
           "unit": "cloves",
-          "item": "garlic, sliced into slivers"
+          "item": "garlic",
+          "prep": "sliced into slivers"
         },
         {
           "qty": "1",
           "unit": "large",
-          "item": "sweet or yellow onion, sliced into 1/4-inch half moons"
+          "item": "sweet or yellow onion",
+          "prep": "sliced into 1/4-inch half moons"
         },
         {
           "qty": "1",
