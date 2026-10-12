@@ -22,8 +22,8 @@
       "items": [
         {
           "qty": "2",
-          "unit": "large",
-          "item": "red onions",
+          "unit": null,
+          "item": "large red onions",
           "prep": "sliced"
         },
         {
@@ -33,7 +33,7 @@
         },
         {
           "qty": "3",
-          "unit": "pounds",
+          "unit": "lb",
           "item": "mushrooms",
           "prep": "peeled and sliced"
         },

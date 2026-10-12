@@ -61,8 +61,8 @@
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "egg"
+          "unit": null,
+          "item": "large egg"
         },
         {
           "qty": "1",

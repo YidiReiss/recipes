@@ -42,8 +42,8 @@
         },
         {
           "qty": "2",
-          "unit": "large",
-          "item": "eggs"
+          "unit": null,
+          "item": "large eggs"
         },
         {
           "qty": "1½",

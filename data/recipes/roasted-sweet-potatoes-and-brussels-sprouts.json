@@ -22,14 +22,14 @@
       "items": [
         {
           "qty": "1",
-          "unit": "pound",
+          "unit": "lb",
           "item": "brussels sprouts",
           "prep": "trimmed"
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "sweet potato (1 pound)",
+          "unit": null,
+          "item": "large sweet potato (1 pound)",
           "prep": "peeled and chopped into 1-2 inch pieces"
         },
         {

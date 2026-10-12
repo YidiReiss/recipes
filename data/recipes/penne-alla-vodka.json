@@ -21,7 +21,7 @@
       "items": [
         {
           "qty": "12-16",
-          "unit": "ounces",
+          "unit": "oz",
           "item": "penne noodles",
           "prep": "cooked"
         },
@@ -43,8 +43,8 @@
         },
         {
           "qty": "1",
-          "unit": "medium",
-          "item": "onion",
+          "unit": null,
+          "item": "medium onion",
           "prep": "chopped"
         },
         {

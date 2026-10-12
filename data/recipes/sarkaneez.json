@@ -41,8 +41,8 @@
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "carrot",
+          "unit": null,
+          "item": "large carrot",
           "prep": "julienned then chopped"
         },
         {
@@ -67,7 +67,7 @@
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "water (for the oven version use 1/4 cup)"
         },
         {
@@ -88,7 +88,7 @@
         },
         {
           "qty": "2 1/2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "rice"
         }
       ]
