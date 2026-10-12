@@ -3,8 +3,8 @@
   "url": null,
   "image": "data/inbox/inbox-mv5uic1w-20k.jpg",
   "note": "This should be called Kayla's Bridal Shower Challah",
-  "status": "working",
+  "status": "done",
   "created_at": "2026-10-12T22:50:39.546Z",
-  "recipe_id": null,
+  "recipe_id": "kaylas-bridal-shower-challah",
   "fail_reason": null
 }
