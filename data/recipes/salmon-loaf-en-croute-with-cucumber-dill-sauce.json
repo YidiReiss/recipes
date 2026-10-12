@@ -24,7 +24,8 @@
         {
           "qty": "1",
           "unit": "(16 oz) can",
-          "item": "red or pink salmon, boned, skinned, and drained"
+          "item": "red or pink salmon",
+          "prep": "boned, skinned, and drained"
         },
         {
           "qty": "¾",
@@ -54,12 +55,14 @@
         {
           "qty": "½",
           "unit": "(17.2 oz) package",
-          "item": "frozen puff pastry, thawed"
+          "item": "frozen puff pastry",
+          "prep": "thawed"
         },
         {
           "qty": "1",
           "unit": "large",
-          "item": "egg, lightly beaten"
+          "item": "egg",
+          "prep": "lightly beaten"
         }
       ]
     },
@@ -69,7 +72,8 @@
         {
           "qty": "1",
           "unit": "large",
-          "item": "cucumber, seeded and diced"
+          "item": "cucumber",
+          "prep": "seeded and diced"
         },
         {
           "qty": "¾",
