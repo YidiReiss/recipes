@@ -22,12 +22,14 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "vine ripe tomatoes, diced"
+          "item": "vine ripe tomatoes",
+          "prep": "diced"
         },
         {
           "qty": "5",
           "unit": null,
-          "item": "fresh basil leaves, chiffonade"
+          "item": "fresh basil leaves",
+          "prep": "chiffonade"
         },
         {
           "qty": "3",
@@ -52,7 +54,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "Italian-style baguette, sliced"
+          "item": "Italian-style baguette",
+          "prep": "sliced"
         },
         {
           "qty": "1",
