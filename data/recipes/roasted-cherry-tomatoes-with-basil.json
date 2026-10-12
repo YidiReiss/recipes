@@ -35,7 +35,8 @@
         {
           "qty": "2",
           "unit": "Tbsp",
-          "item": "fresh basil leaves, stacked 4 to 5 at a time, rolled up, and thinly sliced"
+          "item": "fresh basil leaves",
+          "prep": "stacked 4 to 5 at a time, rolled up, and thinly sliced"
         },
         {
           "qty": "6",
