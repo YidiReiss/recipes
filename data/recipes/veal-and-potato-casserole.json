@@ -29,12 +29,14 @@
         {
           "qty": "1",
           "unit": "large",
-          "item": "onion, thinly sliced"
+          "item": "onion",
+          "prep": "thinly sliced"
         },
         {
           "qty": "2",
           "unit": "pounds",
-          "item": "veal steak, cubed"
+          "item": "veal steak",
+          "prep": "cubed"
         },
         {
           "qty": null,
@@ -49,7 +51,8 @@
         {
           "qty": "1 ½-2",
           "unit": "pounds",
-          "item": "potatoes, peeled and cut into thin slices"
+          "item": "potatoes",
+          "prep": "peeled and cut into thin slices"
         },
         {
           "qty": "1 ¼",
