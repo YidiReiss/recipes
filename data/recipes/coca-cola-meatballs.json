@@ -49,7 +49,8 @@
         {
           "qty": "2",
           "unit": "tsp",
-          "item": "fresh garlic, crushed"
+          "item": "fresh garlic",
+          "prep": "crushed"
         },
         {
           "qty": "1",

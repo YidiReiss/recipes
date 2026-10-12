@@ -65,7 +65,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "salt and pepper, to taste"
+          "item": "salt and pepper",
+          "prep": "to taste"
         },
         {
           "qty": "1",
@@ -75,7 +76,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "grated parmesan, for serving"
+          "item": "grated parmesan",
+          "prep": "for serving"
         },
         {
           "qty": null,

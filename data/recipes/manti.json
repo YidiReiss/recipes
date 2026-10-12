@@ -24,7 +24,8 @@
         {
           "qty": "2",
           "unit": "lb",
-          "item": "meat, chopped (round steak or strip steak)"
+          "item": "meat (round steak or strip steak)",
+          "prep": "chopped"
         },
         {
           "qty": "2",

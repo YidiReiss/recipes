@@ -22,7 +22,8 @@
         {
           "qty": "1 1/2",
           "unit": "tsp",
-          "item": "extra-virgin olive oil, divided"
+          "item": "extra-virgin olive oil",
+          "prep": "divided"
         },
         {
           "qty": "1",
@@ -38,7 +39,8 @@
         {
           "qty": "3/4",
           "unit": "lb",
-          "item": "brussels sprouts, trimmed and halved (about 8 cups)"
+          "item": "brussels sprouts (about 8 cups)",
+          "prep": "trimmed and halved"
         },
         {
           "qty": "1/4",

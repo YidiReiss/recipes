@@ -78,7 +78,8 @@
         {
           "qty": "1 ½",
           "unit": "cup",
-          "item": "unsalted butter, melted"
+          "item": "unsalted butter",
+          "prep": "melted"
         }
       ]
     }

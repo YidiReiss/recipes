@@ -34,12 +34,14 @@
         {
           "qty": "1 1/2",
           "unit": "tsp",
-          "item": "coarse salt, divided"
+          "item": "coarse salt",
+          "prep": "divided"
         },
         {
           "qty": "3/4",
           "unit": "tsp",
-          "item": "freshly ground black pepper, divided"
+          "item": "freshly ground black pepper",
+          "prep": "divided"
         },
         {
           "qty": "1/4",

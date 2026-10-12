@@ -84,7 +84,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "salt, to taste"
+          "item": "salt",
+          "prep": "to taste"
         },
         {
           "qty": "1/2",

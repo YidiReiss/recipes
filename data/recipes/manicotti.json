@@ -39,7 +39,8 @@
         {
           "qty": "1½",
           "unit": "cup",
-          "item": "shredded provolone or mozzarella, divided"
+          "item": "shredded provolone or mozzarella",
+          "prep": "divided"
         },
         {
           "qty": "¼",

@@ -27,7 +27,8 @@
         {
           "qty": "3",
           "unit": null,
-          "item": "garlic cloves, halved (we mince it)"
+          "item": "garlic cloves (we mince it)",
+          "prep": "halved"
         },
         {
           "qty": null,

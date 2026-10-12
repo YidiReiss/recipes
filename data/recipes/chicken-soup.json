@@ -63,7 +63,8 @@
         {
           "qty": "2-3",
           "unit": null,
-          "item": "carrots, cut up"
+          "item": "carrots",
+          "prep": "cut up"
         },
         {
           "qty": "1",
@@ -74,7 +75,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "parsnip, cut up (optional)"
+          "item": "parsnip",
+          "prep": "cut up"
         },
         {
           "qty": null,

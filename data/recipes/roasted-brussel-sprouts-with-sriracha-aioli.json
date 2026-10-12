@@ -31,17 +31,20 @@
         {
           "qty": "2-4",
           "unit": "tsp",
-          "item": "Sriracha chili sauce, divided"
+          "item": "Sriracha chili sauce",
+          "prep": "divided"
         },
         {
           "qty": "½",
           "unit": "tsp",
-          "item": "salt, divided"
+          "item": "salt",
+          "prep": "divided"
         },
         {
           "qty": "½",
           "unit": "tsp",
-          "item": "pepper, divided"
+          "item": "pepper",
+          "prep": "divided"
         },
         {
           "qty": "½",

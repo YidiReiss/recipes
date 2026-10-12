@@ -30,7 +30,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "meat, diced (strip steak or round steak)"
+          "item": "meat (strip steak or round steak)",
+          "prep": "diced"
         },
         {
           "qty": "2",
