@@ -230,6 +230,79 @@ function shoppingFromYmd() {
   const week = getWeek(thisWeekKey());
   return week.shoppingDay || null;
 }
+/* ---- Smart ingredient normalization ----
+   "1 egg, lightly beaten" + "1 egg" -> "2 eggs". Conservative by design:
+   - Comma phrases: the comma is the recipe author marking prep ("egg, lightly beaten").
+     Only stripped when the phrase is entirely known prep words.
+   - ALWAYS_PREP: words that are NEVER product names (beaten, melted...) — safe anywhere.
+   - Never stripped from the front: "crushed tomatoes" is a product, not prep.
+   Unknown words are left alone: worst case is two lines, never a wrong merge. */
+const PREP_WORDS = [
+  'lightly beaten', 'at room temperature', 'room temperature', 'thinly sliced',
+  'roughly chopped', 'finely diced', 'finely chopped', 'coarsely chopped',
+  'for garnish', 'to taste', 'as needed', 'cut up', 'beaten', 'diced', 'chopped',
+  'sliced', 'minced', 'grated', 'shredded', 'crushed', 'peeled', 'seeded',
+  'cubed', 'halved', 'quartered', 'julienned', 'deveined', 'trimmed', 'pitted',
+  'zested', 'juiced', 'melted', 'softened', 'divided', 'optional'
+];
+const ALWAYS_PREP = [
+  'lightly beaten', 'at room temperature', 'room temperature', 'beaten',
+  'melted', 'softened', 'to taste', 'as needed', 'divided', 'optional', 'for garnish'
+];
+const PREP_ALT = PREP_WORDS.slice().sort((a, b) => b.length - a.length)
+  .map(w => w.replace(/ /g, '\\s+')).join('|');
+const ALWAYS_ALT = ALWAYS_PREP.slice().sort((a, b) => b.length - a.length)
+  .map(w => w.replace(/ /g, '\\s+')).join('|');
+const PREP_TEST = new RegExp('^(?:' + PREP_ALT + ')$', 'i');
+const ALWAYS_TRAILING = new RegExp('\\s*,?\\s*(' + ALWAYS_ALT + ')\\s*$', 'i');
+const ALWAYS_LEADING = new RegExp('^(' + ALWAYS_ALT + ')\\s+', 'i');
+
+function splitPrep(item) {
+  // -> {base, preps[]}. Strips prep-only comma phrases + always-prep words.
+  const preps = [];
+  let base = (item || '').trim();
+  const parts = base.split(',');
+  if (parts.length > 1) {
+    const head = parts[0].trim();
+    const keep = [], found = [];
+    parts.slice(1).forEach(p => {
+      const t = p.trim().replace(/\s+and\s+/gi, ' ').trim();
+      if (t && PREP_TEST.test(t)) found.push(p.trim());
+      else keep.push(p);
+    });
+    if (found.length) {
+      preps.push(...found);
+      base = [head, ...keep].join(',').trim();
+    }
+  }
+  let m, changed = true;
+  while (changed) {
+    changed = false;
+    if ((m = base.match(ALWAYS_TRAILING))) {
+      preps.push(m[1].trim()); base = base.slice(0, m.index).trim(); changed = true;
+    } else if ((m = base.match(ALWAYS_LEADING))) {
+      preps.push(m[1].trim()); base = base.slice(m[0].length).trim(); changed = true;
+    }
+  }
+  return { base, preps };
+}
+function baseForm(w) {
+  // singular-ish form for grouping ("onions"->"onion")
+  const low = w.toLowerCase();
+  if (/(tomato|potato)es$/.test(low)) return w.slice(0, -2);
+  if (/ies$/.test(low) && low.length > 4) return w.slice(0, -3) + 'ie';
+  if (/s$/.test(low) && !/(ss|us|is|as|os)$/.test(low) && low.length > 3) return w.slice(0, -1);
+  return w;
+}
+function displayForm(base, qty) {
+  if (qty !== 1) {
+    const low = base.toLowerCase();
+    if (/ie$/.test(low)) return base.slice(0, -2) + 'ies';
+    if (/(tomato|potato)$/.test(low)) return base + 'es';
+    if (!/s$/.test(low)) return base + 's';
+  }
+  return base;
+}
 function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
@@ -247,15 +320,18 @@ function buildShoppingList() {
     const r = byId[id];
     (r.ingredients || []).forEach(sec => {
       (sec.items || []).forEach(it => {
-        const item = (it.item || '').trim();
-        if (!item) return;
+        const raw = (it.item || '').trim();
+        if (!raw) return;
+        const { base, preps } = splitPrep(raw);
+        if (!base) return;
         const unitRaw = (it.unit || '').trim();
-        const nkey = item.toLowerCase() + '|' + unitRaw.toLowerCase();
+        const nkey = baseForm(base).toLowerCase() + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { item, unit: unitRaw, qty: 0, hasNum: false, texts: [] };
+          e = { base, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
           map.set(nkey, e);
         }
+        preps.forEach(p => { if (!e.preps.includes(p)) e.preps.push(p); });
         const n = parseQty(it.qty);
         if (n !== null) { e.qty += n; e.hasNum = true; }
         else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
@@ -263,14 +339,28 @@ function buildShoppingList() {
     });
   });
   return [...map.values()].map(e => {
-    let q = '';
-    if (e.hasNum) q = String(Math.round(e.qty * 100) / 100);
+    let q = '', qnum = 0;
+    if (e.hasNum) {
+      qnum = Math.round(e.qty * 100) / 100;
+      q = String(qnum);
+    }
     if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
+    const name = displayForm(e.base, e.hasNum ? qnum : 0);
+    const prepNote = e.preps.length ? ' (' + e.preps.join(', ') + ')' : '';
     return {
-      key: e.item.toLowerCase() + '|' + e.unit.toLowerCase(),
-      label: [q, e.unit, e.item].filter(Boolean).join(' ')
+      key: e.base.toLowerCase() + '|' + e.unit.toLowerCase(),
+      label: ([q, e.unit, name].filter(Boolean).join(' ') + prepNote).trim()
     };
   }).sort((a, b) => a.label.localeCompare(b.label));
+}
+/* Manual (synced) shopping-list items live on the week object. */
+function manualItems() {
+  const week = getWeek(thisWeekKey());
+  if (!Array.isArray(week.manualItems)) week.manualItems = [];
+  return week.manualItems;
+}
+function saveManualItems(done) {
+  persistWeek(thisWeekKey(), null, done || null, true);
 }
 
 function weekStripHTML() {
@@ -330,22 +420,35 @@ function shoppingFromLabel() {
     ' onward</span>';
 }
 function shoppingListHTML() {
+  const week = getWeek(thisWeekKey());
+  if (!Array.isArray(week.manualItems)) week.manualItems = [];
+  if (!Array.isArray(week.checkedGenerated)) week.checkedGenerated = [];
   const items = buildShoppingList();
   const from = shoppingFromYmd();
-  if (!items.length) {
-    return '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
-      ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
-  }
-  const key = 'shopchecked-' + thisWeekKey();
-  let checked = [];
-  try { checked = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
-  const lis = items.map(it =>
+  const checked = week.checkedGenerated;
+  const genLis = items.map(it =>
     '<label class="shop-item"><input type="checkbox" data-shop="' + esc(it.key) + '"' +
       (checked.includes(it.key) ? ' checked' : '') + '>' +
       '<span>' + esc(it.label) + '</span></label>'
   ).join('');
-  return '<div class="shop-list" data-shopkey="' + esc(key) + '">' + lis + '</div>' +
-    '<div style="margin-top:.6rem"><button class="btn secondary" id="shop-copy" type="button">Copy list</button></div>';
+  const manLis = week.manualItems.map(m =>
+    '<label class="shop-item manual"><input type="checkbox" data-manual="' + esc(m.id) + '"' +
+      (m.checked ? ' checked' : '') + '>' +
+      '<span>' + esc(m.text) + '</span>' +
+      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></label>'
+  ).join('');
+  let html = '';
+  if (!items.length && !week.manualItems.length) {
+    html = '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
+      ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
+  } else {
+    if (genLis) html += '<div class="shop-list" data-gen="1">' + genLis + '</div>';
+    if (manLis) html += '<h3 class="shop-sub">Your items</h3><div class="shop-list" data-man="1">' + manLis + '</div>';
+  }
+  html += '<div class="shop-add no-print"><input type="text" id="shop-new" placeholder="Add your own item…" aria-label="Add your own item">' +
+    '<button class="btn secondary" id="shop-add" type="button">Add</button></div>';
+  html += '<div style="margin-top:.6rem"><button class="btn secondary" id="shop-copy" type="button">Copy list</button></div>';
+  return html;
 }
 
 /* ---------------- Home: search / filter / grid ---------------- */
@@ -457,26 +560,58 @@ function renderHome(app) {
     if (browse) browse.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  // Shopping list: persist checks, copy button.
+  // Shopping list: synced checks, manual items, copy button.
   const shopWrap = $('#shop-wrap');
   if (shopWrap) {
-    const list = shopWrap.querySelector('.shop-list');
-    if (list) {
-      const skey = list.dataset.shopkey;
-      list.addEventListener('change', e => {
-        const cb = e.target.closest('[data-shop]');
-        if (!cb) return;
-        let cur = [];
-        try { cur = JSON.parse(localStorage.getItem(skey) || '[]'); } catch (err) {}
-        const k = cb.dataset.shop;
-        if (cb.checked && !cur.includes(k)) cur.push(k);
-        if (!cb.checked) cur = cur.filter(x => x !== k);
-        try { localStorage.setItem(skey, JSON.stringify(cur)); } catch (err) {}
-      });
-    }
+    const saveShop = () => persistWeek(thisWeekKey(), null, null);
+    shopWrap.addEventListener('change', e => {
+      const week = getWeek(thisWeekKey());
+      const gen = e.target.closest('[data-shop]');
+      if (gen) {
+        if (!Array.isArray(week.checkedGenerated)) week.checkedGenerated = [];
+        const k = gen.dataset.shop;
+        if (gen.checked && !week.checkedGenerated.includes(k)) week.checkedGenerated.push(k);
+        if (!gen.checked) week.checkedGenerated = week.checkedGenerated.filter(x => x !== k);
+        saveShop();
+        return;
+      }
+      const man = e.target.closest('[data-manual]');
+      if (man) {
+        const m = (week.manualItems || []).find(x => x.id === man.dataset.manual);
+        if (m) { m.checked = man.checked; saveShop(); }
+      }
+    });
+    shopWrap.addEventListener('click', e => {
+      const del = e.target.closest('[data-mandel]');
+      if (del) {
+        const week = getWeek(thisWeekKey());
+        week.manualItems = (week.manualItems || []).filter(x => x.id !== del.dataset.mandel);
+        saveShop();
+        $('#shop-wrap').innerHTML = shoppingListHTML();
+        return;
+      }
+      if (e.target.closest('#shop-add')) {
+        const input = $('#shop-new');
+        const text = (input.value || '').trim();
+        if (!text) return;
+        const week = getWeek(thisWeekKey());
+        if (!Array.isArray(week.manualItems)) week.manualItems = [];
+        week.manualItems.push({ id: 'm' + Date.now().toString(36), text, checked: false });
+        saveShop();
+        $('#shop-wrap').innerHTML = shoppingListHTML();
+        const ni = $('#shop-new');
+        if (ni) ni.focus();
+      }
+    });
+    const newInput = $('#shop-new');
+    if (newInput) newInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); $('#shop-add').click(); }
+    });
     const copyBtn = $('#shop-copy');
     if (copyBtn) copyBtn.addEventListener('click', () => {
-      const lines = buildShoppingList().map(it => '• ' + it.label);
+      const week = getWeek(thisWeekKey());
+      const lines = buildShoppingList().map(it => '• ' + it.label)
+        .concat((week.manualItems || []).map(m => '• ' + m.text + (m.checked ? ' ✓' : '')));
       const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
       const done = () => toast('Shopping list copied');
       if (navigator.clipboard && navigator.clipboard.writeText) {
