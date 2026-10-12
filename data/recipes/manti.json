@@ -23,18 +23,18 @@
       "items": [
         {
           "qty": "2",
-          "unit": "lbs",
+          "unit": "lb",
           "item": "meat, chopped (round steak or strip steak)"
         },
         {
           "qty": "2",
-          "unit": "medium",
-          "item": "onions",
+          "unit": null,
+          "item": "medium onions",
           "prep": "chopped"
         },
         {
           "qty": "2",
-          "unit": "packages",
+          "unit": "package",
           "item": "dumpling wrappers"
         },
         {

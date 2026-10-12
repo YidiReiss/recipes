@@ -53,7 +53,7 @@
         },
         {
           "qty": "4-6",
-          "unit": "cups",
+          "unit": "cup",
           "item": "water"
         },
         {
@@ -63,7 +63,7 @@
         },
         {
           "qty": "2 1/2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "rice",
           "prep": "washed"
         }

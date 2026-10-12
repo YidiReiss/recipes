@@ -22,14 +22,14 @@
       "items": [
         {
           "qty": "3½",
-          "unit": "pound",
+          "unit": "lb",
           "item": "chicken",
           "prep": "quartered"
         },
         {
           "qty": "3",
-          "unit": "medium",
-          "item": "zucchinis"
+          "unit": null,
+          "item": "medium zucchinis"
         },
         {
           "qty": "3",

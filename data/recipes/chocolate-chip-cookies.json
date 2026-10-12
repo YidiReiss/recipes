@@ -43,12 +43,12 @@
         },
         {
           "qty": "2",
-          "unit": "large",
-          "item": "eggs"
+          "unit": null,
+          "item": "large eggs"
         },
         {
           "qty": "3",
-          "unit": "cups",
+          "unit": "cup",
           "item": "all-purpose flour"
         },
         {
@@ -68,7 +68,7 @@
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "chocolate chips (or chunks, or chopped chocolate)"
         }
       ]

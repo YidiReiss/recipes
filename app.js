@@ -289,6 +289,33 @@ function stripSize(item) {
   });
   return s.trim().replace(/\s+/g, ' ');
 }
+/* Convert tsp/tbsp/cup to a common base so "½ cup + 3 tbsp" merges to one line. */
+const TSP_PER = { tsp: 1, tbsp: 3, cup: 48 };
+function fromTsp(total) {
+  if (total >= 48) return { qty: total / 48, unit: 'cup' };
+  if (total >= 3) return { qty: total / 3, unit: 'tbsp' };
+  return { qty: total, unit: 'tsp' };
+}
+/* Canonical grouping key: lowercase, no size words, singular-ish. */
+function groupKey(item) {
+  let s = stripSize(item);
+  // singularize last word for grouping ("eggs"->"egg") so plurals merge
+  s = s.replace(/\b(\w+)s$/, (m, w) => {
+    if (w.length <= 2 || /ss$/.test(w)) return m;
+    return w;
+  });
+  return s;
+}
+/* Pluralize units for display: "2 cups", but "2 tbsp" stays. */
+function pluralizeUnit(unit, qty) {
+  if (!(qty > 1)) return unit;
+  const u = (unit || '').toLowerCase();
+  if (u === 'cup') return 'cups';
+  if (u === 'can') return 'cans';
+  if (u === 'package') return 'packages';
+  if (u === 'clove') return 'cloves';
+  return unit;
+}
 function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
@@ -302,7 +329,9 @@ function buildShoppingList() {
     });
   });
   // Group on the clean item name (intake already split item/prep), with size
-  // words stripped so "1 egg" + "1 large egg" merge. No other heuristics.
+  // words stripped so "1 egg" + "1 large egg" merge. Shopping list shows
+  // what to BUY only — prep notes are cooking instructions, not shopping info.
+  // tsp/tbsp/cup convert to a common base so "½ cup + 3 tbsp" becomes one line.
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
@@ -310,35 +339,51 @@ function buildShoppingList() {
       (sec.items || []).forEach(it => {
         const raw = (it.item || '').trim();
         if (!raw) return;
-        const sized = stripSize(raw);
-        if (!sized) return;
-        const unitRaw = (it.unit || '').trim();
-        const nkey = sized + '|' + unitRaw.toLowerCase();
+        const gkey = groupKey(raw);
+        if (!gkey) return;
+        let unitRaw = (it.unit || '').trim();
+        let qtyVal = parseQty(it.qty);
+        // normalize convertible units to tsp-base for grouping
+        const ul = unitRaw.toLowerCase();
+        let convBase = null;
+        if (qtyVal !== null && TSP_PER[ul]) {
+          convBase = qtyVal * TSP_PER[ul];
+          unitRaw = '__tspbase__';
+        }
+        const nkey = gkey + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { base: sized, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
+          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase };
           map.set(nkey, e);
         }
-        const p = (it.prep || '').trim();
-        if (p && !e.preps.includes(p)) e.preps.push(p);
-        const n = parseQty(it.qty);
-        if (n !== null) { e.qty += n; e.hasNum = true; }
-        else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
+        if (convBase !== null) { e.qty += convBase; e.hasNum = true; }
+        else {
+          const n = parseQty(it.qty);
+          if (n !== null) { e.qty += n; e.hasNum = true; }
+          else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
+        }
       });
     });
   });
   return [...map.values()].map(e => {
-    let q = '', qnum = 0;
+    let q = '', qnum = 0, dispUnit = e.unit;
     if (e.hasNum) {
-      qnum = Math.round(e.qty * 100) / 100;
-      q = fmtQty(qnum);
+      if (e.isConv) {
+        const c = fromTsp(Math.round(e.qty * 100) / 100);
+        qnum = Math.round(c.qty * 100) / 100;
+        q = fmtQty(qnum);
+        dispUnit = c.unit;
+      } else {
+        qnum = Math.round(e.qty * 100) / 100;
+        q = fmtQty(qnum);
+      }
     }
     if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
     const name = pluralize(e.base, e.hasNum ? qnum : 0);
-    const prepNote = e.preps.length ? ' (' + e.preps.join(', ') + ')' : '';
+    const du = dispUnit === '__tspbase__' ? '' : pluralizeUnit(dispUnit, e.hasNum ? qnum : 0);
     return {
-      key: e.base.toLowerCase() + '|' + e.unit.toLowerCase(),
-      label: ([q, e.unit, name].filter(Boolean).join(' ') + prepNote).trim()
+      key: e.base.toLowerCase() + '|' + du.toLowerCase(),
+      label: [q, du, name].filter(Boolean).join(' ').trim()
     };
   }).sort((a, b) => a.label.localeCompare(b.label));
 }

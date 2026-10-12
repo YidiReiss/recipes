@@ -60,8 +60,8 @@
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "egg",
+          "unit": null,
+          "item": "large egg",
           "prep": "lightly beaten"
         }
       ]
@@ -71,8 +71,8 @@
       "items": [
         {
           "qty": "1",
-          "unit": "large",
-          "item": "cucumber",
+          "unit": null,
+          "item": "large cucumber",
           "prep": "seeded and diced"
         },
         {

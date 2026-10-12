@@ -22,7 +22,7 @@
         {
           "qty": "1",
           "unit": "(8 oz) package",
-          "item": "cream cheese, softened (same amount as original, just reduce batter)"
+          "item": "cream cheese, softened"
         },
         {
           "qty": "¼",
@@ -32,7 +32,7 @@
         {
           "qty": "2",
           "unit": "tbsp",
-          "item": "all purpose flour (not changed)"
+          "item": "all purpose flour"
         },
         {
           "qty": "½",
@@ -51,12 +51,12 @@
         },
         {
           "qty": "1 ¼",
-          "unit": "cups",
+          "unit": "cup",
           "item": "all purpose flour"
         },
         {
           "qty": "¾",
-          "unit": "cups",
+          "unit": "cup",
           "item": "sugar"
         },
         {
@@ -76,13 +76,13 @@
         },
         {
           "qty": "1 ¾",
-          "unit": "cups",
+          "unit": "cup",
           "item": "raisin bran cereal"
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "egg",
+          "unit": null,
+          "item": "large egg",
           "prep": "lightly beaten"
         },
         {

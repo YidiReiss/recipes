@@ -26,13 +26,13 @@
         },
         {
           "qty": "1",
-          "unit": "small",
-          "item": "red onion",
+          "unit": null,
+          "item": "small red onion",
           "prep": "diced"
         },
         {
           "qty": "1",
-          "unit": "pound",
+          "unit": "lb",
           "item": "zucchini (2-3 medium)"
         },
         {

@@ -23,7 +23,7 @@
       "items": [
         {
           "qty": "8",
-          "unit": "cups",
+          "unit": "cup",
           "item": "chicken consommé"
         },
         {
@@ -33,13 +33,13 @@
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "onions",
           "prep": "chopped"
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "carrots",
           "prep": "chopped"
         },
@@ -60,7 +60,7 @@
         },
         {
           "qty": "2",
-          "unit": "cups",
+          "unit": "cup",
           "item": "diced ham"
         },
         {

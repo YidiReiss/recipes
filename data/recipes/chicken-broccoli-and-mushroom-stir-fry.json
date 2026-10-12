@@ -23,7 +23,7 @@
       "items": [
         {
           "qty": "2",
-          "unit": "lbs",
+          "unit": "lb",
           "item": "boneless skinless chicken breast",
           "prep": "cut into ¾-inch pieces"
         },
@@ -34,7 +34,7 @@
         },
         {
           "qty": "3",
-          "unit": "cups",
+          "unit": "cup",
           "item": "chicken broth/stock"
         },
         {
@@ -76,13 +76,13 @@
         },
         {
           "qty": "1 1/4",
-          "unit": "lbs",
+          "unit": "lb",
           "item": "broccoli (about 6 cups broccoli florets)"
         },
         {
           "qty": "1",
-          "unit": "small",
-          "item": "onion",
+          "unit": null,
+          "item": "small onion",
           "prep": "diced"
         },
         {

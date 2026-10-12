@@ -26,7 +26,7 @@
         },
         {
           "qty": "1",
-          "unit": "clove",
+          "unit": "cloves",
           "item": "garlic",
           "prep": "minced"
         },
@@ -37,7 +37,7 @@
         },
         {
           "qty": "3/4",
-          "unit": "pound",
+          "unit": "lb",
           "item": "brussels sprouts, trimmed and halved (about 8 cups)"
         },
         {

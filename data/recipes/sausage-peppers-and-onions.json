@@ -57,8 +57,8 @@
         },
         {
           "qty": "1",
-          "unit": "large",
-          "item": "sweet or yellow onion",
+          "unit": null,
+          "item": "large sweet or yellow onion",
           "prep": "sliced into 1/4-inch half moons"
         },
         {

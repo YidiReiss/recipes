@@ -24,7 +24,7 @@
       "items": [
         {
           "qty": "4",
-          "unit": "pounds",
+          "unit": "lb",
           "item": "chicken wings",
           "prep": "halved at joints, wingtips discarded"
         },
