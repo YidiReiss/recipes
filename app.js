@@ -191,20 +191,26 @@ function route() {
   editingSlot = null;
   const h = location.hash || '#/';
   const app = $('#app');
-  $('#nav-recipes').classList.toggle('active', !h.startsWith('#/planner'));
+  $('#nav-recipes').classList.toggle('active', h.startsWith('#/recipes') || h.startsWith('#/recipe/'));
   $('#nav-planner').classList.toggle('active', h.startsWith('#/planner'));
+  $('#nav-shopping').classList.toggle('active', h.startsWith('#/shopping'));
   window.scrollTo(0, 0);
   document.title = 'Reiss Family Recipes';
   if (h.startsWith('#/recipe/')) return renderRecipe(app, decodeURIComponent(h.slice(9)));
   if (h.startsWith('#/edit/')) return renderEdit(app, decodeURIComponent(h.slice(7)));
   if (h === '#/add') return renderAdd(app);
   if (h === '#/submit') return renderSubmit(app);
+  if (h === '#/recipes') return renderRecipes(app);
   if (h === '#/planner') {
     // Grab the latest plan in case someone else just saved.
     refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/planner') renderPlanner(app); });
     return renderPlanner(app);
   }
-  return renderHome(app);
+  if (h === '#/shopping') {
+    refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/shopping') renderShopping(app); });
+    return renderShopping(app);
+  }
+  return renderLanding(app);
 }
 
 /* ---------------- Home ---------------- */
@@ -468,28 +474,59 @@ function shoppingFromLabel() {
 function shoppingListHTML() {
   const week = getWeek(thisWeekKey());
   if (!Array.isArray(week.manualItems)) week.manualItems = [];
-  if (!Array.isArray(week.checkedGenerated)) week.checkedGenerated = [];
+  // Migrate old checkbox state to the new Have model (one-time)
+  if (!Array.isArray(week.haveGenerated)) {
+    week.haveGenerated = Array.isArray(week.checkedGenerated) ? [...week.checkedGenerated] : [];
+    delete week.checkedGenerated;
+  }
+  week.manualItems.forEach(m => {
+    if (m.checked !== undefined && m.have === undefined) { m.have = !!m.checked; delete m.checked; }
+  });
   const items = buildShoppingList();
   const from = shoppingFromYmd();
-  const checked = week.checkedGenerated;
-  const genLis = items.map(it =>
-    '<label class="shop-item"><input type="checkbox" data-shop="' + esc(it.key) + '"' +
-      (checked.includes(it.key) ? ' checked' : '') + '>' +
-      '<span>' + esc(it.label) + '</span></label>'
+  const have = week.haveGenerated;
+
+  // Split into To Buy vs Already Have
+  const toBuy = items.filter(it => !have.includes(it.key));
+  const haveIts = items.filter(it => have.includes(it.key));
+  const manToBuy = week.manualItems.filter(m => !m.have);
+  const manHave = week.manualItems.filter(m => m.have);
+
+  const genToBuyLis = toBuy.map(it =>
+    '<div class="shop-item" data-shop="' + esc(it.key) + '">' +
+      '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
+      '<span>' + esc(it.label) + '</span></div>'
   ).join('');
-  const manLis = week.manualItems.map(m =>
-    '<label class="shop-item manual"><input type="checkbox" data-manual="' + esc(m.id) + '"' +
-      (m.checked ? ' checked' : '') + '>' +
+  const genHaveLis = haveIts.map(it =>
+    '<div class="shop-item have" data-shop="' + esc(it.key) + '">' +
+      '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
+      '<span>' + esc(it.label) + '</span></div>'
+  ).join('');
+  const manToBuyLis = manToBuy.map(m =>
+    '<div class="shop-item manual" data-manual="' + esc(m.id) + '">' +
+      '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
       '<span>' + esc(m.text) + '</span>' +
-      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></label>'
+      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
   ).join('');
+  const manHaveLis = manHave.map(m =>
+    '<div class="shop-item manual have" data-manual="' + esc(m.id) + '">' +
+      '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
+      '<span>' + esc(m.text) + '</span>' +
+      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
+  ).join('');
+
   let html = '';
   if (!items.length && !week.manualItems.length) {
     html = '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
-    if (genLis) html += '<div class="shop-list" data-gen="1">' + genLis + '</div>';
-    if (manLis) html += '<h3 class="shop-sub">Your items</h3><div class="shop-list" data-man="1">' + manLis + '</div>';
+    if (genToBuyLis || manToBuyLis) {
+      html += '<h3 class="shop-sub">To buy</h3><div class="shop-list" data-gen="1">' + genToBuyLis + manToBuyLis + '</div>';
+    }
+    if (genHaveLis || manHaveLis) {
+      html += '<details class="shop-have-section"><summary>Already have (' + (haveIts.length + manHave.length) + ')</summary>' +
+        '<div class="shop-list" data-have="1">' + genHaveLis + manHaveLis + '</div></details>';
+    }
   }
   html += '<div class="shop-add no-print"><input type="text" id="shop-new" placeholder="Add your own item…" aria-label="Add your own item">' +
     '<button class="btn secondary" id="shop-add" type="button">Add</button></div>';
@@ -501,7 +538,7 @@ function shoppingListHTML() {
 const allTags = () => [...new Set(recipes.flatMap(r => r.tags || []))].sort();
 const allCats = () => [...new Set(recipes.flatMap(r => r.categories || []))].sort();
 
-function renderHome(app) {
+function renderRecipes(app) {
   const tags = allTags(), cats = allCats();
   app.innerHTML =
     '<section class="hero">' +
@@ -509,17 +546,6 @@ function renderHome(app) {
       '<div class="search-row hero-search no-print">' +
         '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
         'value="' + esc(filters.q) + '" aria-label="Search recipes"></div>' +
-    '</section>' +
-
-    '<section class="home-section">' +
-      '<div class="section-head"><h2>This week</h2>' +
-      '<a class="link-btn" href="#/planner">Open planner →</a></div>' +
-      '<div class="week-strip">' + weekStripHTML() + '</div>' +
-    '</section>' +
-
-    '<section class="home-section">' +
-      '<div class="section-head"><h2>Shopping list' + shoppingFromLabel() + '</h2></div>' +
-      '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
     '</section>' +
 
     '<section class="home-section">' +
@@ -606,67 +632,138 @@ function renderHome(app) {
     if (browse) browse.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  // Shopping list: synced checks, manual items, copy button.
-  const shopWrap = $('#shop-wrap');
-  if (shopWrap) {
-    const saveShop = () => persistWeek(thisWeekKey(), null, null);
-    shopWrap.addEventListener('change', e => {
-      const week = getWeek(thisWeekKey());
-      const gen = e.target.closest('[data-shop]');
-      if (gen) {
-        if (!Array.isArray(week.checkedGenerated)) week.checkedGenerated = [];
-        const k = gen.dataset.shop;
-        if (gen.checked && !week.checkedGenerated.includes(k)) week.checkedGenerated.push(k);
-        if (!gen.checked) week.checkedGenerated = week.checkedGenerated.filter(x => x !== k);
-        saveShop();
-        return;
-      }
-      const man = e.target.closest('[data-manual]');
-      if (man) {
-        const m = (week.manualItems || []).find(x => x.id === man.dataset.manual);
-        if (m) { m.checked = man.checked; saveShop(); }
-      }
-    });
-    shopWrap.addEventListener('click', e => {
-      const del = e.target.closest('[data-mandel]');
-      if (del) {
-        const week = getWeek(thisWeekKey());
-        week.manualItems = (week.manualItems || []).filter(x => x.id !== del.dataset.mandel);
-        saveShop();
-        $('#shop-wrap').innerHTML = shoppingListHTML();
-        return;
-      }
-      if (e.target.closest('#shop-add')) {
-        const input = $('#shop-new');
-        const text = (input.value || '').trim();
-        if (!text) return;
-        const week = getWeek(thisWeekKey());
-        if (!Array.isArray(week.manualItems)) week.manualItems = [];
-        week.manualItems.push({ id: 'm' + Date.now().toString(36), text, checked: false });
-        saveShop();
-        $('#shop-wrap').innerHTML = shoppingListHTML();
-        const ni = $('#shop-new');
-        if (ni) ni.focus();
-      }
-    });
-    const newInput = $('#shop-new');
-    if (newInput) newInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); $('#shop-add').click(); }
-    });
-    const copyBtn = $('#shop-copy');
-    if (copyBtn) copyBtn.addEventListener('click', () => {
-      const week = getWeek(thisWeekKey());
-      const lines = buildShoppingList().map(it => '• ' + it.label)
-        .concat((week.manualItems || []).map(m => '• ' + m.text + (m.checked ? ' ✓' : '')));
-      const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
-      const done = () => toast('Shopping list copied');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, () => toast('Copy failed'));
-      } else { toast('Copy not supported here'); }
-    });
-  }
-
   drawGrid();
+}
+
+/* ---------------- Shopping list page ---------------- */
+function renderShopping(app) {
+  document.title = 'Shopping List — Reiss Family Recipes';
+  app.innerHTML =
+    '<section class="page-head"><h1>Shopping List</h1>' +
+    '<p class="muted">' + esc(shoppingFromLabel().replace(/^/, '').trim() || 'Based on your meal plan') + '</p></section>' +
+    '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
+    '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
+
+  const shopWrap = $('#shop-wrap');
+  const saveShop = () => persistWeek(thisWeekKey(), null, null);
+  const rerender = () => { $('#shop-wrap').innerHTML = shoppingListHTML(); };
+
+  shopWrap.addEventListener('click', e => {
+    // Toggle have / to-buy
+    const haveBtn = e.target.closest('.shop-have-btn');
+    if (haveBtn) {
+      const week = getWeek(thisWeekKey());
+      const genItem = haveBtn.closest('[data-shop]');
+      const manItem = haveBtn.closest('[data-manual]');
+      if (genItem) {
+        if (!Array.isArray(week.haveGenerated)) week.haveGenerated = [];
+        const k = genItem.dataset.shop;
+        if (week.haveGenerated.includes(k)) {
+          week.haveGenerated = week.haveGenerated.filter(x => x !== k);
+        } else {
+          week.haveGenerated.push(k);
+        }
+        saveShop(); rerender(); return;
+      }
+      if (manItem) {
+        const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
+        if (m) { m.have = !m.have; saveShop(); rerender(); }
+        return;
+      }
+    }
+    // Delete manual item
+    const del = e.target.closest('[data-mandel]');
+    if (del) {
+      const week = getWeek(thisWeekKey());
+      week.manualItems = (week.manualItems || []).filter(x => x.id !== del.dataset.mandel);
+      saveShop(); rerender(); return;
+    }
+    // Add manual item
+    if (e.target.closest('#shop-add')) {
+      const input = $('#shop-new');
+      const text = (input.value || '').trim();
+      if (!text) return;
+      const week = getWeek(thisWeekKey());
+      if (!Array.isArray(week.manualItems)) week.manualItems = [];
+      week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false });
+      saveShop(); rerender();
+      const ni = $('#shop-new');
+      if (ni) ni.focus();
+    }
+  });
+  const newInput = $('#shop-new');
+  if (newInput) newInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); $('#shop-add').click(); }
+  });
+  const copyBtn = $('#shop-copy');
+  if (copyBtn) copyBtn.addEventListener('click', () => {
+    const week = getWeek(thisWeekKey());
+    const toBuy = buildShoppingList().filter(it => !(week.haveGenerated || []).includes(it.key));
+    const manToBuy = (week.manualItems || []).filter(m => !m.have);
+    const lines = toBuy.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
+    const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
+    const done = () => toast('Shopping list copied');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, () => toast('Copy failed'));
+    } else { toast('Copy not supported here'); }
+  });
+}
+
+/* ---------------- Landing page ---------------- */
+function renderLanding(app) {
+  document.title = 'Reiss Family Recipes';
+  const week = getWeek(thisWeekKey());
+  const items = buildShoppingList();
+  const toBuyCount = items.filter(it => !(week.haveGenerated || []).includes(it.key)).length +
+    (week.manualItems || []).filter(m => !m.have).length;
+  const plannedCount = week.days.reduce((n, d) =>
+    n + (d.lunch && d.lunch.recipe ? 1 : 0) + (d.dinner && d.dinner.recipe ? 1 : 0), 0);
+
+  app.innerHTML =
+    '<section class="hero landing-hero">' +
+      '<h1>Reiss Family Recipes</h1>' +
+      '<p class="muted">What are we cooking this week?</p>' +
+    '</section>' +
+    '<section class="landing-cards">' +
+      '<a class="landing-card" href="#/recipes">' +
+        '<div class="landing-card-icon">🍳</div>' +
+        '<h2>Recipes</h2><p>' + recipes.length + ' recipes</p></a>' +
+      '<a class="landing-card" href="#/planner">' +
+        '<div class="landing-card-icon">📅</div>' +
+        '<h2>Meal Planner</h2><p>' + plannedCount + ' meals planned</p></a>' +
+      '<a class="landing-card" href="#/shopping">' +
+        '<div class="landing-card-icon">🛒</div>' +
+        '<h2>Shopping List</h2><p>' + toBuyCount + ' items to buy</p></a>' +
+    '</section>' +
+    '<section class="home-section">' +
+      '<div class="section-head"><h2>This week</h2>' +
+      '<a class="link-btn" href="#/planner">Open planner →</a></div>' +
+      '<div class="plan-carousel">' + planCarouselHTML() + '</div>' +
+    '</section>';
+}
+
+function planCarouselHTML() {
+  const mon = sundayOf(0);
+  const week = getWeek(thisWeekKey());
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return week.days.map((d, i) => {
+    const date = new Date(mon);
+    date.setDate(date.getDate() + i);
+    const meals = [];
+    if (d.lunch && d.lunch.recipe && byId[d.lunch.recipe]) {
+      const r = byId[d.lunch.recipe];
+      meals.push('<div class="carousel-meal"><span class="carousel-meal-type">Lunch</span>' +
+        '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a></div>');
+    }
+    if (d.dinner && d.dinner.recipe && byId[d.dinner.recipe]) {
+      const r = byId[d.dinner.recipe];
+      meals.push('<div class="carousel-meal"><span class="carousel-meal-type">Dinner</span>' +
+        '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a></div>');
+    }
+    return '<div class="carousel-day"><h4>' + days[i] + '</h4>' +
+      '<div class="carousel-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>' +
+      (meals.length ? meals.join('') : '<span class="muted">—</span>') + '</div>';
+  }).join('');
 }
 
 function filteredRecipes() {

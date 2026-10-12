@@ -862,3 +862,65 @@ footer.site-footer {
   border: 1px solid var(--line); border-radius: 7px; background: var(--card);
 }
 .week-day.is-shop { border-color: var(--accent); background: #fff6ec; }
+
+/* Landing page */
+.landing-hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+.landing-hero h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+.landing-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+  margin: 0 0 2rem; padding: 0 1rem; max-width: 800px; margin-left: auto; margin-right: auto;
+}
+.landing-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1.5rem 1rem; text-align: center; text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.landing-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.landing-card-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.landing-card h2 { font-size: 1.1rem; margin: 0 0 0.25rem; }
+.landing-card p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+@media (max-width: 600px) {
+  .landing-cards { grid-template-columns: 1fr; max-width: 400px; }
+}
+
+/* Plan carousel */
+.plan-carousel {
+  display: flex; gap: 0.75rem; overflow-x: auto; padding: 0.5rem 0.25rem 1rem;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+}
+.carousel-day {
+  flex: 0 0 150px; scroll-snap-align: start;
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.75rem;
+}
+.carousel-day h4 { margin: 0; font-size: 0.95rem; }
+.carousel-date { color: var(--ink-soft); font-size: 0.8rem; margin-bottom: 0.5rem; }
+.carousel-meal { margin-bottom: 0.4rem; font-size: 0.85rem; }
+.carousel-meal-type {
+  display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  color: var(--ink-soft); margin-right: 0.3rem;
+}
+.carousel-meal a { color: var(--ink); text-decoration: none; }
+.carousel-meal a:hover { text-decoration: underline; }
+
+/* Shopping list: To Buy / Already Have */
+.shop-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.55rem 0.25rem; border-bottom: 1px solid var(--cream-dark);
+}
+.shop-have-btn {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  border: 2px solid var(--line); background: none; cursor: pointer;
+  font-size: 0.9rem; line-height: 1; color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center; padding: 0;
+}
+.shop-have-btn:hover { border-color: var(--accent); color: var(--accent); }
+.shop-item.have .shop-have-btn { border-color: var(--accent); color: var(--accent); }
+.shop-item.have span { color: var(--ink-soft); }
+.shop-have-section { margin-top: 1.25rem; }
+.shop-have-section summary {
+  cursor: pointer; font-weight: 700; padding: 0.5rem 0; color: var(--ink-soft);
+}
+.shop-sub { margin: 1.25rem 0 0.25rem; font-size: 1.05rem; }
+.page-head { margin-bottom: 1rem; }
+.page-head h1 { margin-bottom: 0.15rem; }
