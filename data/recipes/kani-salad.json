@@ -98,5 +98,7 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "needs_kosher_review": true,
+  "kosher_review_notes": "Contains imitation crab sticks — typically made from pollock (kosher fish) but verify the brand is kosher-certified."
 }

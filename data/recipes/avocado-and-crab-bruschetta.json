@@ -88,5 +88,7 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "needs_kosher_review": true,
+  "kosher_review_notes": "Contains lump crab meat — not kosher as written."
 }
