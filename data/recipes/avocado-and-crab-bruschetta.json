@@ -53,7 +53,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "ripe avocados, peeled, seeded, and diced"
+          "item": "ripe avocados",
+          "prep": "peeled, seeded, and diced"
         },
         {
           "qty": null,
@@ -68,7 +69,8 @@
         {
           "qty": "8",
           "unit": "slices",
-          "item": "sourdough bread, toasted"
+          "item": "sourdough bread",
+          "prep": "toasted"
         },
         {
           "qty": "¼",
