@@ -22,7 +22,8 @@
         {
           "qty": "12-16",
           "unit": "ounces",
-          "item": "penne noodles, cooked"
+          "item": "penne noodles",
+          "prep": "cooked"
         },
         {
           "qty": "3",
@@ -37,12 +38,14 @@
         {
           "qty": "4",
           "unit": "cloves",
-          "item": "garlic, chopped"
+          "item": "garlic",
+          "prep": "chopped"
         },
         {
           "qty": "1",
           "unit": "medium",
-          "item": "onion, chopped"
+          "item": "onion",
+          "prep": "chopped"
         },
         {
           "qty": "¼",
