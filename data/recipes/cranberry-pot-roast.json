@@ -29,17 +29,20 @@
         {
           "qty": "2",
           "unit": "stalks",
-          "item": "celery, sliced"
+          "item": "celery",
+          "prep": "sliced"
         },
         {
           "qty": "1",
           "unit": "medium",
-          "item": "onion, diced"
+          "item": "onion",
+          "prep": "diced"
         },
         {
           "qty": "1",
           "unit": "medium",
-          "item": "red pepper, diced"
+          "item": "red pepper",
+          "prep": "diced"
         },
         {
           "qty": "½",
@@ -59,7 +62,8 @@
         {
           "qty": "1",
           "unit": "clove",
-          "item": "garlic, diced"
+          "item": "garlic",
+          "prep": "diced"
         }
       ]
     }
