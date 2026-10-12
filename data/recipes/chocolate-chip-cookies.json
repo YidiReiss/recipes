@@ -23,7 +23,8 @@
         {
           "qty": "1",
           "unit": "cup",
-          "item": "salted butter, softened"
+          "item": "salted butter",
+          "prep": "softened"
         },
         {
           "qty": "1",
