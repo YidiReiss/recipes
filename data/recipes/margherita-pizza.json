@@ -23,7 +23,8 @@
         {
           "qty": "1",
           "unit": "lb",
-          "item": "fresh store-bought pizza dough, at room temperature"
+          "item": "fresh store-bought pizza dough",
+          "prep": "at room temperature"
         },
         {
           "qty": "2",
@@ -33,12 +34,14 @@
         {
           "qty": "8",
           "unit": "oz",
-          "item": "fresh mozzarella, thinly sliced"
+          "item": "fresh mozzarella",
+          "prep": "thinly sliced"
         },
         {
           "qty": "2",
           "unit": null,
-          "item": "beefsteak tomatoes (8 oz each), sliced"
+          "item": "beefsteak tomatoes (8 oz each)",
+          "prep": "sliced"
         },
         {
           "qty": "1/2",
