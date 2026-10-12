@@ -35,12 +35,14 @@
         {
           "qty": "1/2",
           "unit": null,
-          "item": "onion, minced"
+          "item": "onion",
+          "prep": "minced"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "tomato, chopped"
+          "item": "tomato",
+          "prep": "chopped"
         },
         {
           "qty": null,
@@ -90,7 +92,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "tomato, chopped"
+          "item": "tomato",
+          "prep": "chopped"
         },
         {
           "qty": "1/2",
