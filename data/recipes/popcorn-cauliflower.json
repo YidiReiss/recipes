@@ -22,7 +22,8 @@
         {
           "qty": "2",
           "unit": "heads",
-          "item": "cauliflower, cut into florets"
+          "item": "cauliflower",
+          "prep": "cut into florets"
         },
         {
           "qty": "½",
