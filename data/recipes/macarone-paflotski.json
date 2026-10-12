@@ -24,12 +24,14 @@
         {
           "qty": "1",
           "unit": "large",
-          "item": "onion, chopped/diced"
+          "item": "onion",
+          "prep": "chopped/diced"
         },
         {
           "qty": "2-3",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1",
