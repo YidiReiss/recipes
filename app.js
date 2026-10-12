@@ -292,10 +292,18 @@ function stripSize(item) {
 /* Convert tsp/tbsp/cup to a common base so "½ cup + 3 tbsp" merges to one line. */
 const TSP_PER = { tsp: 1, tbsp: 3, cup: 48 };
 function fromTsp(total) {
-  if (total >= 48) return { qty: total / 48, unit: 'cup' };
+  // Prefer cups for anything >= ¼ cup (12 tsp) — "11 tbsp" becomes "¾ cup".
+  if (total >= 12) return { qty: total / 48, unit: 'cup' };
   if (total >= 3) return { qty: total / 3, unit: 'tbsp' };
   return { qty: total, unit: 'tsp' };
 }
+/* Count-to-volume for common produce, so "1 onion" + "½ cup chopped onion"
+   merge. Conservative: only these three, widely-agreed conversions. */
+const COUNT_TO_TSP = {
+  'onion': 24,   // 1 medium onion ≈ ½ cup chopped
+  'garlic': 1,   // 1 clove ≈ 1 tsp minced
+  'lemon': 9,    // 1 lemon ≈ 3 tbsp juice
+};
 /* Canonical grouping key: lowercase, no size words, singular-ish. */
 function groupKey(item) {
   let s = stripSize(item);
@@ -348,6 +356,10 @@ function buildShoppingList() {
         let convBase = null;
         if (qtyVal !== null && TSP_PER[ul]) {
           convBase = qtyVal * TSP_PER[ul];
+          unitRaw = '__tspbase__';
+        } else if (qtyVal !== null && COUNT_TO_TSP[gkey] && (ul === '' || ul === 'clove' || ul === 'cloves')) {
+          // count-to-volume: "1 onion" -> 24 tsp so it merges with "½ cup chopped onion"
+          convBase = qtyVal * COUNT_TO_TSP[gkey];
           unitRaw = '__tspbase__';
         }
         const nkey = gkey + '|' + unitRaw.toLowerCase();
