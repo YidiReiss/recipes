@@ -1028,16 +1028,40 @@ function drawIngEditor() {
 function drawStepsEditor() {
   const host = $('#steps-editor');
   if (!host) return;
+  const n = editDraft.instructions.length;
   host.innerHTML = editDraft.instructions.map((s, i) =>
     '<div class="dynamic-block"><div class="mini-row">' +
+      '<span class="step-num">' + (i + 1) + '</span>' +
       '<input type="text" data-step="' + i + '" value="' + esc(s) + '" placeholder="Step ' + (i + 1) + '" aria-label="Step ' + (i + 1) + '">' +
-      '<button class="link-btn danger" data-stepdel="' + i + '" type="button">✕</button>' +
+      '<button class="link-btn" data-stepup="' + i + '" type="button" aria-label="Move step up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+      '<button class="link-btn" data-stepdown="' + i + '" type="button" aria-label="Move step down"' + (i === n - 1 ? ' disabled' : '') + '>↓</button>' +
+      '<button class="link-btn danger" data-stepdel="' + i + '" type="button" aria-label="Delete step">✕</button>' +
     '</div></div>'
   ).join('');
   host.querySelectorAll('[data-step]').forEach(el =>
     el.addEventListener('input', e => { editDraft.instructions[+e.target.dataset.step] = e.target.value; }));
   host.querySelectorAll('[data-stepdel]').forEach(el =>
     el.addEventListener('click', e => { editDraft.instructions.splice(+e.target.dataset.stepdel, 1); drawStepsEditor(); }));
+  host.querySelectorAll('[data-stepup]').forEach(el =>
+    el.addEventListener('click', e => {
+      const i = +e.target.dataset.stepup;
+      if (i > 0) {
+        const t = editDraft.instructions[i - 1];
+        editDraft.instructions[i - 1] = editDraft.instructions[i];
+        editDraft.instructions[i] = t;
+        drawStepsEditor();
+      }
+    }));
+  host.querySelectorAll('[data-stepdown]').forEach(el =>
+    el.addEventListener('click', e => {
+      const i = +e.target.dataset.stepdown;
+      if (i < editDraft.instructions.length - 1) {
+        const t = editDraft.instructions[i + 1];
+        editDraft.instructions[i + 1] = editDraft.instructions[i];
+        editDraft.instructions[i] = t;
+        drawStepsEditor();
+      }
+    }));
 }
 
 function drawPairEditor() {

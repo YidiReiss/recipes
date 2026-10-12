@@ -420,6 +420,13 @@ body {
 }
 
 .link-btn.danger { color: var(--meat); }
+.link-btn:disabled { opacity: 0.25; cursor: default; }
+.step-num {
+  flex: 0 0 1.5rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-align: center;
+}
 
 .form-status { margin-top: 0.75rem; font-size: 0.95rem; }
 .form-status.error { color: var(--meat); font-weight: 700; }
