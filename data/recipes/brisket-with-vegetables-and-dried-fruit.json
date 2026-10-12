@@ -30,12 +30,14 @@
         {
           "qty": "4",
           "unit": null,
-          "item": "onions, sliced"
+          "item": "onions",
+          "prep": "sliced"
         },
         {
           "qty": "3",
           "unit": "cloves",
-          "item": "garlic, chopped"
+          "item": "garlic",
+          "prep": "chopped"
         },
         {
           "qty": "4-6",
@@ -70,12 +72,14 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "carrots, peeled and cut into 1 ½ inch pieces"
+          "item": "carrots",
+          "prep": "peeled and cut into 1 ½ inch pieces"
         },
         {
           "qty": "2",
           "unit": null,
-          "item": "parsnips, peeled and cut into 1 ½ inch pieces"
+          "item": "parsnips",
+          "prep": "peeled and cut into 1 ½ inch pieces"
         },
         {
           "qty": "½",
