@@ -254,13 +254,13 @@ function pluralize(word, qty) {
   const head = (m[1] || '').trim(), tail = m[2] || '';
   if (!head) return word;
   const low = head.toLowerCase();
-  const words = low.split(/\s+/);
-  const lastWord = words.pop();
-  // Uncountable if the full phrase matches, or it's a single uncountable word.
-  // ("pepper" the spice stays singular; "bell pepper" the vegetable pluralizes.)
   if (UNCOUNTABLES.has(low)) return word;
-  if (words.length === 0 && UNCOUNTABLES.has(lastWord)) return word;
-  if (low === 'pepper' || low === 'black pepper' || low.endsWith(' black pepper')) return word;
+  const words = low.split(/\s+/);
+  const lastWord = words[words.length - 1];
+  // Mass nouns stay singular even with modifiers ("fresh garlic", "lean ground beef",
+  // "Worcestershire sauce", "black pepper"). Exception: "bell pepper" is a countable vegetable.
+  const isBellPepper = low === 'bell pepper' || low.endsWith(' bell pepper');
+  if (!isBellPepper && UNCOUNTABLES.has(lastWord)) return word;
   if (/s$/.test(low)) return word; // already plural (or looks it) — leave alone
   let p = head;
   if (/[^aeiou]y$/.test(low)) p = head.slice(0, -1) + 'ies';
@@ -279,6 +279,16 @@ function shoppingFromYmd() {
   const week = getWeek(thisWeekKey());
   return week.shoppingDay || null;
 }
+/* Size descriptors that don't change what you buy ("large egg" = "egg"). Stripped
+   for grouping so "1 egg" + "1 large egg" merge. Never applied to display alone. */
+const SIZE_WORDS = ['extra-large', 'extra large', 'jumbo', 'large', 'medium', 'small'];
+function stripSize(item) {
+  let s = ' ' + String(item || '').toLowerCase() + ' ';
+  SIZE_WORDS.forEach(w => {
+    s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
+  });
+  return s.trim().replace(/\s+/g, ' ');
+}
 function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
@@ -291,7 +301,8 @@ function buildShoppingList() {
       if (s && s.recipe && !s.skipped && byId[s.recipe]) ids.push(s.recipe);
     });
   });
-  // Group on the clean item name (intake already split item/prep). No heuristics.
+  // Group on the clean item name (intake already split item/prep), with size
+  // words stripped so "1 egg" + "1 large egg" merge. No other heuristics.
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
@@ -299,11 +310,13 @@ function buildShoppingList() {
       (sec.items || []).forEach(it => {
         const raw = (it.item || '').trim();
         if (!raw) return;
+        const sized = stripSize(raw);
+        if (!sized) return;
         const unitRaw = (it.unit || '').trim();
-        const nkey = raw.toLowerCase() + '|' + unitRaw.toLowerCase();
+        const nkey = sized + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { base: raw, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
+          e = { base: sized, unit: unitRaw, qty: 0, hasNum: false, texts: [], preps: [] };
           map.set(nkey, e);
         }
         const p = (it.prep || '').trim();

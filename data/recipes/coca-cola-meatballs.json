@@ -43,13 +43,13 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, minced in chopper, divided"
+          "item": "onion",
+          "prep": "minced in chopper, divided"
         },
         {
           "qty": "2",
           "unit": "tsp",
-          "item": "fresh garlic",
-          "prep": "crushed"
+          "item": "fresh garlic, crushed"
         },
         {
           "qty": "1",
