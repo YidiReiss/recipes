@@ -80,8 +80,13 @@
             "note": ""
           },
           "dinner": {
-            "recipe": "split-pea-soup",
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "split-pea-soup",
+                "leftovers": true,
+                "cookDate": null
+              }
+            ],
             "skipped": false,
             "note": ""
           }
