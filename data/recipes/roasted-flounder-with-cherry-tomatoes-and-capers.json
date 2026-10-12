@@ -28,7 +28,8 @@
         {
           "qty": "6",
           "unit": "cloves",
-          "item": "garlic with skin on, crushed"
+          "item": "garlic with skin on",
+          "prep": "crushed"
         },
         {
           "qty": "3",
