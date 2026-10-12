@@ -20,12 +20,12 @@
     "fail_reason": null
   },
   {
-    "id": "inbox-mv5uhiug-5on",
+    "id": "inbox-mv5uic1w-20k",
     "url": null,
-    "image": "data/inbox/inbox-mv5uhiug-5on.jpg",
-    "note": "Can use image from the recipe photo",
+    "image": "data/inbox/inbox-mv5uic1w-20k.jpg",
+    "note": "This should be called Kayla's Bridal Shower Challah",
     "status": "pending",
-    "created_at": "2026-10-12T22:50:01.857Z",
+    "created_at": "2026-10-12T22:50:39.546Z",
     "recipe_id": null,
     "fail_reason": null
   }
