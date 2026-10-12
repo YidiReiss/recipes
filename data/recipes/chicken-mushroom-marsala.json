@@ -54,7 +54,8 @@
         {
           "qty": "8",
           "unit": "oz",
-          "item": "cremini mushrooms, stemmed and cut into 1-inch pieces"
+          "item": "cremini mushrooms",
+          "prep": "stemmed and cut into 1-inch pieces"
         },
         {
           "qty": "1/2",
