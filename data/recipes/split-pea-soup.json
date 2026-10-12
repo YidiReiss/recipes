@@ -91,7 +91,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "large russet potato, diced into cubes"
+          "item": "large russet potato",
+          "prep": "diced into cubes"
         }
       ]
     }
