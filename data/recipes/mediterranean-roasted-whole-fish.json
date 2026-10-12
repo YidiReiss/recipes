@@ -23,7 +23,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "whole Branzino fish (or other mild white fish), cleaned, deboned and butterflied"
+          "item": "whole Branzino fish (or other mild white fish)",
+          "prep": "cleaned, deboned and butterflied"
         },
         {
           "qty": "2",
