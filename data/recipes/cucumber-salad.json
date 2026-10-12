@@ -24,7 +24,8 @@
         {
           "qty": "3",
           "unit": null,
-          "item": "cucumbers, thinly sliced"
+          "item": "cucumbers",
+          "prep": "thinly sliced"
         },
         {
           "qty": "2",
