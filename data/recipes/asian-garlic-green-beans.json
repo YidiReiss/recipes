@@ -32,12 +32,14 @@
         {
           "qty": "3",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "shallot, chopped"
+          "item": "shallot",
+          "prep": "chopped"
         },
         {
           "qty": "2",
