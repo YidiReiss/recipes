@@ -767,6 +767,10 @@ function renderRecipe(app, id) {
       '<div class="recipe-hero">' + bannerHTML(r) + '</div>' +
       '<h1 class="recipe-title">' + esc(r.title) + '</h1>' +
       badgesHTML(r) +
+      (r.needs_kosher_review
+        ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
+          (r.kosher_review_notes ? '<br>' + esc(r.kosher_review_notes) : '') + '</div>'
+        : '') +
       '<div class="recipe-meta">' +
         '<span>Prep <strong>' + esc(fmtTime(r.prep_minutes)) + '</strong></span>' +
         '<span>Cook <strong>' + esc(fmtTime(r.cook_minutes)) + '</strong></span>' +

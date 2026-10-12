@@ -105,5 +105,7 @@
   "pairings": [],
   "notes": "Doc updated quantities: 8 cups water → chicken consommé, 2 cups split peas → 1 cup, 1½ tbsp onion powder → 1 tsp. Contains ham bone and diced ham — not kosher as written; substitute beef or omit for a kosher version.",
   "source": null,
-  "tags_need_review": true
+  "tags_need_review": true,
+  "needs_kosher_review": true,
+  "kosher_review_notes": "Contains ham and ham bone — not kosher as written. Requires substitution or removal."
 }
