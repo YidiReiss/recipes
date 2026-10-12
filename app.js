@@ -920,7 +920,7 @@ function readAsDataURL(blob) {
   return new Promise((res, rej) => {
     const fr = new FileReader();
     fr.onload = () => res(fr.result);
-    fr.onerror = rej;
+    fr.onerror = () => rej(new Error('Could not read that file — it may be corrupt or an unsupported format.'));
     fr.readAsDataURL(blob);
   });
 }
@@ -929,7 +929,7 @@ function loadImage(src) {
   return new Promise((res, rej) => {
     const img = new Image();
     img.onload = () => res(img);
-    img.onerror = rej;
+    img.onerror = () => rej(new Error('That photo could not be opened as an image — try a JPG or PNG.'));
     img.src = src;
   });
 }
