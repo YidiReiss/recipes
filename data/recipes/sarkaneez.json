@@ -30,17 +30,20 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, sliced"
+          "item": "onion",
+          "prep": "sliced"
         },
         {
           "qty": "4",
           "unit": null,
-          "item": "chicken thighs, cut up"
+          "item": "chicken thighs",
+          "prep": "cut up"
         },
         {
           "qty": "1",
           "unit": "large",
-          "item": "carrot, julienned then chopped"
+          "item": "carrot",
+          "prep": "julienned then chopped"
         },
         {
           "qty": "3/4",
@@ -70,7 +73,8 @@
         {
           "qty": "5",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": null,
