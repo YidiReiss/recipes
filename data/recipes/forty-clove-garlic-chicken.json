@@ -24,7 +24,8 @@
         {
           "qty": "1",
           "unit": "(3 ½-4 lb)",
-          "item": "chicken, quartered or cut into 8 pieces"
+          "item": "chicken",
+          "prep": "quartered or cut into 8 pieces"
         },
         {
           "qty": "¼-½",
@@ -39,7 +40,8 @@
         {
           "qty": "40",
           "unit": "cloves",
-          "item": "garlic, unpeeled"
+          "item": "garlic",
+          "prep": "unpeeled"
         },
         {
           "qty": "3",
