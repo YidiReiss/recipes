@@ -11,7 +11,7 @@
           },
           "dinner": {
             "recipe": null,
-            "custom": null,
+            "custom": "Pan baked ziti",
             "skipped": false,
             "note": ""
           }
