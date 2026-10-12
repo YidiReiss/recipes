@@ -226,6 +226,17 @@ body {
 .badge.meat   { background: var(--meat); }
 .badge.dairy  { background: var(--dairy); }
 .badge.pareve { background: var(--pareve); }
+
+.kosher-alert {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: 0.5rem;
+  color: #92400e;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
 .badge.kfp    { background: var(--kfp); }
 .badge.neutral {
   background: var(--cream-dark);
