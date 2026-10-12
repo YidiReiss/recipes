@@ -23,12 +23,14 @@
         {
           "qty": "1 1/2",
           "unit": null,
-          "item": "onions, sliced"
+          "item": "onions",
+          "prep": "sliced"
         },
         {
           "qty": "1/2",
           "unit": null,
-          "item": "red pepper, chopped"
+          "item": "red pepper",
+          "prep": "chopped"
         },
         {
           "qty": "2",
@@ -38,7 +40,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "tomatoes, chopped"
+          "item": "tomatoes",
+          "prep": "chopped"
         },
         {
           "qty": "1",
@@ -63,12 +66,14 @@
         {
           "qty": "8",
           "unit": null,
-          "item": "potatoes, julienned thin and cut small"
+          "item": "potatoes",
+          "prep": "julienned thin and cut small"
         },
         {
           "qty": "2",
           "unit": null,
-          "item": "onions, chopped"
+          "item": "onions",
+          "prep": "chopped"
         },
         {
           "qty": "1",
