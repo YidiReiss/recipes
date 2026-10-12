@@ -25,12 +25,14 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "small carrots, julienned and diced"
+          "item": "small carrots",
+          "prep": "julienned and diced"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, sliced"
+          "item": "onion",
+          "prep": "sliced"
         },
         {
           "qty": "1/4-1/2",
@@ -40,12 +42,14 @@
         {
           "qty": "4",
           "unit": null,
-          "item": "chickens, cut up"
+          "item": "chickens",
+          "prep": "cut up"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "tomato, chopped"
+          "item": "tomato",
+          "prep": "chopped"
         },
         {
           "qty": "4-6",
@@ -60,7 +64,8 @@
         {
           "qty": "2 1/2",
           "unit": "cups",
-          "item": "rice, washed"
+          "item": "rice",
+          "prep": "washed"
         }
       ]
     }
