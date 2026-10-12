@@ -27,7 +27,8 @@
         {
           "qty": "1",
           "unit": "small",
-          "item": "red onion, diced"
+          "item": "red onion",
+          "prep": "diced"
         },
         {
           "qty": "1",
@@ -37,12 +38,14 @@
         {
           "qty": "1",
           "unit": "pint",
-          "item": "cherry or grape tomatoes, halved"
+          "item": "cherry or grape tomatoes",
+          "prep": "halved"
         },
         {
           "qty": "2",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "½",
