@@ -24,7 +24,8 @@
         {
           "qty": null,
           "unit": null,
-          "item": "3 baby carrot jars and 1 carrot, grated"
+          "item": "3 baby carrot jars and 1 carrot",
+          "prep": "grated"
         },
         {
           "qty": null,
