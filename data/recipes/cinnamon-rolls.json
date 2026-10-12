@@ -28,7 +28,8 @@
         {
           "qty": "2",
           "unit": "Tbsp",
-          "item": "unsalted butter, melted"
+          "item": "unsalted butter",
+          "prep": "melted"
         },
         {
           "qty": "¼",
