@@ -330,7 +330,7 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
+            "recipe": "coca-cola-meatballs",
             "custom": null,
             "skipped": false,
             "note": ""
