@@ -29,7 +29,8 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "onion, diced"
+          "item": "onion",
+          "prep": "diced"
         },
         {
           "qty": "1",
@@ -39,7 +40,8 @@
         {
           "qty": "3-4",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "3",
