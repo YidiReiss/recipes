@@ -35,7 +35,8 @@
         {
           "qty": "1",
           "unit": "package",
-          "item": "mushrooms, quartered"
+          "item": "mushrooms",
+          "prep": "quartered"
         },
         {
           "qty": "3-4",
@@ -46,7 +47,8 @@
         {
           "qty": "3",
           "unit": null,
-          "item": "potatoes, cut into chunks"
+          "item": "potatoes",
+          "prep": "cut into chunks"
         },
         {
           "qty": "1",
