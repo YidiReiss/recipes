@@ -27,7 +27,8 @@
         {
           "qty": "2",
           "unit": "cloves",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "1",
