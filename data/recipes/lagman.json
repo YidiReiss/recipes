@@ -25,7 +25,8 @@
         {
           "qty": "2",
           "unit": null,
-          "item": "large onions, sliced"
+          "item": "large onions",
+          "prep": "sliced"
         },
         {
           "qty": "1",
@@ -35,27 +36,32 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "celery stalk, diced"
+          "item": "celery stalk",
+          "prep": "diced"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "red pepper, diced"
+          "item": "red pepper",
+          "prep": "diced"
         },
         {
           "qty": "1-2",
           "unit": null,
-          "item": "potatoes, diced"
+          "item": "potatoes",
+          "prep": "diced"
         },
         {
           "qty": "1-2",
           "unit": null,
-          "item": "carrots, sliced"
+          "item": "carrots",
+          "prep": "sliced"
         },
         {
           "qty": "5",
           "unit": "cloves",
-          "item": "garlic, diced"
+          "item": "garlic",
+          "prep": "diced"
         },
         {
           "qty": "1",
