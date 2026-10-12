@@ -108,22 +108,26 @@
         {
           "qty": "2",
           "unit": "cups",
-          "item": "cabbage, shredded"
+          "item": "cabbage",
+          "prep": "shredded"
         },
         {
           "qty": "¼",
           "unit": "cup",
-          "item": "cilantro, chopped"
+          "item": "cilantro",
+          "prep": "chopped"
         },
         {
           "qty": "½",
           "unit": null,
-          "item": "green onion, sliced"
+          "item": "green onion",
+          "prep": "sliced"
         },
         {
           "qty": "1",
           "unit": "clove",
-          "item": "garlic, minced"
+          "item": "garlic",
+          "prep": "minced"
         }
       ]
     },
