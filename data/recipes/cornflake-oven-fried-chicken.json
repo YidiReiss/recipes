@@ -24,12 +24,14 @@
         {
           "qty": "1 1/2",
           "unit": "cups",
-          "item": "cornflakes cereal, finely crushed"
+          "item": "cornflakes cereal",
+          "prep": "finely crushed"
         },
         {
           "qty": "2",
           "unit": null,
-          "item": "large eggs, beaten"
+          "item": "large eggs",
+          "prep": "beaten"
         },
         {
           "qty": "4",
