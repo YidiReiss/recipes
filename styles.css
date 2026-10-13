@@ -419,6 +419,25 @@ body {
 .dynamic-block .mini-row input { flex: 1; min-width: 0; }
 .dynamic-block .mini-row input.qty { flex: 0 0 4.5rem; }
 .dynamic-block .mini-row input.unit { flex: 0 0 5.5rem; }
+/* Ingredient name gets 2x flex; prep gets a fixed width so names aren't squeezed */
+.dynamic-block .mini-row input[data-item$="|item"] { flex: 2; }
+.dynamic-block .mini-row input[data-item$="|prep"] { flex: 0 0 7rem; }
+/* Column headers for the ingredient editor */
+.dynamic-block .mini-row.ing-header {
+  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted, #666);
+}
+.dynamic-block .mini-row.ing-header span { flex: 1; min-width: 0; }
+.dynamic-block .mini-row.ing-header span.qty { flex: 0 0 4.5rem; }
+.dynamic-block .mini-row.ing-header span.unit { flex: 0 0 5.5rem; }
+.dynamic-block .mini-row.ing-header span.ing-name { flex: 2; }
+.dynamic-block .mini-row.ing-header span.prep { flex: 0 0 7rem; }
+.dynamic-block .mini-row.ing-header span.ing-x { flex: 0 0 1.5rem; }
+/* Allow horizontal scroll if the row still overflows on small screens */
+#ing-editor .dynamic-block { overflow-x: auto; }
+#ing-editor .dynamic-block .mini-row { min-width: 32rem; }
 
 .link-btn {
   background: none;

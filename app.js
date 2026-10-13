@@ -1019,6 +1019,11 @@ function recipeFormHTML(r, cancelHref) {
       '<div class="field"><label>Kosher flags</label><div class="checks">' +
         '<label><input type="checkbox" id="e-kfp"' + (r.kosher_for_passover ? ' checked' : '') + '> Kosher for Passover</label>' +
         '<label><input type="checkbox" id="e-left"' + (r.leftover_friendly ? ' checked' : '') + '> Good leftovers</label>' +
+        '<label><input type="checkbox" id="e-kosher-review"' + (r.needs_kosher_review ? ' checked' : '') + '> Needs kosher review</label>' +
+      '</div>' +
+      '<div class="field" id="e-kosher-notes-wrap" style="margin-top:.5rem;' + (r.needs_kosher_review ? '' : 'display:none') + '">' +
+        '<label for="e-kosher-notes">Kosher review notes</label>' +
+        '<input type="text" id="e-kosher-notes" value="' + esc(r.kosher_review_notes || '') + '" placeholder="What needs checking?">' +
       '</div></div>' +
       '<div class="field"><label>Categories</label><div class="checks">' +
         KNOWN_CATEGORIES.map(c =>
@@ -1085,6 +1090,11 @@ function wireRecipeForm(onSave) {
   drawIngEditor();
   drawStepsEditor();
   drawPairEditor();
+  // Toggle kosher review notes visibility
+  const krCb = $('#e-kosher-review'), krWrap = $('#e-kosher-notes-wrap');
+  if (krCb && krWrap) krCb.addEventListener('change', () => {
+    krWrap.style.display = krCb.checked ? '' : 'none';
+  });
   $('#ing-add-sec').onclick = () => {
     editDraft.ingredients.push({ section: '', items: [{ qty: '', unit: '', item: '', prep: '' }] });
     drawIngEditor();
@@ -1103,6 +1113,8 @@ function collectRecipeForm(d) {
   d.servings = $('#e-serv').value.trim();
   d.kosher_for_passover = $('#e-kfp').checked;
   d.leftover_friendly = $('#e-left').checked;
+  d.needs_kosher_review = $('#e-kosher-review') ? $('#e-kosher-review').checked : false;
+  d.kosher_review_notes = $('#e-kosher-notes') ? $('#e-kosher-notes').value.trim() : '';
   d.categories = [...document.querySelectorAll('.e-cat')].filter(c => c.checked).map(c => c.value);
   d.tags = $('#e-tags').value.split(',').map(t => t.trim()).filter(Boolean);
   d.banner_image = $('#e-banner').value.trim();
@@ -1174,6 +1186,10 @@ function drawIngEditor() {
         '<input type="text" data-secname="' + si + '" value="' + esc(s.section || '') + '" ' +
         'placeholder="Section name (e.g. Dough)" aria-label="Section name">' +
         '<button class="link-btn danger" data-secdel="' + si + '" type="button">Remove</button>' +
+      '</div>' +
+      '<div class="mini-row ing-header">' +
+        '<span class="qty">Qty</span><span class="unit">Unit</span>' +
+        '<span class="ing-name">Ingredient</span><span class="prep">Prep</span><span class="ing-x"></span>' +
       '</div>' +
       (s.items || []).map((it, ii) =>
         '<div class="mini-row">' +
