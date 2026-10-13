@@ -1887,6 +1887,14 @@ async function loadInboxList() {
     const r = await fetch('data/inbox/index.json');
     if (r.ok) idx = await r.json();
   } catch (e) { /* no inbox yet */ }
+  // Refresh the list every 60s while the submit page is open,
+  // so entries update when the checker processes them.
+  if (!window._inboxRefreshTimer) {
+    window._inboxRefreshTimer = setInterval(() => {
+      if (document.getElementById('inbox-list')) loadInboxList();
+      else { clearInterval(window._inboxRefreshTimer); window._inboxRefreshTimer = null; }
+    }, 60000);
+  }
   if (!idx.length) {
     host.innerHTML = '<p>Nothing submitted yet.</p>';
     return;
