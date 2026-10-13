@@ -101,7 +101,7 @@
   "kosher_status": "meat",
   "leftover_friendly": false,
   "leftover_note": "",
-  "needs_kosher_review": true,
+  "needs_kosher_review": false,
   "notes": "From Fallow's YouTube video \"Michelin Star Beef Short Ribs at Home\" — inspired by Daniel Boulud's two-star braised short ribs. The red-wine reduction is what gives the sauce its depth.",
   "pairings": [],
   "pdf": "pdfs/michelin-star-beef-short-ribs-fallow.pdf",
@@ -122,5 +122,5 @@
     }
   ],
   "title": "Michelin Star Beef Short Ribs (Fallow)",
-  "pdf_stale": false
+  "pdf_stale": true
 }
