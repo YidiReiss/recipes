@@ -1747,22 +1747,8 @@ async function sendSubmission() {
     try { idx = JSON.parse((await ghGet('data/inbox/index.json')).text); } catch (e) { idx = []; }
     idx.push(entry);
     await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2), 'Inbox index ' + id);
-    // Verify it actually landed — re-fetch and confirm
-    st.textContent = 'Verifying…';
-    let verified = false;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      await new Promise(r => setTimeout(r, 2000));
-      try {
-        const check = await (await fetch('data/inbox/index.json?t=' + Date.now())).json();
-        if (check.some(e => e.id === id)) { verified = true; break; }
-      } catch (e) { /* retry */ }
-    }
-    if (!verified) {
-      st.className = 'form-status error';
-      st.textContent = 'Upload may not have completed — check "Recent submissions" below. If it\u2019s not there, try submitting again.';
-      loadInboxList();
-      return;
-    }
+    // The bridge throws on HTTP errors, so reaching here means the uploads succeeded.
+    // No additional verification needed — GitHub Pages cache would give false negatives.
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
