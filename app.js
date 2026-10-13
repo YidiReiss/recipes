@@ -156,6 +156,8 @@ async function boot() {
     const mp = await (await fetch('data/meal-plan.json?v=' + Date.now())).json();
     mealPlan = (mp && typeof mp.weeks === 'object') ? mp : { weeks: {} };
   } catch (e) { mealPlan = { weeks: {} }; }
+  // Merge any local shopping-list state (offline taps) over the server copy
+  loadShopLocal();
 
   window.addEventListener('hashchange', route);
   route();
@@ -504,23 +506,41 @@ function shoppingListHTML() {
   });
   const items = buildShoppingList();
   const from = shoppingFromYmd();
-  const have = week.haveGenerated;
+  const marks = normalizeHaveMarks(week.haveGenerated);
+  const haveKeys = new Set(marks.map(m => m.key));
+  // Conflict: item marked have by 2+ distinct sessions and not acknowledged
+  const conflictKeys = new Set();
+  const byKey = {};
+  marks.forEach(m => { (byKey[m.key] = byKey[m.key] || new Set()).add(m.session); });
+  Object.keys(byKey).forEach(k => {
+    if (byKey[k].size > 1 && !(week.conflictAcked && week.conflictAcked[k])) conflictKeys.add(k);
+  });
+  // Manual items: conflict if haveSession differs from another mark (track via haveSessions array)
+  week.manualItems.forEach(m => {
+    if (m.have && Array.isArray(m.haveSessions) && new Set(m.haveSessions).size > 1 &&
+        !(week.conflictAcked && week.conflictAcked['m:' + m.id])) conflictKeys.add('m:' + m.id);
+  });
 
   // Split into To Buy vs Already Have
-  const toBuy = items.filter(it => !have.includes(it.key));
-  const haveIts = items.filter(it => have.includes(it.key));
+  const toBuy = items.filter(it => !haveKeys.has(it.key));
+  const haveIts = items.filter(it => haveKeys.has(it.key));
   const manToBuy = week.manualItems.filter(m => !m.have);
   const manHave = week.manualItems.filter(m => m.have);
 
+  const conflictBadge = k =>
+    conflictKeys.has(k)
+      ? '<span class="shop-conflict">⚠️ Both grabbed this — check for duplicates ' +
+        '<button class="link-btn" data-confack="' + esc(k) + '" type="button">dismiss</button></span>'
+      : '';
   const genToBuyLis = toBuy.map(it =>
     '<div class="shop-item" data-shop="' + esc(it.key) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
       '<span>' + esc(it.label) + '</span></div>'
   ).join('');
   const genHaveLis = haveIts.map(it =>
-    '<div class="shop-item have" data-shop="' + esc(it.key) + '">' +
+    '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
-      '<span>' + esc(it.label) + '</span></div>'
+      '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>'
   ).join('');
   const manToBuyLis = manToBuy.map(m =>
     '<div class="shop-item manual" data-manual="' + esc(m.id) + '">' +
@@ -529,9 +549,9 @@ function shoppingListHTML() {
       '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
   ).join('');
   const manHaveLis = manHave.map(m =>
-    '<div class="shop-item manual have" data-manual="' + esc(m.id) + '">' +
+    '<div class="shop-item manual have' + (conflictKeys.has('m:' + m.id) ? ' conflict' : '') + '" data-manual="' + esc(m.id) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
-      '<span>' + esc(m.text) + '</span>' +
+      '<span>' + esc(m.text) + '</span>' + conflictBadge('m:' + m.id) +
       '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
   ).join('');
 
@@ -665,31 +685,51 @@ function renderShopping(app) {
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
 
   const shopWrap = $('#shop-wrap');
-  const saveShop = () => persistWeek(thisWeekKey(), null, null);
+  const saveShop = () => { saveShopLocal(); syncShopSoon(); };
   const rerender = () => { $('#shop-wrap').innerHTML = shoppingListHTML(); };
+  // Start 15s background sync while the shopping page is open
+  startShopPoll();
 
   shopWrap.addEventListener('click', e => {
-    // Toggle have / to-buy
+    // Toggle have / to-buy (local-first: works offline, syncs in background)
     const haveBtn = e.target.closest('.shop-have-btn');
     if (haveBtn) {
       const week = getWeek(thisWeekKey());
+      const sid = getSessionId(), now = Date.now();
       const genItem = haveBtn.closest('[data-shop]');
       const manItem = haveBtn.closest('[data-manual]');
       if (genItem) {
-        if (!Array.isArray(week.haveGenerated)) week.haveGenerated = [];
+        week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
         const k = genItem.dataset.shop;
-        if (week.haveGenerated.includes(k)) {
-          week.haveGenerated = week.haveGenerated.filter(x => x !== k);
+        const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
+        if (existing) {
+          week.haveGenerated = week.haveGenerated.filter(x => !(x.key === k && x.session === sid));
         } else {
-          week.haveGenerated.push(k);
+          week.haveGenerated.push({ key: k, session: sid, at: now });
         }
-        saveShop(); rerender(); return;
+        saveShopLocal(); syncShopSoon(); rerender(); return;
       }
       if (manItem) {
         const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
-        if (m) { m.have = !m.have; saveShop(); rerender(); }
-        return;
+        if (m) {
+          if (m.have && m.haveSession === sid) {
+            m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = [];
+          } else {
+            m.have = true; m.haveSession = sid; m.haveAt = now;
+            if (!Array.isArray(m.haveSessions)) m.haveSessions = [];
+            if (!m.haveSessions.includes(sid)) m.haveSessions.push(sid);
+          }
+        }
+        saveShopLocal(); syncShopSoon(); rerender(); return;
       }
+    }
+    // Dismiss conflict warning
+    const conflictBtn = e.target.closest('[data-confack]');
+    if (conflictBtn) {
+      const week = getWeek(thisWeekKey());
+      if (!week.conflictAcked) week.conflictAcked = {};
+      week.conflictAcked[conflictBtn.dataset.confack] = true;
+      saveShopLocal(); syncShopSoon(); rerender(); return;
     }
     // Delete manual item
     const del = e.target.closest('[data-mandel]');
@@ -1734,10 +1774,108 @@ async function persistWeek(key, statusEl, done) {
   }
 }
 
-/* ---------------- Submit a recipe (inbox) ----------------
-   Paste a link and/or attach a photo. It lands in data/inbox/ and the
-   intake checker (every 30 min) turns it into a recipe + standardized PDF.
-   Nava uses the same box — no setup, no login. */
+/* ---------------- Shopping list: offline-first with conflict detection ----------------
+   Each device gets a session ID per page load. Taps save to localStorage instantly
+   (works offline), then sync via the bridge in the background. The worker /read
+   endpoint provides fresh server state bypassing Pages rebuild delay.
+   If two sessions mark the same item as "have", it's flagged as a potential
+   duplicate — the second tapper couldn't see the first mark when they tapped. */
+function getSessionId() {
+  let sid = sessionStorage.getItem('shop-session');
+  if (!sid) {
+    sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    sessionStorage.setItem('shop-session', sid);
+  }
+  return sid;
+}
+const SHOP_LOCAL_KEY = 'recipe-shop-local';
+// Have-marks are {key, session, at}. Supports legacy string array format.
+function normalizeHaveMarks(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(x => typeof x === 'string' ? { key: x, session: 'legacy', at: 0 } : x);
+}
+function saveShopLocal() {
+  try {
+    localStorage.setItem(SHOP_LOCAL_KEY, JSON.stringify(mealPlan));
+  } catch (e) { /* storage full — non-fatal */ }
+}
+function loadShopLocal() {
+  try {
+    const raw = localStorage.getItem(SHOP_LOCAL_KEY);
+    if (raw) {
+      const lp = JSON.parse(raw);
+      if (lp && typeof lp.weeks === 'object') mealPlan = lp;
+    }
+  } catch (e) { /* ignore */ }
+}
+// Debounced bridge sync — pushes local state, then pulls server state via /read
+let _shopSyncTimer = null;
+function syncShopSoon() {
+  if (_shopSyncTimer) clearTimeout(_shopSyncTimer);
+  _shopSyncTimer = setTimeout(syncShop, 2000);
+}
+async function syncShop() {
+  _shopSyncTimer = null;
+  try {
+    await ghPut('data/meal-plan.json', JSON.stringify(mealPlan, null, 2), 'Shopping list sync');
+  } catch (e) { /* offline — will retry on next poll */ }
+  await pollShopServer();
+}
+// Poll server state via worker /read (bypasses Pages rebuild). Merges have-marks.
+async function pollShopServer() {
+  try {
+    const r = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/meal-plan.json'));
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.ok || !data.content) return;
+    const server = JSON.parse(data.content);
+    if (!server || typeof server.weeks !== 'object') return;
+    const key = thisWeekKey();
+    const localWeek = getWeek(key);
+    const serverWeek = (server.weeks || {})[key];
+    if (!serverWeek) return;
+    // Merge have-marks: union by (key, session)
+    const localMarks = normalizeHaveMarks(localWeek.haveGenerated);
+    const serverMarks = normalizeHaveMarks(serverWeek.haveGenerated);
+    const seen = new Set(localMarks.map(m => m.key + '|' + m.session));
+    serverMarks.forEach(m => {
+      if (!seen.has(m.key + '|' + m.session)) localMarks.push(m);
+    });
+    localWeek.haveGenerated = localMarks;
+    // Merge manual items
+    (serverWeek.manualItems || []).forEach(sm => {
+      const lm = (localWeek.manualItems || []).find(x => x.id === sm.id);
+      if (!lm) {
+        localWeek.manualItems.push(sm);
+      } else if (sm.have && !lm.have) {
+        lm.have = true; lm.haveSession = sm.haveSession; lm.haveAt = sm.haveAt;
+        lm.haveSessions = [...new Set([...(lm.haveSessions || []), ...(sm.haveSessions || [])])];
+      } else if (sm.have && lm.have) {
+        lm.haveSessions = [...new Set([...(lm.haveSessions || []), ...(sm.haveSessions || [])])];
+      }
+    });
+    // Merge conflict acks
+    if (serverWeek.conflictAcked) {
+      localWeek.conflictAcked = { ...(localWeek.conflictAcked || {}), ...serverWeek.conflictAcked };
+    }
+    saveShopLocal();
+    // Re-render if we're on the shopping page
+    if ((location.hash || '#/') === '#/shopping' && $('#shop-wrap')) {
+      $('#shop-wrap').innerHTML = shoppingListHTML();
+    }
+  } catch (e) { /* offline or worker not yet deployed — non-fatal */ }
+}
+// 15s poll while the shopping page is open
+function startShopPoll() {
+  stopShopPoll();
+  window._shopPollTimer = setInterval(() => {
+    if ((location.hash || '#/') === '#/shopping') pollShopServer();
+    else stopShopPoll();
+  }, 15000);
+}
+function stopShopPoll() {
+  if (window._shopPollTimer) { clearInterval(window._shopPollTimer); window._shopPollTimer = null; }
+}
 /* Submit draft persistence: Android may kill the tab when the camera opens,
    so we save the photo (as resized base64) + URL + note to localStorage the
    moment anything changes. On reload, the draft is restored. */
