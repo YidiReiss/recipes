@@ -1649,12 +1649,14 @@ function renderSubmit(app) {
       '<div class="form-status" id="submit-status"></div>' +
       '<div class="actions" style="margin-bottom:0">' +
         '<button class="btn" id="submit-send" type="button">Submit</button>' +
-        '<a class="btn secondary" href="#/">Cancel</a>' +
+        '<a class="btn secondary" href="#/" id="submit-cancel">Cancel</a>' +
       '</div>' +
     '</form>' +
     '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
     '<div id="inbox-list"><p>Loading…</p></div>';
   $('#submit-send').onclick = sendSubmission;
+  const cancelBtn = $('#submit-cancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', () => { clearSubmitDraft(); });
   // Single photo input; buttons toggle the capture attribute.
   // "Choose photo" (no capture) → OS shows gallery/files/camera chooser.
   // "Take photo" (capture=environment) → OS goes straight to camera.
@@ -1667,49 +1669,14 @@ function renderSubmit(app) {
       photoInput.removeAttribute('capture');
       photoInput.click();
     };
-    if (camBtn) camBtn.onclick = () => {
-      photoInput.setAttribute('capture', 'environment');
-      // Save URL/note NOW — the tab may die when the camera opens
-      saveSubmitDraft();
-      photoInput.click();
-    };
+    // Take photo: in-page camera (getUserMedia) so the tab never dies.
+    // The old file-input+camouflage approach let Android kill the tab.
+    if (camBtn) camBtn.onclick = () => { openInPageCamera(); };
     photoInput.addEventListener('change', async () => {
       const file = (photoInput.files || [])[0];
       if (!file) return;
       if (photoHint) photoHint.textContent = 'Processing photo…';
-      try {
-        // Resize immediately and stash in memory + localStorage,
-        // so the photo survives even if Android kills the tab.
-        const dataUrl = await readAsDataURL(file);
-        const img = await loadImage(dataUrl);
-        const MAX = 1600;
-        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(img.width * scale));
-        canvas.height = Math.max(1, Math.round(img.height * scale));
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
-        if (!blob) throw new Error('decode failed');
-        const resizedDataUrl = await readAsDataURL(blob);
-        window._submitPhotoB64 = resizedDataUrl.split(',')[1];
-        window._submitPhotoName = file.name || 'photo.jpg';
-      } catch (e) {
-        // Fallback: store original bytes
-        try {
-          const raw = String(await readAsDataURL(file)).split(',');
-          window._submitPhotoB64 = raw[1] || null;
-          window._submitPhotoName = file.name || 'photo.jpg';
-        } catch (e2) {
-          window._submitPhotoB64 = null;
-        }
-      }
-      saveSubmitDraft();
-      if (photoHint) {
-        photoHint.textContent = window._submitPhotoB64
-          ? 'Photo ready: ' + (window._submitPhotoName || 'photo')
-          : 'Could not read that photo — try again.';
-      }
-      updatePhotoPreview();
+      await processPhotoFile(file);
     });
   }
   // Save URL/note as the user types (survives tab death)
@@ -1726,6 +1693,109 @@ function renderSubmit(app) {
   loadInboxList();
 }
 
+/* Shared photo processing: resize to 1600px JPEG, stash base64 in memory
+   + localStorage draft, update the hint and preview. */
+async function processPhotoFile(file, nameOverride) {
+  const photoHint = $('#s-photo-hint');
+  try {
+    const dataUrl = await readAsDataURL(file);
+    const img = await loadImage(dataUrl);
+    const MAX = 1600;
+    const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(img.width * scale));
+    canvas.height = Math.max(1, Math.round(img.height * scale));
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+    if (!blob) throw new Error('decode failed');
+    const resizedDataUrl = await readAsDataURL(blob);
+    window._submitPhotoB64 = resizedDataUrl.split(',')[1];
+    window._submitPhotoName = nameOverride || file.name || 'photo.jpg';
+  } catch (e) {
+    try {
+      const raw = String(await readAsDataURL(file)).split(',');
+      window._submitPhotoB64 = raw[1] || null;
+      window._submitPhotoName = nameOverride || file.name || 'photo.jpg';
+    } catch (e2) {
+      window._submitPhotoB64 = null;
+    }
+  }
+  saveSubmitDraft();
+  if (photoHint) {
+    photoHint.textContent = window._submitPhotoB64
+      ? 'Photo ready: ' + (window._submitPhotoName || 'photo')
+      : 'Could not read that photo — try again.';
+  }
+  updatePhotoPreview();
+}
+
+/* In-page camera: uses getUserMedia so the tab never leaves the page.
+   (The file-input capture approach lets Android kill the tab.) */
+let _camStream = null;
+async function openInPageCamera() {
+  const photoHint = $('#s-photo-hint');
+  // Fallback if camera API is unavailable
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    const pi = $('#s-photo');
+    if (pi) { pi.setAttribute('capture', 'environment'); pi.click(); }
+    return;
+  }
+  // Build the modal
+  const modal = document.createElement('div');
+  modal.id = 'cam-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:#000;z-index:9999;' +
+    'display:flex;flex-direction:column;align-items:center;justify-content:center';
+  modal.innerHTML =
+    '<video id="cam-video" playsinline muted autoplay style="width:100%;max-height:75vh;object-fit:contain;background:#000"></video>' +
+    '<div style="display:flex;gap:1rem;margin-top:1rem">' +
+      '<button id="cam-capture" class="btn" type="button" style="font-size:1.2rem;padding:.8rem 2rem">Capture</button>' +
+      '<button id="cam-cancel" class="btn secondary" type="button">Cancel</button>' +
+    '</div>' +
+    '<div id="cam-status" style="color:#fff;margin-top:.75rem;font-size:.9rem"></div>';
+  document.body.appendChild(modal);
+  const video = $('#cam-video');
+  const status = $('#cam-status');
+  try {
+    _camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' },
+      audio: false
+    });
+    video.srcObject = _camStream;
+  } catch (e) {
+    if (status) status.textContent = 'Camera unavailable — falling back to file picker.';
+    setTimeout(() => {
+      closeInPageCamera();
+      const pi = $('#s-photo');
+      if (pi) { pi.removeAttribute('capture'); pi.click(); }
+    }, 1200);
+    return;
+  }
+  $('#cam-capture').onclick = async () => {
+    if (status) status.textContent = 'Processing…';
+    try {
+      const vw = video.videoWidth, vh = video.videoHeight;
+      if (!vw || !vh) throw new Error('no video frame');
+      const canvas = document.createElement('canvas');
+      canvas.width = vw; canvas.height = vh;
+      canvas.getContext('2d').drawImage(video, 0, 0, vw, vh);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.92));
+      if (!blob) throw new Error('capture failed');
+      await processPhotoFile(blob, 'camera-photo.jpg');
+      closeInPageCamera();
+    } catch (e) {
+      if (status) status.textContent = 'Capture failed — try again.';
+    }
+  };
+  $('#cam-cancel').onclick = () => { closeInPageCamera(); };
+}
+function closeInPageCamera() {
+  if (_camStream) {
+    _camStream.getTracks().forEach(t => { try { t.stop(); } catch (e) {} });
+    _camStream = null;
+  }
+  const modal = $('#cam-modal');
+  if (modal) modal.remove();
+}
 function restoreSubmitDraft() {
   const draft = loadSubmitDraft();
   if (!draft) return;
@@ -1741,19 +1811,46 @@ function restoreSubmitDraft() {
 }
 function updatePhotoPreview() {
   let prev = $('#s-photo-preview');
+  let rmBtn = $('#s-photo-remove');
   const hint = $('#s-photo-hint');
   if (window._submitPhotoB64) {
     const src = 'data:image/jpeg;base64,' + window._submitPhotoB64;
     if (!prev && hint) {
+      const wrap = document.createElement('div');
+      wrap.id = 's-photo-preview-wrap';
+      wrap.style.cssText = 'position:relative;display:inline-block;margin-top:.5rem';
       prev = document.createElement('img');
       prev.id = 's-photo-preview';
-      prev.style.cssText = 'max-width:120px;border-radius:8px;margin-top:.5rem;display:block';
-      hint.parentElement.appendChild(prev);
+      prev.style.cssText = 'max-width:120px;border-radius:8px;display:block';
+      rmBtn = document.createElement('button');
+      rmBtn.id = 's-photo-remove';
+      rmBtn.type = 'button';
+      rmBtn.textContent = '×';
+      rmBtn.setAttribute('aria-label', 'Remove photo');
+      rmBtn.style.cssText = 'position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;' +
+        'background:#a03d1a;color:#fff;border:none;font-size:16px;line-height:1;cursor:pointer';
+      rmBtn.onclick = removeSubmitPhoto;
+      wrap.appendChild(prev);
+      wrap.appendChild(rmBtn);
+      hint.parentElement.appendChild(wrap);
     }
     if (prev) { prev.src = src; prev.style.display = 'block'; }
-  } else if (prev) {
-    prev.style.display = 'none';
+    const wrap = $('#s-photo-preview-wrap');
+    if (wrap) wrap.style.display = 'inline-block';
+  } else {
+    const wrap = $('#s-photo-preview-wrap');
+    if (wrap) wrap.style.display = 'none';
   }
+}
+function removeSubmitPhoto() {
+  window._submitPhotoB64 = null;
+  window._submitPhotoName = null;
+  saveSubmitDraft();
+  updatePhotoPreview();
+  const hint = $('#s-photo-hint');
+  if (hint) hint.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
+  const photoInput = $('#s-photo');
+  if (photoInput) photoInput.value = '';
 }
 async function loadInboxList() {
   const host = $('#inbox-list');
