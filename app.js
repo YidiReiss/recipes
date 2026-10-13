@@ -1284,23 +1284,63 @@ function drawStepsEditor() {
 function drawPairEditor() {
   const host = $('#pair-editor');
   if (!host) return;
-  const opts = sel =>
-    '<option value="">— pick a recipe —</option>' +
-    recipes.map(r => '<option value="' + esc(r.id) + '"' + (sel === r.id ? ' selected' : '') + '>' +
-      esc(r.title) + '</option>').join('');
-  host.innerHTML = editDraft.pairings.map((p, i) =>
-    '<div class="dynamic-block"><div class="mini-row">' +
-      '<select data-pair="' + i + '|recipe_id" aria-label="Paired recipe">' + opts(p.recipe_id) + '</select>' +
+  host.innerHTML = editDraft.pairings.map((p, i) => {
+    const selTitle = p.recipe_id && byId[p.recipe_id] ? byId[p.recipe_id].title : '';
+    return '<div class="dynamic-block"><div class="mini-row" style="position:relative">' +
+      '<input type="text" data-pairsearch="' + i + '" value="' + esc(selTitle) + '" ' +
+        'placeholder="Type to search recipes…" aria-label="Paired recipe" autocomplete="off">' +
+      '<input type="hidden" data-pair="' + i + '|recipe_id" value="' + esc(p.recipe_id || '') + '">' +
+      '<div class="pair-results" data-pairresults="' + i + '" style="display:none;position:absolute;top:100%;left:0;right:0;' +
+        'background:#fff;border:1px solid #ccc;border-radius:8px;max-height:200px;overflow-y:auto;z-index:50"></div>' +
       '<button class="link-btn danger" data-pairdel="' + i + '" type="button">✕</button>' +
     '</div><div class="mini-row">' +
       '<input type="text" data-pair="' + i + '|note" value="' + esc(p.note || '') + '" placeholder="Note (e.g. perfect with…)" aria-label="Pairing note">' +
-    '</div></div>'
-  ).join('');
-  host.querySelectorAll('[data-pair]').forEach(el =>
+    '</div></div>';
+  }).join('');
+  // Searchable pairing picker
+  host.querySelectorAll('[data-pairsearch]').forEach(el => {
+    const i = +el.dataset.pairsearch;
+    const resultsEl = host.querySelector('[data-pairresults="' + i + '"]');
+    const hiddenEl = host.querySelector('[data-pair="' + i + '|recipe_id"]');
+    const showResults = (q) => {
+      const query = (q || '').toLowerCase().trim();
+      const matches = recipes.filter(r =>
+        !query || r.title.toLowerCase().includes(query)).slice(0, 20);
+      if (!matches.length) {
+        resultsEl.style.display = 'none';
+        return;
+      }
+      resultsEl.innerHTML = matches.map(r =>
+        '<div data-pick="' + i + '|' + esc(r.id) + '" style="padding:.5rem;cursor:pointer;border-bottom:1px solid #eee">' +
+        esc(r.title) + '</div>').join('');
+      resultsEl.style.display = 'block';
+      resultsEl.querySelectorAll('[data-pick]').forEach(opt =>
+        opt.addEventListener('click', () => {
+          const [pi, rid] = opt.dataset.pick.split('|');
+          editDraft.pairings[+pi].recipe_id = rid;
+          hiddenEl.value = rid;
+          el.value = byId[rid] ? byId[rid].title : '';
+          resultsEl.style.display = 'none';
+        }));
+    };
+    el.addEventListener('input', () => {
+      // Clear the selection when the user types something new
+      if (hiddenEl.value && el.value !== (byId[hiddenEl.value] || {}).title) {
+        hiddenEl.value = '';
+        editDraft.pairings[i].recipe_id = '';
+      }
+      showResults(el.value);
+    });
+    el.addEventListener('focus', () => showResults(el.value));
+    el.addEventListener('blur', () => setTimeout(() => { resultsEl.style.display = 'none'; }, 200));
+  });
+  host.querySelectorAll('[data-pair]').forEach(el => {
+    if (el.type === 'hidden') return; // handled by the picker
     el.addEventListener('input', e => {
       const [i, f] = e.target.dataset.pair.split('|');
       editDraft.pairings[+i][f] = e.target.value;
-    }));
+    });
+  });
   host.querySelectorAll('[data-pairdel]').forEach(el =>
     el.addEventListener('click', e => { editDraft.pairings.splice(+e.target.dataset.pairdel, 1); drawPairEditor(); }));
 }

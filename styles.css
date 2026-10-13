@@ -434,7 +434,9 @@ body {
 .dynamic-block .mini-row.ing-header span.unit { flex: 0 0 5.5rem; }
 .dynamic-block .mini-row.ing-header span.ing-name { flex: 2; }
 .dynamic-block .mini-row.ing-header span.prep { flex: 0 0 7rem; }
-.dynamic-block .mini-row.ing-header span.ing-x { flex: 0 0 1.5rem; }
+.dynamic-block .mini-row.ing-header span.ing-x { flex: 0 0 2rem; }
+/* The × button must match the header spacer width exactly */
+.dynamic-block .mini-row button.link-btn.danger { flex: 0 0 2rem; padding: 0; }
 /* Allow horizontal scroll if the row still overflows on small screens */
 #ing-editor .dynamic-block { overflow-x: auto; }
 #ing-editor .dynamic-block .mini-row { min-width: 32rem; }
