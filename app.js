@@ -1085,7 +1085,7 @@ function wireRecipeForm(onSave) {
   drawStepsEditor();
   drawPairEditor();
   $('#ing-add-sec').onclick = () => {
-    editDraft.ingredients.push({ section: '', items: [{ qty: '', unit: '', item: '' }] });
+    editDraft.ingredients.push({ section: '', items: [{ qty: '', unit: '', item: '', prep: '' }] });
     drawIngEditor();
   };
   $('#step-add').onclick = () => { editDraft.instructions.push(''); drawStepsEditor(); };
@@ -1179,6 +1179,7 @@ function drawIngEditor() {
           '<input class="qty" type="text" data-item="' + si + '|' + ii + '|qty" value="' + esc(it.qty || '') + '" placeholder="Qty" aria-label="Quantity">' +
           '<input class="unit" type="text" data-item="' + si + '|' + ii + '|unit" value="' + esc(it.unit || '') + '" placeholder="Unit" aria-label="Unit">' +
           '<input type="text" data-item="' + si + '|' + ii + '|item" value="' + esc(it.item || '') + '" placeholder="Ingredient" aria-label="Ingredient">' +
+          '<input type="text" data-item="' + si + '|' + ii + '|prep" value="' + esc(it.prep || '') + '" placeholder="Prep (sliced, diced…)" aria-label="Prep">' +
           '<button class="link-btn danger" data-itemdel="' + si + '|' + ii + '" type="button">✕</button>' +
         '</div>'
       ).join('') +
@@ -1191,7 +1192,23 @@ function drawIngEditor() {
   host.querySelectorAll('[data-item]').forEach(el =>
     el.addEventListener('input', e => {
       const [si, ii, f] = e.target.dataset.item.split('|');
-      editDraft.ingredients[+si].items[+ii][f] = e.target.value;
+      const item = editDraft.ingredients[+si].items[+ii];
+      item[f] = e.target.value;
+      // Auto-split prep on comma: "tomatoes, sliced" → item "tomatoes" + prep "sliced".
+      // Only when typing in the item field and prep is empty (don't clobber manual edits).
+      if (f === 'item' && !item.prep && e.target.value.includes(',')) {
+        const parts = e.target.value.split(',');
+        const newItem = parts[0].trim();
+        const newPrep = parts.slice(1).join(',').trim();
+        if (newItem && newPrep) {
+          item.item = newItem;
+          item.prep = newPrep;
+          e.target.value = newItem;
+          // Update the prep field in the DOM without full re-render
+          const prepEl = host.querySelector('[data-item="' + si + '|' + ii + '|prep"]');
+          if (prepEl) prepEl.value = newPrep;
+        }
+      }
     }));
   host.querySelectorAll('[data-secdel]').forEach(el =>
     el.addEventListener('click', e => { editDraft.ingredients.splice(+e.target.dataset.secdel, 1); drawIngEditor(); }));
@@ -1203,7 +1220,7 @@ function drawIngEditor() {
     }));
   host.querySelectorAll('[data-itemadd]').forEach(el =>
     el.addEventListener('click', e => {
-      editDraft.ingredients[+e.target.dataset.itemadd].items.push({ qty: '', unit: '', item: '' });
+      editDraft.ingredients[+e.target.dataset.itemadd].items.push({ qty: '', unit: '', item: '', prep: '' });
       drawIngEditor();
     }));
 }
@@ -1280,6 +1297,8 @@ async function saveRecipe(id) {
     st.textContent = 'Give the recipe a title first.';
     return;
   }
+  // Flag for PDF re-press — the intake checker picks this up and runs Recipe Press.
+  d.pdf_stale = true;
   st.className = 'form-status';
   st.textContent = 'Saving…';
   try {
@@ -1312,6 +1331,8 @@ async function saveNewRecipe() {
   while (byId[id]) id = slugify(d.title) + '-' + (n++);
   d.id = id;
   d.tags_need_review = false;
+  // Flag for PDF generation — the intake checker picks this up and runs Recipe Press.
+  d.pdf_stale = true;
   st.className = 'form-status';
   st.textContent = 'Saving…';
   try {
