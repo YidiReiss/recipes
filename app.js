@@ -1884,7 +1884,8 @@ async function loadInboxList() {
   if (!host) return;
   let idx = [];
   try {
-    const r = await fetch('data/inbox/index.json');
+    // Cache-buster: GitHub Pages aggressively caches JSON
+    const r = await fetch('data/inbox/index.json?v=' + Date.now());
     if (r.ok) idx = await r.json();
   } catch (e) { /* no inbox yet */ }
   // Refresh the list every 60s while the submit page is open,
