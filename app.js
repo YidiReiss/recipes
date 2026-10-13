@@ -1630,6 +1630,7 @@ function saveSubmitDraft() {
     const draft = {
       url: ($('#s-url') || {}).value || '',
       note: ($('#s-note') || {}).value || '',
+      text: ($('#s-text') || {}).value || '',
       photoB64: window._submitPhotoB64 || null,
       photoName: window._submitPhotoName || null
     };
@@ -1667,6 +1668,9 @@ function renderSubmit(app) {
         '<div class="form-hint" id="s-photo-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
       '<div class="field"><label for="s-note">Note (optional)</label>' +
         '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
+      '<div class="field"><label for="s-text">Or paste the recipe (optional)</label>' +
+        '<textarea id="s-text" rows="8" placeholder="Paste the full recipe text here — title, ingredients, instructions. Sous Chef will parse it into a proper recipe. No need to format it perfectly."></textarea>' +
+        '<div class="form-hint">Just dump the text — Sous Chef handles the rest.</div></div>' +
       '<div class="form-status" id="submit-status"></div>' +
       '<div class="actions" style="margin-bottom:0">' +
         '<button class="btn" id="submit-send" type="button">Submit</button>' +
@@ -1700,8 +1704,8 @@ function renderSubmit(app) {
       await processPhotoFile(file);
     });
   }
-  // Save URL/note as the user types (survives tab death)
-  const urlInput = $('#s-url'), noteInput = $('#s-note');
+  // Save URL/note/text as the user types (survives tab death)
+  const urlInput = $('#s-url'), noteInput = $('#s-note'), textInput = $('#s-text');
   let draftTimer = null;
   const queueDraftSave = () => {
     clearTimeout(draftTimer);
@@ -1709,6 +1713,7 @@ function renderSubmit(app) {
   };
   if (urlInput) urlInput.addEventListener('input', queueDraftSave);
   if (noteInput) noteInput.addEventListener('input', queueDraftSave);
+  if (textInput) textInput.addEventListener('input', queueDraftSave);
   // Restore any saved draft (e.g. after Android killed the tab for the camera)
   restoreSubmitDraft();
   loadInboxList();
@@ -1820,9 +1825,10 @@ function closeInPageCamera() {
 function restoreSubmitDraft() {
   const draft = loadSubmitDraft();
   if (!draft) return;
-  const urlInput = $('#s-url'), noteInput = $('#s-note'), photoHint = $('#s-photo-hint');
+  const urlInput = $('#s-url'), noteInput = $('#s-note'), textInput = $('#s-text'), photoHint = $('#s-photo-hint');
   if (draft.url && urlInput) urlInput.value = draft.url;
   if (draft.note && noteInput) noteInput.value = draft.note;
+  if (draft.text && textInput) textInput.value = draft.text;
   if (draft.photoB64) {
     window._submitPhotoB64 = draft.photoB64;
     window._submitPhotoName = draft.photoName || 'photo.jpg';
@@ -1899,8 +1905,8 @@ async function loadInboxList() {
     } else if (s.recipe_id) {
       titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>';
     }
-    // Show what was submitted (note, URL, or photo)
-    const what = s.note ? esc(s.note) : (s.url ? esc(s.url) : 'photo');
+    // Show what was submitted (note, URL, text, or photo)
+    const what = s.note ? esc(s.note) : (s.url ? esc(s.url) : (s.text ? 'pasted text' : 'photo'));
     // For duplicates, show what it's a duplicate of
     let dupPart = '';
     if (s.status === 'duplicate' && s.duplicate_of) {
@@ -1917,14 +1923,15 @@ async function sendSubmission() {
   const st = $('#submit-status');
   const url = $('#s-url').value.trim();
   const note = $('#s-note').value.trim();
+  const text = ($('#s-text') || {}).value.trim();
   // Photo comes from the draft (saved when selected, survives tab death).
   // Falls back to the file input if the draft is empty (e.g. very old flow).
   let b64 = window._submitPhotoB64 || null;
   let photoName = window._submitPhotoName || 'photo.jpg';
   const file = (($('#s-photo').files || [])[0] || null);
-  if (!url && !b64 && !file) {
+  if (!url && !b64 && !file && !text) {
     st.className = 'form-status error';
-    st.textContent = 'Add a link, a photo, or both.';
+    st.textContent = 'Add a link, a photo, recipe text, or a combination.';
     return;
   }
   st.className = 'form-status';
@@ -1962,7 +1969,7 @@ async function sendSubmission() {
       await ghPutB64(imagePath, fb64, 'Inbox photo ' + id);
     }
     const entry = {
-      id, url: url || null, image: imagePath, note: note || null,
+      id, url: url || null, image: imagePath, note: note || null, text: text || null,
       status: 'pending', created_at: new Date().toISOString(),
       recipe_id: null, fail_reason: null
     };
@@ -1976,6 +1983,7 @@ async function sendSubmission() {
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
+    const st2 = $('#s-text'); if (st2) st2.value = '';
     const ph = $('#s-photo-hint'); if (ph) ph.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
     clearSubmitDraft();
     updatePhotoPreview();
