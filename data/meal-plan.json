@@ -32,15 +32,17 @@
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Chicken and pasta salad",
                 "leftovers": true,
                 "cookDate": null
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
@@ -51,8 +53,13 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+                "leftovers": true,
+                "cookDate": null
+              }
+            ],
             "skipped": false,
             "note": ""
           },
