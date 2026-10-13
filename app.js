@@ -136,13 +136,14 @@ function loadError() {
 
 async function boot() {
   try {
-    const idxRes = await fetch('data/recipes/index.json');
+    const cb = '?v=' + Date.now();
+    const idxRes = await fetch('data/recipes/index.json' + cb);
     if (!idxRes.ok) throw new Error('no manifest');
     const ids = await idxRes.json();
     recipes = [];
     for (const id of (Array.isArray(ids) ? ids : [])) {
       try {
-        const r = await (await fetch('data/recipes/' + id + '.json')).json();
+        const r = await (await fetch('data/recipes/' + id + '.json' + cb)).json();
         recipes.push(r);
       } catch (e) { console.warn('Could not load recipe', id, e); }
     }
@@ -152,7 +153,7 @@ async function boot() {
   recipes.forEach(r => { byId[r.id] = r; });
 
   try {
-    const mp = await (await fetch('data/meal-plan.json')).json();
+    const mp = await (await fetch('data/meal-plan.json?v=' + Date.now())).json();
     mealPlan = (mp && typeof mp.weeks === 'object') ? mp : { weeks: {} };
   } catch (e) { mealPlan = { weeks: {} }; }
 
