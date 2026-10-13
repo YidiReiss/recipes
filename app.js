@@ -1611,11 +1611,13 @@ function renderSubmit(app) {
     '<form class="edit-form no-print" id="submit-form" onsubmit="return false">' +
       '<div class="field"><label for="s-url">Link (optional)</label>' +
         '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
-      '<div class="field"><label for="s-photo">Photo (optional)</label>' +
-        '<input type="file" id="s-photo" accept="image/*">' +
+      '<div class="field"><label>Photo (optional)</label>' +
+        '<input type="file" id="s-photo" accept="image/*" style="display:none">' +
         '<input type="file" id="s-camera" accept="image/*" capture="environment" style="display:none">' +
-        '<div style="margin-top:.5rem"><button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
-        '<div class="form-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+          '<button class="btn secondary" id="s-choose-btn" type="button">🖼️ Choose photo</button>' +
+          '<button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
+        '<div class="form-hint" id="s-photo-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
       '<div class="field"><label for="s-note">Note (optional)</label>' +
         '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
       '<div class="form-status" id="submit-status"></div>' +
@@ -1627,18 +1629,26 @@ function renderSubmit(app) {
     '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
     '<div id="inbox-list"><p>Loading…</p></div>';
   $('#submit-send').onclick = sendSubmission;
+  // Photo buttons trigger the hidden file inputs
+  const chooseBtn = $('#s-choose-btn');
+  const photoInput = $('#s-photo');
+  const photoHint = $('#s-photo-hint');
+  if (chooseBtn && photoInput) {
+    chooseBtn.onclick = () => photoInput.click();
+    photoInput.addEventListener('change', () => {
+      if (photoInput.files && photoInput.files[0] && photoHint) {
+        photoHint.textContent = 'Photo ready: ' + photoInput.files[0].name;
+      }
+    });
+  }
   // Camera button triggers the hidden capture input
   const camBtn = $('#s-camera-btn');
   const camInput = $('#s-camera');
-  const photoInput = $('#s-photo');
   if (camBtn && camInput) {
     camBtn.onclick = () => camInput.click();
-    // When a photo is taken, move it to the main photo input's slot
     camInput.addEventListener('change', () => {
-      if (camInput.files && camInput.files[0] && photoInput) {
-        // Show the taken photo name as feedback
-        const hint = photoInput.parentElement.querySelector('.form-hint');
-        if (hint) hint.textContent = 'Photo ready: ' + camInput.files[0].name;
+      if (camInput.files && camInput.files[0] && photoHint) {
+        photoHint.textContent = 'Photo ready: ' + camInput.files[0].name;
       }
     });
   }
@@ -1733,6 +1743,7 @@ async function sendSubmission() {
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
     const ci = $('#s-camera'); if (ci) ci.value = '';
+    const ph = $('#s-photo-hint'); if (ph) ph.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
     toast('Submitted!');
     loadInboxList();
   } catch (e) {
