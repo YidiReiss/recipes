@@ -1670,13 +1670,21 @@ async function loadInboxList() {
   const badge = s => s === 'done' ? '✓ added'
     : s === 'failed' ? '⚠ needs attention'
     : s === 'working' ? '… working on it' : '… in the inbox';
-  host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s =>
-    '<li><strong>' + badge(s.status) + '</strong> — ' +
-    esc(s.url ? s.url : 'photo') +
-    (s.recipe_id ? ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>' : '') +
-    (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
-    '</li>'
-  ).join('') + '</ul>';
+  host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s => {
+    // Show the recipe title once it's processed
+    let titlePart = '';
+    if (s.recipe_id && byId[s.recipe_id]) {
+      titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">' +
+        esc(byId[s.recipe_id].title) + '</a>';
+    } else if (s.recipe_id) {
+      titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>';
+    }
+    // Show what was submitted (note, URL, or photo)
+    const what = s.note ? esc(s.note) : (s.url ? esc(s.url) : 'photo');
+    return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart +
+      (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
+      '</li>';
+  }).join('') + '</ul>';
 }
 
 async function sendSubmission() {
@@ -1739,6 +1747,22 @@ async function sendSubmission() {
     try { idx = JSON.parse((await ghGet('data/inbox/index.json')).text); } catch (e) { idx = []; }
     idx.push(entry);
     await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2), 'Inbox index ' + id);
+    // Verify it actually landed — re-fetch and confirm
+    st.textContent = 'Verifying…';
+    let verified = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await new Promise(r => setTimeout(r, 2000));
+      try {
+        const check = await (await fetch('data/inbox/index.json?t=' + Date.now())).json();
+        if (check.some(e => e.id === id)) { verified = true; break; }
+      } catch (e) { /* retry */ }
+    }
+    if (!verified) {
+      st.className = 'form-status error';
+      st.textContent = 'Upload may not have completed — check "Recent submissions" below. If it\u2019s not there, try submitting again.';
+      loadInboxList();
+      return;
+    }
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
