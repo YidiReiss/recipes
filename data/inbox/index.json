@@ -68,5 +68,15 @@
     "created_at": "2026-10-13T00:33:54.241Z",
     "recipe_id": null,
     "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5y8h1l-6el",
+    "url": null,
+    "image": "data/inbox/inbox-mv5y8h1l-6el.jpg",
+    "note": null,
+    "status": "pending",
+    "created_at": "2026-10-13T00:34:57.661Z",
+    "recipe_id": null,
+    "fail_reason": null
   }
 ]
