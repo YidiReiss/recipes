@@ -3,8 +3,8 @@
   "url": null,
   "image": "data/inbox/inbox-mv5y73s0-5r4.jpg",
   "note": "Reiss Mushroom Salad",
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-13T00:33:54.241Z",
-  "recipe_id": null,
+  "recipe_id": "reiss-mushroom-salad",
   "fail_reason": null
 }
