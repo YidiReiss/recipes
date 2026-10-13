@@ -1613,6 +1613,8 @@ function renderSubmit(app) {
         '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
       '<div class="field"><label for="s-photo">Photo (optional)</label>' +
         '<input type="file" id="s-photo" accept="image/*">' +
+        '<input type="file" id="s-camera" accept="image/*" capture="environment" style="display:none">' +
+        '<div style="margin-top:.5rem"><button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
         '<div class="form-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
       '<div class="field"><label for="s-note">Note (optional)</label>' +
         '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
@@ -1625,6 +1627,21 @@ function renderSubmit(app) {
     '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
     '<div id="inbox-list"><p>Loading…</p></div>';
   $('#submit-send').onclick = sendSubmission;
+  // Camera button triggers the hidden capture input
+  const camBtn = $('#s-camera-btn');
+  const camInput = $('#s-camera');
+  const photoInput = $('#s-photo');
+  if (camBtn && camInput) {
+    camBtn.onclick = () => camInput.click();
+    // When a photo is taken, move it to the main photo input's slot
+    camInput.addEventListener('change', () => {
+      if (camInput.files && camInput.files[0] && photoInput) {
+        // Show the taken photo name as feedback
+        const hint = photoInput.parentElement.querySelector('.form-hint');
+        if (hint) hint.textContent = 'Photo ready: ' + camInput.files[0].name;
+      }
+    });
+  }
   loadInboxList();
 }
 
@@ -1656,11 +1673,21 @@ async function sendSubmission() {
   const st = $('#submit-status');
   const url = $('#s-url').value.trim();
   const note = $('#s-note').value.trim();
-  const file = ($('#s-photo').files || [])[0] || null;
+  // Check both the file picker and the camera input
+  const file = (($('#s-photo').files || [])[0] || null) ||
+               (($('#s-camera').files || [])[0] || null);
   if (!url && !file) {
     st.className = 'form-status error';
     st.textContent = 'Add a link, a photo, or both.';
     return;
+  }
+  // Validate the file is readable (Android preview can leave an unreadable stub)
+  if (file) {
+    if (!file.size) {
+      st.className = 'form-status error';
+      st.textContent = 'That photo didn\u2019t come through — try selecting it again without previewing, or use the Take photo button.';
+      return;
+    }
   }
   st.className = 'form-status';
   st.textContent = 'Submitting…';
@@ -1705,6 +1732,7 @@ async function sendSubmission() {
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
+    const ci = $('#s-camera'); if (ci) ci.value = '';
     toast('Submitted!');
     loadInboxList();
   } catch (e) {
