@@ -48,5 +48,15 @@
     "created_at": "2026-10-12T22:53:00.803Z",
     "recipe_id": "saucy-salmon-bites",
     "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5xq175-vy",
+    "url": null,
+    "image": "data/inbox/inbox-mv5xq175-vy.jpg",
+    "note": "Reiss Mushroom Salad",
+    "status": "pending",
+    "created_at": "2026-10-13T00:20:37.432Z",
+    "recipe_id": null,
+    "fail_reason": null
   }
 ]
