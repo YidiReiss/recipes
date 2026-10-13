@@ -1905,8 +1905,22 @@ async function loadInboxList() {
     } else if (s.recipe_id) {
       titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>';
     }
-    // Show what was submitted (note, URL, text, or photo)
-    const what = s.note ? esc(s.note) : (s.url ? esc(s.url) : (s.text ? 'pasted text' : 'photo'));
+    // Show what was submitted — list each piece: link, photo filename, text, note
+    const parts = [];
+    if (s.url) {
+      const shortUrl = s.url.length > 60 ? s.url.slice(0, 57) + '…' : s.url;
+      parts.push('🔗 <a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(shortUrl) + '</a>');
+    }
+    if (s.image) {
+      const fname = s.image.split('/').pop();
+      parts.push('📷 ' + esc(fname));
+    }
+    if (s.text) {
+      const preview = s.text.length > 80 ? s.text.slice(0, 77) + '…' : s.text;
+      parts.push('📝 <span title="' + esc(s.text.slice(0, 500)) + '">' + esc(preview) + '</span>');
+    }
+    if (s.note) parts.push('💬 ' + esc(s.note));
+    const what = parts.length ? parts.join(' · ') : 'empty submission';
     // For duplicates, show what it's a duplicate of
     let dupPart = '';
     if (s.status === 'duplicate' && s.duplicate_of) {
