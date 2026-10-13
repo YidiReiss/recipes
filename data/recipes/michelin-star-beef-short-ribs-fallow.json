@@ -1,1 +1,126 @@
-{"banner_image":"assets/images/michelin-star-beef-short-ribs-fallow.jpg","categories":["main","beef"],"cook_minutes":240,"id":"michelin-star-beef-short-ribs-fallow","ingredients":[{"items":[{"item":"bone-in beef short ribs (1.5–2 kg total)","qty":"4"},{"item":"red wine (something you'd drink, not cooking wine)","qty":"2","unit":"bottle"},{"item":"vegetable oil","qty":"30","unit":"ml"},{"item":"plain flour (for dredging, seasoned with salt and pepper)"},{"item":"shallots","prep":"peeled and halved","qty":"4"},{"item":"medium carrots","prep":"roughly chopped","qty":"2"},{"item":"celery ribs","prep":"roughly chopped","qty":"2"},{"item":"small leek","prep":"roughly chopped","qty":"1"},{"item":"garlic","prep":"crushed","qty":"2","unit":"cloves"},{"item":"tomato paste","qty":"2","unit":"tbsp"},{"item":"good-quality beef stock (homemade or store-bought)","qty":"1.5","unit":"L"},{"item":"bay leaves","qty":"2"},{"item":"sprig thyme","qty":"1"},{"item":"wholegrain mustard","qty":"1","unit":"tbsp"},{"item":"red wine vinegar or sherry vinegar","qty":"1","unit":"tbsp"},{"item":"salt and pepper","prep":"to taste"}],"section":""},{"items":[{"item":"medium celeriac","prep":"peeled and chopped","qty":"1"},{"item":"medium potatoes","prep":"peeled and chopped","qty":"2"},{"item":"milk","qty":"500","unit":"ml"},{"item":"salt","prep":"to taste"},{"item":"butter","prep":"a knob, for finishing"}],"section":"For the Celeriac Purée"}],"instructions":["Pour the wine into a large saucepan and bring to a gentle boil; reduce by half until slightly syrupy — it should taste sweet, not sharp. Set aside.","Preheat the oven to 140°C (275°F). Pat the short ribs dry, season well with salt and pepper, and dredge lightly in the seasoned flour. Heat the oil in a heavy ovenproof pot and sear the ribs on all sides until deeply browned; remove and set aside.","Tip off the excess fat, leaving about a tablespoon in the pot. Cook the shallots over medium heat until lightly caramelized, then add the carrots, celery, leek, and garlic. Cook until golden, scraping up the browned bits from the bottom. Stir in the tomato paste and cook for 2 minutes.","Add the reduced wine to deglaze the pot, scraping the base clean. Return the ribs (and any juices) to the pot, pour in enough stock to almost cover them, and add the bay leaves and thyme. Cover tightly and braise in the oven for 3½–4 hours, until the meat is tender and falling off the bone.","Let the ribs rest in the liquid for 30–45 minutes, then lift them out gently. Strain the braising liquid through a fine sieve and discard the vegetables. Skim off some of the fat if you like, but leave a little for richness.","Simmer the strained liquid until slightly thickened and glossy. Whisk in the mustard and vinegar, then taste and adjust the salt and pepper.","For the purée: simmer the celeriac and potatoes in the milk with a pinch of salt until soft. Blend with a knob of butter until smooth and glossy.","To serve: spoon a bed of purée onto each plate, set a short rib on top, and spoon the glossy red wine sauce over and around. Garnish with fresh herbs if you like."],"kosher_for_passover":false,"kosher_review_notes":"Mixes meat (beef short ribs, beef stock) with dairy (milk, butter in the celeriac purée) — not kosher as written. To keep it kosher, make the purée dairy-free: simmer in water instead of milk and blend with olive oil instead of butter.","kosher_status":"meat","leftover_friendly":null,"leftover_note":null,"needs_kosher_review":true,"notes":"From Fallow's YouTube video \"Michelin Star Beef Short Ribs at Home\" — inspired by Daniel Boulud's two-star braised short ribs. The red-wine reduction is what gives the sauce its depth.","pairings":[],"pdf":"pdfs/michelin-star-beef-short-ribs-fallow.pdf","prep_minutes":40,"servings":4,"source":"https://youtu.be/G0n2OHlBPcQ","tags":["braised","comfort","one-pot","dinner-party"],"tags_need_review":true,"tips":[{"text":"Skim some of the fat off the braising liquid if you like, but leave a little behind for richness.","title":"Fat skimming"}],"title":"Michelin Star Beef Short Ribs (Fallow)"}
+{
+  "banner_image": "assets/images/michelin-star-beef-short-ribs-fallow.jpg",
+  "categories": [
+    "main"
+  ],
+  "cook_minutes": 240,
+  "id": "michelin-star-beef-short-ribs-fallow",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "item": "bone-in beef short ribs (1.5–2 kg total)",
+          "qty": "4"
+        },
+        {
+          "item": "red wine (something you'd drink, not cooking wine)",
+          "qty": "2",
+          "unit": "bottle"
+        },
+        {
+          "item": "vegetable oil",
+          "qty": "30",
+          "unit": "ml"
+        },
+        {
+          "item": "plain flour (for dredging, seasoned with salt and pepper)"
+        },
+        {
+          "item": "shallots",
+          "prep": "peeled and halved",
+          "qty": "4"
+        },
+        {
+          "item": "medium carrots",
+          "prep": "roughly chopped",
+          "qty": "2"
+        },
+        {
+          "item": "celery ribs",
+          "prep": "roughly chopped",
+          "qty": "2"
+        },
+        {
+          "item": "small leek",
+          "prep": "roughly chopped",
+          "qty": "1"
+        },
+        {
+          "item": "garlic",
+          "prep": "crushed",
+          "qty": "2",
+          "unit": "cloves"
+        },
+        {
+          "item": "tomato paste",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "good-quality beef stock (homemade or store-bought)",
+          "qty": "1.5",
+          "unit": "L"
+        },
+        {
+          "item": "bay leaves",
+          "qty": "2"
+        },
+        {
+          "item": "sprig thyme",
+          "qty": "1"
+        },
+        {
+          "item": "wholegrain mustard",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "red wine vinegar or sherry vinegar",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "salt and pepper",
+          "prep": "to taste"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Pour the wine into a large saucepan and bring to a gentle boil; reduce by half until slightly syrupy — it should taste sweet, not sharp. Set aside.",
+    "Preheat the oven to 140°C (275°F). Pat the short ribs dry, season well with salt and pepper, and dredge lightly in the seasoned flour. Heat the oil in a heavy ovenproof pot and sear the ribs on all sides until deeply browned; remove and set aside.",
+    "Tip off the excess fat, leaving about a tablespoon in the pot. Cook the shallots over medium heat until lightly caramelized, then add the carrots, celery, leek, and garlic. Cook until golden, scraping up the browned bits from the bottom. Stir in the tomato paste and cook for 2 minutes.",
+    "Add the reduced wine to deglaze the pot, scraping the base clean. Return the ribs (and any juices) to the pot, pour in enough stock to almost cover them, and add the bay leaves and thyme. Cover tightly and braise in the oven for 3½–4 hours, until the meat is tender and falling off the bone.",
+    "Let the ribs rest in the liquid for 30–45 minutes, then lift them out gently. Strain the braising liquid through a fine sieve and discard the vegetables. Skim off some of the fat if you like, but leave a little for richness.",
+    "Simmer the strained liquid until slightly thickened and glossy. Whisk in the mustard and vinegar, then taste and adjust the salt and pepper.",
+    "To serve: spoon a bed of purée onto each plate, set a short rib on top, and spoon the glossy red wine sauce over and around. Garnish with fresh herbs if you like."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "Mixes meat (beef short ribs, beef stock) with dairy (milk, butter in the celeriac purée) — not kosher as written. To keep it kosher, make the purée dairy-free: simmer in water instead of milk and blend with olive oil instead of butter.",
+  "kosher_status": "meat",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "needs_kosher_review": true,
+  "notes": "From Fallow's YouTube video \"Michelin Star Beef Short Ribs at Home\" — inspired by Daniel Boulud's two-star braised short ribs. The red-wine reduction is what gives the sauce its depth.",
+  "pairings": [],
+  "pdf": "pdfs/michelin-star-beef-short-ribs-fallow.pdf",
+  "prep_minutes": 40,
+  "servings": "4",
+  "source": "https://youtu.be/G0n2OHlBPcQ",
+  "tags": [
+    "braised",
+    "comfort",
+    "one-pot",
+    "dinner-party"
+  ],
+  "tags_need_review": true,
+  "tips": [
+    {
+      "text": "Skim some of the fat off the braising liquid if you like, but leave a little behind for richness.",
+      "title": "Fat skimming"
+    }
+  ],
+  "title": "Michelin Star Beef Short Ribs (Fallow)",
+  "pdf_stale": true
+}
