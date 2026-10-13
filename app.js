@@ -1613,7 +1613,6 @@ function renderSubmit(app) {
         '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
       '<div class="field"><label>Photo (optional)</label>' +
         '<input type="file" id="s-photo" accept="image/*" style="display:none">' +
-        '<input type="file" id="s-camera" accept="image/*" capture="environment" style="display:none">' +
         '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
           '<button class="btn secondary" id="s-choose-btn" type="button">🖼️ Choose photo</button>' +
           '<button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
@@ -1629,26 +1628,25 @@ function renderSubmit(app) {
     '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
     '<div id="inbox-list"><p>Loading…</p></div>';
   $('#submit-send').onclick = sendSubmission;
-  // Photo buttons trigger the hidden file inputs
+  // Single photo input; buttons toggle the capture attribute.
+  // "Choose photo" (no capture) → OS shows gallery/files/camera chooser.
+  // "Take photo" (capture=environment) → OS goes straight to camera.
   const chooseBtn = $('#s-choose-btn');
+  const camBtn = $('#s-camera-btn');
   const photoInput = $('#s-photo');
   const photoHint = $('#s-photo-hint');
-  if (chooseBtn && photoInput) {
-    chooseBtn.onclick = () => photoInput.click();
+  if (photoInput) {
+    if (chooseBtn) chooseBtn.onclick = () => {
+      photoInput.removeAttribute('capture');
+      photoInput.click();
+    };
+    if (camBtn) camBtn.onclick = () => {
+      photoInput.setAttribute('capture', 'environment');
+      photoInput.click();
+    };
     photoInput.addEventListener('change', () => {
       if (photoInput.files && photoInput.files[0] && photoHint) {
         photoHint.textContent = 'Photo ready: ' + photoInput.files[0].name;
-      }
-    });
-  }
-  // Camera button triggers the hidden capture input
-  const camBtn = $('#s-camera-btn');
-  const camInput = $('#s-camera');
-  if (camBtn && camInput) {
-    camBtn.onclick = () => camInput.click();
-    camInput.addEventListener('change', () => {
-      if (camInput.files && camInput.files[0] && photoHint) {
-        photoHint.textContent = 'Photo ready: ' + camInput.files[0].name;
       }
     });
   }
@@ -1669,6 +1667,8 @@ async function loadInboxList() {
   }
   const badge = s => s === 'done' ? '✓ added'
     : s === 'failed' ? '⚠ needs attention'
+    : s === 'duplicate' ? '⧉ duplicate — skipped'
+    : s === 'needs_input' ? '? needs your input'
     : s === 'working' ? '… working on it' : '… in the inbox';
   host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s => {
     // Show the recipe title once it's processed
@@ -1681,7 +1681,13 @@ async function loadInboxList() {
     }
     // Show what was submitted (note, URL, or photo)
     const what = s.note ? esc(s.note) : (s.url ? esc(s.url) : 'photo');
-    return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart +
+    // For duplicates, show what it's a duplicate of
+    let dupPart = '';
+    if (s.status === 'duplicate' && s.duplicate_of) {
+      const dupTitle = byId[s.duplicate_of] ? esc(byId[s.duplicate_of].title) : esc(s.duplicate_of);
+      dupPart = ' (duplicate of ' + dupTitle + ')';
+    }
+    return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart + dupPart +
       (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
       '</li>';
   }).join('') + '</ul>';
@@ -1691,9 +1697,8 @@ async function sendSubmission() {
   const st = $('#submit-status');
   const url = $('#s-url').value.trim();
   const note = $('#s-note').value.trim();
-  // Check both the file picker and the camera input
-  const file = (($('#s-photo').files || [])[0] || null) ||
-               (($('#s-camera').files || [])[0] || null);
+  // Single photo input (buttons toggle capture attribute)
+  const file = (($('#s-photo').files || [])[0] || null);
   if (!url && !file) {
     st.className = 'form-status error';
     st.textContent = 'Add a link, a photo, or both.';
@@ -1752,7 +1757,6 @@ async function sendSubmission() {
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
-    const ci = $('#s-camera'); if (ci) ci.value = '';
     const ph = $('#s-photo-hint'); if (ph) ph.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
     toast('Submitted!');
     loadInboxList();
