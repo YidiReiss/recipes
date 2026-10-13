@@ -1072,8 +1072,68 @@ function renderEdit(app, id) {
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
     '<h1 class="recipe-title">Edit recipe</h1>' +
+    '<div class="field ai-edit-box" style="background:#f8f6f1;border:1px solid #e0d5c1;border-radius:12px;padding:1rem;margin-bottom:1.5rem">' +
+      '<label for="ai-edit-request" style="font-weight:600;display:block;margin-bottom:.5rem">🤖 Describe changes in plain words</label>' +
+      '<textarea id="ai-edit-request" rows="3" style="width:100%;box-sizing:border-box" ' +
+        'placeholder="e.g. Double the servings, make it dairy, and use a better photo"></textarea>' +
+      '<button class="btn" id="ai-edit-submit" type="button" style="margin-top:.5rem">Submit for AI edit</button>' +
+      '<div class="form-hint">Takes up to 30 minutes — the checker processes it and updates the recipe. ' +
+        'Shows in Recent submissions as an edit request.</div>' +
+      '<div id="ai-edit-status" class="form-status"></div>' +
+    '</div>' +
     recipeFormHTML(r, '#/recipe/' + encodeURIComponent(id));
   wireRecipeForm(() => saveRecipe(id));
+  wireAiEdit(id);
+}
+
+async function wireAiEdit(recipeId) {
+  const btn = $('#ai-edit-submit');
+  if (!btn) return;
+  btn.onclick = async () => {
+    const text = $('#ai-edit-request').value.trim();
+    const st = $('#ai-edit-status');
+    if (!text) {
+      st.className = 'form-status error';
+      st.textContent = 'Describe the changes first.';
+      return;
+    }
+    st.className = 'form-status';
+    st.textContent = 'Submitting…';
+    btn.disabled = true;
+    try {
+      const entryId = 'inbox-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+      const entry = {
+        id: entryId,
+        type: 'edit',
+        edit_target: recipeId,
+        text: text,
+        url: null,
+        image: null,
+        note: null,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        recipe_id: null,
+        fail_reason: null
+      };
+      // Upload via the bridge (same as submissions)
+      await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
+        'Edit request: ' + recipeId);
+      // Update the inbox index
+      const idxRes = await fetch('data/inbox/index.json?v=' + Date.now());
+      let idx = idxRes.ok ? await idxRes.json() : [];
+      idx.push({ id: entryId, status: 'pending', type: 'edit', edit_target: recipeId,
+        created_at: entry.created_at });
+      await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2),
+        'Edit request index: ' + entryId);
+      st.className = 'form-status ok';
+      st.textContent = 'Submitted — check Recent submissions for progress (up to 30 min).';
+      $('#ai-edit-request').value = '';
+    } catch (e) {
+      st.className = 'form-status error';
+      st.textContent = 'Could not submit: ' + (e.message || e);
+    }
+    btn.disabled = false;
+  };
 }
 
 function renderAdd(app) {
@@ -1962,7 +2022,31 @@ async function loadInboxList() {
     : s === 'duplicate' ? '⧉ duplicate — skipped'
     : s === 'needs_input' ? '? needs your input'
     : s === 'working' ? '… working on it' : '… in the inbox';
+  // For edit requests, fetch the full entry to show the request text
+  const editDetails = {};
+  for (const s of idx.slice(-10)) {
+    if (s.type === 'edit') {
+      try {
+        const r = await fetch('data/inbox/' + s.id + '.json?v=' + Date.now());
+        if (r.ok) editDetails[s.id] = await r.json();
+      } catch (e) { /* skip */ }
+    }
+  }
   host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s => {
+    // Edit requests get special display
+    if (s.type === 'edit') {
+      const full = editDetails[s.id] || {};
+      const targetTitle = s.edit_target && byId[s.edit_target] ? byId[s.edit_target].title : (s.edit_target || 'recipe');
+      const reqText = full.text || '';
+      const preview = reqText.length > 100 ? reqText.slice(0, 97) + '…' : reqText;
+      const editBadge = s.status === 'done' ? '✓ applied' : badge(s.status);
+      return '<li><strong>✏️ Edit: ' + esc(targetTitle) + '</strong> — ' + editBadge +
+        (preview ? '<br><span style="color:var(--muted)">"' + esc(preview) + '"</span>' : '') +
+        (s.status === 'done' && s.edit_target ?
+          ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
+        (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
+        '</li>';
+    }
     // Show the recipe title once it's processed
     let titlePart = '';
     if (s.recipe_id && byId[s.recipe_id]) {
