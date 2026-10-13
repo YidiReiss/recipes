@@ -10,7 +10,7 @@
       "section": "",
       "items": [
         {
-          "item": "bone-in beef short ribs (1.5–2 kg total)",
+          "item": "bone-in beef short ribs (1.5\u20132 kg total)",
           "qty": "4"
         },
         {
@@ -88,21 +88,21 @@
     }
   ],
   "instructions": [
-    "Pour the wine into a large saucepan and bring to a gentle boil; reduce by half until slightly syrupy — it should taste sweet, not sharp. Set aside.",
-    "Preheat the oven to 140°C (275°F). Pat the short ribs dry, season well with salt and pepper, and dredge lightly in the seasoned flour. Heat the oil in a heavy ovenproof pot and sear the ribs on all sides until deeply browned; remove and set aside.",
+    "Pour the wine into a large saucepan and bring to a gentle boil; reduce by half until slightly syrupy \u2014 it should taste sweet, not sharp. Set aside.",
+    "Preheat the oven to 140\u00b0C (275\u00b0F). Pat the short ribs dry, season well with salt and pepper, and dredge lightly in the seasoned flour. Heat the oil in a heavy ovenproof pot and sear the ribs on all sides until deeply browned; remove and set aside.",
     "Tip off the excess fat, leaving about a tablespoon in the pot. Cook the shallots over medium heat until lightly caramelized, then add the carrots, celery, leek, and garlic. Cook until golden, scraping up the browned bits from the bottom. Stir in the tomato paste and cook for 2 minutes.",
-    "Add the reduced wine to deglaze the pot, scraping the base clean. Return the ribs (and any juices) to the pot, pour in enough stock to almost cover them, and add the bay leaves and thyme. Cover tightly and braise in the oven for 3½–4 hours, until the meat is tender and falling off the bone.",
-    "Let the ribs rest in the liquid for 30–45 minutes, then lift them out gently. Strain the braising liquid through a fine sieve and discard the vegetables. Skim off some of the fat if you like, but leave a little for richness.",
+    "Add the reduced wine to deglaze the pot, scraping the base clean. Return the ribs (and any juices) to the pot, pour in enough stock to almost cover them, and add the bay leaves and thyme. Cover tightly and braise in the oven for 3\u00bd\u20134 hours, until the meat is tender and falling off the bone.",
+    "Let the ribs rest in the liquid for 30\u201345 minutes, then lift them out gently. Strain the braising liquid through a fine sieve and discard the vegetables. Skim off some of the fat if you like, but leave a little for richness.",
     "Simmer the strained liquid until slightly thickened and glossy. Whisk in the mustard and vinegar, then taste and adjust the salt and pepper.",
-    "To serve: spoon a bed of purée onto each plate, set a short rib on top, and spoon the glossy red wine sauce over and around. Garnish with fresh herbs if you like."
+    "To serve: spoon a bed of pur\u00e9e onto each plate, set a short rib on top, and spoon the glossy red wine sauce over and around. Garnish with fresh herbs if you like."
   ],
   "kosher_for_passover": false,
-  "kosher_review_notes": "Mixes meat (beef short ribs, beef stock) with dairy (milk, butter in the celeriac purée) — not kosher as written. To keep it kosher, make the purée dairy-free: simmer in water instead of milk and blend with olive oil instead of butter.",
+  "kosher_review_notes": "Mixes meat (beef short ribs, beef stock) with dairy (milk, butter in the celeriac pur\u00e9e) \u2014 not kosher as written. To keep it kosher, make the pur\u00e9e dairy-free: simmer in water instead of milk and blend with olive oil instead of butter.",
   "kosher_status": "meat",
   "leftover_friendly": false,
   "leftover_note": "",
   "needs_kosher_review": false,
-  "notes": "From Fallow's YouTube video \"Michelin Star Beef Short Ribs at Home\" — inspired by Daniel Boulud's two-star braised short ribs. The red-wine reduction is what gives the sauce its depth.",
+  "notes": "From Fallow's YouTube video \"Michelin Star Beef Short Ribs at Home\" \u2014 inspired by Daniel Boulud's two-star braised short ribs. The red-wine reduction is what gives the sauce its depth.",
   "pairings": [],
   "pdf": "pdfs/michelin-star-beef-short-ribs-fallow.pdf",
   "prep_minutes": 40,
@@ -122,5 +122,5 @@
     }
   ],
   "title": "Michelin Star Beef Short Ribs (Fallow)",
-  "pdf_stale": true
+  "pdf_stale": false
 }
