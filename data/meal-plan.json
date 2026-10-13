@@ -80,15 +80,17 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "split-pea-soup",
                 "leftovers": true,
                 "cookDate": null
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -109,7 +111,8 @@
       "manualItems": [],
       "haveGenerated": [
         "egg|"
-      ]
+      ],
+      "shoppingDay": "2026-10-12"
     },
     "2026-10-04": {
       "days": [
