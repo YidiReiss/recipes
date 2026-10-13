@@ -1600,6 +1600,33 @@ async function persistWeek(key, statusEl, done) {
    Paste a link and/or attach a photo. It lands in data/inbox/ and the
    intake checker (every 30 min) turns it into a recipe + standardized PDF.
    Nava uses the same box — no setup, no login. */
+/* Submit draft persistence: Android may kill the tab when the camera opens,
+   so we save the photo (as resized base64) + URL + note to localStorage the
+   moment anything changes. On reload, the draft is restored. */
+const SUBMIT_DRAFT_KEY = 'recipe-submit-draft';
+function saveSubmitDraft() {
+  try {
+    const draft = {
+      url: ($('#s-url') || {}).value || '',
+      note: ($('#s-note') || {}).value || '',
+      photoB64: window._submitPhotoB64 || null,
+      photoName: window._submitPhotoName || null
+    };
+    localStorage.setItem(SUBMIT_DRAFT_KEY, JSON.stringify(draft));
+  } catch (e) { /* storage full or unavailable — non-fatal */ }
+}
+function loadSubmitDraft() {
+  try {
+    const raw = localStorage.getItem(SUBMIT_DRAFT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+function clearSubmitDraft() {
+  try { localStorage.removeItem(SUBMIT_DRAFT_KEY); } catch (e) {}
+  window._submitPhotoB64 = null;
+  window._submitPhotoName = null;
+}
 function renderSubmit(app) {
   document.title = 'Submit a recipe — Reiss Family Recipes';
   app.innerHTML =
@@ -1642,17 +1669,92 @@ function renderSubmit(app) {
     };
     if (camBtn) camBtn.onclick = () => {
       photoInput.setAttribute('capture', 'environment');
+      // Save URL/note NOW — the tab may die when the camera opens
+      saveSubmitDraft();
       photoInput.click();
     };
-    photoInput.addEventListener('change', () => {
-      if (photoInput.files && photoInput.files[0] && photoHint) {
-        photoHint.textContent = 'Photo ready: ' + photoInput.files[0].name;
+    photoInput.addEventListener('change', async () => {
+      const file = (photoInput.files || [])[0];
+      if (!file) return;
+      if (photoHint) photoHint.textContent = 'Processing photo…';
+      try {
+        // Resize immediately and stash in memory + localStorage,
+        // so the photo survives even if Android kills the tab.
+        const dataUrl = await readAsDataURL(file);
+        const img = await loadImage(dataUrl);
+        const MAX = 1600;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+        if (!blob) throw new Error('decode failed');
+        const resizedDataUrl = await readAsDataURL(blob);
+        window._submitPhotoB64 = resizedDataUrl.split(',')[1];
+        window._submitPhotoName = file.name || 'photo.jpg';
+      } catch (e) {
+        // Fallback: store original bytes
+        try {
+          const raw = String(await readAsDataURL(file)).split(',');
+          window._submitPhotoB64 = raw[1] || null;
+          window._submitPhotoName = file.name || 'photo.jpg';
+        } catch (e2) {
+          window._submitPhotoB64 = null;
+        }
       }
+      saveSubmitDraft();
+      if (photoHint) {
+        photoHint.textContent = window._submitPhotoB64
+          ? 'Photo ready: ' + (window._submitPhotoName || 'photo')
+          : 'Could not read that photo — try again.';
+      }
+      updatePhotoPreview();
     });
   }
+  // Save URL/note as the user types (survives tab death)
+  const urlInput = $('#s-url'), noteInput = $('#s-note');
+  let draftTimer = null;
+  const queueDraftSave = () => {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveSubmitDraft, 500);
+  };
+  if (urlInput) urlInput.addEventListener('input', queueDraftSave);
+  if (noteInput) noteInput.addEventListener('input', queueDraftSave);
+  // Restore any saved draft (e.g. after Android killed the tab for the camera)
+  restoreSubmitDraft();
   loadInboxList();
 }
 
+function restoreSubmitDraft() {
+  const draft = loadSubmitDraft();
+  if (!draft) return;
+  const urlInput = $('#s-url'), noteInput = $('#s-note'), photoHint = $('#s-photo-hint');
+  if (draft.url && urlInput) urlInput.value = draft.url;
+  if (draft.note && noteInput) noteInput.value = draft.note;
+  if (draft.photoB64) {
+    window._submitPhotoB64 = draft.photoB64;
+    window._submitPhotoName = draft.photoName || 'photo.jpg';
+    if (photoHint) photoHint.textContent = 'Photo ready: ' + window._submitPhotoName + ' (restored)';
+  }
+  updatePhotoPreview();
+}
+function updatePhotoPreview() {
+  let prev = $('#s-photo-preview');
+  const hint = $('#s-photo-hint');
+  if (window._submitPhotoB64) {
+    const src = 'data:image/jpeg;base64,' + window._submitPhotoB64;
+    if (!prev && hint) {
+      prev = document.createElement('img');
+      prev.id = 's-photo-preview';
+      prev.style.cssText = 'max-width:120px;border-radius:8px;margin-top:.5rem;display:block';
+      hint.parentElement.appendChild(prev);
+    }
+    if (prev) { prev.src = src; prev.style.display = 'block'; }
+  } else if (prev) {
+    prev.style.display = 'none';
+  }
+}
 async function loadInboxList() {
   const host = $('#inbox-list');
   if (!host) return;
@@ -1697,30 +1799,29 @@ async function sendSubmission() {
   const st = $('#submit-status');
   const url = $('#s-url').value.trim();
   const note = $('#s-note').value.trim();
-  // Single photo input (buttons toggle capture attribute)
+  // Photo comes from the draft (saved when selected, survives tab death).
+  // Falls back to the file input if the draft is empty (e.g. very old flow).
+  let b64 = window._submitPhotoB64 || null;
+  let photoName = window._submitPhotoName || 'photo.jpg';
   const file = (($('#s-photo').files || [])[0] || null);
-  if (!url && !file) {
+  if (!url && !b64 && !file) {
     st.className = 'form-status error';
     st.textContent = 'Add a link, a photo, or both.';
     return;
-  }
-  // Validate the file is readable (Android preview can leave an unreadable stub)
-  if (file) {
-    if (!file.size) {
-      st.className = 'form-status error';
-      st.textContent = 'That photo didn\u2019t come through — try selecting it again without previewing, or use the Take photo button.';
-      return;
-    }
   }
   st.className = 'form-status';
   st.textContent = 'Submitting…';
   const id = 'inbox-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e4).toString(36);
   try {
     let imagePath = null;
-    if (file) {
-      // Try to shrink the photo first; if the browser can't decode it
-      // (e.g. HEIC from Google Photos), upload the original bytes as-is.
-      let b64 = null, ext = 'jpg';
+    if (b64) {
+      // Already resized when the photo was selected.
+      imagePath = 'data/inbox/' + id + '.jpg';
+      await ghPutB64(imagePath, b64, 'Inbox photo ' + id);
+    } else if (file) {
+      // Fallback: read from the file input directly.
+      if (!file.size) throw new Error('That photo didn\u2019t come through — try selecting it again.');
+      let fb64 = null, ext = 'jpg';
       try {
         const img = await loadImage(await readAsDataURL(file));
         const MAX = 1600;
@@ -1731,16 +1832,16 @@ async function sendSubmission() {
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
         const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
         if (!blob) throw new Error('decode failed');
-        b64 = String(await readAsDataURL(blob)).split(',')[1];
+        fb64 = String(await readAsDataURL(blob)).split(',')[1];
       } catch (e) {
         const raw = String(await readAsDataURL(file)).split(',');
         if (!raw[1]) throw new Error('Could not read that photo — try downloading it as a JPG first.');
-        b64 = raw[1];
+        fb64 = raw[1];
         const mt = (file.type || '').toLowerCase();
         ext = mt.includes('png') ? 'png' : mt.includes('heic') ? 'heic' : mt.includes('webp') ? 'webp' : 'jpg';
       }
       imagePath = 'data/inbox/' + id + '.' + ext;
-      await ghPutB64(imagePath, b64, 'Inbox photo ' + id);
+      await ghPutB64(imagePath, fb64, 'Inbox photo ' + id);
     }
     const entry = {
       id, url: url || null, image: imagePath, note: note || null,
@@ -1758,6 +1859,8 @@ async function sendSubmission() {
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
     const ph = $('#s-photo-hint'); if (ph) ph.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
+    clearSubmitDraft();
+    updatePhotoPreview();
     toast('Submitted!');
     loadInboxList();
   } catch (e) {
