@@ -554,6 +554,25 @@ body {
 .ing-opt { width: 2.5rem; text-align: center; font-size: 0.8rem; color: var(--muted); }
 .ing-opt-check { width: 1.2rem; height: 1.2rem; cursor: pointer; }
 
+/* Serving scaling controls */
+.scale-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  padding: .75rem; background: var(--sand); border-radius: .5rem; margin-bottom: 1rem;
+}
+.scale-label { font-weight: 600; }
+.scale-btn {
+  padding: .35rem .8rem; border: 1px solid var(--line); border-radius: 1rem;
+  background: var(--card); cursor: pointer; font-weight: 500;
+}
+.scale-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.scale-serves { display: flex; align-items: center; gap: .25rem; margin-left: .5rem; }
+.scale-step {
+  width: 1.75rem; height: 1.75rem; border: 1px solid var(--line); border-radius: 50%;
+  background: var(--card); cursor: pointer; font-size: 1rem; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.scale-current { font-size: .9rem; color: var(--muted); margin-left: auto; }
+
 .slot-note {
   color: var(--ink-soft);
   font-size: 0.88rem;

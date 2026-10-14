@@ -1047,6 +1047,156 @@ function drawGrid() {
 }
 
 /* ---------------- Recipe page ---------------- */
+// ---- Serving scaling (Argon-built, Muse-reviewed) ----
+// Pure functions for parsing, formatting, and scaling ingredient quantities.
+// Used by recipe detail page scale controls. PDFs always stay at 1x.
+const UNICODE_FRACTIONS = {
+  '½': '1/2', '⅓': '1/3', '⅔': '2/3', '¼': '1/4', '¾': '3/4',
+  '⅕': '1/5', '⅖': '2/5', '⅗': '3/5', '⅘': '4/5', '⅙': '1/6',
+  '⅚': '5/6', '⅐': '1/7', '⅛': '1/8', '⅜': '3/8', '⅝': '5/8',
+  '⅞': '7/8', '⅑': '1/9', '⅒': '1/10'
+};
+function parseFractionOrDecimal(token) {
+  if (!token) return null;
+  if (token.includes('/')) {
+    const parts = token.split('/');
+    if (parts.length !== 2) return null;
+    const n = parts[0], d = parts[1];
+    if (!n || !d) return null;
+    if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(n)) return null;
+    if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(d)) return null;
+    const num = parseFloat(n), den = parseFloat(d);
+    if (den === 0) return null;
+    return num / den;
+  }
+  if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(token)) return null;
+  const v = parseFloat(token);
+  return Number.isFinite(v) ? v : null;
+}
+function parseSingleValue(str) {
+  if (typeof str !== 'string') return null;
+  let s = str.trim();
+  if (!s) return null;
+  for (const ch of Object.keys(UNICODE_FRACTIONS)) {
+    if (s.includes(ch)) s = s.split(ch).join(' ' + UNICODE_FRACTIONS[ch] + ' ');
+  }
+  s = s.trim().replace(/\s+/g, ' ');
+  if (!s) return null;
+  if (/[a-zA-Z]/.test(s)) return null;
+  if (/[^0-9./\s]/.test(s)) return null;
+  const parts = s.split(' ').filter(Boolean);
+  if (parts.length === 0) return null;
+  if (parts.length === 1) return parseFractionOrDecimal(parts[0]);
+  if (parts.length === 2) {
+    if (!parts[1].includes('/')) return null;
+    if (parts[0].includes('/')) return null;
+    const whole = parseFractionOrDecimal(parts[0]);
+    const frac = parseFractionOrDecimal(parts[1]);
+    if (whole === null || frac === null) return null;
+    return whole + frac;
+  }
+  return null;
+}
+function parseQty(qtyStr) {
+  if (typeof qtyStr !== 'string') return null;
+  const s = qtyStr.trim();
+  if (!s) return null;
+  if (/\s+to\s+/i.test(s)) {
+    const parts = s.split(/\s+to\s+/i);
+    if (parts.length !== 2) return null;
+    const a = parseSingleValue(parts[0]), b = parseSingleValue(parts[1]);
+    if (a === null || b === null) return null;
+    return a <= b ? [a, b] : [b, a];
+  }
+  if (/[‐–—-]/.test(s)) {
+    const parts = s.split(/[‐–—-]/);
+    if (parts.length !== 2) return null;
+    if (!parts[0].trim() || !parts[1].trim()) return null;
+    const a = parseSingleValue(parts[0]), b = parseSingleValue(parts[1]);
+    if (a === null || b === null) return null;
+    return a <= b ? [a, b] : [b, a];
+  }
+  return parseSingleValue(s);
+}
+function formatQty(value, unit) {
+  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '';
+  if (value === 0) return '0';
+  const u = typeof unit === 'string' ? unit.trim().toLowerCase() : '';
+  if (value < 0) {
+    const pos = formatQty(-value, unit);
+    if (!pos) return '';
+    return pos === 'a pinch' ? '-a pinch' : '-' + pos;
+  }
+  if (value < 0.09) return 'a pinch';
+  const DECIMAL_UNITS = new Set(['g','gram','grams','kg','kilogram','kilograms','mg','milligram','milligrams','ml','milliliter','milliliters','millilitre','millilitres','l','liter','liters','litre','litres','oz','ounce','ounces','lb','pound','pounds']);
+  if (DECIMAL_UNITS.has(u)) {
+    const rounded = Math.round(value);
+    if (rounded === 0) return 'a pinch';
+    return String(rounded);
+  }
+  let whole = Math.floor(value);
+  let frac = value - whole;
+  const all = [
+    { num: 0, den: 1, val: 0 }, { num: 1, den: 16, val: 1/16 },
+    { num: 1, den: 8, val: 1/8 }, { num: 1, den: 4, val: 1/4 },
+    { num: 1, den: 3, val: 1/3 }, { num: 3, den: 8, val: 3/8 },
+    { num: 1, den: 2, val: 1/2 }, { num: 5, den: 8, val: 5/8 },
+    { num: 2, den: 3, val: 2/3 }, { num: 3, den: 4, val: 3/4 },
+    { num: 7, den: 8, val: 7/8 }, { num: 1, den: 1, val: 1 }
+  ];
+  const candidates = value < 0.25 ? all : all.filter((c) => !(c.num === 1 && c.den === 16));
+  let best = candidates[0];
+  let bestDiff = Math.abs(frac - best.val);
+  for (let i = 1; i < candidates.length; i++) {
+    const diff = Math.abs(frac - candidates[i].val);
+    if (diff < bestDiff) { best = candidates[i]; bestDiff = diff; }
+  }
+  if (best.val === 1) { whole += 1; return String(whole); }
+  if (best.val === 0) { if (whole === 0) return 'a pinch'; return String(whole); }
+  if (whole === 0) return best.num + '/' + best.den;
+  return whole + ' ' + best.num + '/' + best.den;
+}
+function scaleQty(qtyStr, unit, scale) {
+  if (typeof qtyStr !== 'string') return '';
+  if (qtyStr === '') return '';
+  const parsed = parseQty(qtyStr);
+  if (parsed === null) return qtyStr;
+  if (Array.isArray(parsed)) {
+    const fmtMin = formatQty(parsed[0] * scale, unit);
+    const fmtMax = formatQty(parsed[1] * scale, unit);
+    if (fmtMin === fmtMax) return fmtMin;
+    return fmtMin + '-' + fmtMax;
+  }
+  return formatQty(parsed * scale, unit);
+}
+// Pluralize a unit based on scaled quantity ("1 clove" → "2 cloves").
+// Uses the FORMATTED display value for the decision (not raw float) so
+// "1.04 cups" → "1 cup" (correct), not "1 cups". Zero takes plural: "0 cups".
+function pluralizeScaledUnit(unit, formattedQty) {
+  if (!unit) return '';
+  const u = unit.trim().toLowerCase();
+  const map = {
+    cup: 'cups', clove: 'cloves', can: 'cans', package: 'packages',
+    pinch: 'pinches', dash: 'dashes', teaspoon: 'teaspoons', tablespoon: 'tablespoons',
+    ounce: 'ounces', pound: 'pounds', gram: 'grams', kilogram: 'kilograms',
+    liter: 'liters', milliliter: 'milliliters', slice: 'slices',
+    piece: 'pieces', bunch: 'bunches', head: 'heads', stalk: 'stalks'
+  };
+  // "1" (exactly) → singular; everything else (0, 2, 1/2, ranges) → plural.
+  // formattedQty is the display string from scaleQty (e.g. "1", "1 1/2", "2-3", "a pinch").
+  const isExactlyOne = formattedQty === '1';
+  if (isExactlyOne) {
+    // If unit is plural, return singular.
+    const singular = Object.keys(map).find(k => map[k] === u);
+    return singular || unit;
+  }
+  // Not exactly one → plural if we know the plural form.
+  if (map[u]) return map[u];
+  // Already plural? Keep as-is.
+  if (Object.values(map).includes(u)) return unit;
+  return unit; // tbsp, tsp, g, ml, oz, lb are invariant
+}
+
 async function renderRecipe(app, id) {
   const r = await ensureRecipe(id);
   if (!r) {
@@ -1056,10 +1206,31 @@ async function renderRecipe(app, id) {
   }
   document.title = r.title + ' — Reiss Family Recipes';
 
+  // Scale controls: compute on render, embed originals in data attributes.
+  // Never re-parse DOM text (avoids compounding drift). Resets to 1x on navigation.
+  let scaleState = { factor: 1, servings: r.servings || null };
+  const scaleBarHTML = () => {
+    const presets = [0.5, 1, 2, 3];
+    const presetBtns = presets.map(p =>
+      '<button class="scale-btn' + (scaleState.factor === p ? ' active' : '') + '" data-scale="' + p + '" type="button">' + (p === 1 ? '1x' : p + 'x') + '</button>'
+    ).join('');
+    let servesHTML = '';
+    if (scaleState.servings) {
+      const curServings = Math.round(scaleState.servings * scaleState.factor);
+      servesHTML = '<span class="scale-serves">Serves <button class="scale-step" data-step="-1" type="button" aria-label="Fewer servings">−</button> <span id="scale-servings-val">' + curServings + '</span> <button class="scale-step" data-step="1" type="button" aria-label="More servings">+</button></span>';
+    }
+    return '<div class="scale-bar no-print">' +
+      '<span class="scale-label">Scale:</span> ' + presetBtns + servesHTML +
+      '<span class="scale-current" id="scale-current">' +
+        (scaleState.factor === 1 ? 'Original recipe' : 'Showing ' + scaleState.factor + 'x' + (scaleState.servings ? ' · ' + Math.round(scaleState.servings * scaleState.factor) + ' servings' : '')) +
+      '</span></div>';
+  };
+
   const ingHTML = (r.ingredients || []).map(s =>
     (s.section ? '<h3>' + esc(s.section) + '</h3>' : '') +
     '<ul class="ing-list">' + (s.items || []).map(i =>
-      '<li><span class="qty">' + esc([i.qty, i.unit].filter(Boolean).join(' ')) + '</span> ' +
+      '<li><span class="qty ing-qty" data-base-qty="' + esc(i.qty || '') + '" data-unit="' + esc(i.unit || '') + '">' +
+      esc([i.qty, i.unit].filter(Boolean).join(' ')) + '</span> ' +
       esc(i.item) +
       (i.optional ? ' <em class="opt-tag">optional</em>' : '') + '</li>'
     ).join('') + '</ul>'
@@ -1094,7 +1265,7 @@ async function renderRecipe(app, id) {
         '<span>Total <strong>' + esc(fmtTime(totalTime(r))) + '</strong></span>' +
         '<span>Serves <strong>' + esc(r.servings || '—') + '</strong></span>' +
       '</div>' +
-      '<section class="recipe-section"><h2>Ingredients</h2>' + ingHTML + '</section>' +
+      '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + ingHTML + '</section>' +
       '<section class="recipe-section"><h2>Instructions</h2><ol class="steps">' +
         (r.instructions || []).map(s => '<li>' + esc(s) + '</li>').join('') +
       '</ol></section>' +
@@ -1116,6 +1287,60 @@ async function renderRecipe(app, id) {
 
   $('#share-btn').onclick = () => shareRecipe(r);
   $('#print-btn').onclick = () => window.print();
+
+  // Scale controls: recompute all quantities from data-base-qty on every change.
+  // Store targetServings (not rounded factor) to avoid precision loss.
+  const applyScale = () => {
+    const f = scaleState.factor;
+    app.querySelectorAll('.ing-qty').forEach(el => {
+      const baseQty = el.dataset.baseQty || '';
+      const unit = el.dataset.unit || '';
+      // Empty qty: preserve unit if present (e.g. "salt" with unit "" stays empty,
+      // but a unit-only entry like "pinch" keeps its unit).
+      if (!baseQty) { el.textContent = unit; return; }
+      const scaled = scaleQty(baseQty, unit, f);
+      // If scaleQty returns empty/unparseable, fall back to original text.
+      if (!scaled) { el.textContent = [baseQty, unit].filter(Boolean).join(' '); return; }
+      // Non-numeric results ("a pinch", "to taste") need no unit appended.
+      const isTextual = /[a-zA-Z]/.test(scaled);
+      if (isTextual) { el.textContent = scaled; return; }
+      const dispUnit = pluralizeScaledUnit(unit, scaled);
+      el.textContent = dispUnit ? scaled + ' ' + dispUnit : scaled;
+    });
+    // Update scale bar UI (scoped to app, not global $).
+    app.querySelectorAll('.scale-btn').forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.scale) === f);
+    });
+    const curEl = app.querySelector('#scale-current');
+    if (curEl) {
+      // Display factor rounded to 2 decimals (calculation uses full precision).
+      const dispFactor = Math.round(f * 100) / 100;
+      curEl.textContent = f === 1 ? 'Original recipe' :
+        'Showing ' + dispFactor + 'x' + (scaleState.servings ? ' · ' + Math.round(scaleState.servings * f) + ' servings' : '');
+    }
+    const servVal = app.querySelector('#scale-servings-val');
+    if (servVal && scaleState.servings) servVal.textContent = Math.round(scaleState.servings * f);
+  };
+  app.querySelectorAll('[data-scale]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      scaleState.factor = parseFloat(btn.dataset.scale);
+      applyScale();
+    });
+  });
+  app.querySelectorAll('[data-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!scaleState.servings) return;
+      const step = parseInt(btn.dataset.step, 10);
+      if (isNaN(step)) return;
+      const curServings = Math.round(scaleState.servings * scaleState.factor);
+      const newServings = Math.max(1, curServings + step);
+      // Compute factor from target servings — no rounding, no precision loss.
+      scaleState.factor = newServings / scaleState.servings;
+      applyScale();
+    });
+  });
+  // Normalize initial render (e.g. "1 cups" in stored data → "1 cup").
+  applyScale();
 }
 
 /* PDF URL for a recipe: explicit r.pdf wins; otherwise every complete recipe
