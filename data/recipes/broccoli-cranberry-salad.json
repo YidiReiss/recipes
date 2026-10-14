@@ -4,21 +4,21 @@
   "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
-    "salad",
-    "side"
+    "side",
+    "salad"
   ],
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 0,
+  "cook_minutes": 0,
+  "servings": "",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/broccoli-cranberry-salad.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -66,6 +66,10 @@
   ],
   "pairings": [],
   "notes": "The doc says 'Add chase before serving' — read as cashews.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
