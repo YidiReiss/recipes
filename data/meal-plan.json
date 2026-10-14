@@ -168,7 +168,12 @@
         {
           "id": "mmv8e337c",
           "text": "Peanut butter and jelly muffins",
-          "have": false
+          "have": true,
+          "haveSession": "smv8nw944eyxh30",
+          "haveAt": 1792016497088,
+          "haveSessions": [
+            "smv8nw944eyxh30"
+          ]
         },
         {
           "id": "mmv8e3duh",
