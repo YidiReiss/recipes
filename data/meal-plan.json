@@ -109,15 +109,17 @@
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "no-fry-hot-poppers",
                 "leftovers": false,
-                "cookDate": null
+                "cookDate": "2026-10-15"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
