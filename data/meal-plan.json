@@ -217,6 +217,25 @@
           "at": 1791944797755,
           "qty": 1.5,
           "unit": "lb"
+        },
+        {
+          "key": "oil|tbsp",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944798266,
+          "qty": 2,
+          "unit": "tbsp"
+        },
+        {
+          "key": "hot sauce (such as frank's)|cup",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944798817,
+          "qty": 0.33,
+          "unit": "cup"
+        },
+        {
+          "key": "black pepper|",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944799277
         }
       ],
       "shoppingDay": "2026-10-14"
