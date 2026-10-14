@@ -153,7 +153,7 @@ async function boot() {
   recipes.forEach(r => { byId[r.id] = r; });
 
   try {
-    const mp = await (await fetch('data/meal-plan.json?v=' + Date.now())).json();
+    const mp = await fetchLiveMealPlan();
     mealPlan = (mp && typeof mp.weeks === 'object') ? mp : { weeks: {} };
   } catch (e) { mealPlan = { weeks: {} }; }
   // Merge any local shopping-list state (offline taps) over the server copy
@@ -182,10 +182,20 @@ async function boot() {
 /* Re-fetch the meal plan (e.g. after someone else saves). Skips while editing. */
 async function refreshMealPlan() {
   if (editingSlot) return;
-  try {
-    const mp = await (await fetch('data/meal-plan.json?t=' + Date.now())).json();
-    if (mp && typeof mp.weeks === 'object') mealPlan = mp;
-  } catch (e) { /* keep the copy we have */ }
+  const mp = await fetchLiveMealPlan();
+  if (!mp) return;
+  // Merge, don't overwrite: server wins for days (planner), union for shopping state.
+  Object.keys(mp.weeks).forEach(k => {
+    const serverWeek = mp.weeks[k];
+    const localWeek = mealPlan.weeks[k];
+    if (!localWeek || !Array.isArray(localWeek.days)) {
+      mealPlan.weeks[k] = serverWeek;
+    } else {
+      const merged = { ...serverWeek };
+      mergeWeekState(merged, localWeek);
+      mealPlan.weeks[k] = merged;
+    }
+  });
 }
 
 /* ---------------- Router ---------------- */
@@ -421,9 +431,13 @@ function buildShoppingList() {
     if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
     const name = pluralize(e.base, e.hasNum ? qnum : 0);
     const du = dispUnit === '__tspbase__' ? '' : pluralizeUnit(dispUnit, e.hasNum ? qnum : 0);
+    // Stable key: raw (non-pluralized) unit so the key never changes with quantity.
+    const rawDu = dispUnit === '__tspbase__' ? '' : dispUnit;
     return {
-      key: e.base.toLowerCase() + '|' + du.toLowerCase(),
-      label: [q, du, name].filter(Boolean).join(' ').trim()
+      key: e.base.toLowerCase() + '|' + rawDu.toLowerCase(),
+      label: [q, du, name].filter(Boolean).join(' ').trim(),
+      qty: e.hasNum ? qnum : null,
+      unit: du
     };
   }).sort((a, b) => a.label.localeCompare(b.label));
 }
@@ -507,7 +521,6 @@ function shoppingListHTML() {
   const items = buildShoppingList();
   const from = shoppingFromYmd();
   const marks = normalizeHaveMarks(week.haveGenerated);
-  const haveKeys = new Set(marks.map(m => m.key));
   // Conflict: item marked have by 2+ distinct sessions and not acknowledged
   const conflictKeys = new Set();
   const byKey = {};
@@ -521,9 +534,31 @@ function shoppingListHTML() {
         !(week.conflictAcked && week.conflictAcked['m:' + m.id])) conflictKeys.add('m:' + m.id);
   });
 
-  // Split into To Buy vs Already Have
-  const toBuy = items.filter(it => !haveKeys.has(it.key));
-  const haveIts = items.filter(it => haveKeys.has(it.key));
+  // Split into To Buy vs Already Have, with quantity-aware splitting:
+  // if you checked "1 cup honey" and later need 3 cups total, show
+  // "1 cup honey" checked + "2 cups honey" unchecked as separate lines.
+  const toBuy = [];
+  const haveIts = [];
+  items.forEach(it => {
+    const mark = marks.find(m => m.key === it.key);
+    if (!mark) { toBuy.push(it); return; }
+    const markedQty = (mark.qty !== null && mark.qty !== undefined) ? mark.qty : null;
+    const curQty = (it.qty !== null && it.qty !== undefined) ? it.qty : null;
+    if (markedQty !== null && curQty !== null && curQty > markedQty + 1e-9) {
+      const base = it.key.split('|')[0];
+      const remainder = Math.round((curQty - markedQty) * 100) / 100;
+      haveIts.push({
+        key: it.key, split: 'have',
+        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim()
+      });
+      toBuy.push({
+        key: it.key, split: 'need',
+        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim()
+      });
+    } else {
+      haveIts.push(it);
+    }
+  });
   const manToBuy = week.manualItems.filter(m => !m.have);
   const manHave = week.manualItems.filter(m => m.have);
 
@@ -533,12 +568,12 @@ function shoppingListHTML() {
         '<button class="link-btn" data-confack="' + esc(k) + '" type="button">dismiss</button></span>'
       : '';
   const genToBuyLis = toBuy.map(it =>
-    '<div class="shop-item" data-shop="' + esc(it.key) + '">' +
+    '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
       '<span>' + esc(it.label) + '</span></div>'
   ).join('');
   const genHaveLis = haveIts.map(it =>
-    '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '">' +
+    '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
       '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>'
   ).join('');
@@ -680,12 +715,12 @@ function renderShopping(app) {
   document.title = 'Shopping List — Reiss Family Recipes';
   app.innerHTML =
     '<section class="page-head"><h1>Shopping List</h1>' +
-    '<p class="muted">' + esc(shoppingFromLabel().replace(/^/, '').trim() || 'Based on your meal plan') + '</p></section>' +
+    '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p></section>' +
     '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
 
   const shopWrap = $('#shop-wrap');
-  const saveShop = () => { saveShopLocal(); syncShopSoon(); };
+  const saveShop = () => { markShopDirty(); };
   const rerender = () => { $('#shop-wrap').innerHTML = shoppingListHTML(); };
   // Start 15s background sync while the shopping page is open
   startShopPoll();
@@ -701,13 +736,29 @@ function renderShopping(app) {
       if (genItem) {
         week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
         const k = genItem.dataset.shop;
+        const split = genItem.dataset.shopSplit || null;
         const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
-        if (existing) {
+        if (existing && split !== 'need') {
+          // Uncheck: remove my mark (tapping the checked portion unchecks all).
           week.haveGenerated = week.haveGenerated.filter(x => !(x.key === k && x.session === sid));
         } else {
-          week.haveGenerated.push({ key: k, session: sid, at: now });
+          // Check: capture the quantity on the line at check time, so later additions
+          // of the same ingredient split into a separate unchecked line.
+          // Tapping a split "need" line checks the full current quantity.
+          const line = buildShoppingList().find(it => it.key === k);
+          const mark = { key: k, session: sid, at: now };
+          if (line && line.qty !== null && line.qty !== undefined) {
+            mark.qty = line.qty;
+            mark.unit = line.unit || '';
+          }
+          if (existing) {
+            // Update existing mark (split "need" tap) instead of duplicating.
+            Object.assign(existing, mark);
+          } else {
+            week.haveGenerated.push(mark);
+          }
         }
-        saveShopLocal(); syncShopSoon(); rerender(); return;
+        markShopDirty(); rerender(); return;
       }
       if (manItem) {
         const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
@@ -720,7 +771,7 @@ function renderShopping(app) {
             if (!m.haveSessions.includes(sid)) m.haveSessions.push(sid);
           }
         }
-        saveShopLocal(); syncShopSoon(); rerender(); return;
+        markShopDirty(); rerender(); return;
       }
     }
     // Dismiss conflict warning
@@ -729,7 +780,7 @@ function renderShopping(app) {
       const week = getWeek(thisWeekKey());
       if (!week.conflictAcked) week.conflictAcked = {};
       week.conflictAcked[conflictBtn.dataset.confack] = true;
-      saveShopLocal(); syncShopSoon(); rerender(); return;
+      markShopDirty(); rerender(); return;
     }
     // Delete manual item
     const del = e.target.closest('[data-mandel]');
@@ -758,7 +809,8 @@ function renderShopping(app) {
   const copyBtn = $('#shop-copy');
   if (copyBtn) copyBtn.addEventListener('click', () => {
     const week = getWeek(thisWeekKey());
-    const toBuy = buildShoppingList().filter(it => !(week.haveGenerated || []).includes(it.key));
+    const haveKeys = new Set(normalizeHaveMarks(week.haveGenerated).map(m => m.key));
+    const toBuy = buildShoppingList().filter(it => !haveKeys.has(it.key));
     const manToBuy = (week.manualItems || []).filter(m => !m.have);
     const lines = toBuy.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
     const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
@@ -774,7 +826,8 @@ function renderLanding(app) {
   document.title = 'Reiss Family Recipes';
   const week = getWeek(thisWeekKey());
   const items = buildShoppingList();
-  const toBuyCount = items.filter(it => !(week.haveGenerated || []).includes(it.key)).length +
+  const haveKeys = new Set(normalizeHaveMarks(week.haveGenerated).map(m => m.key));
+  const toBuyCount = items.filter(it => !haveKeys.has(it.key)).length +
     (week.manualItems || []).filter(m => !m.have).length;
   const plannedCount = week.days.reduce((n, d) =>
     n + normalizeSlot(d.lunch).dishes.length + normalizeSlot(d.dinner).dishes.length, 0);
@@ -1572,10 +1625,10 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
     body = '<span class="slot-skipped">—</span>';
   }
   const btns = canEdit
-    ? ' <button class="link-btn" data-slotadd="' + key + '|' + di + '|' + meal + '" type="button">' +
+    ? '<div class="slot-actions"><button class="link-btn" data-slotadd="' + key + '|' + di + '|' + meal + '" type="button">' +
       (s.dishes.length ? '+ Add dish' : 'Add') + '</button>' +
-      ((s.dishes.length || s.note) ? ' <button class="link-btn danger" data-clear="' + key + '|' + di + '|' + meal +
-        '" type="button">Clear</button>' : '')
+      ((s.dishes.length || s.note) ? '<button class="link-btn danger" data-clear="' + key + '|' + di + '|' + meal +
+        '" type="button">Clear</button>' : '') + '</div>'
     : '';
   return '<div class="slot"><div class="slot-label">' + label + '</div>' +
          '<div class="slot-body">' + body + btns + '</div></div>';
@@ -1794,6 +1847,46 @@ function normalizeHaveMarks(arr) {
   if (!Array.isArray(arr)) return [];
   return arr.map(x => typeof x === 'string' ? { key: x, session: 'legacy', at: 0 } : x);
 }
+// Union shopping state from `source` week into `target` week (in place).
+// Used everywhere we combine local + server state so neither side wipes the other.
+function mergeWeekState(target, source) {
+  if (!target || !source) return target;
+  const tMarks = normalizeHaveMarks(target.haveGenerated);
+  const seen = new Set(tMarks.map(m => m.key + '|' + m.session));
+  normalizeHaveMarks(source.haveGenerated).forEach(m => {
+    const id = m.key + '|' + m.session;
+    if (!seen.has(id)) { tMarks.push(m); seen.add(id); }
+  });
+  target.haveGenerated = tMarks;
+  const tManual = Array.isArray(target.manualItems) ? target.manualItems : (target.manualItems = []);
+  const seenId = new Set(tManual.map(m => m.id));
+  (Array.isArray(source.manualItems) ? source.manualItems : []).forEach(m => {
+    if (m.id && !seenId.has(m.id)) { tManual.push(m); seenId.add(m.id); }
+  });
+  if (source.conflictAcked) {
+    target.conflictAcked = { ...(target.conflictAcked || {}), ...source.conflictAcked };
+  }
+  return target;
+}
+// Fetch the meal plan from the live bridge API first (no Pages rebuild lag),
+// falling back to the static Pages copy when offline or bridge-unreachable.
+async function fetchLiveMealPlan() {
+  try {
+    const r = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/meal-plan.json'));
+    if (r.ok) {
+      const data = await r.json();
+      if (data.ok && data.content) {
+        const mp = JSON.parse(data.content);
+        if (mp && typeof mp.weeks === 'object') return mp;
+      }
+    }
+  } catch (e) { /* fall through to Pages copy */ }
+  try {
+    const mp = await (await fetch('data/meal-plan.json?t=' + Date.now())).json();
+    if (mp && typeof mp.weeks === 'object') return mp;
+  } catch (e) { /* offline */ }
+  return null;
+}
 function saveShopLocal() {
   try {
     localStorage.setItem(SHOP_LOCAL_KEY, JSON.stringify(mealPlan));
@@ -1804,22 +1897,44 @@ function loadShopLocal() {
     const raw = localStorage.getItem(SHOP_LOCAL_KEY);
     if (raw) {
       const lp = JSON.parse(raw);
-      if (lp && typeof lp.weeks === 'object') mealPlan = lp;
+      if (lp && typeof lp.weeks === 'object') {
+        // Merge, don't overwrite: local offline taps union with the server copy.
+        Object.keys(lp.weeks).forEach(k => {
+          mergeWeekState(getWeek(k), lp.weeks[k]);
+        });
+        // Persist the merged state so localStorage never goes stale.
+        try { localStorage.setItem(SHOP_LOCAL_KEY, JSON.stringify(mealPlan)); } catch (e) {}
+      }
     }
   } catch (e) { /* ignore */ }
 }
-// Debounced bridge sync — pushes local state, then pulls server state via /read
+// Debounced bridge sync — pull-merge-push so the server can never wipe local marks.
+// Tracks unsynced changes; the 'online' event flushes them the moment connectivity returns.
 let _shopSyncTimer = null;
+let _shopDirty = false;
+function markShopDirty() {
+  _shopDirty = true;
+  saveShopLocal();
+  syncShopSoon();
+}
 function syncShopSoon() {
   if (_shopSyncTimer) clearTimeout(_shopSyncTimer);
   _shopSyncTimer = setTimeout(syncShop, 2000);
 }
 async function syncShop() {
   _shopSyncTimer = null;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    _shopDirty = true;  // offline — stay dirty, retry on 'online' event
+    return;
+  }
+  // Pull + merge FIRST so we push the union (both devices' marks), never a stale overwrite.
+  await pollShopServer();
   try {
     await ghPut('data/meal-plan.json', JSON.stringify(mealPlan, null, 2), 'Shopping list sync');
-  } catch (e) { /* offline — will retry on next poll */ }
-  await pollShopServer();
+    _shopDirty = false;
+  } catch (e) {
+    _shopDirty = true;  // push failed — retry on next poll / online event
+  }
 }
 // Poll server state via worker /read (bypasses Pages rebuild). Merges have-marks.
 async function pollShopServer() {
@@ -1869,12 +1984,21 @@ async function pollShopServer() {
 function startShopPoll() {
   stopShopPoll();
   window._shopPollTimer = setInterval(() => {
-    if ((location.hash || '#/') === '#/shopping') pollShopServer();
-    else stopShopPoll();
+    if ((location.hash || '#/') !== '#/shopping') { stopShopPoll(); return; }
+    // If we have unsynced changes, do a full push; otherwise just pull.
+    if (_shopDirty) syncShop();
+    else pollShopServer();
   }, 15000);
 }
 function stopShopPoll() {
   if (window._shopPollTimer) { clearInterval(window._shopPollTimer); window._shopPollTimer = null; }
+}
+// Flush unsynced shopping changes the moment connectivity returns.
+if (typeof window !== 'undefined' && window.addEventListener) {
+  window.addEventListener('online', () => {
+    if (_shopDirty && (location.hash || '#/') === '#/shopping') syncShop();
+    else if ((location.hash || '#/') === '#/shopping') pollShopServer();
+  });
 }
 /* Submit draft persistence: Android may kill the tab when the camera opens,
    so we save the photo (as resized base64) + URL + note to localStorage the
