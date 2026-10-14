@@ -178,7 +178,12 @@
         {
           "id": "mmv8e3jgu",
           "text": "Popcorn",
-          "have": false
+          "have": true,
+          "haveSession": "smv8nw944eyxh30",
+          "haveAt": 1792016230389,
+          "haveSessions": [
+            "smv8nw944eyxh30"
+          ]
         },
         {
           "id": "mmv8e3oj0",
