@@ -1,0 +1,47 @@
+# Changelog — Reiss Family Recipes
+
+## 2026-10-14
+- **Serving scaling: 5-bug fix batch** (`app.js?v=20261014d`) — Argon's Task-mode QA ("Reiss Family Recipes Quality Assurance" thread) found 5 edge-case bugs all confirmed in live app.js: (1) metric units under 1 rounded to integers or "a pinch" — 0.5 kg showed "1 kg", 0.25 kg showed "a pinch" with unit stripped; (2) pinch threshold (0.09) ran before the metric check — 0.05 kg showed "a pinch"; (3) ranges broke when lower bound hit "a pinch" — "1/8-1/4 tsp" at 0.5x rendered "a pinch-1/8" with no unit; (4) pluralize() dropped parentheticals ("1 chicken breast (boneless)" → "2 chicken breasts"), never singularized ("2 eggs" at 0.5x → "1 eggs"), mangled prep notes ("finely choppeds"), missing irregulars (tomato→tomatos); (5) pluralizeScaledUnit missing units (sprig, leaf, stick, box, jar, bottle, bag, ear, quart, pint, etc.) + static "Serves 4" header pill didn't update with stepper. Fixes: kg/l keep 2 decimals handled before pinch check; g/ml pinch at 0.2 with 1 decimal under 10; pinch-collapsed ranges; full pluralize() rewrite with IRREGULAR_PLURALS map, parenthetical/comma-note preservation, singularization on scale-down; expanded unit map; header Serves syncs with stepper. All 25 unit tests pass. Live QA 6/6 passed before (happy paths unaffected).
+- **Dynamic serving scaling** (commits `34df2ce` + `ad4d3c3`, `app.js?v=20261014c`) — Recipe detail pages have a Scale bar: preset buttons 0.5x, 1x, 2x, 3x + Serves stepper (when recipe has servings). Ingredient quantities recalculate on tap. Core parsing/formatting functions built by Gemini 4 Argon, integrated + QA'd by Muse. Argon caught 7 integration bugs in review (pluralization, stepper precision, global `$`, empty-qty handling) — all fixed before deploy. Live QA found 3 more (fraction pluralization, bare count nouns, lb/oz rounding) — fixed in `ad4d3c3`, re-verified 5/5. Details: fractions (1/2, 1 1/2, Unicode ½, ranges 2-3), metric stays decimal (167 g), oz/lb use fractions (1 1/4 lb), pluralization by numeric value (0 < v ≤ 1 → singular: "1/2 cup"), bare count nouns pluralize ("2 red onions"), non-numeric ("to taste") unchanged, numbers in item text not scaled. PDFs stay at 1x. Shopping list / planner integration is v2, not in this release.
+- **Optional ingredients** (commit pending, `app.js?v=20261014a`) — Ingredients can be marked `optional: true`. They show as "(optional)" in recipes and appear in a collapsed "Optional" section on the shopping list (one line, no clutter). Each optional item has two buttons: "+" promotes to To Buy, "✓" marks Already Have directly. Unchecking a promoted item sends it back to Optional. Editor has an "Opt?" checkbox per ingredient. Sous Chef detects "optional"/"if desired"/"to taste" in source recipes. Pizza recipe left unchanged per Yidi's call.
+- **Fix: meta.json images + remove skeletons** (commits `bc04aab` + `cd5c9af`, `app.js?v=20261013d`) — meta.json was generated from stale local data (all `banner_image: null`); regenerated from live API (88 recipes, all with images). Removed skeleton placeholders per Yidi's feedback. Root cause of stale local data: local `site/data/recipes/` wasn't synced with the repo.
+- **Lazy-load recipes** (commits `db6fa2e` + `3c9c169`, `app.js?v=20261013c`) — Boot dropped from 89 sequential requests to 2: new `data/recipes/meta.json` (47KB, one request) holds lightweight metadata for list/search/filter/sort; full recipe JSONs load on demand when tapping a recipe (cached). Shopping list fetches only planned recipes' JSONs in parallel. Skeleton placeholders (200ms delay) for recipe detail and shopping list so loads never flash blank. Manual editor and Sous Chef both write `meta.json` on save.
+- **Shopping list: 7-bug fix batch** (commit `ed1ece9`, `app.js?v=20261013b`) —
+  1. Shopping-list date label was rendering raw `<span>` HTML (double-escaped); now renders styled text.
+  2. Checkmark keys used pluralized display units (`cup`→`cups` when qty>1), so keys shifted when quantities changed. Keys now use raw units (stable).
+  3. `loadShopLocal()` blind-overwrote server data with localStorage on every page load — cross-device checkmark killer. Now merges (union).
+  4. `boot()`/`refreshMealPlan()` fetched from laggy GitHub Pages (minutes behind the API) and blind-overwrote. Now read from the live bridge `/read` endpoint with Pages fallback, and merge instead of overwrite.
+  5. Meal planner Clear button pushed right, away from + Add dish (same row, `margin-left: auto`).
+  6. Offline-smart sync: dirty flag tracks unsynced taps; `online` event flushes the moment connectivity returns; pull-merge-push order so the server can never uncheck the device.
+  7. Quantity-aware checkmarks: taps capture the line qty; when more of an ingredient is needed later, the line splits into checked (what you got) + unchecked (still need) instead of merging.
+- **Echo Show kitchen setup** — Recipe site bookmarked in Silk browser as a favorite. Silent-audio keep-alive rejected (would block music). MyPage voice skill didn't work well.
+- **AI edit requests:** Natural-language editing via "Describe changes" box on the edit page. Submits to inbox as `type: "edit"`; checker applies changes via Sous Chef §7. Shows in log as "✏️ Edit".
+- **Editor: aligned headers, searchable pairing picker** — Fixed × button width to match header spacer for pixel-perfect column alignment. Replaced pairing dropdown with searchable type-to-filter input.
+
+## 2026-10-12
+- **Editor: kosher flag clear, column headers, wider fields** — Added "Needs kosher review" checkbox + notes field to edit form (previously no way to clear the flag). Added Qty/Unit/Ingredient/Prep column headers. Ingredient name field gets 2× flex; rows scroll horizontally on small screens.
+- **Cache-bust all data fetches** — Full audit: recipe index, individual recipes, meal plan, inbox all use `?v=Date.now()`. Previous fixes were one-at-a-time; this covers everything.
+- **Inbox list auto-refreshes every 60s** — Entries update when the checker processes them, no manual reload needed.
+- **Inbox list shows submission details** — Each entry now shows the link (clickable), photo filename, pasted text preview, and note. Previously only showed status.
+- **Sous Chef: YouTube channel name in title** — YouTube recipes now include the channel name, e.g. "Dairy-Free Chicken Alfredo by Pro Home Cooks".
+- **YouTube intake via description/captions** — Tested with real video; created "Dairy-Free Chicken Fettuccine Alfredo" successfully. Gemini pipeline deemed unnecessary.
+- **Plain-text submission** — "Or paste the recipe" textarea on submit page. Stored as `entry.text`; Sous Chef parses title/ingredients/instructions from it.
+- **Manual editor: prep field + PDF re-press** — Added prep column to ingredient rows. Typing "tomatoes, sliced" auto-splits. Manual saves set `pdf_stale: true` for the re-press queue.
+- **In-page camera** — Replaced `<input type="file" capture>` with getUserMedia in-page camera. Standard flow failed 100% on Android (OS kills browser when camera app opens).
+- **Photo removal** — × button on photo thumbnail; Cancel clears saved draft.
+- **Draft persistence** — URL, note, pasted text, photo persist through reloads via localStorage.
+- **Duplicate detection** — Sous Chef + checker compare title/slug, ingredients, instructions; check pending entries against each other. Duplicates marked `status: "duplicate"` with `duplicate_of`. UI shows "⧉ duplicate — skipped".
+- **Redesign: three-tab layout** — Home with three cards (Recipes, Meal Planner, Shopping List) + swipeable weekly carousel. Shopping list moved to its own tab with To Buy / Already Have sections.
+- **Meal planner: multiple dishes + leftovers** — Each meal slot holds a dish list; "Leftovers / already made" checkbox excludes from shopping list. Per-dish "Prepare in advance" cook date.
+
+## 2026-10-11
+- **Initial launch** — 78 recipes, vanilla HTML/CSS/JS, GitHub Pages. Search, filters, sort, tags, meal planner (week starts Sunday), shopping list with shared sync.
+- **Submit inbox + 30-min checker** — Link/photo submissions build recipe JSON + PDF via bridge. Auto-pulls best photo from links.
+- **Cloudflare Worker bridge** — Private worker holds GitHub token; site POSTs writes through it. (One token was auto-revoked by GitHub secret scanning after being baked into the public repo — lesson learned.)
+- **Recipe Press** — PDF engine: hero photo, ingredients sidebar, tips, kosher color theme, leftovers badge.
+- **Sous Chef** — Intake compiler skill: ingredient item/prep splitting, unit normalization, never-silently-kosherize rule, always-a-photo chain.
+- **Shared shopping list** — Manual items, removals, generated-ingredient states sync between Yidi and Nava. Manual items reset Sundays.
+- **Repo made public** — GitHub Pages free plan blocks private repos.
+
+## 2026-10-13 (later)
+- **Shopping list: offline-first with conflict detection** — Taps save to localStorage instantly (work offline), sync via bridge in background. Worker `/read` endpoint fetches meal-plan.json from GitHub API directly, bypassing Pages rebuild delay (~15-20s sync instead of ~2min). 15s poll while shopping page open. Each checkmark records session ID + timestamp; if two sessions mark the same item, it turns red with "⚠️ Both grabbed this — check for duplicates" (dismissible).
