@@ -128,11 +128,6 @@
                 "recipe": "squash-kugel",
                 "leftovers": false,
                 "cookDate": "2026-10-11"
-              },
-              {
-                "recipe": "tomato-dip",
-                "leftovers": false,
-                "cookDate": "2026-10-13"
               }
             ]
           },
@@ -146,7 +141,16 @@
       ],
       "manualItems": [],
       "haveGenerated": [
-        "egg|"
+        {
+          "key": "egg|",
+          "session": "legacy",
+          "at": 0
+        },
+        {
+          "key": "red or pink salmon|(16 oz) can",
+          "session": "smv7fu20kxyein1",
+          "at": 1791941722293
+        }
       ],
       "shoppingDay": "2026-10-12"
     },
