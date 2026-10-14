@@ -193,7 +193,12 @@
         {
           "id": "mmv8nvboc",
           "text": "Kiwis",
-          "have": false
+          "have": true,
+          "haveSession": "smv8nw944eyxh30",
+          "haveAt": 1792015727909,
+          "haveSessions": [
+            "smv8nw944eyxh30"
+          ]
         }
       ],
       "haveGenerated": [
