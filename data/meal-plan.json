@@ -175,6 +175,13 @@
           "key": "water|cup",
           "session": "smv7g5m4gwg4z62",
           "at": 1791942427608
+        },
+        {
+          "key": "lemon juice|tsp",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944121439,
+          "qty": 0.5,
+          "unit": "tsp"
         }
       ],
       "shoppingDay": "2026-10-14"
@@ -279,7 +286,9 @@
             "note": ""
           }
         }
-      ]
+      ],
+      "haveGenerated": [],
+      "manualItems": []
     },
     "2026-09-27": {
       "days": [
@@ -381,7 +390,9 @@
             "note": ""
           }
         }
-      ]
+      ],
+      "haveGenerated": [],
+      "manualItems": []
     },
     "2026-09-20": {
       "days": [
@@ -483,7 +494,9 @@
             "note": ""
           }
         }
-      ]
+      ],
+      "haveGenerated": [],
+      "manualItems": []
     }
   }
 }
