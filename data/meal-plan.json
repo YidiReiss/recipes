@@ -183,7 +183,12 @@
         {
           "id": "mmv8nsqax",
           "text": "Wine",
-          "have": false
+          "have": true,
+          "haveSession": "smv8nw944eyxh30",
+          "haveAt": 1792015751148,
+          "haveSessions": [
+            "smv8nw944eyxh30"
+          ]
         },
         {
           "id": "mmv8nsxvk",
