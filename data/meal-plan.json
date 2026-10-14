@@ -123,6 +123,11 @@
                 "recipe": "deli-roll",
                 "leftovers": false,
                 "cookDate": "2026-10-11"
+              },
+              {
+                "recipe": "squash-kugel",
+                "leftovers": false,
+                "cookDate": "2026-10-11"
               }
             ]
           },
@@ -136,25 +141,7 @@
       ],
       "manualItems": [],
       "haveGenerated": [
-        "egg|",
-        "red or pink salmon|(16 oz) can",
-        "cucumber|",
-        "chopped fresh dill or 1 tsp dried dill|tbsp",
-        "frozen puff pastry|(17.2 oz) package",
-        "lemon juice|tsp",
-        "water|cup",
-        "garlic powder|tsp",
-        "paprika|tsp",
-        "mayonnaise|cups",
-        "panko or cornflake crumb|cups",
-        "oil|tbsp",
-        "honey|cup",
-        "skinless boneless chicken breast|lb",
-        "dry bread crumbs (plain or seasoned)|cup",
-        "onion|cup",
-        "salt|tsp",
-        "hot sauce (such as frank's)|cup",
-        "pepper|tsp"
+        "egg|"
       ],
       "shoppingDay": "2026-10-12"
     },
