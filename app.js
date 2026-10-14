@@ -23,8 +23,22 @@ const KNOWN_CATEGORIES = ['main', 'side', 'soup', 'salad', 'fish', 'chicken',
                           'meat', 'dessert', 'baking', 'breakfast'];
 
 /* ---------------- State ---------------- */
-let recipes = [];          // recipe objects, in manifest order
-let byId = {};             // id -> recipe
+let recipes = [];          // recipe metadata, in manifest order (list/search/filter)
+let byId = {};             // id -> FULL recipe (on-demand cache via ensureRecipe)
+let metaById = {};         // id -> lightweight metadata (loaded at boot)
+// Fetch a full recipe JSON on demand; cached in byId after first load.
+async function ensureRecipe(id) {
+  if (byId[id]) return byId[id];
+  try {
+    const r = await (await fetch('data/recipes/' + id + '.json?v=' + Date.now())).json();
+    if (r && r.id) { byId[id] = r; return r; }
+  } catch (e) { console.warn('Could not load recipe', id, e); }
+  return null;
+}
+// Metadata lookup with full-recipe fallback for fields only in the JSON.
+function recipeMeta(id) {
+  return metaById[id] || byId[id] || null;
+}
 let mealPlan = { weeks: {} };
 let plannerOffset = 0;     // weeks away from the current week
 let filters = { q: '', kosher: 'all', kfp: false, category: 'all',
@@ -135,22 +149,22 @@ function loadError() {
 }
 
 async function boot() {
+  // Lazy loading: fetch only metadata + meal plan upfront (2 requests).
+  // Full recipe JSONs load on demand via ensureRecipe() and are cached in byId.
   try {
     const cb = '?v=' + Date.now();
-    const idxRes = await fetch('data/recipes/index.json' + cb);
-    if (!idxRes.ok) throw new Error('no manifest');
-    const ids = await idxRes.json();
+    const metaRes = await fetch('data/recipes/meta.json' + cb);
+    if (!metaRes.ok) throw new Error('no metadata');
+    const meta = await metaRes.json();
+    metaById = {};
     recipes = [];
-    for (const id of (Array.isArray(ids) ? ids : [])) {
-      try {
-        const r = await (await fetch('data/recipes/' + id + '.json' + cb)).json();
-        recipes.push(r);
-      } catch (e) { console.warn('Could not load recipe', id, e); }
-    }
+    (Array.isArray(meta) ? meta : []).forEach(m => {
+      metaById[m.id] = m;
+      recipes.push(m);  // list view works off metadata
+    });
   } catch (e) { loadError(); return; }
 
-  byId = {};
-  recipes.forEach(r => { byId[r.id] = r; });
+  byId = {};  // full recipe cache, populated on demand
 
   try {
     const mp = await fetchLiveMealPlan();
@@ -166,14 +180,23 @@ async function boot() {
   // re-fetch when the tab regains focus, unless mid-edit.
   const maybeRefreshPlan = async () => {
     if (editingSlot || document.hidden) return;
-    try {
-      const mp = await (await fetch('data/meal-plan.json?t=' + Date.now())).json();
-      if (mp && typeof mp.weeks === 'object') {
-        mealPlan = mp;
-        const h = location.hash || '#/';
-        if (h === '#/planner' || h === '#/' || h === '') route();
-      }
-    } catch (e) { /* keep the copy we have */ }
+    const mp = await fetchLiveMealPlan();
+    if (mp && typeof mp.weeks === 'object') {
+      // Merge, don't overwrite: preserve local shopping state.
+      Object.keys(mp.weeks).forEach(k => {
+        const serverWeek = mp.weeks[k];
+        const localWeek = mealPlan.weeks[k];
+        if (!localWeek || !Array.isArray(localWeek.days)) {
+          mealPlan.weeks[k] = serverWeek;
+        } else {
+          const merged = { ...serverWeek };
+          mergeWeekState(merged, localWeek);
+          mealPlan.weeks[k] = merged;
+        }
+      });
+      const h = location.hash || '#/';
+      if (h === '#/planner' || h === '#/' || h === '') route();
+    }
   };
   document.addEventListener('visibilitychange', () => { if (!document.hidden) maybeRefreshPlan(); });
   window.addEventListener('focus', maybeRefreshPlan);
@@ -381,6 +404,7 @@ function buildShoppingList() {
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
+    if (!r) return;  // not loaded yet (ensurePlannedRecipes fetches before shopping renders)
     (r.ingredients || []).forEach(sec => {
       (sec.items || []).forEach(it => {
         const raw = (it.item || '').trim();
@@ -465,7 +489,7 @@ function weekStripHTML() {
     ['lunch', 'dinner'].forEach(m => {
       const s = ds[m];
       if (!s || s.skipped) return;
-      if (s.recipe && byId[s.recipe]) parts.push(byId[s.recipe].title);
+      if (s.recipe && recipeMeta(s.recipe)) parts.push(recipeMeta(s.recipe).title);
       else if (s.custom) parts.push(s.custom);
     });
     out.push(
@@ -711,13 +735,38 @@ function renderRecipes(app) {
 }
 
 /* ---------------- Shopping list page ---------------- */
-function renderShopping(app) {
+// Fetch full JSONs for all recipes in the current week's meal plan (parallel).
+// Used by the shopping list, which needs ingredients. Cached in byId.
+async function ensurePlannedRecipes() {
+  const week = getWeek(thisWeekKey());
+  const ids = new Set();
+  (week.days || []).forEach(d => {
+    ['lunch', 'dinner'].forEach(m => {
+      const s = normalizeSlot(d[m]);
+      (s.dishes || []).forEach(dish => {
+        if (dish.recipe && !dish.leftovers) ids.add(dish.recipe);
+      });
+    });
+  });
+  await Promise.all([...ids].map(id => ensureRecipe(id)));
+}
+async function renderShopping(app) {
   document.title = 'Shopping List — Reiss Family Recipes';
   app.innerHTML =
     '<section class="page-head"><h1>Shopping List</h1>' +
     '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p></section>' +
-    '<div id="shop-wrap">' + shoppingListHTML() + '</div>' +
+    '<div id="shop-wrap"></div>' +
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
+
+  // Fetch full JSONs for planned recipes only (parallel), with skeleton after 200ms.
+  const skeletonTimer = setTimeout(() => {
+    const w = $('#shop-wrap');
+    if (w && !w.innerHTML) w.innerHTML = skeletonListHTML(8);
+  }, 200);
+  await ensurePlannedRecipes();
+  clearTimeout(skeletonTimer);
+  const wrap = $('#shop-wrap');
+  if (wrap) wrap.innerHTML = shoppingListHTML();
 
   const shopWrap = $('#shop-wrap');
   const saveShop = () => { markShopDirty(); };
@@ -867,10 +916,10 @@ function planCarouselHTML() {
       const s = normalizeSlot(d[m]);
       s.dishes.forEach(dish => {
         const label = m === 'lunch' ? 'Lunch' : 'Dinner';
-        if (dish.recipe && byId[dish.recipe]) {
-          const r = byId[dish.recipe];
+        const meta = dish.recipe ? recipeMeta(dish.recipe) : null;
+        if (meta) {
           meals.push('<div class="carousel-meal"><span class="carousel-meal-type">' + label + '</span>' +
-            '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>' +
+            '<a href="#/recipe/' + encodeURIComponent(meta.id) + '">' + esc(meta.title) + '</a>' +
             (dish.leftovers ? ' <span class="badge leftovers">Leftovers</span>' : '') + '</div>');
         } else if (dish.custom) {
           meals.push('<div class="carousel-meal"><span class="carousel-meal-type">' + label + '</span>' +
@@ -899,6 +948,8 @@ function filteredRecipes() {
         r.title,
         (r.tags || []).join(' '),
         (r.categories || []).join(' '),
+        r.search_text || '',
+        // Fallback for fully-loaded recipes (pre-meta format)
         (r.ingredients || []).flatMap(s =>
           [s.section, (s.items || []).map(i => [i.qty, i.unit, i.item].filter(Boolean).join(' ')).join(' ')]
         ).join(' '),
@@ -947,8 +998,29 @@ function drawGrid() {
 }
 
 /* ---------------- Recipe page ---------------- */
-function renderRecipe(app, id) {
-  const r = byId[id];
+// Skeleton placeholders: shown only if loading exceeds 200ms, so fast loads never flash.
+function skeletonRecipeHTML() {
+  return '<div class="skeleton-wrap" aria-hidden="true">' +
+    '<div class="skeleton skeleton-hero"></div>' +
+    '<div class="skeleton skeleton-title"></div>' +
+    '<div class="skeleton skeleton-line"></div>' +
+    '<div class="skeleton skeleton-line short"></div>' +
+    '<div class="skeleton skeleton-line"></div>' +
+    '<div class="skeleton skeleton-line short"></div>' +
+    '</div>';
+}
+function skeletonListHTML(n) {
+  let h = '<div class="skeleton-wrap" aria-hidden="true">';
+  for (let i = 0; i < (n || 6); i++) h += '<div class="skeleton skeleton-row"></div>';
+  return h + '</div>';
+}
+async function renderRecipe(app, id) {
+  // Show skeleton after 200ms if the fetch is slow (fast loads never flash).
+  let skeletonTimer = setTimeout(() => {
+    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' + skeletonRecipeHTML();
+  }, 200);
+  const r = await ensureRecipe(id);
+  clearTimeout(skeletonTimer);
   if (!r) {
     app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2></div>';
@@ -967,7 +1039,7 @@ function renderRecipe(app, id) {
   const pairHTML = (r.pairings && r.pairings.length)
     ? '<section class="recipe-section"><h2>Pairings</h2><ul class="pairing-list">' +
       r.pairings.map(p => {
-        const t = byId[p.recipe_id];
+        const t = recipeMeta(p.recipe_id);
         return '<li>' + (t
           ? '<a href="#/recipe/' + encodeURIComponent(t.id) + '">' + esc(t.title) + '</a>'
           : esc(p.recipe_id)) + ' — ' + esc(p.note || '') + '</li>';
@@ -1438,7 +1510,7 @@ function drawPairEditor() {
   const host = $('#pair-editor');
   if (!host) return;
   host.innerHTML = editDraft.pairings.map((p, i) => {
-    const selTitle = p.recipe_id && byId[p.recipe_id] ? byId[p.recipe_id].title : '';
+    const selTitle = p.recipe_id && recipeMeta(p.recipe_id) ? recipeMeta(p.recipe_id).title : '';
     return '<div class="dynamic-block"><div class="mini-row" style="position:relative">' +
       '<input type="text" data-pairsearch="' + i + '" value="' + esc(selTitle) + '" ' +
         'placeholder="Type to search recipes…" aria-label="Paired recipe" autocomplete="off">' +
@@ -1472,13 +1544,13 @@ function drawPairEditor() {
           const [pi, rid] = opt.dataset.pick.split('|');
           editDraft.pairings[+pi].recipe_id = rid;
           hiddenEl.value = rid;
-          el.value = byId[rid] ? byId[rid].title : '';
+          el.value = recipeMeta(rid) ? recipeMeta(rid).title : '';
           resultsEl.style.display = 'none';
         }));
     };
     el.addEventListener('input', () => {
       // Clear the selection when the user types something new
-      if (hiddenEl.value && el.value !== (byId[hiddenEl.value] || {}).title) {
+      if (hiddenEl.value && el.value !== ((recipeMeta(hiddenEl.value) || {}).title)) {
         hiddenEl.value = '';
         editDraft.pairings[i].recipe_id = '';
       }
@@ -1514,8 +1586,25 @@ async function saveRecipe(id) {
   try {
     await maybeUploadPhoto(d);
     await ghPut('data/recipes/' + id + '.json', JSON.stringify(d, null, 2), 'Update recipe: ' + d.title);
+    // Update metadata for lazy loading (list/search/filter).
+    const metaEntry = {
+      id: d.id, title: d.title, banner_image: d.banner_image,
+      kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
+      categories: d.categories || [], tags: d.tags || [],
+      prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
+      leftover_friendly: !!d.leftover_friendly, tags_need_review: !!d.tags_need_review,
+      photo_generated: !!d.photo_generated,
+      search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
+    };
+    try {
+      const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
+      const mi = meta.findIndex(x => x.id === id);
+      if (mi >= 0) meta[mi] = metaEntry; else meta.push(metaEntry);
+      await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Update meta: ' + d.title);
+    } catch (e) { console.warn('meta.json update failed', e); }
     const i = recipes.findIndex(x => x.id === id);
-    if (i >= 0) recipes[i] = d;
+    if (i >= 0) recipes[i] = metaEntry;
+    metaById[id] = metaEntry;
     byId[id] = d;
     st.className = 'form-status ok';
     st.textContent = 'Saved — the site rebuilds in about a minute.';
@@ -1551,7 +1640,23 @@ async function saveNewRecipe() {
     const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
     idx.push(id);
     await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
-    recipes.push(d);
+    // Update meta.json for lazy loading (list/search/filter use metadata only).
+    const metaEntry = {
+      id: d.id, title: d.title, banner_image: d.banner_image,
+      kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
+      categories: d.categories || [], tags: d.tags || [],
+      prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
+      leftover_friendly: !!d.leftover_friendly, tags_need_review: !!d.tags_need_review,
+      photo_generated: !!d.photo_generated,
+      search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
+    };
+    try {
+      const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
+      meta.push(metaEntry);
+      await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Add to meta: ' + d.title);
+    } catch (e) { console.warn('meta.json update failed', e); }
+    recipes.push(metaEntry);
+    metaById[id] = metaEntry;
     byId[id] = d;
     toast('Saved — the site rebuilds in about a minute.');
     location.hash = '#/recipe/' + encodeURIComponent(id);
@@ -1605,9 +1710,9 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
   } else if (s.dishes.length) {
     body = s.dishes.map((dish, idx) => {
       let dishBody;
-      if (dish.recipe && byId[dish.recipe]) {
-        const r = byId[dish.recipe];
-        dishBody = '<a href="#/recipe/' + encodeURIComponent(r.id) + '">' + esc(r.title) + '</a>';
+      const meta = dish.recipe ? recipeMeta(dish.recipe) : null;
+      if (meta) {
+        dishBody = '<a href="#/recipe/' + encodeURIComponent(meta.id) + '">' + esc(meta.title) + '</a>';
       } else if (dish.custom) {
         dishBody = '<span class="slot-custom">' + esc(dish.custom) + '</span>';
       } else {
@@ -1637,9 +1742,9 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
 function slotEditorHTML(slot, dishIdx) {
   const s = normalizeSlot(slot);
   const dish = (dishIdx !== undefined && s.dishes[dishIdx]) ? s.dishes[dishIdx] : {};
-  const currentLabel = (dish.recipe && byId[dish.recipe]) ? byId[dish.recipe].title
+  const currentLabel = (dish.recipe && recipeMeta(dish.recipe)) ? recipeMeta(dish.recipe).title
     : (dish.custom || '');
-  const currentRid = (dish.recipe && byId[dish.recipe]) ? dish.recipe : '';
+  const currentRid = (dish.recipe && recipeMeta(dish.recipe)) ? dish.recipe : '';
   return '<div class="slot-editor">' +
     '<div class="combo-wrap">' +
       '<input type="text" id="se-meal" placeholder="Type a recipe or your own dish…" autocomplete="off" ' +
@@ -1787,7 +1892,7 @@ function saveSlot(key) {
   const rid = mealInput ? mealInput.dataset.rid : '';
   const text = mealInput ? mealInput.value.trim() : '';
   const dish = {};
-  if (rid && byId[rid]) {
+  if (rid && recipeMeta(rid)) {
     dish.recipe = rid;
   } else if (text) {
     dish.custom = text;
@@ -2298,7 +2403,7 @@ async function loadInboxList() {
     // Edit requests get special display
     if (s.type === 'edit') {
       const full = editDetails[s.id] || {};
-      const targetTitle = s.edit_target && byId[s.edit_target] ? byId[s.edit_target].title : (s.edit_target || 'recipe');
+      const targetTitle = s.edit_target && recipeMeta(s.edit_target) ? recipeMeta(s.edit_target).title : (s.edit_target || 'recipe');
       const reqText = full.text || '';
       const preview = reqText.length > 100 ? reqText.slice(0, 97) + '…' : reqText;
       const editBadge = s.status === 'done' ? '✓ applied' : badge(s.status);
@@ -2311,9 +2416,9 @@ async function loadInboxList() {
     }
     // Show the recipe title once it's processed
     let titlePart = '';
-    if (s.recipe_id && byId[s.recipe_id]) {
+    if (s.recipe_id && recipeMeta(s.recipe_id)) {
       titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">' +
-        esc(byId[s.recipe_id].title) + '</a>';
+        esc(recipeMeta(s.recipe_id).title) + '</a>';
     } else if (s.recipe_id) {
       titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>';
     }
@@ -2336,7 +2441,7 @@ async function loadInboxList() {
     // For duplicates, show what it's a duplicate of
     let dupPart = '';
     if (s.status === 'duplicate' && s.duplicate_of) {
-      const dupTitle = byId[s.duplicate_of] ? esc(byId[s.duplicate_of].title) : esc(s.duplicate_of);
+      const dupTitle = recipeMeta(s.duplicate_of) ? esc(recipeMeta(s.duplicate_of).title) : esc(s.duplicate_of);
       dupPart = ' (duplicate of ' + dupTitle + ')';
     }
     return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart + dupPart +
