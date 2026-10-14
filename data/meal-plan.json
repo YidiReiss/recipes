@@ -182,6 +182,41 @@
           "at": 1791944121439,
           "qty": 0.5,
           "unit": "tsp"
+        },
+        {
+          "key": "garlic powder|tsp",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944794472,
+          "qty": 0.25,
+          "unit": "tsp"
+        },
+        {
+          "key": "paprika|tsp",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944795521,
+          "qty": 0.25,
+          "unit": "tsp"
+        },
+        {
+          "key": "salt|tsp",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944796072,
+          "qty": 0.25,
+          "unit": "tsp"
+        },
+        {
+          "key": "panko or cornflake crumb|cup",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944796633,
+          "qty": 1.5,
+          "unit": "cups"
+        },
+        {
+          "key": "skinless boneless chicken breast|lb",
+          "session": "smv7g5m4gwg4z62",
+          "at": 1791944797755,
+          "qty": 1.5,
+          "unit": "lb"
         }
       ],
       "shoppingDay": "2026-10-14"
