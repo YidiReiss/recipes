@@ -1128,7 +1128,8 @@ function formatQty(value, unit) {
     return pos === 'a pinch' ? '-a pinch' : '-' + pos;
   }
   if (value < 0.09) return 'a pinch';
-  const DECIMAL_UNITS = new Set(['g','gram','grams','kg','kilogram','kilograms','mg','milligram','milligrams','ml','milliliter','milliliters','millilitre','millilitres','l','liter','liters','litre','litres','oz','ounce','ounces','lb','pound','pounds']);
+  const DECIMAL_UNITS = new Set(['g','gram','grams','kg','kilogram','kilograms','mg','milligram','milligrams','ml','milliliter','milliliters','millilitre','millilitres','l','liter','liters','litre','litres']);
+  // Note: oz/lb use FRACTIONS (US cooking: "1 1/4 lb"), not decimals. Only metric stays decimal.
   if (DECIMAL_UNITS.has(u)) {
     const rounded = Math.round(value);
     if (rounded === 0) return 'a pinch';
@@ -1170,8 +1171,8 @@ function scaleQty(qtyStr, unit, scale) {
   return formatQty(parsed * scale, unit);
 }
 // Pluralize a unit based on scaled quantity ("1 clove" → "2 cloves").
-// Uses the FORMATTED display value for the decision (not raw float) so
-// "1.04 cups" → "1 cup" (correct), not "1 cups". Zero takes plural: "0 cups".
+// Rule: singular if 0 < value <= 1 (covers "1", "1/2", "1/4"); plural otherwise
+// (covers "0", "2", "1 1/2", ranges). Uses numeric value, not string equality.
 function pluralizeScaledUnit(unit, formattedQty) {
   if (!unit) return '';
   const u = unit.trim().toLowerCase();
@@ -1182,17 +1183,17 @@ function pluralizeScaledUnit(unit, formattedQty) {
     liter: 'liters', milliliter: 'milliliters', slice: 'slices',
     piece: 'pieces', bunch: 'bunches', head: 'heads', stalk: 'stalks'
   };
-  // "1" (exactly) → singular; everything else (0, 2, 1/2, ranges) → plural.
-  // formattedQty is the display string from scaleQty (e.g. "1", "1 1/2", "2-3", "a pinch").
-  const isExactlyOne = formattedQty === '1';
-  if (isExactlyOne) {
-    // If unit is plural, return singular.
+  // Parse formattedQty to a number (handles "1/2", "1 1/2", "2-3", "1").
+  const parsed = parseQty(formattedQty);
+  let value = null;
+  if (typeof parsed === 'number') value = parsed;
+  else if (Array.isArray(parsed)) value = parsed[1]; // range: use max for plural decision
+  const isSingular = value !== null && value > 0 && value <= 1;
+  if (isSingular) {
     const singular = Object.keys(map).find(k => map[k] === u);
     return singular || unit;
   }
-  // Not exactly one → plural if we know the plural form.
   if (map[u]) return map[u];
-  // Already plural? Keep as-is.
   if (Object.values(map).includes(u)) return unit;
   return unit; // tbsp, tsp, g, ml, oz, lb are invariant
 }
@@ -1231,7 +1232,7 @@ async function renderRecipe(app, id) {
     '<ul class="ing-list">' + (s.items || []).map(i =>
       '<li><span class="qty ing-qty" data-base-qty="' + esc(i.qty || '') + '" data-unit="' + esc(i.unit || '') + '">' +
       esc([i.qty, i.unit].filter(Boolean).join(' ')) + '</span> ' +
-      esc(i.item) +
+      '<span class="ing-item" data-base-item="' + esc(i.item || '') + '">' + esc(i.item) + '</span>' +
       (i.optional ? ' <em class="opt-tag">optional</em>' : '') + '</li>'
     ).join('') + '</ul>'
   ).join('');
@@ -1306,6 +1307,21 @@ async function renderRecipe(app, id) {
       if (isTextual) { el.textContent = scaled; return; }
       const dispUnit = pluralizeScaledUnit(unit, scaled);
       el.textContent = dispUnit ? scaled + ' ' + dispUnit : scaled;
+    });
+    // Bare count nouns: pluralize item name when unit is empty and qty > 1.
+    // "2 red onion" → "2 red onions". Uses existing pluralize() (handles uncountables).
+    app.querySelectorAll('.ing-item').forEach(el => {
+      const baseItem = el.dataset.baseItem || '';
+      const qtyEl = el.parentElement ? el.parentElement.querySelector('.ing-qty') : null;
+      const baseQty = qtyEl ? (qtyEl.dataset.baseQty || '') : '';
+      const unit = qtyEl ? (qtyEl.dataset.unit || '') : '';
+      if (!baseItem || unit) { el.textContent = baseItem; return; }
+      const parsed = parseQty(baseQty);
+      let scaledNum = null;
+      if (typeof parsed === 'number') scaledNum = parsed * f;
+      else if (Array.isArray(parsed)) scaledNum = parsed[1] * f;
+      if (scaledNum === null) { el.textContent = baseItem; return; }
+      el.textContent = pluralize(baseItem, scaledNum);
     });
     // Update scale bar UI (scoped to app, not global $).
     app.querySelectorAll('.scale-btn').forEach(b => {
