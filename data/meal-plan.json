@@ -118,6 +118,11 @@
                 "recipe": "no-fry-hot-poppers",
                 "leftovers": false,
                 "cookDate": "2026-10-15"
+              },
+              {
+                "recipe": "deli-roll",
+                "leftovers": false,
+                "cookDate": "2026-10-11"
               }
             ]
           },
