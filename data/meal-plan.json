@@ -139,7 +139,13 @@
           }
         }
       ],
-      "manualItems": [],
+      "manualItems": [
+        {
+          "id": "mmv8bk98e",
+          "text": "Pizza dough",
+          "have": false
+        }
+      ],
       "haveGenerated": [
         {
           "key": "egg|",
@@ -238,7 +244,8 @@
           "at": 1791944799277
         }
       ],
-      "shoppingDay": "2026-10-14"
+      "shoppingDay": "2026-10-14",
+      "optionalPromoted": []
     },
     "2026-10-04": {
       "days": [
@@ -342,7 +349,8 @@
         }
       ],
       "haveGenerated": [],
-      "manualItems": []
+      "manualItems": [],
+      "optionalPromoted": []
     },
     "2026-09-27": {
       "days": [
@@ -446,7 +454,8 @@
         }
       ],
       "haveGenerated": [],
-      "manualItems": []
+      "manualItems": [],
+      "optionalPromoted": []
     },
     "2026-09-20": {
       "days": [
@@ -550,7 +559,8 @@
         }
       ],
       "haveGenerated": [],
-      "manualItems": []
+      "manualItems": [],
+      "optionalPromoted": []
     }
   }
 }
