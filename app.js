@@ -758,13 +758,8 @@ async function renderShopping(app) {
     '<div id="shop-wrap"></div>' +
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
 
-  // Fetch full JSONs for planned recipes only (parallel), with skeleton after 200ms.
-  const skeletonTimer = setTimeout(() => {
-    const w = $('#shop-wrap');
-    if (w && !w.innerHTML) w.innerHTML = skeletonListHTML(8);
-  }, 200);
+  // Fetch full JSONs for planned recipes only (parallel).
   await ensurePlannedRecipes();
-  clearTimeout(skeletonTimer);
   const wrap = $('#shop-wrap');
   if (wrap) wrap.innerHTML = shoppingListHTML();
 
@@ -998,29 +993,8 @@ function drawGrid() {
 }
 
 /* ---------------- Recipe page ---------------- */
-// Skeleton placeholders: shown only if loading exceeds 200ms, so fast loads never flash.
-function skeletonRecipeHTML() {
-  return '<div class="skeleton-wrap" aria-hidden="true">' +
-    '<div class="skeleton skeleton-hero"></div>' +
-    '<div class="skeleton skeleton-title"></div>' +
-    '<div class="skeleton skeleton-line"></div>' +
-    '<div class="skeleton skeleton-line short"></div>' +
-    '<div class="skeleton skeleton-line"></div>' +
-    '<div class="skeleton skeleton-line short"></div>' +
-    '</div>';
-}
-function skeletonListHTML(n) {
-  let h = '<div class="skeleton-wrap" aria-hidden="true">';
-  for (let i = 0; i < (n || 6); i++) h += '<div class="skeleton skeleton-row"></div>';
-  return h + '</div>';
-}
 async function renderRecipe(app, id) {
-  // Show skeleton after 200ms if the fetch is slow (fast loads never flash).
-  let skeletonTimer = setTimeout(() => {
-    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' + skeletonRecipeHTML();
-  }, 200);
   const r = await ensureRecipe(id);
-  clearTimeout(skeletonTimer);
   if (!r) {
     app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2></div>';
