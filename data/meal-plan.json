@@ -53,15 +53,17 @@
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
                 "leftovers": true,
                 "cookDate": null
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -107,8 +109,13 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "no-fry-hot-poppers",
+                "leftovers": false,
+                "cookDate": null
+              }
+            ],
             "skipped": false,
             "note": ""
           },
