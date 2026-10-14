@@ -288,27 +288,72 @@ const UNCOUNTABLES = new Set(['water', 'salt', 'pepper', 'garlic', 'mayonnaise',
   'butter', 'cheese', 'rice', 'pasta', 'bread', 'honey', 'vinegar', 'sauce', 'ketchup', 'mustard',
   'coca-cola', 'coke', 'coffee', 'tea', 'juice', 'broth', 'stock', 'cream', 'yogurt', 'beef', 'chicken',
   'pork', 'fish', 'salmon', 'tuna', 'turkey', 'lamb', 'bacon', 'sausage', 'tofu', 'cornstarch']);
+const IRREGULAR_PLURALS = {
+  tomato: 'tomatoes', potato: 'potatoes', hero: 'heroes',
+  half: 'halves', loaf: 'loaves', leaf: 'leaves', knife: 'knives',
+  clove: 'cloves', slice: 'slices', chili: 'chilies',
+  person: 'people', child: 'children', foot: 'feet', tooth: 'teeth'
+};
+const IRREGULAR_SINGULARS = Object.fromEntries(
+  Object.entries(IRREGULAR_PLURALS).map(([sing, plur]) => [plur, sing])
+);
+
 function pluralize(word, qty) {
-  // Conservative: only pluralize simple countable nouns when qty > 1.
-  // Never touches parentheticals — pluralizes the head word only.
-  if (!(qty > 1)) return word;
-  const m = word.match(/^(.*?)(\s*\(.*\))?$/);
-  const head = (m[1] || '').trim(), tail = m[2] || '';
+  if (!word) return '';
+  // Split head noun phrase from any trailing parenthetical or comma prep note:
+  // e.g. "beefsteak tomatoes (8 oz each)" -> head: "beefsteak tomatoes", tail: " (8 oz each)"
+  // e.g. "red onion, finely chopped"      -> head: "red onion",          tail: ", finely chopped"
+  const m = word.match(/^([^,(]+?)(\s*(?:,.*|\(.*))?$/);
+  const head = (m && m[1] ? m[1] : word).trim();
+  const tail = (m && m[2]) || '';
   if (!head) return word;
+
   const low = head.toLowerCase();
   if (UNCOUNTABLES.has(low)) return word;
-  const words = low.split(/\s+/);
+  const words = head.split(/\s+/);
   const lastWord = words[words.length - 1];
-  // Mass nouns stay singular even with modifiers ("fresh garlic", "lean ground beef",
-  // "Worcestershire sauce", "black pepper"). Exception: "bell pepper" is a countable vegetable.
-  const isBellPepper = low === 'bell pepper' || low.endsWith(' bell pepper');
-  if (!isBellPepper && UNCOUNTABLES.has(lastWord)) return word;
-  if (/s$/.test(low)) return word; // already plural (or looks it) — leave alone
-  let p = head;
-  if (/[^aeiou]y$/.test(low)) p = head.slice(0, -1) + 'ies';
-  else if (/(x|z|ch|sh)$/.test(low)) p = head + 'es';
-  else p = head + 's';
-  return (p + (tail ? ' ' + tail.trim() : '')).trim();
+  const lastLow = lastWord.toLowerCase();
+
+  // Mass nouns stay invariant even with modifiers ("fresh garlic", "black pepper"),
+  // except "bell pepper" which is countable.
+  const isBellPepper = low === 'bell pepper' || low.endsWith(' bell pepper') ||
+                       low === 'bell peppers' || low.endsWith(' bell peppers');
+  if (!isBellPepper && UNCOUNTABLES.has(lastLow)) return word;
+
+  // Singularize when 0 < qty <= 1 (e.g. "2 eggs" at 0.5x -> "1 egg", "2 beefsteak tomatoes (8 oz each)" -> "1 beefsteak tomato (8 oz each)")
+  if (qty > 0 && qty <= 1) {
+    let singLast = lastWord;
+    if (IRREGULAR_SINGULARS[lastLow]) {
+      singLast = IRREGULAR_SINGULARS[lastLow];
+    } else if (/ies$/i.test(lastLow) && lastLow.length > 3) {
+      singLast = lastWord.slice(0, -3) + 'y';
+    } else if (/(?:ses|xes|zes|ches|shes)$/i.test(lastLow)) {
+      singLast = lastWord.slice(0, -2);
+    } else if (/s$/i.test(lastLow) && !/(?:ss|us|is)$/i.test(lastLow) && lastLow.length > 1) {
+      singLast = lastWord.slice(0, -1);
+    }
+    words[words.length - 1] = singLast;
+    return words.join(' ') + tail;
+  }
+
+  if (!(qty > 1)) return word;
+
+  // Pluralize when qty > 1
+  if (IRREGULAR_SINGULARS[lastLow]) return word; // already an irregular plural
+  if (/s$/i.test(lastLow) && !/(?:ss|us|is)$/i.test(lastLow)) return word; // already plural
+
+  let plurLast = lastWord;
+  if (IRREGULAR_PLURALS[lastLow]) {
+    plurLast = IRREGULAR_PLURALS[lastLow];
+  } else if (/[^aeiou]y$/i.test(lastLow)) {
+    plurLast = lastWord.slice(0, -1) + 'ies';
+  } else if (/(?:s|x|z|ch|sh)$/i.test(lastLow)) {
+    plurLast = lastWord + 'es';
+  } else {
+    plurLast = lastWord + 's';
+  }
+  words[words.length - 1] = plurLast;
+  return words.join(' ') + tail;
 }
 function thisWeekKey() { return ymd(sundayOf(0)); }
 /* Day-date (yyyy-mm-dd) of each slot index for a week starting at `mon`. */
@@ -1127,14 +1172,20 @@ function formatQty(value, unit) {
     if (!pos) return '';
     return pos === 'a pinch' ? '-a pinch' : '-' + pos;
   }
-  if (value < 0.09) return 'a pinch';
-  const DECIMAL_UNITS = new Set(['g','gram','grams','kg','kilogram','kilograms','mg','milligram','milligrams','ml','milliliter','milliliters','millilitre','millilitres','l','liter','liters','litre','litres']);
+  const LARGE_DECIMAL_UNITS = new Set(['kg','kilogram','kilograms','l','liter','liters','litre','litres']);
+  const SMALL_DECIMAL_UNITS = new Set(['g','gram','grams','mg','milligram','milligrams','ml','milliliter','milliliters','millilitre','millilitres']);
   // Note: oz/lb use FRACTIONS (US cooking: "1 1/4 lb"), not decimals. Only metric stays decimal.
-  if (DECIMAL_UNITS.has(u)) {
-    const rounded = Math.round(value);
+  if (LARGE_DECIMAL_UNITS.has(u)) {
+    const rounded = Math.round(value * 100) / 100;
     if (rounded === 0) return 'a pinch';
     return String(rounded);
   }
+  if (SMALL_DECIMAL_UNITS.has(u)) {
+    if (value < 0.2) return 'a pinch';
+    const rounded = value < 10 ? Math.round(value * 10) / 10 : Math.round(value);
+    return String(rounded);
+  }
+  if (value < 0.09) return 'a pinch';
   let whole = Math.floor(value);
   let frac = value - whole;
   const all = [
@@ -1166,6 +1217,9 @@ function scaleQty(qtyStr, unit, scale) {
     const fmtMin = formatQty(parsed[0] * scale, unit);
     const fmtMax = formatQty(parsed[1] * scale, unit);
     if (fmtMin === fmtMax) return fmtMin;
+    // If lower bound fell below pinch threshold but upper bound is a valid fraction/number,
+    // collapse to the upper bound rather than emitting "a pinch-1/8".
+    if (fmtMin === 'a pinch') return fmtMax;
     return fmtMin + '-' + fmtMax;
   }
   return formatQty(parsed * scale, unit);
@@ -1178,10 +1232,15 @@ function pluralizeScaledUnit(unit, formattedQty) {
   const u = unit.trim().toLowerCase();
   const map = {
     cup: 'cups', clove: 'cloves', can: 'cans', package: 'packages',
-    pinch: 'pinches', dash: 'dashes', teaspoon: 'teaspoons', tablespoon: 'tablespoons',
-    ounce: 'ounces', pound: 'pounds', gram: 'grams', kilogram: 'kilograms',
-    liter: 'liters', milliliter: 'milliliters', slice: 'slices',
-    piece: 'pieces', bunch: 'bunches', head: 'heads', stalk: 'stalks'
+    packet: 'packets', pkt: 'pkts', pinch: 'pinches', dash: 'dashes',
+    teaspoon: 'teaspoons', tablespoon: 'tablespoons', ounce: 'ounces',
+    pound: 'pounds', gram: 'grams', kilogram: 'kilograms', liter: 'liters',
+    litre: 'litres', milliliter: 'milliliters', millilitre: 'millilitres',
+    slice: 'slices', piece: 'pieces', bunch: 'bunches', head: 'heads',
+    stalk: 'stalks', sprig: 'sprigs', leaf: 'leaves', stick: 'sticks',
+    box: 'boxes', jar: 'jars', bottle: 'bottles', bag: 'bags',
+    ear: 'ears', quart: 'quarts', pint: 'pints', gallon: 'gallons',
+    drop: 'drops', strip: 'strips'
   };
   // Parse formattedQty to a number (handles "1/2", "1 1/2", "2-3", "1").
   const parsed = parseQty(formattedQty);
@@ -1264,7 +1323,7 @@ async function renderRecipe(app, id) {
         '<span>Prep <strong>' + esc(fmtTime(r.prep_minutes)) + '</strong></span>' +
         '<span>Cook <strong>' + esc(fmtTime(r.cook_minutes)) + '</strong></span>' +
         '<span>Total <strong>' + esc(fmtTime(totalTime(r))) + '</strong></span>' +
-        '<span>Serves <strong>' + esc(r.servings || '—') + '</strong></span>' +
+        '<span>Serves <strong id="header-servings-val">' + esc(r.servings || '—') + '</strong></span>' +
       '</div>' +
       '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + ingHTML + '</section>' +
       '<section class="recipe-section"><h2>Instructions</h2><ol class="steps">' +
@@ -1303,7 +1362,7 @@ async function renderRecipe(app, id) {
       // If scaleQty returns empty/unparseable, fall back to original text.
       if (!scaled) { el.textContent = [baseQty, unit].filter(Boolean).join(' '); return; }
       // Non-numeric results ("a pinch", "to taste") need no unit appended.
-      const isTextual = /[a-zA-Z]/.test(scaled);
+      const isTextual = !/\d/.test(scaled);
       if (isTextual) { el.textContent = scaled; return; }
       const dispUnit = pluralizeScaledUnit(unit, scaled);
       el.textContent = dispUnit ? scaled + ' ' + dispUnit : scaled;
@@ -1335,7 +1394,12 @@ async function renderRecipe(app, id) {
         'Showing ' + dispFactor + 'x' + (scaleState.servings ? ' · ' + Math.round(scaleState.servings * f) + ' servings' : '');
     }
     const servVal = app.querySelector('#scale-servings-val');
-    if (servVal && scaleState.servings) servVal.textContent = Math.round(scaleState.servings * f);
+    const headerServVal = app.querySelector('#header-servings-val');
+    if (scaleState.servings) {
+      const scaledServings = Math.round(scaleState.servings * f);
+      if (servVal) servVal.textContent = scaledServings;
+      if (headerServVal) headerServVal.textContent = scaledServings;
+    }
   };
   app.querySelectorAll('[data-scale]').forEach(btn => {
     btn.addEventListener('click', () => {
