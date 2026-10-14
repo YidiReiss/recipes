@@ -401,6 +401,8 @@ function buildShoppingList() {
   // words stripped so "1 egg" + "1 large egg" merge. Shopping list shows
   // what to BUY only — prep notes are cooking instructions, not shopping info.
   // tsp/tbsp/cup convert to a common base so "½ cup + 3 tbsp" becomes one line.
+  // Optional: an item is optional only if ALL occurrences are optional.
+  // If any recipe requires it, the aggregated line is required.
   const map = new Map();
   ids.forEach(id => {
     const r = byId[id];
@@ -427,9 +429,11 @@ function buildShoppingList() {
         const nkey = gkey + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase };
+          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase, optional: !!it.optional };
           map.set(nkey, e);
         }
+        // If any occurrence is required, the whole line is required.
+        if (!it.optional) e.optional = false;
         if (convBase !== null) { e.qty += convBase; e.hasNum = true; }
         else {
           const n = parseQty(it.qty);
@@ -461,7 +465,8 @@ function buildShoppingList() {
       key: e.base.toLowerCase() + '|' + rawDu.toLowerCase(),
       label: [q, du, name].filter(Boolean).join(' ').trim(),
       qty: e.hasNum ? qnum : null,
-      unit: du
+      unit: du,
+      optional: !!e.optional
     };
   }).sort((a, b) => a.label.localeCompare(b.label));
 }
@@ -558,13 +563,17 @@ function shoppingListHTML() {
         !(week.conflictAcked && week.conflictAcked['m:' + m.id])) conflictKeys.add('m:' + m.id);
   });
 
-  // Split into To Buy vs Already Have, with quantity-aware splitting:
+  // Split into To Buy vs Already Have vs Optional, with quantity-aware splitting:
   // if you checked "1 cup honey" and later need 3 cups total, show
   // "1 cup honey" checked + "2 cups honey" unchecked as separate lines.
+  // Optional items: undecided → Optional section; promoted → To Buy; marked → Already Have.
   const toBuy = [];
   const haveIts = [];
+  const optionalIts = [];
+  const promoted = new Set(week.optionalPromoted || []);
   items.forEach(it => {
     const mark = marks.find(m => m.key === it.key);
+    if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
     if (!mark) { toBuy.push(it); return; }
     const markedQty = (mark.qty !== null && mark.qty !== undefined) ? mark.qty : null;
     const curQty = (it.qty !== null && it.qty !== undefined) ? it.qty : null;
@@ -613,6 +622,13 @@ function shoppingListHTML() {
       '<span>' + esc(m.text) + '</span>' + conflictBadge('m:' + m.id) +
       '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
   ).join('');
+  // Optional items: two tap targets — "+" promotes to To Buy, "✓" marks Already Have.
+  const optLis = optionalIts.map(it =>
+    '<div class="shop-item optional" data-shop-opt="' + esc(it.key) + '">' +
+      '<span>' + esc(it.label) + ' <em class="opt-tag">optional</em></span>' +
+      '<button class="shop-opt-btn" data-opt-add="' + esc(it.key) + '" type="button" aria-label="Add to buy list" title="Add to buy list">+</button>' +
+      '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button></div>'
+  ).join('');
 
   let html = '';
   if (!items.length && !week.manualItems.length) {
@@ -621,6 +637,10 @@ function shoppingListHTML() {
   } else {
     if (genToBuyLis || manToBuyLis) {
       html += '<h3 class="shop-sub">To buy</h3><div class="shop-list" data-gen="1">' + genToBuyLis + manToBuyLis + '</div>';
+    }
+    if (optLis) {
+      html += '<details class="shop-opt-section"><summary>Optional (' + optionalIts.length + ')</summary>' +
+        '<div class="shop-list" data-opt="1">' + optLis + '</div></details>';
     }
     if (genHaveLis || manHaveLis) {
       html += '<details class="shop-have-section"><summary>Already have (' + (haveIts.length + manHave.length) + ')</summary>' +
@@ -782,6 +802,12 @@ async function renderShopping(app) {
         const k = genItem.dataset.shop;
         const split = genItem.dataset.shopSplit || null;
         const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
+        // Promoted optional item: tapping "○" sends it back to Optional.
+        const isPromoted = Array.isArray(week.optionalPromoted) && week.optionalPromoted.includes(k);
+        if (isPromoted && !existing && split !== 'need') {
+          week.optionalPromoted = week.optionalPromoted.filter(x => x !== k);
+          markShopDirty(); rerender(); return;
+        }
         if (existing && split !== 'need') {
           // Uncheck: remove my mark (tapping the checked portion unchecks all).
           week.haveGenerated = week.haveGenerated.filter(x => !(x.key === k && x.session === sid));
@@ -817,6 +843,34 @@ async function renderShopping(app) {
         }
         markShopDirty(); rerender(); return;
       }
+    }
+    // Optional items: "+" promotes to To Buy, "✓" marks Already Have.
+    const optAdd = e.target.closest('[data-opt-add]');
+    if (optAdd) {
+      const week = getWeek(thisWeekKey());
+      if (!Array.isArray(week.optionalPromoted)) week.optionalPromoted = [];
+      const k = optAdd.dataset.optAdd;
+      if (!week.optionalPromoted.includes(k)) week.optionalPromoted.push(k);
+      markShopDirty(); rerender(); return;
+    }
+    const optHave = e.target.closest('[data-opt-have]');
+    if (optHave) {
+      const week = getWeek(thisWeekKey());
+      const sid = getSessionId(), now = Date.now();
+      const k = optHave.dataset.optHave;
+      week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
+      // Remove from promoted if it was there.
+      if (Array.isArray(week.optionalPromoted)) {
+        week.optionalPromoted = week.optionalPromoted.filter(x => x !== k);
+      }
+      const line = buildShoppingList().find(it => it.key === k);
+      const mark = { key: k, session: sid, at: now };
+      if (line && line.qty !== null && line.qty !== undefined) {
+        mark.qty = line.qty;
+        mark.unit = line.unit || '';
+      }
+      week.haveGenerated.push(mark);
+      markShopDirty(); rerender(); return;
     }
     // Dismiss conflict warning
     const conflictBtn = e.target.closest('[data-confack]');
@@ -1006,7 +1060,8 @@ async function renderRecipe(app, id) {
     (s.section ? '<h3>' + esc(s.section) + '</h3>' : '') +
     '<ul class="ing-list">' + (s.items || []).map(i =>
       '<li><span class="qty">' + esc([i.qty, i.unit].filter(Boolean).join(' ')) + '</span> ' +
-      esc(i.item) + '</li>'
+      esc(i.item) +
+      (i.optional ? ' <em class="opt-tag">optional</em>' : '') + '</li>'
     ).join('') + '</ul>'
   ).join('');
 
@@ -1388,7 +1443,7 @@ function drawIngEditor() {
       '</div>' +
       '<div class="mini-row ing-header">' +
         '<span class="qty">Qty</span><span class="unit">Unit</span>' +
-        '<span class="ing-name">Ingredient</span><span class="prep">Prep</span><span class="ing-x"></span>' +
+        '<span class="ing-name">Ingredient</span><span class="prep">Prep</span><span class="ing-opt">Opt?</span><span class="ing-x"></span>' +
       '</div>' +
       (s.items || []).map((it, ii) =>
         '<div class="mini-row">' +
@@ -1396,6 +1451,7 @@ function drawIngEditor() {
           '<input class="unit" type="text" data-item="' + si + '|' + ii + '|unit" value="' + esc(it.unit || '') + '" placeholder="Unit" aria-label="Unit">' +
           '<input type="text" data-item="' + si + '|' + ii + '|item" value="' + esc(it.item || '') + '" placeholder="Ingredient" aria-label="Ingredient">' +
           '<input type="text" data-item="' + si + '|' + ii + '|prep" value="' + esc(it.prep || '') + '" placeholder="Prep (sliced, diced…)" aria-label="Prep">' +
+          '<input class="ing-opt-check" type="checkbox" data-item="' + si + '|' + ii + '|optional"' + (it.optional ? ' checked' : '') + ' aria-label="Optional" title="Optional">' +
           '<button class="link-btn danger" data-itemdel="' + si + '|' + ii + '" type="button">✕</button>' +
         '</div>'
       ).join('') +
@@ -1409,7 +1465,8 @@ function drawIngEditor() {
     el.addEventListener('input', e => {
       const [si, ii, f] = e.target.dataset.item.split('|');
       const item = editDraft.ingredients[+si].items[+ii];
-      item[f] = e.target.value;
+      // Checkbox (optional) stores a boolean; text inputs store the string.
+      item[f] = (f === 'optional') ? !!e.target.checked : e.target.value;
       // Auto-split prep on comma: "tomatoes, sliced" → item "tomatoes" + prep "sliced".
       // Only when typing in the item field and prep is empty (don't clobber manual edits).
       if (f === 'item' && !item.prep && e.target.value.includes(',')) {
@@ -1945,6 +2002,10 @@ function mergeWeekState(target, source) {
   if (source.conflictAcked) {
     target.conflictAcked = { ...(target.conflictAcked || {}), ...source.conflictAcked };
   }
+  // Merge optional promotions (union) so a promotion isn't lost in sync.
+  const tPromoted = new Set(Array.isArray(target.optionalPromoted) ? target.optionalPromoted : []);
+  (Array.isArray(source.optionalPromoted) ? source.optionalPromoted : []).forEach(k => tPromoted.add(k));
+  target.optionalPromoted = [...tPromoted];
   return target;
 }
 // Fetch the meal plan from the live bridge API first (no Pages rebuild lag),

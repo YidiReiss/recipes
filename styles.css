@@ -539,6 +539,21 @@ body {
 .slot-actions { display: flex; align-items: center; margin-top: 0.25rem; }
 .slot-actions .link-btn.danger { margin-left: auto; }
 
+/* Optional ingredients */
+.opt-tag { font-style: italic; color: var(--muted); font-size: 0.85em; }
+.shop-opt-section { margin: 1rem 0; }
+.shop-opt-section summary { cursor: pointer; font-weight: 600; }
+.shop-item.optional { display: flex; align-items: center; gap: .5rem; }
+.shop-item.optional span { flex: 1; }
+.shop-opt-btn {
+  width: 2rem; height: 2rem; border: 1px solid var(--line); border-radius: 50%;
+  background: var(--card); font-size: 1.1rem; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.shop-opt-btn:active { background: var(--sand); }
+.ing-opt { width: 2.5rem; text-align: center; font-size: 0.8rem; color: var(--muted); }
+.ing-opt-check { width: 1.2rem; height: 1.2rem; cursor: pointer; }
+
 .slot-note {
   color: var(--ink-soft);
   font-size: 0.88rem;
