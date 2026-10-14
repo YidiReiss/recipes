@@ -184,6 +184,11 @@
           "id": "mmv8nsqax",
           "text": "Wine",
           "have": false
+        },
+        {
+          "id": "mmv8nsxvk",
+          "text": "Olive oil",
+          "have": false
         }
       ],
       "haveGenerated": [
