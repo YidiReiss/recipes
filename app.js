@@ -1640,6 +1640,28 @@ async function renderDelete(app, id) {
       delete metaById[r.id];
       const ri = recipes.findIndex(m => m.id === r.id);
       if (ri >= 0) recipes.splice(ri, 1);
+      // Log the deletion in Recent submissions.
+      try {
+        const entryId = 'delete-' + Date.now().toString(36);
+        const entry = {
+          id: entryId, type: 'delete', edit_target: r.id,
+          text: null, url: null, image: null, note: 'Deleted via site: ' + r.title,
+          status: 'done', created_at: new Date().toISOString(),
+          recipe_id: null, fail_reason: null
+        };
+        await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
+          'Delete log: ' + r.title);
+        const inboxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/inbox/index.json'));
+        let inboxIdx = [];
+        if (inboxRes.ok) {
+          const inboxJson = await inboxRes.json();
+          inboxIdx = JSON.parse(inboxJson.content);
+        }
+        inboxIdx.push({ id: entryId, status: 'done', type: 'delete',
+          edit_target: r.id, created_at: entry.created_at });
+        await bridgeSave('data/inbox/index.json', JSON.stringify(inboxIdx, null, 2),
+          'Delete log index: ' + entryId);
+      } catch (e) { console.warn('delete log failed', e); }
       location.hash = '#/recipes';
     } catch (e) {
       busy = false;
@@ -2033,6 +2055,24 @@ async function saveRecipe(id) {
     if (i >= 0) recipes[i] = metaEntry;
     metaById[id] = metaEntry;
     byId[id] = d;
+    // Log the direct edit in Recent submissions.
+    try {
+      const entryId = 'edit-' + Date.now().toString(36);
+      const entry = {
+        id: entryId, type: 'direct-edit', edit_target: id,
+        text: null, url: null, image: null, note: 'Direct edit via site',
+        status: 'done', created_at: new Date().toISOString(),
+        recipe_id: id, fail_reason: null
+      };
+      await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
+        'Direct edit log: ' + d.title);
+      const inboxRes = await fetch('data/inbox/index.json?v=' + Date.now());
+      let inboxIdx = inboxRes.ok ? await inboxRes.json() : [];
+      inboxIdx.push({ id: entryId, status: 'done', type: 'direct-edit',
+        edit_target: id, created_at: entry.created_at });
+      await ghPut('data/inbox/index.json', JSON.stringify(inboxIdx, null, 2),
+        'Direct edit log index: ' + entryId);
+    } catch (e) { console.warn('edit log failed', e); }
     st.className = 'form-status ok';
     st.textContent = 'Saved — the site rebuilds in about a minute.';
     toast('Saved — the site rebuilds in about a minute.');
@@ -2844,6 +2884,18 @@ async function loadInboxList() {
           ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
         (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
         '</li>';
+    }
+    // Direct edits (via site edit page) and deletions get their own display
+    if (s.type === 'direct-edit') {
+      const targetTitle = s.edit_target && recipeMeta(s.edit_target) ? recipeMeta(s.edit_target).title : (s.edit_target || 'recipe');
+      return '<li><strong>✏️ Edited: ' + esc(targetTitle) + '</strong> — ✓ saved' +
+        (s.edit_target ?
+          ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
+        '</li>';
+    }
+    if (s.type === 'delete') {
+      const targetTitle = s.note ? s.note.replace(/^Deleted via site: /, '') : (s.edit_target || 'recipe');
+      return '<li><strong>🗑️ Deleted: ' + esc(targetTitle) + '</strong> — ✓ removed</li>';
     }
     // Show the recipe title once it's processed
     let titlePart = '';
