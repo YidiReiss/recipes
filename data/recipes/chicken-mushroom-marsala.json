@@ -11,15 +11,15 @@
     "weeknight",
     "comfort"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 25,
+  "cook_minutes": 20,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/chicken-mushroom-marsala.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -91,6 +91,10 @@
   ],
   "pairings": [],
   "notes": "Chicken stock updated from ½ cup to 1 cup in the doc. Recipe pairs butter with chicken — verify intended fat (butter vs. margarine).",
-  "source": null,
-  "tags_need_review": true
+  "source": "",
+  "tags_need_review": true,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
