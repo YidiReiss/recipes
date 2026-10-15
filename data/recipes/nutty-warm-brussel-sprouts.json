@@ -9,15 +9,15 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 25,
+  "cook_minutes": 10,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/nutty-warm-brussel-sprouts.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1 1/2",
@@ -67,7 +67,11 @@
     "Remove from the heat; toss with the breadcrumb mixture, salt, and pepper. Top with the walnuts."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
