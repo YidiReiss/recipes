@@ -12,7 +12,7 @@
   ],
   "prep_minutes": 25,
   "cook_minutes": 0,
-  "servings": "6",
+  "servings": "7",
   "leftover_friendly": false,
   "leftover_note": "",
   "banner_image": "assets/images/broccoli-cranberry-salad.jpg",
@@ -32,7 +32,7 @@
           "prep": "diced small"
         },
         {
-          "qty": "3\u00bd",
+          "qty": "3½",
           "unit": "oz",
           "item": "craisins or dried cranberries"
         },
@@ -53,7 +53,7 @@
           "item": "sugar"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "cup",
           "item": "mayonnaise"
         }
@@ -65,11 +65,11 @@
     "Add the cashews before serving."
   ],
   "pairings": [],
-  "notes": "The doc says 'Add chase before serving' \u2014 read as cashews.",
+  "notes": "The doc says 'Add chase before serving' — read as cashews.",
   "source": "",
   "tags_need_review": false,
   "pdf": "pdfs/broccoli-cranberry-salad.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
