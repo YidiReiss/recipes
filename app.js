@@ -98,6 +98,20 @@ async function bridgeSave(path, content, message, encoding) {
   return res.json();
 }
 
+async function bridgeDelete(path, message) {
+  const res = await fetch(BRIDGE + '/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, message })
+  });
+  if (!res.ok) {
+    let detail = '';
+    try { detail = (await res.text()).slice(0, 160); } catch (e) {}
+    throw new Error('delete failed (' + res.status + ') ' + detail);
+  }
+  return res.json();
+}
+
 async function ghGet(path) {
   const res = await fetch(
     GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path +
@@ -234,6 +248,7 @@ function route() {
   document.title = 'Reiss Family Recipes';
   if (h.startsWith('#/recipe/')) return renderRecipe(app, decodeURIComponent(h.slice(9)));
   if (h.startsWith('#/edit/')) return renderEdit(app, decodeURIComponent(h.slice(7)));
+  if (h.startsWith('#/delete/')) return renderDelete(app, decodeURIComponent(h.slice(9)));
   if (h === '#/add') return renderAdd(app);
   if (h === '#/submit') return renderSubmit(app);
   if (h === '#/recipes') return renderRecipes(app);
@@ -1343,6 +1358,9 @@ async function renderRecipe(app, id) {
         '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
         '<button class="btn' + (pdfUrl(r) ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
       '</div>' +
+      '<div class="danger-zone no-print">' +
+        '<a class="btn danger-outline" href="#/delete/' + encodeURIComponent(r.id) + '">Delete recipe</a>' +
+      '</div>' +
     '</article>';
 
   $('#share-btn').onclick = () => shareRecipe(r);
@@ -1557,6 +1575,65 @@ function recipeFormHTML(r, cancelHref) {
       '</div>' +
     '</form>'
   );
+}
+
+/* ---------------- Delete recipe ----------------
+   Two-step: #/delete/<id> shows a confirmation page (never a bare
+   confirm dialog). Confirm deletes the JSON + PDF via the bridge
+   and removes the ID from the index, then returns to the list. */
+async function renderDelete(app, id) {
+  const r = await ensureRecipe(id);
+  if (!r) {
+    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
+      '<div class="empty-state"><h2>Recipe not found</h2><p>It may have already been deleted.</p></div>';
+    return;
+  }
+  document.title = 'Delete ' + r.title + ' — Reiss Family Recipes';
+  let busy = false;
+  let err = '';
+  const draw = () => {
+    app.innerHTML =
+      '<a class="back-link" href="#/recipe/' + encodeURIComponent(r.id) + '">← Back to recipe</a>' +
+      '<div class="delete-confirm">' +
+        '<h1 class="recipe-title">Delete recipe?</h1>' +
+        '<p class="delete-name">"' + esc(r.title) + '"</p>' +
+        '<p class="delete-warn">This will permanently remove the recipe, its photo PDF, and its entry from the recipe list. <strong>This can\'t be undone.</strong></p>' +
+        (err ? '<p class="form-error">' + esc(err) + '</p>' : '') +
+        '<div class="delete-actions">' +
+          '<a class="btn secondary" href="#/recipe/' + encodeURIComponent(r.id) + '">Cancel</a>' +
+          '<button class="btn danger" id="delete-confirm-btn" type="button"' + (busy ? ' disabled' : '') + '>' +
+            (busy ? 'Deleting…' : 'Yes, delete it') + '</button>' +
+        '</div>' +
+      '</div>';
+    $('#delete-confirm-btn').onclick = onConfirm;
+  };
+  const onConfirm = async () => {
+    if (busy) return;
+    busy = true; err = ''; draw();
+    try {
+      // Delete the recipe JSON and its PDF (PDF may not exist — bridge treats that as ok).
+      await bridgeDelete('data/recipes/' + r.id + '.json', 'Delete recipe ' + r.id + ' via site');
+      await bridgeDelete('pdfs/' + r.id + '.pdf', 'Delete PDF for ' + r.id + ' via site');
+      // Remove from the index.
+      const idxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/index.json'));
+      if (!idxRes.ok) throw new Error('could not read recipe index');
+      const idx = await idxRes.json();
+      const ids = Array.isArray(idx.content) ? idx.content : JSON.parse(idx.content);
+      const next = ids.filter(x => x !== r.id);
+      await bridgeSave('data/recipes/index.json', JSON.stringify(next, null, 2) + '\n',
+        'Remove ' + r.id + ' from recipe index via site');
+      // Update local state so the list reflects the deletion immediately.
+      delete byId[r.id];
+      const mi = metaIndex.findIndex(m => m.id === r.id);
+      if (mi >= 0) metaIndex.splice(mi, 1);
+      location.hash = '#/recipes';
+    } catch (e) {
+      busy = false;
+      err = 'Delete failed: ' + (e.message || e);
+      draw();
+    }
+  };
+  draw();
 }
 
 function renderEdit(app, id) {
