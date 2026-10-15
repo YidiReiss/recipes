@@ -1624,8 +1624,9 @@ async function renderDelete(app, id) {
         'Remove ' + r.id + ' from recipe index via site');
       // Update local state so the list reflects the deletion immediately.
       delete byId[r.id];
-      const mi = metaIndex.findIndex(m => m.id === r.id);
-      if (mi >= 0) metaIndex.splice(mi, 1);
+      delete metaById[r.id];
+      const ri = recipes.findIndex(m => m.id === r.id);
+      if (ri >= 0) recipes.splice(ri, 1);
       location.hash = '#/recipes';
     } catch (e) {
       busy = false;
