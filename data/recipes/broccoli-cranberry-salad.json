@@ -32,7 +32,7 @@
           "prep": "diced small"
         },
         {
-          "qty": "3½",
+          "qty": "3\u00bd",
           "unit": "oz",
           "item": "craisins or dried cranberries"
         },
@@ -53,7 +53,7 @@
           "item": "sugar"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "mayonnaise"
         }
@@ -65,11 +65,11 @@
     "Add the cashews before serving."
   ],
   "pairings": [],
-  "notes": "The doc says 'Add chase before serving' — read as cashews.",
+  "notes": "The doc says 'Add chase before serving' \u2014 read as cashews.",
   "source": "",
   "tags_need_review": false,
   "pdf": "pdfs/broccoli-cranberry-salad.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
