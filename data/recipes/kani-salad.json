@@ -11,10 +11,10 @@
     "quick"
   ],
   "prep_minutes": 15,
-  "cook_minutes": null,
-  "servings": "6",
+  "cook_minutes": 0,
+  "servings": "7",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/kani-salad.jpg",
   "ingredients": [
     {
@@ -96,9 +96,11 @@
     "Serve in a shallow bowl or serving plate; top with panko and sesame seeds if using, and drizzle with extra dressing."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
+  "notes": "",
+  "source": "",
   "tags_need_review": false,
   "needs_kosher_review": true,
-  "kosher_review_notes": "Contains imitation crab sticks — typically made from pollock (kosher fish) but verify the brand is kosher-certified."
+  "kosher_review_notes": "Contains imitation crab sticks — typically made from pollock (kosher fish) but verify the brand is kosher-certified.",
+  "pdf": null,
+  "pdf_stale": true
 }
