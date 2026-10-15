@@ -11,15 +11,15 @@
     "comfort",
     "one-pot"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 15,
+  "cook_minutes": 35,
+  "servings": "6",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/macarone-paflotski.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -84,7 +84,11 @@
     "Add the pasta and mix well; simmer for 5-10 minutes."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
