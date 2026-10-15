@@ -1622,6 +1622,19 @@ async function renderDelete(app, id) {
       const next = ids.filter(x => x !== r.id);
       await bridgeSave('data/recipes/index.json', JSON.stringify(next, null, 2) + '\n',
         'Remove ' + r.id + ' from recipe index via site');
+      // Remove from meta.json too (drives list/search/filter).
+      try {
+        const metaRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/meta.json'));
+        if (metaRes.ok) {
+          const metaJson = await metaRes.json();
+          const meta = JSON.parse(metaJson.content);
+          if (Array.isArray(meta)) {
+            const nextMeta = meta.filter(m => m.id !== r.id);
+            await bridgeSave('data/recipes/meta.json', JSON.stringify(nextMeta),
+              'Remove ' + r.id + ' from meta via site');
+          }
+        }
+      } catch (e) { console.warn('meta.json cleanup failed', e); }
       // Update local state so the list reflects the deletion immediately.
       delete byId[r.id];
       delete metaById[r.id];
