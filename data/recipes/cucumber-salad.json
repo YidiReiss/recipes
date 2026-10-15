@@ -13,7 +13,7 @@
   ],
   "prep_minutes": 20,
   "cook_minutes": 0,
-  "servings": "7",
+  "servings": "8",
   "leftover_friendly": false,
   "leftover_note": "",
   "banner_image": "assets/images/cucumber-salad.jpg",
@@ -53,7 +53,7 @@
           "item": "dill"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "cup",
           "item": "red onion",
           "prep": "sliced"
@@ -72,5 +72,5 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
