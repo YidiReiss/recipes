@@ -21,7 +21,7 @@
       "section": "Dressing",
       "items": [
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "mayonnaise"
         },
@@ -36,17 +36,17 @@
           "item": "lemon juice"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "tsp",
           "item": "granulated sugar"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "tsp",
           "item": "salt"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "tsp",
           "item": "ground black pepper"
         }
@@ -68,7 +68,7 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "cucumber, julienned 3\" long (about 1½ cups)"
+          "item": "cucumber, julienned 3\" long (about 1\u00bd cups)"
         },
         {
           "qty": "1",
@@ -100,7 +100,7 @@
   "source": "",
   "tags_need_review": false,
   "needs_kosher_review": true,
-  "kosher_review_notes": "Contains imitation crab sticks — typically made from pollock (kosher fish) but verify the brand is kosher-certified.",
+  "kosher_review_notes": "Contains imitation crab sticks \u2014 typically made from pollock (kosher fish) but verify the brand is kosher-certified.",
   "pdf": null,
-  "pdf_stale": true
+  "pdf_stale": false
 }
