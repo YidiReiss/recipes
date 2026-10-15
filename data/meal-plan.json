@@ -143,7 +143,12 @@
         {
           "id": "mmv8bk98e",
           "text": "Pizza dough",
-          "have": false
+          "have": true,
+          "haveSession": "smv8w41zpjwv4ug",
+          "haveAt": 1792029528853,
+          "haveSessions": [
+            "smv8w41zpjwv4ug"
+          ]
         },
         {
           "id": "mmv8bkg4n",
@@ -178,7 +183,12 @@
         {
           "id": "mmv8e3duh",
           "text": "Swedish fish candy",
-          "have": false
+          "have": true,
+          "haveSession": "smv8w41zpjwv4ug",
+          "haveAt": 1792029529754,
+          "haveSessions": [
+            "smv8w41zpjwv4ug"
+          ]
         },
         {
           "id": "mmv8e3jgu",
@@ -203,7 +213,12 @@
         {
           "id": "mmv8e5in0",
           "text": "Healthy snacks for baby",
-          "have": false
+          "have": true,
+          "haveSession": "smv8w41zpjwv4ug",
+          "haveAt": 1792029531152,
+          "haveSessions": [
+            "smv8w41zpjwv4ug"
+          ]
         },
         {
           "id": "mmv8nsqax",
