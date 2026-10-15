@@ -4,22 +4,22 @@
   "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
-    "salad",
-    "side"
+    "side",
+    "salad"
   ],
   "tags": [
     "quick",
     "make-ahead"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 20,
+  "cook_minutes": 0,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/cucumber-salad.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "3",
@@ -66,7 +66,11 @@
     "Mix the lemon juice, oil, and sugar. Add to the cucumber with the dill and onion. Mix and refrigerate."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
