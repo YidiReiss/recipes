@@ -77,10 +77,10 @@
     }
   ],
   "instructions": [
-    "Sauté the onion over medium heat until soft and slightly browned. Add the garlic and sauté, mixing for about 3 minutes.",
+    "Saut\u00e9 the onion over medium heat until soft and slightly browned. Add the garlic and saut\u00e9, mixing for about 3 minutes.",
     "Add the meat and break it up into small pieces; brown until no longer pink.",
     "Add the seasonings and mix well.",
-    "Add the tomato sauce and ½ can of water. Bring to a boil, then reduce the heat and simmer for 15 minutes or longer while the pasta cooks.",
+    "Add the tomato sauce and \u00bd can of water. Bring to a boil, then reduce the heat and simmer for 15 minutes or longer while the pasta cooks.",
     "Add the pasta and mix well; simmer for 5-10 minutes."
   ],
   "pairings": [],
@@ -90,5 +90,5 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
