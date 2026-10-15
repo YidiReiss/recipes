@@ -243,9 +243,9 @@
     "tags": [
       "quick"
     ],
-    "prep_minutes": 0,
+    "prep_minutes": 25,
     "cook_minutes": 0,
-    "servings": "",
+    "servings": "6",
     "leftover_friendly": false,
     "tags_need_review": false,
     "photo_generated": false,
@@ -674,11 +674,11 @@
     ],
     "tags": [
       "quick",
-      "make-ahead"
+      "make-a20"
     ],
-    "prep_minutes": null,
-    "cook_minutes": null,
-    "servings": null,
+    "prep_minutes": 20,
+    "cook_minutes": 0,
+    "servings": "6",
     "leftover_friendly": false,
     "tags_need_review": false,
     "photo_generated": false,
