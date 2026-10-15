@@ -79,6 +79,11 @@ PDF generator. Takes recipe JSON + banner photo, produces a styled PDF with:
 }
 ```
 
+### Metadata Index (`data/recipes/meta.json`)
+Lightweight array of recipe metadata for list/search/filter/sort. Each entry mirrors the recipe's card-relevant fields (id, title, banner_image, kosher_status, categories, tags, prep_minutes, cook_minutes, servings, etc.) plus a `search_text` field. Updated on every site save (saveRecipe/saveNewRecipe) and by the intake checker when adding recipes.
+
+**2026-10-15 lost-update fix:** GitHub's Contents API returns `Cache-Control: max-age=60`. Rapid-fire saves (<60s apart) caused each save's `ghGet('data/recipes/meta.json')` to return a stale cached copy, silently reverting the previous save's entry (confirmed via git history: two reverts 38s and 36s after the correct writes). Fix: `ghGet` appends `&t=Date.now()` and uses `cache: 'no-store'` on all reads; meta.json updates retry once on failure with a user-visible toast ("please click Save again") instead of silent `console.warn`.
+
 ### Inbox Entry (`data/inbox/<id>.json`)
 ```json
 {

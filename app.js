@@ -115,8 +115,8 @@ async function bridgeDelete(path, message) {
 async function ghGet(path) {
   const res = await fetch(
     GH + '/repos/' + REPO.owner + '/' + REPO.repo + '/contents/' + path +
-    '?ref=' + encodeURIComponent(REPO.branch),
-    { headers: { 'Accept': 'application/vnd.github+json' } }
+    '?ref=' + encodeURIComponent(REPO.branch) + '&t=' + Date.now(),
+    { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' }
   );
   if (res.status === 404) throw new Error('missing'); // file doesn't exist yet
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -2045,12 +2045,24 @@ async function saveRecipe(id) {
       photo_generated: !!d.photo_generated,
       search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
     };
-    try {
+    const updateMeta = async () => {
       const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
       const mi = meta.findIndex(x => x.id === id);
       if (mi >= 0) meta[mi] = metaEntry; else meta.push(metaEntry);
       await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Update meta: ' + d.title);
-    } catch (e) { console.warn('meta.json update failed', e); }
+    };
+    try {
+      await updateMeta();
+    } catch (e) {
+      console.warn('meta.json first attempt failed, retrying once...', e);
+      try {
+        await new Promise(r => setTimeout(r, 800));
+        await updateMeta();
+      } catch (e2) {
+        console.error('meta.json update failed', e2);
+        toast('Recipe saved, but card index failed to sync — please click Save again.');
+      }
+    }
     const i = recipes.findIndex(x => x.id === id);
     if (i >= 0) recipes[i] = metaEntry;
     metaById[id] = metaEntry;
@@ -2117,11 +2129,23 @@ async function saveNewRecipe() {
       photo_generated: !!d.photo_generated,
       search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
     };
-    try {
+    const updateMeta = async () => {
       const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
       meta.push(metaEntry);
       await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Add to meta: ' + d.title);
-    } catch (e) { console.warn('meta.json update failed', e); }
+    };
+    try {
+      await updateMeta();
+    } catch (e) {
+      console.warn('meta.json first attempt failed, retrying once...', e);
+      try {
+        await new Promise(r => setTimeout(r, 800));
+        await updateMeta();
+      } catch (e2) {
+        console.error('meta.json update failed', e2);
+        toast('Recipe saved, but card index failed to sync — please click Save again.');
+      }
+    }
     recipes.push(metaEntry);
     metaById[id] = metaEntry;
     byId[id] = d;
