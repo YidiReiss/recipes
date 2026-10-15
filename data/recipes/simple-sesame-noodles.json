@@ -1,0 +1,89 @@
+{
+  "banner_image": "assets/images/simple-sesame-noodles.jpg",
+  "categories": [
+    "main",
+    "pasta"
+  ],
+  "cook_minutes": 10,
+  "id": "simple-sesame-noodles",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "thin noodles",
+          "prep": "cooked and drained",
+          "qty": "12",
+          "unit": "oz"
+        },
+        {
+          "item": "soy sauce",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "sugar",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "garlic",
+          "prep": "minced",
+          "qty": "4",
+          "unit": "cloves"
+        },
+        {
+          "item": "rice vinegar",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "pure sesame oil",
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "hot chili oil",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "canola oil",
+          "qty": "1-2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "green onions",
+          "prep": "sliced thin",
+          "qty": "4",
+          "unit": null
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Whisk all ingredients (except noodles and green onions) together in a bowl. Taste and adjust ingredients as needed.",
+    "Pour sauce over warm noodles and toss to coat.",
+    "Sprinkle with green onions and toss.",
+    "Serve in a bowl with chopsticks. Yummy!"
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "notes": "From Nava's Mom. Source: Ree Drummond / The Pioneer Woman \u2014 https://thepioneerwoman.com/cooking/simple-sesame-noodles/. Handwritten on the printout: reduce the canola oil from 4 tbsp to 1-2 tbsp (applied).",
+  "pairings": [],
+  "pdf": "pdfs/simple-sesame-noodles.pdf",
+  "photo_generated": false,
+  "prep_minutes": 10,
+  "servings": "8",
+  "source": "https://thepioneerwoman.com/cooking/simple-sesame-noodles/",
+  "tags": [
+    "quick",
+    "easy",
+    "weeknight",
+    "noodles"
+  ],
+  "tags_need_review": false,
+  "title": "Simple Sesame Noodles"
+}
