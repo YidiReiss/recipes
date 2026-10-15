@@ -2131,7 +2131,8 @@ async function saveNewRecipe() {
     };
     const updateMeta = async () => {
       const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
-      meta.push(metaEntry);
+      const mi = meta.findIndex(x => x.id === d.id);
+      if (mi >= 0) meta[mi] = metaEntry; else meta.push(metaEntry);
       await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Add to meta: ' + d.title);
     };
     try {
