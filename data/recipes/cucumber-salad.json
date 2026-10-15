@@ -69,8 +69,8 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/cucumber-salad.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
