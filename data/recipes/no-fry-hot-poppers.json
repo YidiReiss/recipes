@@ -1,1 +1,108 @@
-{"banner_image":"assets/images/no-fry-hot-poppers.jpg","categories":["main","chicken"],"cook_minutes":15,"id":"no-fry-hot-poppers","ingredients":[{"items":[{"item":"skinless boneless chicken breasts","prep":"cubed","qty":"1 1/2","unit":"lb"},{"item":"oil","qty":"2","unit":"tbsp"},{"item":"egg","qty":"1","unit":null},{"item":"lemon juice","qty":"1/2","unit":"tsp"},{"item":"paprika","qty":"1/4","unit":"tsp"},{"item":"salt","qty":"1/4","unit":"tsp"},{"item":"garlic powder","qty":"1/4","unit":"tsp"},{"item":"black pepper","qty":"Dash","unit":null},{"item":"panko or cornflake crumbs","qty":"1 1/2","unit":"cup"},{"item":"hot sauce (such as Frank's)","qty":"1/3","unit":"cup"},{"item":"honey","qty":"1/2","unit":"cup"}],"section":""}],"instructions":["Preheat oven to 425°F. Line a baking sheet with parchment paper; grease with oil.","In a bowl, combine egg, lemon juice, paprika, salt, garlic powder, and black pepper. Place cubed chicken into egg mixture; stir to coat. Marinate 5 minutes.","Place crumbs into a bowl. Add marinated chicken in batches, coating each piece in crumbs. Place on prepared baking sheet, making sure there is space around each piece. Spray tops of chicken with cooking spray (alternatively, you can flip pieces on the baking sheet so that both sides are coated in a thin layer of oil).","Bake for 15 minutes, until chicken is golden at the edges.","Meanwhile, in a bowl, combine hot sauce and honey. When chicken has baked, toss with hot sauce mixture; serve immediately."],"kosher_for_passover":false,"kosher_status":"meat","leftover_friendly":false,"leftover_note":"","notes":"The cookbook calls this the number-one dinner in their homes: the baked chicken comes out surprisingly softer than traditional fried hot poppers. Leave some hot poppers plain for the little ones who don't like hot sauce; add more heat to your taste. Serve with Rice or Circle Fries (page 200 of the cookbook).","pairings":[],"pdf":"pdfs/no-fry-hot-poppers.pdf","prep_minutes":0,"servings":"4-6","source":"Photo of a cookbook page (No-Fry Hot Poppers, Chicken chapter, page 76)","tags":["baked","kid-friendly"],"tags_need_review":false,"tips":[{"text":"You can prepare, bread, and refrigerate the hot poppers until ready to bake fresh.","title":"Make ahead"},{"text":"Do your kids love buffalo sauce? Double the sauce and keep it in a squeeze bottle.","title":"Buffalo sauce"}],"title":"No-Fry Hot Poppers"}
+{
+  "banner_image": "assets/images/no-fry-hot-poppers.jpg",
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "cook_minutes": 15,
+  "id": "no-fry-hot-poppers",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "item": "skinless boneless chicken breasts",
+          "prep": "cubed",
+          "qty": "1 1/2",
+          "unit": "lb"
+        },
+        {
+          "item": "oil",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "egg",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "lemon juice",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "paprika",
+          "qty": "1/4",
+          "unit": "tsp"
+        },
+        {
+          "item": "salt",
+          "qty": "1/4",
+          "unit": "tsp"
+        },
+        {
+          "item": "garlic powder",
+          "qty": "1/4",
+          "unit": "tsp"
+        },
+        {
+          "item": "black pepper",
+          "qty": "Dash",
+          "unit": null
+        },
+        {
+          "item": "panko or cornflake crumbs",
+          "qty": "1 1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "hot sauce (such as Frank's)",
+          "qty": "1/3",
+          "unit": "cup"
+        },
+        {
+          "item": "honey",
+          "qty": "1/2",
+          "unit": "cup"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 425°F. Line a baking sheet with parchment paper; grease with oil.",
+    "In a bowl, combine egg, lemon juice, paprika, salt, garlic powder, and black pepper. Place cubed chicken into egg mixture; stir to coat. Marinate 5 minutes.",
+    "Place crumbs into a bowl. Add marinated chicken in batches, coating each piece in crumbs. Place on prepared baking sheet, making sure there is space around each piece. Spray tops of chicken with cooking spray (alternatively, you can flip pieces on the baking sheet so that both sides are coated in a thin layer of oil).",
+    "Bake for 15 minutes, until chicken is golden at the edges.",
+    "Meanwhile, in a bowl, combine hot sauce and honey. When chicken has baked, toss with hot sauce mixture; serve immediately."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "meat",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "notes": "The cookbook calls this the number-one dinner in their homes: the baked chicken comes out surprisingly softer than traditional fried hot poppers. Leave some hot poppers plain for the little ones who don't like hot sauce; add more heat to your taste. Serve with Rice or Circle Fries (page 200 of the cookbook).",
+  "pairings": [],
+  "pdf": "pdfs/no-fry-hot-poppers.pdf",
+  "prep_minutes": 0,
+  "servings": "6",
+  "source": "Photo of a cookbook page (No-Fry Hot Poppers, Chicken chapter, page 76)",
+  "tags": [
+    "baked",
+    "kid-friendly"
+  ],
+  "tags_need_review": false,
+  "tips": [
+    {
+      "text": "You can prepare, bread, and refrigerate the hot poppers until ready to bake fresh.",
+      "title": "Make ahead"
+    },
+    {
+      "text": "Do your kids love buffalo sauce? Double the sauce and keep it in a squeeze bottle.",
+      "title": "Buffalo sauce"
+    }
+  ],
+  "title": "No-Fry Hot Poppers",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
+}
