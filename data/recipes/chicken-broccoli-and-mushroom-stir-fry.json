@@ -11,15 +11,15 @@
     "quick",
     "weeknight"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 11,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/chicken-broccoli-and-mushroom-stir-fry.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "2",
@@ -103,6 +103,10 @@
   ],
   "pairings": [],
   "notes": "Doc updated quantities: chicken 1 lb → 2 lb, sauce stock 1 cup → 2 cups, total stock 1 cup → 3 cups, soy sauce ¼ cup → ½ cup, garlic 2 → 3 cloves, sesame oil 2 → 3 tsp.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
