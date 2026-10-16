@@ -21,7 +21,7 @@
       "section": "",
       "items": [
         {
-          "qty": "2-2 ½",
+          "qty": "2-2 \u00bd",
           "unit": "lb",
           "item": "skinless salmon filet"
         },
@@ -31,7 +31,7 @@
           "item": "kosher salt and freshly ground black pepper"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "good olive oil"
         },
@@ -41,24 +41,24 @@
           "item": "freshly squeezed lemon juice"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "minced scallions, white and green parts (4 scallions)"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "dill",
           "prep": "minced fresh"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "parsley",
           "prep": "minced fresh"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "dry white wine"
         },
@@ -82,8 +82,8 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/roasted-salmon-with-green-herbs.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
