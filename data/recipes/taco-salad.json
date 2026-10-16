@@ -4,21 +4,21 @@
   "kosher_status": "meat",
   "kosher_for_passover": false,
   "categories": [
-    "salad",
-    "main"
+    "main",
+    "salad"
   ],
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 20,
+  "cook_minutes": 10,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/taco-salad.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -80,7 +80,11 @@
     "Surround the bowl with taco chips. You can also layer it: lettuce, meat, tomatoes, onion."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
