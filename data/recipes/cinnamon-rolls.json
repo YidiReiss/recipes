@@ -32,7 +32,7 @@
           "prep": "melted"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "granulated sugar"
         },
@@ -53,25 +53,25 @@
           "prep": "softened"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "powdered sugar"
         },
         {
-          "qty": "1 ½",
+          "qty": "1 \u00bd",
           "unit": "tsp",
-          "item": "vanilla extract (¾ tsp)"
+          "item": "vanilla extract (\u00be tsp)"
         },
         {
           "qty": "1",
           "unit": "tbsp",
-          "item": "unsalted butter (½ tbsp)",
+          "item": "unsalted butter (\u00bd tbsp)",
           "prep": "melted"
         },
         {
           "qty": "2",
           "unit": "tbsp",
-          "item": "milk (1 ½ tbsp)"
+          "item": "milk (1 \u00bd tbsp)"
         }
       ]
     }
@@ -89,8 +89,8 @@
   "notes": "Makes 6 rolls, baked in a muffin tin. Doc shows reduced quantities in parentheses.",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/cinnamon-rolls.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
