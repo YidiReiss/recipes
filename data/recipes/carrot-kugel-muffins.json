@@ -11,15 +11,15 @@
     "shabbat",
     "pareve"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 20,
-  "servings": null,
+  "servings": "12",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/carrot-kugel-muffins.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": null,
@@ -76,7 +76,11 @@
     "Pour mixture into the prepared pan. Bake for about 20 min for mini muffins or until a toothpick inserted in the center comes out clean."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
