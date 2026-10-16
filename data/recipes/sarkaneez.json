@@ -12,15 +12,15 @@
     "one-pot",
     "comfort"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 20,
+  "cook_minutes": 35,
+  "servings": "4",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/sarkaneez.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1/4",
@@ -102,6 +102,10 @@
   ],
   "pairings": [],
   "notes": "Stovetop method says 'Add 3 cups rice' while the ingredient list says 2½ cups — kept both as written. Oven temp written as '35 degree' — interpreted as 350°F.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
