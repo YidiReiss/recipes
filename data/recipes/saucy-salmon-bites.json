@@ -1,1 +1,123 @@
-{"banner_image":"assets/images/saucy-salmon-bites.jpg","categories":["main","fish"],"cook_minutes":10,"id":"saucy-salmon-bites","ingredients":[{"items":[{"item":"onion","prep":"chopped","qty":"1","unit":null},{"item":"oil","qty":"","unit":null},{"item":"garlic","prep":"minced","qty":"1","unit":"tbsp"},{"item":"tomato sauce (15 oz)","qty":"1","unit":"can"},{"item":"water","qty":"1/2","unit":"cup"},{"item":"red pepper flakes","qty":"","unit":null},{"item":"cumin","qty":"","unit":null},{"item":"paprika","qty":"","unit":null},{"item":"garlic powder","qty":"","unit":null},{"item":"cayenne","qty":"","unit":null},{"item":"salt","qty":"","unit":null},{"item":"white pepper","qty":"","unit":null},{"item":"parsley","qty":"","unit":null},{"item":"lemon","prep":"juiced","qty":"1","unit":null},{"item":"salmon","prep":"skin removed, cut into chunks","qty":"","unit":null}],"section":""}],"instructions":["Chop the onion. Heat oil in a skillet and sauté the onions until browning.","Add the garlic and mix.","Add the tomato sauce and water, and add the red pepper flakes now.","Add the cumin, paprika, garlic powder, cayenne, salt, white pepper, and parsley.","Add the juice of the lemon and stir.","Chop the salmon into chunks, remove the skin, and add to the skillet.","Cook about 10 minutes, until the salmon is cooked through."],"kosher_for_passover":false,"kosher_status":"pareve","leftover_friendly":false,"leftover_note":"","notes":"Handwritten recipe. Quantities for the oil, salmon, red pepper flakes, and spices were not specified in the note.","pairings":[],"pdf":"pdfs/saucy-salmon-bites.pdf","photo_generated":true,"prep_minutes":15,"servings":"","source":"Handwritten note","tags":["spicy"],"tags_need_review":true,"title":"Saucy Salmon Bites"}
+{
+  "banner_image": "assets/images/saucy-salmon-bites.jpg",
+  "categories": [
+    "main",
+    "fish"
+  ],
+  "cook_minutes": 10,
+  "id": "saucy-salmon-bites",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "item": "onion",
+          "prep": "chopped",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "oil",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "garlic",
+          "prep": "minced",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "tomato sauce (15 oz)",
+          "qty": "1",
+          "unit": "can"
+        },
+        {
+          "item": "water",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "red pepper flakes",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "cumin",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "paprika",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "garlic powder",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "cayenne",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "salt",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "white pepper",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "parsley",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "lemon",
+          "prep": "juiced",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "salmon",
+          "prep": "skin removed, cut into chunks",
+          "qty": "",
+          "unit": null
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Chop the onion. Heat oil in a skillet and sauté the onions until browning.",
+    "Add the garlic and mix.",
+    "Add the tomato sauce and water, and add the red pepper flakes now.",
+    "Add the cumin, paprika, garlic powder, cayenne, salt, white pepper, and parsley.",
+    "Add the juice of the lemon and stir.",
+    "Chop the salmon into chunks, remove the skin, and add to the skillet.",
+    "Cook about 10 minutes, until the salmon is cooked through."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "notes": "Handwritten recipe. Quantities for the oil, salmon, red pepper flakes, and spices were not specified in the note.",
+  "pairings": [],
+  "pdf": "pdfs/saucy-salmon-bites.pdf",
+  "photo_generated": true,
+  "prep_minutes": 15,
+  "servings": "4",
+  "source": "Handwritten note",
+  "tags": [
+    "spicy"
+  ],
+  "tags_need_review": true,
+  "title": "Saucy Salmon Bites",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
+}
