@@ -12,15 +12,15 @@
     "one-pot",
     "comfort"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 25,
+  "cook_minutes": 65,
+  "servings": "6",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/plov.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "3",
@@ -88,6 +88,10 @@
   ],
   "pairings": [],
   "notes": "'3 chicken — without shin' interpreted as chicken without skin; the cut of chicken and amount of lamb are not specified.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
