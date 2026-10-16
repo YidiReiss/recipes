@@ -216,5 +216,12 @@
     "type": "direct-edit",
     "edit_target": "mediterranean-roasted-whole-fish",
     "created_at": "2026-10-16T00:37:00.275Z"
+  },
+  {
+    "id": "edit-mva8nlyj",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chicken-broccoli-and-mushroom-stir-fry",
+    "created_at": "2026-10-16T00:37:42.763Z"
   }
 ]
