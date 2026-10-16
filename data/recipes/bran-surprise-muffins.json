@@ -9,7 +9,7 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 25,
   "cook_minutes": 22,
   "servings": "12",
   "leftover_friendly": false,
@@ -26,7 +26,7 @@
           "prep": "softened"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "sugar"
         },
@@ -36,7 +36,7 @@
           "item": "all purpose flour"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "tsp",
           "item": "vanilla extract"
         }
@@ -51,32 +51,32 @@
           "item": "vegetable cooking spray"
         },
         {
-          "qty": "1 \u00bc",
+          "qty": "1 ¼",
           "unit": "cup",
           "item": "all purpose flour"
         },
         {
-          "qty": "\u00be",
+          "qty": "¾",
           "unit": "cup",
           "item": "sugar"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "tbsp",
           "item": "ground cinnamon"
         },
         {
-          "qty": "1 \u00bc",
+          "qty": "1 ¼",
           "unit": "tsp",
           "item": "baking soda"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "tsp",
           "item": "salt"
         },
         {
-          "qty": "1 \u00be",
+          "qty": "1 ¾",
           "unit": "cup",
           "item": "raisin bran cereal"
         },
@@ -93,12 +93,12 @@
           "prep": "well shaken"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "vegetable oil"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "raisins"
         }
@@ -120,5 +120,5 @@
   "pdf": "pdfs/bran-surprise-muffins.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
