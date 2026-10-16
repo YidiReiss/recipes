@@ -10,15 +10,15 @@
     "no-bake",
     "make-ahead"
   ],
-  "prep_minutes": null,
-  "cook_minutes": null,
-  "servings": null,
+  "prep_minutes": 20,
+  "cook_minutes": 2,
+  "servings": "8",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/strawberry-icebox-pie.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "¾ cup plus 2 tbsp",
@@ -66,7 +66,11 @@
     "Spread whipped cream over pie, leaving a 1 ½ border. Garnish with whole berries."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
