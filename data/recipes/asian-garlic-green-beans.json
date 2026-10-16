@@ -9,15 +9,15 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 8,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/asian-garlic-green-beans.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -64,7 +64,11 @@
     "When serving, don't forget the garlic/shallot pieces on the bottom of the pan — huge flavor!"
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
