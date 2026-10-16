@@ -11,15 +11,15 @@
     "quick",
     "baked"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 12,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/cornflake-chicken.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": null,
@@ -71,6 +71,10 @@
   ],
   "pairings": [],
   "notes": "Doc says '½ tsp onion' and '½ tsp garlic' — interpreted as onion powder and garlic powder.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
