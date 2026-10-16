@@ -10,11 +10,11 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 10,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/fish-tacos-with-lime-crema.jpg",
   "ingredients": [
     {
@@ -156,7 +156,11 @@
     "Assemble the tacos: Divide the fish evenly into each taco, top each taco with ¼ cup of slaw and sliced avocados. Pour 1 tbsp of crema on top."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
