@@ -48,12 +48,12 @@
           "prep": "chopped"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "tsp",
           "item": "crushed red pepper flakes"
         },
         {
-          "qty": "¾",
+          "qty": "\u00be",
           "unit": "cup",
           "item": "vodka"
         },
@@ -102,8 +102,8 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/penne-alla-vodka.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
