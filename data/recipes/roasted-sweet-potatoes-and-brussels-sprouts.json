@@ -10,15 +10,15 @@
     "quick",
     "healthy"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 15,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/roasted-sweet-potatoes-and-brussels-sprouts.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -85,6 +85,10 @@
   ],
   "pairings": [],
   "notes": "Doc updated: oil ⅓ cup → ¼ cup, cumin 1 tsp → ¾ tsp, garlic salt → ¼ tsp garlic powder, salt 1 tsp → ¼ tsp, roast time 30-40 min → 15 min.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
