@@ -9,15 +9,15 @@
   "tags": [
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 30,
-  "servings": null,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/penne-alla-vodka.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "12-16",
@@ -99,7 +99,11 @@
     "Top with grated parmesan and serve immediately."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
