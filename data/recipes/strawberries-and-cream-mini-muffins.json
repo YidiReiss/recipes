@@ -35,7 +35,7 @@
           "item": "flour"
         },
         {
-          "qty": "½",
+          "qty": "\u00bd",
           "unit": "cup",
           "item": "sugar"
         },
@@ -45,12 +45,12 @@
           "item": "baking powder"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "vegetable oil"
         },
         {
-          "qty": "⅓",
+          "qty": "\u2153",
           "unit": "cup",
           "item": "sour cream"
         },
@@ -85,8 +85,8 @@
   "notes": "Makes 24 mini muffins.",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/strawberries-and-cream-mini-muffins.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
