@@ -11,15 +11,15 @@
     "one-pot",
     "weeknight"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 20,
-  "servings": null,
+  "servings": "4",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/sausage-peppers-and-onions.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "4",
@@ -105,6 +105,10 @@
   ],
   "pairings": [],
   "notes": "Italian sausage links are typically pork — use kosher sausage.",
-  "source": null,
-  "tags_need_review": true
+  "source": "",
+  "tags_need_review": true,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
