@@ -11,7 +11,7 @@
     "shabbat",
     "pareve"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 22,
   "cook_minutes": 20,
   "servings": "12",
   "leftover_friendly": true,
@@ -38,24 +38,24 @@
           "item": "all purpose flour"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "firmly packed dark brown sugar"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "sugar"
         },
         {
-          "qty": "1 \u00bd",
+          "qty": "1 ½",
           "unit": "tsp",
           "item": "baking powder"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
-          "item": "oil or \u00bd cup applesauce"
+          "item": "oil or ½ cup applesauce"
         },
         {
           "qty": "2",
@@ -82,5 +82,5 @@
   "pdf": "pdfs/carrot-kugel-muffins.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
