@@ -11,15 +11,15 @@
     "shabbat",
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 30,
-  "servings": null,
+  "servings": "16",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/caramel-chewy-pie.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "2",
@@ -83,6 +83,10 @@
   ],
   "pairings": [],
   "notes": "Doc updated brown sugar from 1½ cups to 1 cup. Uses pareve margarine and Tofutti cream cheese, but verify the caramel chips and graham crusts are pareve.",
-  "source": null,
-  "tags_need_review": true
+  "source": "",
+  "tags_need_review": true,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
