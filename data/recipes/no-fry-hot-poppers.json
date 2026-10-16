@@ -70,7 +70,7 @@
     }
   ],
   "instructions": [
-    "Preheat oven to 425°F. Line a baking sheet with parchment paper; grease with oil.",
+    "Preheat oven to 425\u00b0F. Line a baking sheet with parchment paper; grease with oil.",
     "In a bowl, combine egg, lemon juice, paprika, salt, garlic powder, and black pepper. Place cubed chicken into egg mixture; stir to coat. Marinate 5 minutes.",
     "Place crumbs into a bowl. Add marinated chicken in batches, coating each piece in crumbs. Place on prepared baking sheet, making sure there is space around each piece. Spray tops of chicken with cooking spray (alternatively, you can flip pieces on the baking sheet so that both sides are coated in a thin layer of oil).",
     "Bake for 15 minutes, until chicken is golden at the edges.",
@@ -104,5 +104,5 @@
   "title": "No-Fry Hot Poppers",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
