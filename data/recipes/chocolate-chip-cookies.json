@@ -10,15 +10,15 @@
   "tags": [
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 9,
-  "servings": null,
+  "servings": "24",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/chocolate-chip-cookies.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -88,5 +88,9 @@
   "pairings": [],
   "notes": "The ingredient list calls for 2 cups of chocolate chips, but step 6 says 'a 12 oz package of chocolate chips'.",
   "source": "Aunt Ellana",
-  "tags_need_review": false
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
