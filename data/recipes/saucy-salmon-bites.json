@@ -93,7 +93,7 @@
     }
   ],
   "instructions": [
-    "Chop the onion. Heat oil in a skillet and sauté the onions until browning.",
+    "Chop the onion. Heat oil in a skillet and saut\u00e9 the onions until browning.",
     "Add the garlic and mix.",
     "Add the tomato sauce and water, and add the red pepper flakes now.",
     "Add the cumin, paprika, garlic powder, cayenne, salt, white pepper, and parsley.",
@@ -119,5 +119,5 @@
   "title": "Saucy Salmon Bites",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
