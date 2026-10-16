@@ -11,7 +11,7 @@
     "one-pot",
     "weeknight"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 21,
   "cook_minutes": 20,
   "servings": "4",
   "leftover_friendly": false,
@@ -64,7 +64,7 @@
         {
           "qty": "1",
           "unit": "15-oz can",
-          "item": "crushed tomatoes (or tomato sauce \u2014 mom)"
+          "item": "crushed tomatoes (or tomato sauce — mom)"
         },
         {
           "qty": "1",
@@ -96,19 +96,19 @@
     }
   ],
   "instructions": [
-    "Heat the olive oil over medium heat in a large pan that has a lid. When the oil is hot, add the sausages and brown them slowly, turning them occasionally so they brown on all sides \u2014 if they sizzle and crackle too much, turn the heat down. You want a gentle browning, not a sear.",
+    "Heat the olive oil over medium heat in a large pan that has a lid. When the oil is hot, add the sausages and brown them slowly, turning them occasionally so they brown on all sides — if they sizzle and crackle too much, turn the heat down. You want a gentle browning, not a sear.",
     "When the sausages are browned, remove from the pan and set aside.",
-    "Increase the heat to high and add the onion and peppers. Toss so they get coated with the oil and sear them as well as you can, stirring every so often \u2014 you want some blackening. Once the onions and peppers soften, sprinkle some salt on them.",
+    "Increase the heat to high and add the onion and peppers. Toss so they get coated with the oil and sear them as well as you can, stirring every so often — you want some blackening. Once the onions and peppers soften, sprinkle some salt on them.",
     "Once you get some searing on the onions and peppers, add the garlic and cook for 1 more minute.",
     "Add the Marsala or red wine if you are using it, and with a wooden spoon scrape the bottom of the pan to release all the browned and blackened bits. Let the wine cook down by half.",
     "Add the tomatoes, oregano, and red pepper flakes and stir well to combine. Add the sausages back in. Bring to a simmer, then reduce the heat to low, cover, and simmer until the peppers are soft and the sausages are cooked through, about 20 minutes."
   ],
   "pairings": [],
-  "notes": "Italian sausage links are typically pork \u2014 use kosher sausage.",
+  "notes": "Italian sausage links are typically pork — use kosher sausage.",
   "source": "",
   "tags_need_review": true,
   "pdf": "pdfs/sausage-peppers-and-onions.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
