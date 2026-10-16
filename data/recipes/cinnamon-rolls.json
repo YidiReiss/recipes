@@ -4,17 +4,17 @@
   "kosher_status": "dairy",
   "kosher_for_passover": false,
   "categories": [
-    "baking",
-    "dessert"
+    "dessert",
+    "baking"
   ],
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 13,
-  "servings": null,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/cinnamon-rolls.jpg",
   "ingredients": [
     {
@@ -87,6 +87,10 @@
   ],
   "pairings": [],
   "notes": "Makes 6 rolls, baked in a muffin tin. Doc shows reduced quantities in parentheses.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
