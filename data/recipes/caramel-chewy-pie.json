@@ -75,18 +75,18 @@
     }
   ],
   "instructions": [
-    "Preheat the oven to 350°F.",
+    "Preheat the oven to 350\u00b0F.",
     "Cream together the margarine and cream cheese.",
     "Add the sugars and the rest of the ingredients; stir in the chips.",
     "Fill the graham pie crusts and bake for 30 minutes.",
     "Serve warm, with ice cream."
   ],
   "pairings": [],
-  "notes": "Doc updated brown sugar from 1½ cups to 1 cup. Uses pareve margarine and Tofutti cream cheese, but verify the caramel chips and graham crusts are pareve.",
+  "notes": "Doc updated brown sugar from 1\u00bd cups to 1 cup. Uses pareve margarine and Tofutti cream cheese, but verify the caramel chips and graham crusts are pareve.",
   "source": "",
   "tags_need_review": true,
-  "pdf": null,
+  "pdf": "pdfs/caramel-chewy-pie.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
