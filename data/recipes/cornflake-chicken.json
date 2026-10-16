@@ -67,14 +67,14 @@
   "instructions": [
     "Mix the mayonnaise and seasonings together.",
     "Dip the chicken in the mayo mixture, then coat in the crushed cornflakes.",
-    "Place in the oven at 400°F for 12 minutes."
+    "Place in the oven at 400\u00b0F for 12 minutes."
   ],
   "pairings": [],
-  "notes": "Doc says '½ tsp onion' and '½ tsp garlic' — interpreted as onion powder and garlic powder.",
+  "notes": "Doc says '\u00bd tsp onion' and '\u00bd tsp garlic' \u2014 interpreted as onion powder and garlic powder.",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/cornflake-chicken.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
