@@ -74,21 +74,21 @@
     }
   ],
   "instructions": [
-    "Preheat your oven to 400°F.",
+    "Preheat your oven to 400\u00b0F.",
     "Trim the brussels sprouts by cutting off the little brown ends; pull off any yellow leaves. Cut any large ones in half and add to a large bowl.",
     "Peel the sweet potato and chop into 1-2 inch pieces; add to the bowl.",
     "Smash 2 cloves of garlic and add to the bowl.",
     "Pour the olive oil over the vegetables, add the cumin, garlic powder, salt, and pepper to taste, and stir to coat.",
     "Line a large sheet pan with foil and drizzle a little olive oil on it, rubbing it all over (or spray well with nonstick spray). Pour the veggies onto the pan.",
-    "Roast at 400°F for about 15 minutes — the veggies are done when browned and a fork slides in easily.",
+    "Roast at 400\u00b0F for about 15 minutes \u2014 the veggies are done when browned and a fork slides in easily.",
     "Transfer to a serving bowl and toss with 1-2 tablespoons of red wine vinegar to taste."
   ],
   "pairings": [],
-  "notes": "Doc updated: oil ⅓ cup → ¼ cup, cumin 1 tsp → ¾ tsp, garlic salt → ¼ tsp garlic powder, salt 1 tsp → ¼ tsp, roast time 30-40 min → 15 min.",
+  "notes": "Doc updated: oil \u2153 cup \u2192 \u00bc cup, cumin 1 tsp \u2192 \u00be tsp, garlic salt \u2192 \u00bc tsp garlic powder, salt 1 tsp \u2192 \u00bc tsp, roast time 30-40 min \u2192 15 min.",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/roasted-sweet-potatoes-and-brussels-sprouts.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
