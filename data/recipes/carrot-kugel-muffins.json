@@ -38,24 +38,24 @@
           "item": "all purpose flour"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "firmly packed dark brown sugar"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
           "item": "sugar"
         },
         {
-          "qty": "1 ½",
+          "qty": "1 \u00bd",
           "unit": "tsp",
           "item": "baking powder"
         },
         {
-          "qty": "¼",
+          "qty": "\u00bc",
           "unit": "cup",
-          "item": "oil or ½ cup applesauce"
+          "item": "oil or \u00bd cup applesauce"
         },
         {
           "qty": "2",
@@ -79,8 +79,8 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "pdf": null,
+  "pdf": "pdfs/carrot-kugel-muffins.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
