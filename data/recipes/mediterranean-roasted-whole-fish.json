@@ -10,15 +10,15 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 10,
-  "servings": null,
+  "servings": "2",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/mediterranean-roasted-whole-fish.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -70,7 +70,11 @@
     "If you like, drizzle a tiny bit more olive oil over the finished fish and serve."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
