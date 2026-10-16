@@ -474,7 +474,7 @@ function buildShoppingList() {
         const gkey = groupKey(raw);
         if (!gkey) return;
         let unitRaw = (it.unit || '').trim();
-        let qtyVal = parseQty(it.qty);
+        let qtyVal = qtyToNum(parseQty(it.qty));
         // normalize convertible units to tsp-base for grouping
         const ul = unitRaw.toLowerCase();
         let convBase = null;
@@ -496,7 +496,7 @@ function buildShoppingList() {
         if (!it.optional) e.optional = false;
         if (convBase !== null) { e.qty += convBase; e.hasNum = true; }
         else {
-          const n = parseQty(it.qty);
+          const n = qtyToNum(parseQty(it.qty));
           if (n !== null) { e.qty += n; e.hasNum = true; }
           else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
         }
@@ -1177,6 +1177,13 @@ function parseQty(qtyStr) {
     return a <= b ? [a, b] : [b, a];
   }
   return parseSingleValue(s);
+}
+// For shopping lists: collapse a parseQty result to a single number.
+// Ranges use the max so you buy enough ("1-2 tbsp" -> 2).
+function qtyToNum(q) {
+  if (q === null || q === undefined) return null;
+  if (Array.isArray(q)) return q.length ? Math.max(...q) : null;
+  return (typeof q === 'number' && Number.isFinite(q)) ? q : null;
 }
 function formatQty(value, unit) {
   if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '';
