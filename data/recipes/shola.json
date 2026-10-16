@@ -12,9 +12,9 @@
     "one-pot",
     "shabbat"
   ],
-  "prep_minutes": 0,
-  "cook_minutes": 0,
-  "servings": "",
+  "prep_minutes": 15,
+  "cook_minutes": 42,
+  "servings": "6",
   "leftover_friendly": true,
   "leftover_note": "",
   "banner_image": "assets/images/shola.jpg",
@@ -83,5 +83,8 @@
   "notes": "'4 chickens cut up' kept as written; cilantro appears in the prep but not in the ingredient list.",
   "source": "",
   "tags_need_review": false,
-  "pdf": null
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
