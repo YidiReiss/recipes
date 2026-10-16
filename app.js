@@ -1182,7 +1182,10 @@ function parseQty(qtyStr) {
 // Ranges use the max so you buy enough ("1-2 tbsp" -> 2).
 function qtyToNum(q) {
   if (q === null || q === undefined) return null;
-  if (Array.isArray(q)) return q.length ? Math.max(...q) : null;
+  if (Array.isArray(q)) {
+    const nums = q.filter(n => typeof n === 'number' && Number.isFinite(n));
+    return nums.length ? Math.max(...nums) : null;
+  }
   return (typeof q === 'number' && Number.isFinite(q)) ? q : null;
 }
 function formatQty(value, unit) {
