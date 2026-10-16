@@ -10,15 +10,15 @@
   "tags": [
     "shabbat"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 11,
-  "servings": null,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/roasted-salmon-with-green-herbs.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "2-2 ½",
@@ -79,7 +79,11 @@
     "Cover the dish tightly with aluminum foil and allow fish to rest for 10 min. Cut the salmon crosswise into serving pieces and serve hot with lemon wedges."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
-  "tags_need_review": false
+  "notes": "",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
