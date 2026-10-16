@@ -9,11 +9,11 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 22,
-  "servings": null,
+  "servings": "12",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/bran-surprise-muffins.jpg",
   "ingredients": [
     {
@@ -115,6 +115,10 @@
   ],
   "pairings": [],
   "notes": "Recipe was changed to cut in half.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
