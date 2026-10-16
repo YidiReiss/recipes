@@ -9,15 +9,15 @@
   "tags": [
     "snack"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 13,
-  "servings": null,
+  "servings": "24",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/strawberries-and-cream-mini-muffins.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -83,6 +83,10 @@
   ],
   "pairings": [],
   "notes": "Makes 24 mini muffins.",
-  "source": null,
-  "tags_need_review": false
+  "source": "",
+  "tags_need_review": false,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
