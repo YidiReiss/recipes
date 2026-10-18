@@ -9,9 +9,9 @@
   "tags": [
     "vegetarian"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 35,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/baked-feta-pasta.jpg",
@@ -77,5 +77,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:40.673Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=15 (5 base + halved garlic, chopped basil, assembling dish; rounded up) and servings=6 (16 oz dry pasta / ~3 oz per person main, rounded to even) via Sous Chef estimation logic."
+    }
+  ]
 }
