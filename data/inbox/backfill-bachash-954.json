@@ -6,8 +6,8 @@
   "url": null,
   "image": null,
   "note": "Backfill: estimate prep,servings",
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-18T05:22:34.241715+00:00",
-  "recipe_id": null,
+  "recipe_id": "bachash",
   "fail_reason": null
 }
