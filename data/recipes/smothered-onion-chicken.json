@@ -11,9 +11,9 @@
     "shabbat",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 30,
   "cook_minutes": 120,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/smothered-onion-chicken.jpg",
@@ -65,5 +65,25 @@
   "pairings": [],
   "notes": "The chicken tastes best if you let it marinate in the onion mixture overnight, as the onions release their juices and add lots more onion flavor; if marinated overnight, increase the cooking time by another 45 minutes.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:39.243Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 30
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 30 min (base 5 + slice 6 onions thinly + halve 8 chicken bottoms + mix/layer) and servings 8 (main chicken, 8 bone-in bottoms halved = 16 pieces) per Sous Chef estimation rules."
+    }
+  ]
 }
