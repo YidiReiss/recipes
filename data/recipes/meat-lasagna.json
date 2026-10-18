@@ -12,9 +12,9 @@
     "make-ahead",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 45,
-  "servings": null,
+  "servings": 12,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/meat-lasagna.jpg",
@@ -86,5 +86,25 @@
   "pairings": [],
   "notes": "No cheese appears in this recipe as written. Sausage appears in the prep but not in the ingredient list; tomato paste is mentioned in the prep but not listed in the ingredients either.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:44:33.402Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 12
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 20 (chop onion, mince 2 garlic cloves, layer noodles) and servings 12 (standard 9x13 pan)"
+    }
+  ]
 }
