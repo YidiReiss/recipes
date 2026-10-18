@@ -9,9 +9,9 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 37,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/tofutti-pareve-cheesecake.jpg",
@@ -63,5 +63,25 @@
   "pairings": [],
   "notes": "Doc lists '1 pie filling' without specifying which filling; fill as desired.",
   "source": null,
-  "tags_need_review": true
+  "tags_need_review": true,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:12.288Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 10
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: prep 10 min estimated (5 base + beat/mix batter 4 + eggs 1; crust and topping are store-bought), servings 8 estimated (9-inch pie vessel standard). Cook 37 kept as stated."
+    }
+  ]
 }
