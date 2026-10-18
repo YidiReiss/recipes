@@ -6,8 +6,8 @@
   "url": null,
   "image": null,
   "note": "Backfill: estimate prep,cook,servings",
-  "status": "pending",
+  "status": "failed",
   "created_at": "2026-10-18T05:22:34.241715+00:00",
   "recipe_id": null,
-  "fail_reason": null
+  "fail_reason": "Chulent recipe has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first."
 }
