@@ -1,136 +1,152 @@
 {
- "banner_image": "assets/images/cookie-dough-fudge-pie.jpg",
- "categories": [
-  "desserts"
- ],
- "cook_minutes": 40,
- "id": "cookie-dough-fudge-pie",
- "ingredients": [
-  {
-   "items": [
+  "banner_image": "assets/images/cookie-dough-fudge-pie.jpg",
+  "categories": [
+    "desserts"
+  ],
+  "cook_minutes": 40,
+  "id": "cookie-dough-fudge-pie",
+  "ingredients": [
     {
-     "item": "ready-made graham cracker pie crust",
-     "qty": "1",
-     "unit": null
+      "items": [
+        {
+          "item": "ready-made graham cracker pie crust",
+          "qty": "1",
+          "unit": null
+        }
+      ],
+      "section": ""
+    },
+    {
+      "items": [
+        {
+          "item": "oil",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "brown sugar",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "sugar",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "vanilla extract",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "milk or soy milk",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "flour",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "mini chocolate chips",
+          "qty": "1/2",
+          "unit": "cup"
+        }
+      ],
+      "section": "Cookie Dough Layer"
+    },
+    {
+      "items": [
+        {
+          "item": "oil",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "sugar",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "vanilla extract",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "baking powder",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "eggs",
+          "qty": "2",
+          "unit": null
+        },
+        {
+          "item": "flour",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "cocoa powder",
+          "qty": "1/2",
+          "unit": "cup"
+        }
+      ],
+      "section": "Fudge Layer"
     }
-   ],
-   "section": ""
-  },
-  {
-   "items": [
+  ],
+  "instructions": [
+    "Preheat the oven to 350°F.",
+    "Prepare the cookie dough layer: in the bowl of an electric mixer on medium speed, beat together the oil and sugars until combined.",
+    "Add the vanilla, milk, and flour; beat until smooth. Add the chocolate chips and stir to distribute evenly.",
+    "Transfer the cookie dough to a second bowl and set aside; there is no need to wash the mixer bowl before the next step.",
+    "Prepare the fudge layer: in the bowl of the electric mixer on medium speed, beat together the oil and sugar until combined.",
+    "Add the vanilla, baking powder, and eggs; beat until smooth. Reduce the mixer speed to low, add the flour and cocoa, and beat until combined.",
+    "Pour the fudge layer into the graham cracker crust. Break off small pieces of the cookie dough and place them evenly over the fudge layer to cover it, pushing some pieces in so they are buried or partially buried.",
+    "Bake for 40 minutes. Remove from the oven and set aside to cool."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "leftover_friendly": true,
+  "notes": "To keep this dessert pareve, use soy milk, pareve chocolate chips, and a pareve graham cracker crust.",
+  "pairings": [],
+  "pdf": "pdfs/cookie-dough-fudge-pie.pdf",
+  "servings": "8-10",
+  "source": "Miriam (Pascal) Cohen, 'Something Sweet' — submitted as a cookbook page photo",
+  "tags": [
+    "chocolate",
+    "cookie dough",
+    "freezer-friendly",
+    "make-ahead"
+  ],
+  "tags_need_review": false,
+  "tips": [
     {
-     "item": "oil",
-     "qty": "2",
-     "unit": "tbsp"
+      "text": "This pie freezes well in an airtight container. To serve warm, reheat uncovered.",
+      "title": "Make ahead"
     },
     {
-     "item": "brown sugar",
-     "qty": "1/2",
-     "unit": "cup"
-    },
-    {
-     "item": "sugar",
-     "qty": "2",
-     "unit": "tbsp"
-    },
-    {
-     "item": "vanilla extract",
-     "qty": "1/2",
-     "unit": "tsp"
-    },
-    {
-     "item": "milk or soy milk",
-     "qty": "1",
-     "unit": "tbsp"
-    },
-    {
-     "item": "flour",
-     "qty": "1/2",
-     "unit": "cup"
-    },
-    {
-     "item": "mini chocolate chips",
-     "qty": "1/2",
-     "unit": "cup"
+      "text": "You can skip the pie crust and bake in ramekins as individual desserts; reduce the baking time by about half.",
+      "title": "Individual desserts"
     }
-   ],
-   "section": "Cookie Dough Layer"
-  },
-  {
-   "items": [
+  ],
+  "title": "Cookie Dough Fudge Pie",
+  "prep_minutes": 20,
+  "history": [
     {
-     "item": "oil",
-     "qty": "1",
-     "unit": "cup"
-    },
-    {
-     "item": "sugar",
-     "qty": "1",
-     "unit": "cup"
-    },
-    {
-     "item": "vanilla extract",
-     "qty": "1",
-     "unit": "tsp"
-    },
-    {
-     "item": "baking powder",
-     "qty": "1/2",
-     "unit": "tsp"
-    },
-    {
-     "item": "eggs",
-     "qty": "2",
-     "unit": null
-    },
-    {
-     "item": "flour",
-     "qty": "1/2",
-     "unit": "cup"
-    },
-    {
-     "item": "cocoa powder",
-     "qty": "1/2",
-     "unit": "cup"
+      "ts": "2026-10-18T06:15:20.019Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 20 (two mixer batches + breaking/placing cookie dough pieces) per Sous Chef rules. cook/servings already set."
     }
-   ],
-   "section": "Fudge Layer"
-  }
- ],
- "instructions": [
-  "Preheat the oven to 350°F.",
-  "Prepare the cookie dough layer: in the bowl of an electric mixer on medium speed, beat together the oil and sugars until combined.",
-  "Add the vanilla, milk, and flour; beat until smooth. Add the chocolate chips and stir to distribute evenly.",
-  "Transfer the cookie dough to a second bowl and set aside; there is no need to wash the mixer bowl before the next step.",
-  "Prepare the fudge layer: in the bowl of the electric mixer on medium speed, beat together the oil and sugar until combined.",
-  "Add the vanilla, baking powder, and eggs; beat until smooth. Reduce the mixer speed to low, add the flour and cocoa, and beat until combined.",
-  "Pour the fudge layer into the graham cracker crust. Break off small pieces of the cookie dough and place them evenly over the fudge layer to cover it, pushing some pieces in so they are buried or partially buried.",
-  "Bake for 40 minutes. Remove from the oven and set aside to cool."
- ],
- "kosher_for_passover": false,
- "kosher_status": "pareve",
- "leftover_friendly": true,
- "notes": "To keep this dessert pareve, use soy milk, pareve chocolate chips, and a pareve graham cracker crust.",
- "pairings": [],
- "pdf": "pdfs/cookie-dough-fudge-pie.pdf",
- "servings": "8-10",
- "source": "Miriam (Pascal) Cohen, 'Something Sweet' — submitted as a cookbook page photo",
- "tags": [
-  "chocolate",
-  "cookie dough",
-  "freezer-friendly",
-  "make-ahead"
- ],
- "tags_need_review": false,
- "tips": [
-  {
-   "text": "This pie freezes well in an airtight container. To serve warm, reheat uncovered.",
-   "title": "Make ahead"
-  },
-  {
-   "text": "You can skip the pie crust and bake in ramekins as individual desserts; reduce the baking time by about half.",
-   "title": "Individual desserts"
-  }
- ],
- "title": "Cookie Dough Fudge Pie"
+  ]
 }
