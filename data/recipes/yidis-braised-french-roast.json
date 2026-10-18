@@ -1,0 +1,142 @@
+{
+  "id": "yidis-braised-french-roast",
+  "title": "Yidi's Braised French Roast",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "beef"
+  ],
+  "tags": [
+    "shabbat",
+    "braised",
+    "make-ahead"
+  ],
+  "prep_minutes": 20,
+  "cook_minutes": 180,
+  "servings": "6-8",
+  "leftover_friendly": true,
+  "leftover_note": "Deliberately made to rest overnight; reheats beautifully for Shabbat lunch.",
+  "banner_image": "assets/images/yidis-braised-french-roast.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "The Meat & Dry Brine",
+      "items": [
+        {
+          "qty": "3-3.5",
+          "unit": "lb",
+          "item": "kosher brick roast, French roast, or underblade chuck roast"
+        },
+        {
+          "qty": "1/2 tsp per pound",
+          "unit": "",
+          "item": "coarse kosher salt",
+          "prep": "lightly applied; kosher meat is already pre-salted"
+        }
+      ]
+    },
+    {
+      "section": "The Sear, Aromatics & Deglaze",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "high-smoke-point neutral oil (avocado or canola)"
+        },
+        {
+          "qty": "1-2",
+          "unit": "",
+          "item": "large yellow onions",
+          "prep": "thinly sliced"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "plain water",
+          "prep": "for deglazing"
+        }
+      ]
+    },
+    {
+      "section": "The Savory Braising Sauce",
+      "items": [
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "deli or Dijon mustard"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "soy sauce"
+        },
+        {
+          "qty": "1.5",
+          "unit": "tbsp",
+          "item": "whiskey (bourbon, rye, or scotch)"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "brown sugar"
+        },
+        {
+          "qty": "4-5",
+          "unit": "cloves",
+          "item": "garlic",
+          "prep": "thinly sliced"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "black pepper",
+          "prep": "coarsely cracked"
+        }
+      ]
+    },
+    {
+      "section": "For Serving (Garnish)",
+      "items": [
+        {
+          "qty": "2-3",
+          "unit": "",
+          "item": "scallions",
+          "prep": "thinly sliced; green tops and light-green parts, kept raw",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Dry-brine the roast: sprinkle both sides lightly with coarse kosher salt, set on a wire rack over a rimmed sheet pan, and refrigerate uncovered for at least 2 hours (up to 24 hours) so the salt reabsorbs into the muscle fibers. Do not add black pepper yet.",
+    "Preheat the oven to 300°F, aiming for a true oven temperature of 285°F–300°F.",
+    "Hard sear: blot the roast bone-dry with paper towels. Heat the oil in a heavy cast-iron skillet over medium-high heat until shimmering. Sear the fat-seam side down, undisturbed, for 3.5 to 4 minutes until a deep mahogany crust forms, then flip and sear the underside for 3 to 3.5 minutes, plus 60 seconds on the thick edges. Remove the roast and set aside.",
+    "Sweat the onions: lower the heat to medium, add the sliced onions, and cook 2–3 minutes, stirring to coat them in the rendered beef fat and pick up the browned bits. Transfer the onions to the bottom of a snug oven-safe baking dish and set the roast on top, fat-seam side up.",
+    "Deglaze: with the skillet over medium-low heat, pour in the water and let it bubble 30–60 seconds while scraping up every bit of dark browned fond, then turn off the heat.",
+    "Whisk the sauce: in a small bowl, whisk together the mustard, soy sauce, whiskey, brown sugar, cracked black pepper, and sliced garlic. Pour in the hot deglazing water, stir, and pour the whole mixture over the roast. (The liquid will only come about 1/2 inch up the pan — it doubles as the meat and onions release their juices.)",
+    "Braise sealed: insert a leave-in thermometer probe into the thickest center dome. Seal the dish tightly with two layers of heavy-duty aluminum foil, crimped tight so no steam escapes. Bake about 1 hour 40 minutes to 2 hours, until the center reads 180°F–190°F.",
+    "Collagen-melting hold: once the center reaches 185°F–190°F, probe the thickest part for tenderness. Baste the top with pan juices, drop the oven to 250°F, and hold another 25–35 minutes, removing the foil only for the final 10–15 minutes to set the bark, until the probe slides in with smooth, buttery resistance (190°F–195°F internal).",
+    "Rest and chill: rest the roast in the warm pan juices 30–45 minutes, then transfer the whole unsliced roast to a storage container. Tilt the pan and spoon off about 75% of the clear fat. Pour the remaining broth, onions, and garlic into a saucepan, simmer briskly 5–8 minutes to concentrate, then blend with an immersion blender into a thick, velvety gravy. Pour the gravy over and around the roast, cover, and refrigerate overnight — the set gelatin lets it slice cleanly without fraying.",
+    "Slice cold against the grain: find the direction of the long, parallel muscle fibers on the flat underside and slice perpendicular to them into 3/8- to 1/2-inch slabs.",
+    "Shingle and warm: spread a layer of gravy over the bottom of a warming pan, shingle the cold slices tightly over it, spoon the remaining gravy on top, cover tightly with foil, and warm on a hot plate or blech for 60–90 minutes. Scatter the sliced scallions over the top right before serving."
+  ],
+  "tips": [
+    {
+      "title": "The overnight chill is essential",
+      "text": "Chilling solidifies the internal gelatin so the roast slices cleanly without fraying."
+    },
+    {
+      "title": "Slice against the grain",
+      "text": "Check the flat underside for the direction of the long muscle fibers and slice perpendicular to them into 3/8- to 1/2-inch slabs."
+    }
+  ],
+  "pairings": [],
+  "notes": "The braise still tastes extremely beefy — the sauce doesn't take over. Equipment: wire rack + rimmed baking sheet, heavy cast-iron skillet, snug oven-safe baking dish (8x8 or 9x9), heavy-duty foil, leave-in thermometer probe, immersion blender.",
+  "source": "Yidi",
+  "tags_need_review": false,
+  "pdf": "pdfs/yidis-braised-french-roast.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false
+}
