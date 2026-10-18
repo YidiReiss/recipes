@@ -1,0 +1,13 @@
+{
+  "id": "backfill-hearty-meat-and-vege-954",
+  "type": "edit",
+  "edit_target": "hearty-meat-and-vegetable-soup",
+  "text": "Estimate missing prep_minutes for hearty-meat-and-vegetable-soup using the Sous Chef estimation logic.",
+  "url": null,
+  "image": null,
+  "note": "Backfill: estimate prep",
+  "status": "pending",
+  "created_at": "2026-10-18T05:22:34.241715+00:00",
+  "recipe_id": null,
+  "fail_reason": null
+}
