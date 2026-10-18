@@ -493,73 +493,93 @@
   },
   {
     "id": "backfill-chocolate-cake-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "chocolate-cake",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "chocolate-cake",
+    "fail_reason": null
   },
   {
     "id": "backfill-chulent-954",
-    "status": "pending",
+    "status": "failed",
     "type": "edit",
     "edit_target": "chulent",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": null,
+    "fail_reason": "Chulent recipe has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first."
   },
   {
     "id": "backfill-coca-cola-meatballs-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "coca-cola-meatballs",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "coca-cola-meatballs",
+    "fail_reason": null
   },
   {
     "id": "backfill-cookie-dough-fudge-p-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "cookie-dough-fudge-pie",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cookie-dough-fudge-pie",
+    "fail_reason": null
   },
   {
     "id": "backfill-cranberry-pot-roast-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "cranberry-pot-roast",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cranberry-pot-roast",
+    "fail_reason": null
   },
   {
     "id": "backfill-crispy-baked-chicken-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "crispy-baked-chicken-wings",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crispy-baked-chicken-wings",
+    "fail_reason": null
   },
   {
     "id": "backfill-crispy-coated-garlic-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "crispy-coated-garlic-chicken",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crispy-coated-garlic-chicken",
+    "fail_reason": null
   },
   {
     "id": "backfill-crumb-cake-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "crumb-cake",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crumb-cake",
+    "fail_reason": null
   },
   {
     "id": "backfill-cucumber-salad-cook0",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "cucumber-salad",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cucumber-salad",
+    "fail_reason": null
   },
   {
     "id": "backfill-forty-clove-garlic-c-954",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "forty-clove-garlic-chicken",
-    "created_at": "2026-10-18T05:22:34.241715+00:00"
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "forty-clove-garlic-chicken",
+    "fail_reason": null
   },
   {
     "id": "backfill-hearty-meat-and-vege-954",
