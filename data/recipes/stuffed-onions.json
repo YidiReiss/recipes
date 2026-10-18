@@ -12,9 +12,9 @@
     "make-ahead",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 30,
   "cook_minutes": 180,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/stuffed-onions.jpg",
@@ -83,5 +83,25 @@
   "pairings": [],
   "notes": "Also called Osh Pyozee. Doc updated salt from 1 tbsp to 1 tsp.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:09.635Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 30
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: prep 30 min estimated (5 base + peel 7 onions 7 + hollow+stuff 12 + cilantro 3 + mix 3), servings 6 estimated (veal 16 oz/6 oz + rice 1.5 cup dry, summed multi-anchor). Cook 180 kept as stated."
+    }
+  ]
 }
