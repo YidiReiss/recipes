@@ -11,9 +11,9 @@
     "comfort",
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 57,
-  "servings": null,
+  "servings": 12,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/chocolate-cake.jpg",
@@ -68,5 +68,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:17.005Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 10
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 12
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 10 (stand mixer + grease bundt pan) and servings 12 (10-inch bundt, rich) per Sous Chef rules. cook 57 kept from source (55-60)."
+    }
+  ]
 }
