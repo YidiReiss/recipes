@@ -10,7 +10,7 @@
   "tags": [
     "shabbat"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 30,
   "cook_minutes": 50,
   "servings": "4",
   "leftover_friendly": false,
@@ -77,5 +77,20 @@
   "pairings": [],
   "notes": "USE: 10-inch skillet; ½-quart saucepan; roasting pan",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:15.120Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 30
+        }
+      ],
+      "reasoning": "Backfill: prep 30 min estimated (5 base + hollow 3 zucchini 6 + stuffing mix/assembly 12 + bread cube 2 + egg/margarine 1 + honey glaze 1, rounded). Cook 50 and servings 4 kept as stated."
+    }
+  ]
 }
