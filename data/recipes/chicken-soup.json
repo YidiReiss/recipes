@@ -11,9 +11,9 @@
     "comfort",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 40,
   "cook_minutes": 180,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/chicken-soup.jpg",
@@ -119,5 +119,25 @@
   "pairings": [],
   "notes": "Oil is easier to take off after the soup has been in the fridge. Noodles can be added 10-15 min before the last hour is up.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:25.610Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 40
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=40 (5 base + skinning/trimming chicken, peeling onion, cutting potatoes/celery/carrots/turnip/parsnip, deboning cooked chicken; rounded up) and servings=6 (2 cartons broth + veg ~10.5 cups hearty soup / 1.75 cups per person, rounded to even) via Sous Chef estimation logic."
+    }
+  ]
 }
