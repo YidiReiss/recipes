@@ -7,7 +7,7 @@
     "side"
   ],
   "tags": [],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 25,
   "servings": "3",
   "leftover_friendly": false,
@@ -55,5 +55,20 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:32.387Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 min (base 5 + stem 1.5 lb tomatoes + chiffonade basil) per Sous Chef estimation rules. Servings 3 and cook 25 kept."
+    }
+  ]
 }
