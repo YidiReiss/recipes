@@ -9,9 +9,9 @@
   "tags": [
     "kid-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 32,
-  "servings": null,
+  "servings": 12,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/popcorn-cauliflower.jpg",
@@ -73,5 +73,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:29.494Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 12
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 min (base 5 + cut 2 heads cauliflower into florets + toss) and servings 12 (side, ~4 lb cauliflower) per Sous Chef estimation rules."
+    }
+  ]
 }
