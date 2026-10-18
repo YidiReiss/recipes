@@ -2759,7 +2759,7 @@ function renderSubmit(app) {
   app.innerHTML =
     '<a class="back-link no-print" href="#/">← All recipes</a>' +
     '<h1 class="recipe-title">Submit a recipe</h1>' +
-    '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, or both. ' +
+    '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, upload a PDF, or a combination. ' +
     'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
     'If something can\u2019t be figured out, it\u2019ll be marked below so you know.</p>' +
     '<form class="edit-form no-print" id="submit-form" onsubmit="return false">' +
@@ -2771,6 +2771,11 @@ function renderSubmit(app) {
           '<button class="btn secondary" id="s-choose-btn" type="button">🖼️ Choose photo</button>' +
           '<button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
         '<div class="form-hint" id="s-photo-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
+      '<div class="field"><label>PDF recipe (optional)</label>' +
+        '<input type="file" id="s-pdf" accept=".pdf,application/pdf" style="display:none">' +
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+          '<button class="btn secondary" id="s-pdf-btn" type="button">📄 Choose PDF</button></div>' +
+        '<div class="form-hint" id="s-pdf-hint">A PDF of a recipe — text and layout are both used.</div></div>' +
       '<div class="field"><label for="s-note">Note (optional)</label>' +
         '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
       '<div class="field"><label for="s-text">Or paste the recipe (optional)</label>' +
@@ -2807,6 +2812,18 @@ function renderSubmit(app) {
       if (!file) return;
       if (photoHint) photoHint.textContent = 'Processing photo…';
       await processPhotoFile(file);
+    });
+  }
+  // PDF upload: simple file picker, no processing needed client-side.
+  const pdfInput = $('#s-pdf');
+  const pdfBtn = $('#s-pdf-btn');
+  const pdfHint = $('#s-pdf-hint');
+  if (pdfInput && pdfBtn) {
+    pdfBtn.onclick = () => pdfInput.click();
+    pdfInput.addEventListener('change', () => {
+      const file = (pdfInput.files || [])[0];
+      if (!file) return;
+      if (pdfHint) pdfHint.textContent = 'Selected: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
     });
   }
   // Save URL/note/text as the user types (survives tab death)
@@ -3093,9 +3110,10 @@ async function sendSubmission() {
   let b64 = window._submitPhotoB64 || null;
   let photoName = window._submitPhotoName || 'photo.jpg';
   const file = (($('#s-photo').files || [])[0] || null);
-  if (!url && !b64 && !file && !text) {
+  const pdfFile = (($('#s-pdf').files || [])[0] || null);
+  if (!url && !b64 && !file && !text && !pdfFile) {
     st.className = 'form-status error';
-    st.textContent = 'Add a link, a photo, recipe text, or a combination.';
+    st.textContent = 'Add a link, a photo, a PDF, recipe text, or a combination.';
     return;
   }
   st.className = 'form-status';
@@ -3132,8 +3150,17 @@ async function sendSubmission() {
       imagePath = 'data/inbox/' + id + '.' + ext;
       await ghPutB64(imagePath, fb64, 'Inbox photo ' + id);
     }
+    // PDF upload: store as-is (no resizing), checker extracts text + renders pages.
+    let pdfPath = null;
+    if (pdfFile) {
+      if (!pdfFile.size) throw new Error('That PDF didn\u2019t come through — try selecting it again.');
+      const pdfB64 = String(await readAsDataURL(pdfFile)).split(',')[1];
+      if (!pdfB64) throw new Error('Could not read that PDF — try downloading it first.');
+      pdfPath = 'data/inbox/' + id + '.pdf';
+      await ghPutB64(pdfPath, pdfB64, 'Inbox PDF ' + id);
+    }
     const entry = {
-      id, url: url || null, image: imagePath, note: note || null, text: text || null,
+      id, url: url || null, image: imagePath, file: pdfPath, note: note || null, text: text || null,
       status: 'pending', created_at: new Date().toISOString(),
       recipe_id: null, fail_reason: null
     };
@@ -3147,6 +3174,8 @@ async function sendSubmission() {
     st.className = 'form-status ok';
     st.textContent = 'Submitted — it should appear in the collection within about 30 minutes.';
     $('#s-url').value = ''; $('#s-note').value = ''; $('#s-photo').value = '';
+    const pdfIn = $('#s-pdf'); if (pdfIn) pdfIn.value = '';
+    const pdfH = $('#s-pdf-hint'); if (pdfH) pdfH.textContent = 'A PDF of a recipe — text and layout are both used.';
     const st2 = $('#s-text'); if (st2) st2.value = '';
     const ph = $('#s-photo-hint'); if (ph) ph.textContent = 'A photo of a written recipe, a dish, a cookbook page…';
     clearSubmitDraft();
