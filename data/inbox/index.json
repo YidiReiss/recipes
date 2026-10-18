@@ -383,9 +383,11 @@
   },
   {
     "id": "inbox-mvdafv1t-dxjg",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "avocado-and-crab-bruschetta",
-    "created_at": "2026-10-18T03:50:59.057Z"
+    "created_at": "2026-10-18T03:50:59.057Z",
+    "recipe_id": "avocado-and-crab-bruschetta",
+    "fail_reason": null
   }
 ]
