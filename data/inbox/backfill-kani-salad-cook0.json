@@ -1,0 +1,13 @@
+{
+  "id": "backfill-kani-salad-cook0",
+  "type": "edit",
+  "edit_target": "kani-salad",
+  "text": "Set cook_minutes to 0 for kani-salad (legitimate no-cook recipe).",
+  "url": null,
+  "image": null,
+  "note": "Backfill: set cook_minutes=0",
+  "status": "pending",
+  "created_at": "2026-10-18T05:22:34.241715+00:00",
+  "recipe_id": null,
+  "fail_reason": null
+}
