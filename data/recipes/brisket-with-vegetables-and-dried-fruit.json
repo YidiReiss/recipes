@@ -12,9 +12,9 @@
     "make-ahead",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 30,
   "cook_minutes": 195,
-  "servings": null,
+  "servings": 12,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/brisket-with-vegetables-and-dried-fruit.jpg",
@@ -113,5 +113,25 @@
   "pairings": [],
   "notes": "Brisket may be prepared 2 days ahead. Cover and refrigerate unsliced brisket. To serve, slice thinly and place in a roasting pan. Remove solid fat from sauce and spoon over slices. Cover and bake at 325 for 30 min or until meat is thoroughly heated.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:17.282Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 30
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 12
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=30 (5 base + sliced onions, chopped garlic, peeled carrots/parsnips, chopped parsley, sauce mix; rounded up) and servings=12 (5 lb midpoint brisket = 80 oz raw / 6 oz per person boneless main) via Sous Chef estimation logic."
+    }
+  ]
 }
