@@ -11,9 +11,9 @@
     "comfort",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 90,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/ash-e-jow-persian-barley-soup.jpg",
@@ -104,5 +104,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:03.519Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=15 (5 base + diced onion, carrots, parsley, juiced lime; rounded up) and servings=6 (2 qt stock + solids ~9.5 cups hearty soup / 1.75 cups per person, rounded to even) via Sous Chef estimation logic."
+    }
+  ]
 }
