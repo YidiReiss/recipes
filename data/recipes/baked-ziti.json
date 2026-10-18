@@ -10,9 +10,9 @@
     "comfort",
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 42,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/baked-ziti.jpg",
@@ -82,5 +82,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:15.071Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=20 (5 base + buttering pan, combining sauce mix, draining and tossing pasta, topping cheese; rounded up) and servings=6 (1 lb dry pasta / ~3 oz per person main, rounded to even) via Sous Chef estimation logic."
+    }
+  ]
 }
