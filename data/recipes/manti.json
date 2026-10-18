@@ -11,9 +11,9 @@
     "freezer-friendly",
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 35,
   "cook_minutes": 52,
-  "servings": null,
+  "servings": 12,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/manti.jpg",
@@ -68,5 +68,25 @@
   "notes": null,
   "source": null,
   "tags_need_review": false,
-  "pdf": "pdfs/manti.pdf"
+  "pdf": "pdfs/manti.pdf",
+  "history": [
+    {
+      "ts": "2026-10-18T06:44:32.025Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 35
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 12
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 35 (chop 2 lb steak, chop 2 onions, fill+seal ~100 dumpling wrappers) and servings 12 (100 wrappers at ~8 manti/person)"
+    }
+  ]
 }
