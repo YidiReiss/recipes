@@ -10,7 +10,7 @@
   "tags": [
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 55,
   "servings": "15",
   "leftover_friendly": true,
@@ -84,5 +84,20 @@
   "pairings": [],
   "notes": "Salt and black pepper are referenced in the instructions ('half the Salt and half the Black Pepper') but no amounts are given in the ingredient list.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:18.410Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 25 (onion in chopper w/ cleanup, chop pepper+garlic, roll meatballs) per Sous Chef pacing rules. cook/servings already set."
+    }
+  ]
 }
