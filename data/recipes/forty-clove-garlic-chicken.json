@@ -11,9 +11,9 @@
     "shabbat",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 105,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/forty-clove-garlic-chicken.jpg",
@@ -68,5 +68,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:26.669Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 20 (place 40 unpeeled cloves, press through sieve after cook, garnish) and servings 6 (3.5-4 lb whole chicken bone-in). cook 105 kept."
+    }
+  ]
 }
