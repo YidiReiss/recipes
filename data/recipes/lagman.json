@@ -12,9 +12,9 @@
     "one-pot",
     "shabbat"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 35,
   "cook_minutes": 45,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/lagman.jpg",
@@ -118,5 +118,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:44:30.512Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 35
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 35 (slice 2 onions/carrots, dice celery/pepper/potatoes, mince 5 garlic cloves, dice 1 lb steak) and servings 8 (hearty-stew main 1.75 cups/person on ~15 cups yield)"
+    }
+  ]
 }
