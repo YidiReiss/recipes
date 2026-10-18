@@ -10,9 +10,9 @@
     "passover",
     "shabbat"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 52,
-  "servings": null,
+  "servings": 10,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/mushroom-kugel-for-passover-and-all-year-round.jpg",
@@ -83,5 +83,25 @@
   "notes": null,
   "source": "Grandma and Zaidy",
   "tags_need_review": false,
-  "pdf": "pdfs/mushroom-kugel-for-passover-and-all-year-round.pdf"
+  "pdf": "pdfs/mushroom-kugel-for-passover-and-all-year-round.pdf",
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:26.739Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 10
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 20 min (base 5 + slice 2 onions + peel/slice 3 lb mushrooms) and servings 10 (side, 9-inch round pan) per Sous Chef estimation rules."
+    }
+  ]
 }
