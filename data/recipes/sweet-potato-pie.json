@@ -10,7 +10,7 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 50,
   "servings": "10-12",
   "leftover_friendly": false,
@@ -76,5 +76,20 @@
   "pairings": [],
   "notes": "Makes 10-12 servings.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:11.030Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 10
+        }
+      ],
+      "reasoning": "Backfill: prep 10 min estimated (5 base + egg 1 + mix 3 + pour; canned sweet potato + ready crust are pre-prepped so 0). Cook 50 and servings 10-12 kept as stated."
+    }
+  ]
 }
