@@ -10,7 +10,7 @@
     "shabbat",
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 10,
   "cook_minutes": 50,
   "servings": "2",
   "leftover_friendly": true,
@@ -71,5 +71,20 @@
   "pairings": [],
   "notes": "Makes 2 pies.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:06.084Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 10
+        }
+      ],
+      "reasoning": "Backfill: prep 10 min estimated (5 base + egg beating/mixing batter 5; squash + crusts are frozen/pre-prepped so 0). Cook 50 and servings 2 kept as stated."
+    }
+  ]
 }
