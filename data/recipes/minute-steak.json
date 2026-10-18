@@ -11,9 +11,9 @@
     "comfort",
     "one-pot"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 20,
   "cook_minutes": 60,
-  "servings": null,
+  "servings": 4,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/minute-steak.jpg",
@@ -78,5 +78,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:44:34.726Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 20
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 4
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 20 (dice onion, quarter mushrooms, mince garlic, chunk 3 potatoes) and servings 4 (1 package ~1.5 lb thin-cut beef, 6 oz/person)"
+    }
+  ]
 }
