@@ -12,9 +12,9 @@
     "make-ahead",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 60,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/stuffed-cabbage.jpg",
@@ -128,5 +128,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:07.508Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: prep 25 min estimated (5 base + onion/tomato/herb chop 6 + cabbage-leaf stuffing/rolling ~14 rolls 12 + sauce mix 2), servings 6 estimated (veal 16 oz/6 oz + rice 1.5 cup dry, summed multi-anchor). Cook 60 kept as stated."
+    }
+  ]
 }
