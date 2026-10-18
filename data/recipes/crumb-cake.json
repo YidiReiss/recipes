@@ -10,9 +10,9 @@
   "tags": [
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 35,
-  "servings": null,
+  "servings": 16,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/crumb-cake.jpg",
@@ -94,5 +94,25 @@
   "pairings": [],
   "notes": "The doc shows reduced quantities in parentheses; listed amounts are the original with the changed amounts in parentheses.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:25.317Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 16
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 (mix batter + crumb topping, grease/dust pan) and servings 16 (15x10 pan, scaled from 9x13 vessel rule). cook 35 kept (20+15)."
+    }
+  ]
 }
