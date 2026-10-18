@@ -10,9 +10,9 @@
     "comfort",
     "shabbat"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 60,
   "cook_minutes": 37,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/chaneem.jpg",
@@ -119,5 +119,25 @@
   "pairings": [],
   "notes": "Doc contains no meat even though traditional chaneem usually has a meat filling; kept pareve as written — verify whether meat is intended.",
   "source": null,
-  "tags_need_review": true
+  "tags_need_review": true,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:22.012Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 60
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=60 (5 base + sauce veg, julienning 8 potatoes thin, dough kneading, rolling 4 dough balls, cutting squares and filling; 30-min dough rest is passive, excluded; rounded up) and servings=8 (4 cups flour dumpling dough + potato filling, hearty main) via Sous Chef estimation logic."
+    }
+  ]
 }
