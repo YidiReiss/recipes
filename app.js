@@ -44,6 +44,7 @@ let plannerOffset = 0;     // weeks away from the current week
 let filters = { q: '', kosher: 'all', kfp: false, category: 'all',
                 maxTime: 0, tag: 'all', leftovers: false, sort: 'asc' };
 let editDraft = null;      // working copy while the edit form is open
+let currentEditSha = null;  // GitHub blob SHA when the edit page loaded (for 409 conflict detection)
 let editingSlot = null;    // {key, di, meal} while a planner slot is being edited
 
 /* ---------------- Small helpers ---------------- */
@@ -96,6 +97,38 @@ async function bridgeSave(path, content, message, encoding) {
     throw new Error('save failed (' + res.status + ') ' + detail);
   }
   return res.json();
+}
+
+/* Save a recipe through the worker-side history endpoint.
+   The worker fetches the live file, diffs, appends history, and commits.
+   Throws with code 409 if base_sha doesn't match (someone else saved first). */
+async function bridgeSaveRecipe(path, recipe, actor, reasoning, baseSha, action) {
+  const res = await fetch(BRIDGE + '/save-recipe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, recipe, actor, reasoning, base_sha: baseSha, action })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 409) {
+    const err = new Error(data.detail || 'Conflict');
+    err.code = 409;
+    throw err;
+  }
+  if (!res.ok || !data.ok) {
+    throw new Error('save failed (' + res.status + ') ' + (data.error || ''));
+  }
+  return data;
+}
+
+/* One-time editor name prompt, stored per device for history attribution. */
+function getEditorName() {
+  let name = null;
+  try { name = localStorage.getItem('editor_name'); } catch (e) {}
+  if (!name) {
+    name = (window.prompt('Your name (for change history):') || '').trim() || 'Anonymous';
+    try { localStorage.setItem('editor_name', name); } catch (e) {}
+  }
+  return name;
 }
 
 async function bridgeDelete(path, message) {
@@ -1293,21 +1326,40 @@ async function renderRecipe(app, id) {
 
   // Scale controls: compute on render, embed originals in data attributes.
   // Never re-parse DOM text (avoids compounding drift). Resets to 1x on navigation.
-  let scaleState = { factor: 1, servings: r.servings || null };
+  // Servings can be a number or a range string like "6-8" — parse once, scale both ends.
+  function parseServings(s) {
+    if (s == null || s === '') return null;
+    if (typeof s === 'number' && isFinite(s)) return { low: s, high: s };
+    const m = String(s).match(/^\s*(\d+(?:\.\d+)?)\s*[-\u2013]\s*(\d+(?:\.\d+)?)\s*$/);
+    if (m) {
+      const low = parseFloat(m[1]), high = parseFloat(m[2]);
+      if (isFinite(low) && isFinite(high)) return { low: Math.min(low, high), high: Math.max(low, high) };
+      return null;
+    }
+    const n = parseFloat(s);
+    return isFinite(n) ? { low: n, high: n } : null;
+  }
+  function formatScaledServings(parsed, factor) {
+    if (!parsed) return '';
+    const low = Math.round(parsed.low * factor);
+    const high = Math.round(parsed.high * factor);
+    return low === high ? String(low) : low + '-' + high;
+  }
+  let scaleState = { factor: 1, servings: r.servings || null, parsedServings: parseServings(r.servings) };
   const scaleBarHTML = () => {
     const presets = [0.5, 1, 2, 3];
     const presetBtns = presets.map(p =>
       '<button class="scale-btn' + (scaleState.factor === p ? ' active' : '') + '" data-scale="' + p + '" type="button">' + (p === 1 ? '1x' : p + 'x') + '</button>'
     ).join('');
     let servesHTML = '';
-    if (scaleState.servings) {
-      const curServings = Math.round(scaleState.servings * scaleState.factor);
+    if (scaleState.parsedServings) {
+      const curServings = formatScaledServings(scaleState.parsedServings, scaleState.factor);
       servesHTML = '<span class="scale-serves">Serves <button class="scale-step" data-step="-1" type="button" aria-label="Fewer servings">−</button> <span id="scale-servings-val">' + curServings + '</span> <button class="scale-step" data-step="1" type="button" aria-label="More servings">+</button></span>';
     }
     return '<div class="scale-bar no-print">' +
       '<span class="scale-label">Scale:</span> ' + presetBtns + servesHTML +
       '<span class="scale-current" id="scale-current">' +
-        (scaleState.factor === 1 ? 'Original recipe' : 'Showing ' + scaleState.factor + 'x' + (scaleState.servings ? ' · ' + Math.round(scaleState.servings * scaleState.factor) + ' servings' : '')) +
+        (scaleState.factor === 1 ? 'Original recipe' : 'Showing ' + scaleState.factor + 'x' + (scaleState.parsedServings ? ' · ' + formatScaledServings(scaleState.parsedServings, scaleState.factor) + ' servings' : '')) +
       '</span></div>';
   };
 
@@ -1419,12 +1471,12 @@ async function renderRecipe(app, id) {
       // Display factor rounded to 2 decimals (calculation uses full precision).
       const dispFactor = Math.round(f * 100) / 100;
       curEl.textContent = f === 1 ? 'Original recipe' :
-        'Showing ' + dispFactor + 'x' + (scaleState.servings ? ' · ' + Math.round(scaleState.servings * f) + ' servings' : '');
+        'Showing ' + dispFactor + 'x' + (scaleState.parsedServings ? ' · ' + formatScaledServings(scaleState.parsedServings, f) + ' servings' : '');
     }
     const servVal = app.querySelector('#scale-servings-val');
     const headerServVal = app.querySelector('#header-servings-val');
-    if (scaleState.servings) {
-      const scaledServings = Math.round(scaleState.servings * f);
+    if (scaleState.parsedServings) {
+      const scaledServings = formatScaledServings(scaleState.parsedServings, f);
       if (servVal) servVal.textContent = scaledServings;
       if (headerServVal) headerServVal.textContent = scaledServings;
     }
@@ -1437,13 +1489,15 @@ async function renderRecipe(app, id) {
   });
   app.querySelectorAll('[data-step]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (!scaleState.servings) return;
+      if (!scaleState.parsedServings) return;
       const step = parseInt(btn.dataset.step, 10);
       if (isNaN(step)) return;
-      const curServings = Math.round(scaleState.servings * scaleState.factor);
+      // For ranges, step from the midpoint.
+      const baseMid = (scaleState.parsedServings.low + scaleState.parsedServings.high) / 2;
+      const curServings = Math.round(baseMid * scaleState.factor);
       const newServings = Math.max(1, curServings + step);
       // Compute factor from target servings — no rounding, no precision loss.
-      scaleState.factor = newServings / scaleState.servings;
+      scaleState.factor = newServings / baseMid;
       applyScale();
     });
   });
@@ -1579,12 +1633,45 @@ function recipeFormHTML(r, cancelHref) {
       '<div class="field"><label for="e-source">Source</label>' +
         '<input type="text" id="e-source" value="' + esc(r.source || '') + '"></div>' +
       '<div class="form-status" id="edit-status"></div>' +
+      '<div class="field"><label for="edit-reasoning">Why did you change this? <span style="font-weight:400;color:#8a7a68">(optional, saved to change history)</span></label>' +
+        '<input type="text" id="edit-reasoning" maxlength="240" placeholder="e.g. Fixed the salt amount after making it"></div>' +
       '<div class="actions" style="margin-bottom:0">' +
         '<button class="btn" id="edit-save" type="button">Save recipe</button>' +
         '<a class="btn secondary" href="' + cancelHref + '">Cancel</a>' +
       '</div>' +
+      historyHTML(r.history) +
     '</form>'
   );
+}
+
+/* Collapsible change history section for the edit page. */
+function historyHTML(history) {
+  const h = Array.isArray(history) ? [...history].reverse() : [];
+  let inner;
+  if (!h.length) {
+    inner = '<p style="color:#8a7a68;font-size:.9em">No recorded changes yet.</p>';
+  } else {
+    inner = h.map(e => {
+      const when = e.ts ? new Date(e.ts).toLocaleString() : '';
+      const changes = Array.isArray(e.changes) ? e.changes.map(c => {
+        if (typeof c === 'string') return '<li>' + esc(c) + '</li>';
+        if (c && typeof c === 'object') {
+          const from = c.from == null ? '—' : esc(String(c.from));
+          const to = c.to == null ? '—' : esc(String(c.to));
+          return '<li><strong>' + esc(c.field || '?') + ':</strong> ' + from + ' → ' + to + '</li>';
+        }
+        return '';
+      }).join('') : '';
+      return '<div style="margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid #eee">' +
+        '<div style="font-size:.85em;color:#8a7a68">' + esc(e.action || 'edit') + ' · ' + esc(e.actor || '') + ' · ' + esc(when) + '</div>' +
+        (e.reasoning ? '<div style="font-style:italic;margin:.25rem 0">"' + esc(e.reasoning) + '"</div>' : '') +
+        (changes ? '<ul style="margin:.25rem 0;padding-left:1.25rem;font-size:.9em">' + changes + '</ul>' : '') +
+      '</div>';
+    }).join('');
+  }
+  return '<details style="margin-top:1.5rem;border:1px solid #e0d5c1;border-radius:8px;padding:.75rem 1rem">' +
+    '<summary style="cursor:pointer;font-weight:600">Change history (' + h.length + ')</summary>' +
+    '<div style="margin-top:.75rem">' + inner + '</div></details>';
 }
 
 /* ---------------- Delete recipe ----------------
@@ -1690,6 +1777,12 @@ function renderEdit(app, id) {
     return;
   }
   editDraft = normalizeDraft(JSON.parse(JSON.stringify(r))); // working copy
+  currentEditSha = null;
+  // Fetch the live SHA for optimistic concurrency (409 on stale save).
+  fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/' + id + '.json'))
+    .then(res => res.ok ? res.json() : null)
+    .then(data => { if (data && data.sha) currentEditSha = data.sha; })
+    .catch(() => {});
   document.title = 'Edit: ' + r.title + ' — Reiss Family Recipes';
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
@@ -2044,7 +2137,24 @@ async function saveRecipe(id) {
   st.textContent = 'Saving…';
   try {
     await maybeUploadPhoto(d);
-    await ghPut('data/recipes/' + id + '.json', JSON.stringify(d, null, 2), 'Update recipe: ' + d.title);
+    // Save via the worker-side history endpoint (server diffs + appends history).
+    const actor = 'site-editor (' + getEditorName() + ')';
+    const reasoningEl = $('#edit-reasoning');
+    const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+    let saveResult;
+    try {
+      saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, currentEditSha, 'edit');
+    } catch (e) {
+      if (e.code === 409) {
+        st.className = 'form-status error';
+        st.textContent = 'This recipe was changed by someone else since you opened it. Reload the page to see the latest, then re-apply your changes.';
+        return;
+      }
+      throw e;
+    }
+    // Update our SHA and history from the worker's response.
+    if (saveResult.sha) currentEditSha = saveResult.sha;
+    if (saveResult.history) d.history = saveResult.history;
     // Update metadata for lazy loading (list/search/filter).
     const metaEntry = {
       id: d.id, title: d.title, banner_image: d.banner_image,
@@ -2125,7 +2235,12 @@ async function saveNewRecipe() {
   st.textContent = 'Saving…';
   try {
     await maybeUploadPhoto(d);
-    await ghPut('data/recipes/' + id + '.json', JSON.stringify(d, null, 2), 'Add recipe: ' + d.title);
+    // Save via the worker-side history endpoint (initializes history with creation entry).
+    const actor = 'site-editor (' + getEditorName() + ')';
+    const reasoningEl = $('#edit-reasoning');
+    const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+    const saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, null, 'intake');
+    if (saveResult.history) d.history = saveResult.history;
     const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
     idx.push(id);
     await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
