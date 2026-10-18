@@ -10,9 +10,9 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 35,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/roasted-flounder-with-cherry-tomatoes-and-capers.jpg",
@@ -78,5 +78,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:33.837Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 min (base 5 + crush 6 garlic cloves + pick thyme + assemble) and servings 6 (main fish, 6x6 oz filets) per Sous Chef estimation rules."
+    }
+  ]
 }
