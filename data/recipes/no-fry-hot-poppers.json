@@ -70,7 +70,7 @@
     }
   ],
   "instructions": [
-    "Preheat oven to 425\u00b0F. Line a baking sheet with parchment paper; grease with oil.",
+    "Preheat oven to 425°F. Line a baking sheet with parchment paper; grease with oil.",
     "In a bowl, combine egg, lemon juice, paprika, salt, garlic powder, and black pepper. Place cubed chicken into egg mixture; stir to coat. Marinate 5 minutes.",
     "Place crumbs into a bowl. Add marinated chicken in batches, coating each piece in crumbs. Place on prepared baking sheet, making sure there is space around each piece. Spray tops of chicken with cooking spray (alternatively, you can flip pieces on the baking sheet so that both sides are coated in a thin layer of oil).",
     "Bake for 15 minutes, until chicken is golden at the edges.",
@@ -83,7 +83,7 @@
   "notes": "The cookbook calls this the number-one dinner in their homes: the baked chicken comes out surprisingly softer than traditional fried hot poppers. Leave some hot poppers plain for the little ones who don't like hot sauce; add more heat to your taste. Serve with Rice or Circle Fries (page 200 of the cookbook).",
   "pairings": [],
   "pdf": "pdfs/no-fry-hot-poppers.pdf",
-  "prep_minutes": 0,
+  "prep_minutes": 25,
   "servings": "6",
   "source": "Photo of a cookbook page (No-Fry Hot Poppers, Chicken chapter, page 76)",
   "tags": [
@@ -104,5 +104,20 @@
   "title": "No-Fry Hot Poppers",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:28.087Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 0,
+          "to": 25
+        }
+      ],
+      "reasoning": "Backfill: prep was 0 (unset); estimated prep 25 min (base 5 + cube 1.5 lb chicken + breading assembly + sauce) per Sous Chef estimation rules. Servings 6 and cook 15 kept."
+    }
+  ]
 }
