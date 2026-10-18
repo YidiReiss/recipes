@@ -1,1 +1,121 @@
-{"banner_image":"assets/images/babbish-baked-ziti.jpg","categories":["main"],"cook_minutes":50,"id":"babbish-baked-ziti","ingredients":[{"items":[{"item":"cottage cheese","qty":"16","unit":"oz"},{"item":"eggs","qty":"2","unit":null},{"item":"grated parmesan","qty":"2","unit":"oz"},{"item":"basil","prep":"chopped","qty":"","unit":null}],"section":"Cheese mixture"},{"items":[{"item":"butter","qty":"3","unit":"tbsp"},{"item":"flour","qty":"3","unit":"tbsp"},{"item":"milk","qty":"2","unit":"cup"}],"section":"White sauce"},{"items":[{"item":"ziti","prep":"cooked al dente","qty":"","unit":null},{"item":"tomato sauce or marinara","qty":"","unit":null},{"item":"shredded mozzarella","qty":"","unit":null},{"item":"grated parmesan","qty":"","unit":null}],"section":"Assembly"}],"instructions":["Cook the ziti al dente; drain.","Mix the cottage cheese with the eggs, grated parmesan, and chopped basil.","In a saucepan, melt the butter, whisk in the flour, and cook for 1 minute. Slowly whisk in the milk and cook 1-2 minutes until thick and creamy.","In a baking tin or bowl, toss the pasta with tomato sauce or marinara, then add the cheese mixture and the white sauce and mix together.","Add mozzarella and more sauce as needed, then top with sauce, mozzarella, and parmesan.","Cover and bake at 350°F for 30 minutes, then uncover and bake 15-20 minutes more."],"kosher_for_passover":false,"kosher_status":"dairy","leftover_friendly":false,"leftover_note":"","notes":"Handwritten recipe. Quantities for the ziti, tomato sauce/marinara, and mozzarella were not specified in the note. Parmesan is bought grated and mozzarella is bought shredded.","pairings":[],"pdf":"pdfs/babbish-baked-ziti.pdf","photo_generated":true,"prep_minutes":20,"servings":"","source":"Handwritten note","tags":["comfort"],"tags_need_review":true,"title":"Babbish Baked Ziti"}
+{
+  "banner_image": "assets/images/babbish-baked-ziti.jpg",
+  "categories": [
+    "main"
+  ],
+  "cook_minutes": 50,
+  "id": "babbish-baked-ziti",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "cottage cheese",
+          "qty": "16",
+          "unit": "oz"
+        },
+        {
+          "item": "eggs",
+          "qty": "2",
+          "unit": null
+        },
+        {
+          "item": "grated parmesan",
+          "qty": "2",
+          "unit": "oz"
+        },
+        {
+          "item": "basil",
+          "prep": "chopped",
+          "qty": "",
+          "unit": null
+        }
+      ],
+      "section": "Cheese mixture"
+    },
+    {
+      "items": [
+        {
+          "item": "butter",
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "flour",
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "milk",
+          "qty": "2",
+          "unit": "cup"
+        }
+      ],
+      "section": "White sauce"
+    },
+    {
+      "items": [
+        {
+          "item": "ziti",
+          "prep": "cooked al dente",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "tomato sauce or marinara",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "shredded mozzarella",
+          "qty": "",
+          "unit": null
+        },
+        {
+          "item": "grated parmesan",
+          "qty": "",
+          "unit": null
+        }
+      ],
+      "section": "Assembly"
+    }
+  ],
+  "instructions": [
+    "Cook the ziti al dente; drain.",
+    "Mix the cottage cheese with the eggs, grated parmesan, and chopped basil.",
+    "In a saucepan, melt the butter, whisk in the flour, and cook for 1 minute. Slowly whisk in the milk and cook 1-2 minutes until thick and creamy.",
+    "In a baking tin or bowl, toss the pasta with tomato sauce or marinara, then add the cheese mixture and the white sauce and mix together.",
+    "Add mozzarella and more sauce as needed, then top with sauce, mozzarella, and parmesan.",
+    "Cover and bake at 350°F for 30 minutes, then uncover and bake 15-20 minutes more."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "dairy",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "notes": "Handwritten recipe. Quantities for the ziti, tomato sauce/marinara, and mozzarella were not specified in the note. Parmesan is bought grated and mozzarella is bought shredded.",
+  "pairings": [],
+  "pdf": "pdfs/babbish-baked-ziti.pdf",
+  "photo_generated": true,
+  "prep_minutes": 20,
+  "servings": 6,
+  "source": "Handwritten note",
+  "tags": [
+    "comfort"
+  ],
+  "tags_need_review": true,
+  "title": "Babbish Baked Ziti",
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:07.157Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "servings",
+          "from": "",
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing servings=6 (dairy baked ziti, full tin with 16 oz cottage cheese + 2-cup white sauce; pasta qty unspecified, standard tin serves 6) via Sous Chef estimation logic."
+    }
+  ]
+}
