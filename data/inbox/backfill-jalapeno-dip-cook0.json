@@ -1,0 +1,13 @@
+{
+  "id": "backfill-jalapeno-dip-cook0",
+  "type": "edit",
+  "edit_target": "jalapeno-dip",
+  "text": "Set cook_minutes to 0 for jalapeno-dip (legitimate no-cook dip) and estimate missing servings using the Sous Chef estimation logic.",
+  "url": null,
+  "image": null,
+  "note": "Backfill: cook=0 + estimate servings",
+  "status": "pending",
+  "created_at": "2026-10-18T05:22:34.241715+00:00",
+  "recipe_id": null,
+  "fail_reason": null
+}
