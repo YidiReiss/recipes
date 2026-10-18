@@ -1,0 +1,13 @@
+{
+  "id": "backfill-kaylas-bridal-shower-954",
+  "type": "edit",
+  "edit_target": "kaylas-bridal-shower-challah",
+  "text": "Estimate missing servings for kaylas-bridal-shower-challah using the Sous Chef estimation logic.",
+  "url": null,
+  "image": null,
+  "note": "Backfill: estimate servings",
+  "status": "pending",
+  "created_at": "2026-10-18T05:22:34.241715+00:00",
+  "recipe_id": null,
+  "fail_reason": null
+}
