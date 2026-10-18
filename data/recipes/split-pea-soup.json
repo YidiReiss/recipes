@@ -11,9 +11,9 @@
     "comfort",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 120,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/split-pea-soup.jpg",
@@ -108,5 +108,25 @@
   "source": null,
   "tags_need_review": true,
   "needs_kosher_review": true,
-  "kosher_review_notes": "Contains ham and ham bone — not kosher as written. Requires substitution or removal."
+  "kosher_review_notes": "Contains ham and ham bone — not kosher as written. Requires substitution or removal.",
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:04.657Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: prep 25 min estimated (5 base + onion/carrot/celery chop 8.5 + potato peel+chop 4 + garlic 1.5, scaled), servings 8 estimated (hearty soup as main: 12.3 cup yield via liquid+(0.5*solids)*0.9 formula / 1.75 cups per person). Cook 120 kept as stated."
+    }
+  ]
 }
