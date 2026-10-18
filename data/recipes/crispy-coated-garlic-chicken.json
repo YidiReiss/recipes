@@ -10,9 +10,9 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 90,
-  "servings": null,
+  "servings": 10,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/crispy-coated-garlic-chicken.jpg",
@@ -74,5 +74,25 @@
   "pairings": [],
   "notes": "Chicken must marinate 8 hours or overnight before baking.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:24.056Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 10
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 25 (mince 8 garlic cloves, dredge 16 pieces, crumb mix; 8-hr marinade is passive, excluded) and servings 10 (two 3.5-4 lb chickens bone-in). cook 90 kept."
+    }
+  ]
 }
