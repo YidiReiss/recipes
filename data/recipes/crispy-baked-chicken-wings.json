@@ -12,9 +12,9 @@
     "crispy",
     "game-day"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 60,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/crispy-baked-chicken-wings.jpg",
@@ -90,5 +90,25 @@
   "pairings": [],
   "notes": "Original note: ¾ tsp salt (do ¼ tsp).",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:22.692Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 25 (halve wings/discard tips, pat dry, toss, arrange, buffalo sauce) and servings 6 (4 lb bone-in wings at ~11 oz/person). cook 60 kept."
+    }
+  ]
 }
