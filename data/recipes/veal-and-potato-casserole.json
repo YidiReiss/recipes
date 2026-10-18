@@ -11,9 +11,9 @@
     "comfort",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 25,
   "cook_minutes": 170,
-  "servings": null,
+  "servings": 10,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/veal-and-potato-casserole.jpg",
@@ -73,5 +73,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:44:13.731Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 25
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 10
+        }
+      ],
+      "reasoning": "Backfill: prep 25 min estimated (5 base + cube/trim 2 lb veal 8 + onion 4 + peel+cut potatoes 6), servings 10 estimated (veal 32 oz/6 oz + potatoes 28 oz/5.5 oz, summed multi-anchor). Cook 170 kept as stated."
+    }
+  ]
 }
