@@ -1,6 +1,6 @@
 {
   "id": "avocado-and-crab-bruschetta",
-  "title": "Avocado and Crab Bruschetta",
+  "title": "Avocado and Kani Bruschetta",
   "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
@@ -48,9 +48,10 @@
           "item": "hot sauce"
         },
         {
-          "qty": "3",
-          "unit": "cup",
-          "item": "lump crab meat, flaked (about 1 lb)"
+          "qty": "16",
+          "unit": "oz",
+          "item": "kani (mock crab)",
+          "prep": "flaked"
         },
         {
           "qty": "2",
@@ -84,12 +85,13 @@
   ],
   "instructions": [
     "For the dressing, combine the mayonnaise, mustard, 1 tablespoon of the lemon juice, the lemon peel, and the hot sauce in a medium bowl; stir to mix well.",
-    "Combine the dressing with the crabmeat, avocado, and the remaining lemon juice. Add salt and pepper to taste. Spread the crab-avocado mix on the toasted bread slices. Garnish with mint leaves, if desired."
+    "Combine the dressing with the kani, avocado, and the remaining lemon juice. Add salt and pepper to taste. Spread the kani-avocado mix on the toasted bread slices. Garnish with mint leaves, if desired."
   ],
   "pairings": [],
   "notes": null,
   "source": null,
   "tags_need_review": false,
   "needs_kosher_review": true,
-  "kosher_review_notes": "Contains lump crab meat — not kosher as written."
+  "kosher_review_notes": "Contains kani (mock crab) — typically pareve, but check the package for dairy additives and kosher certification.",
+  "pdf_stale": true
 }
