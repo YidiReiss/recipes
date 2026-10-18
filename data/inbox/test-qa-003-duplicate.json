@@ -1,0 +1,1 @@
+{"id":"test-qa-003-duplicate","test_mode":true,"url":null,"image":null,"file":null,"text":"Shola\n\nDairy\nPrep: 15 min\nCook: 30 min\nServes: 6\n\nIngredients:\n- 2 cups flour\n- 1 cup sugar\n\nInstructions:\n1. Mix.\n2. Bake.","note":"QA test: duplicate of shola","status":"pending","created_at":"2026-10-18T23:41:00Z","recipe_id":null,"fail_reason":null}
