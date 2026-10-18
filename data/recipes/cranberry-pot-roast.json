@@ -11,9 +11,9 @@
     "shabbat",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 105,
-  "servings": null,
+  "servings": 8,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/cranberry-pot-roast.jpg",
@@ -78,5 +78,25 @@
   "pairings": [],
   "notes": "Ps. Browning the meat for a longer amount of time adds extra flavor.",
   "source": "Grandma and Zaidy",
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T06:15:21.305Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 (slice celery, dice onion/pepper/garlic) and servings 8 (3 lb boneless brisket at 6 oz/person). cook 105 kept."
+    }
+  ]
 }
