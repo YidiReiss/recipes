@@ -1,0 +1,13 @@
+{
+  "id": "backfill-crispy-coated-garlic-954",
+  "type": "edit",
+  "edit_target": "crispy-coated-garlic-chicken",
+  "text": "Estimate missing prep, servings for crispy-coated-garlic-chicken using the Sous Chef estimation logic.",
+  "url": null,
+  "image": null,
+  "note": "Backfill: estimate prep,servings",
+  "status": "pending",
+  "created_at": "2026-10-18T05:22:34.241715+00:00",
+  "recipe_id": null,
+  "fail_reason": null
+}
