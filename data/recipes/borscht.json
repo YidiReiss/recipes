@@ -11,9 +11,9 @@
     "comfort",
     "freezer-friendly"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 35,
   "cook_minutes": 45,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/borscht.jpg",
@@ -111,5 +111,25 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T05:46:49.577Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 35
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated missing prep_minutes=35 (5 base + sliced onions, shredded beets, diced carrot/parsnip/potato/celery, shredded cabbage, minced garlic, diced meat; rounded up) and servings=6 (~7 cups liquid + solids ~9 cups hearty soup / 1.75 cups per person, rounded to even) via Sous Chef estimation logic."
+    }
+  ]
 }
