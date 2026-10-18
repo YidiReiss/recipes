@@ -10,9 +10,9 @@
     "shabbat",
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 30,
-  "servings": null,
+  "servings": 6,
   "leftover_friendly": false,
   "leftover_note": null,
   "banner_image": "assets/images/roasted-potatoes.jpg",
@@ -57,5 +57,25 @@
   "notes": null,
   "source": "Kayla",
   "tags_need_review": false,
-  "pdf": "pdfs/roasted-potatoes.pdf"
+  "pdf": "pdfs/roasted-potatoes.pdf",
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:35.404Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        },
+        {
+          "field": "servings",
+          "from": null,
+          "to": 6
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 min (base 5 + wash/cut ~2 lb potatoes + season) and servings 6 (side; quantity unspecified, estimated from 2-3 Tbsp oil / sheet pan) per Sous Chef estimation rules."
+    }
+  ]
 }
