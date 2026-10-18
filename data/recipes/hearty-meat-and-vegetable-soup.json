@@ -11,9 +11,9 @@
     "shabbat",
     "comfort"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 35,
   "cook_minutes": 150,
-  "servings": "8 to 10",
+  "servings": 8,
   "leftover_friendly": true,
   "leftover_note": null,
   "banner_image": "assets/images/hearty-meat-and-vegetable-soup.jpg",
@@ -133,5 +133,25 @@
   "notes": "USE: 6-quart pot",
   "source": "Grandma and Zaidy",
   "tags_need_review": false,
-  "pdf": "pdfs/hearty-meat-and-vegetable-soup.pdf"
+  "pdf": "pdfs/hearty-meat-and-vegetable-soup.pdf",
+  "history": [
+    {
+      "ts": "2026-10-18T06:44:26.718Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 35
+        },
+        {
+          "field": "servings",
+          "from": "8 to 10",
+          "to": 8
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 35 (dice onion/potato, slice 2 carrots, dice celery, chop string beans/parsley, mince garlic, cube 1 lb stew meat) and servings 8 (hearty-soup main 1.75 cups/person on ~14 cups yield); was '8 to 10'"
+    }
+  ]
 }
