@@ -9,7 +9,7 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": null,
+  "prep_minutes": 15,
   "cook_minutes": 15,
   "servings": "4",
   "leftover_friendly": false,
@@ -75,5 +75,20 @@
   "pairings": [],
   "notes": "Total time: 15 minutes.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-18T07:16:37.788Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": null,
+          "to": 15
+        }
+      ],
+      "reasoning": "Backfill: estimated prep 15 min (base 5 + dice onion + halve tomatoes + mince 2 garlic + slice zucchini) per Sous Chef estimation rules. Servings 4 and cook 15 kept."
+    }
+  ]
 }
