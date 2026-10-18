@@ -1,13 +1,9 @@
 {
-  "id": "backfill-mushroom-cheese-quic-954",
-  "type": "edit",
-  "edit_target": "mushroom-cheese-quiche",
-  "text": "Estimate missing prep, cook, servings for mushroom-cheese-quiche using the Sous Chef estimation logic.",
-  "url": null,
-  "image": null,
-  "note": "Backfill: estimate prep,cook,servings",
-  "status": "pending",
-  "created_at": "2026-10-18T05:22:34.241715+00:00",
-  "recipe_id": null,
-  "fail_reason": null
+ "id": "backfill-mushroom-cheese-quic-954",
+ "status": "failed",
+ "type": "edit",
+ "edit_target": "mushroom-cheese-quiche",
+ "created_at": "2026-10-18T05:22:34.241715+00:00",
+ "recipe_id": null,
+ "fail_reason": "Mushroom Cheese Quiche has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first."
 }
