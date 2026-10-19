@@ -856,9 +856,10 @@
   },
   {
     "id": "inbox-mvfvny5k-eo09",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "kani-salad",
-    "created_at": "2026-10-19T23:20:40.617Z"
+    "created_at": "2026-10-19T23:20:40.617Z",
+    "recipe_id": "kani-salad"
   }
 ]
