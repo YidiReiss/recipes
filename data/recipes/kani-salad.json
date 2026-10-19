@@ -21,7 +21,7 @@
       "section": "Dressing",
       "items": [
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "cup",
           "item": "mayonnaise"
         },
@@ -36,17 +36,17 @@
           "item": "lemon juice"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "tsp",
           "item": "granulated sugar"
         },
         {
-          "qty": "\u00bd",
+          "qty": "½",
           "unit": "tsp",
           "item": "salt"
         },
         {
-          "qty": "\u00bc",
+          "qty": "¼",
           "unit": "tsp",
           "item": "ground black pepper"
         }
@@ -68,7 +68,7 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "cucumber, julienned 3\" long (about 1\u00bd cups)"
+          "item": "cucumber, julienned 3\" long (about 1½ cups)"
         },
         {
           "qty": "1",
@@ -99,8 +99,28 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "needs_kosher_review": true,
-  "kosher_review_notes": "Contains imitation crab sticks \u2014 typically made from pollock (kosher fish) but verify the brand is kosher-certified.",
+  "needs_kosher_review": null,
+  "kosher_review_notes": null,
   "pdf": null,
-  "pdf_stale": false
+  "pdf_stale": false,
+  "history": [
+    {
+      "ts": "2026-10-19T23:47:32.511Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_kosher_review",
+          "from": true,
+          "to": null
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": "Contains imitation crab sticks — typically made from pollock (kosher fish) but verify the brand is kosher-certified.",
+          "to": null
+        }
+      ],
+      "reasoning": "Yidi inbox edit: remove kosher review flag — no review needed, they will only buy a kosher brand of kani."
+    }
+  ]
 }
