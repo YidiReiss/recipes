@@ -6,8 +6,8 @@
   "url": null,
   "image": null,
   "note": null,
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-19T23:20:40.617Z",
-  "recipe_id": null,
+  "recipe_id": "kani-salad",
   "fail_reason": null
 }
