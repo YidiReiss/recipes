@@ -1,6 +1,6 @@
 {
   "id": "chocolate-cake",
-  "title": "Chocolate Cake",
+  "title": "Chocolate Cake (QA)",
   "kosher_status": "dairy",
   "kosher_for_passover": false,
   "categories": [
@@ -13,13 +13,13 @@
   ],
   "prep_minutes": 20,
   "cook_minutes": 57,
-  "servings": 12,
+  "servings": "12",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/chocolate-cake.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "1",
@@ -66,8 +66,8 @@
     "Bake for 55-60 minutes, until the cake is set. Allow the cake to cool in the pan for 10 minutes and then invert the pan onto a cake plate. Cool completely before frosting."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
+  "notes": "",
+  "source": "",
   "tags_need_review": false,
   "history": [
     {
@@ -118,7 +118,63 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
+    },
+    {
+      "ts": "2026-10-20T14:11:45.594Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "title",
+          "from": "Chocolate Cake",
+          "to": "Chocolate Cake (QA)"
+        },
+        {
+          "field": "servings",
+          "from": 12,
+          "to": "12"
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 7 items])",
+          "to": "1 items ([section: 7 items])"
+        },
+        {
+          "field": "notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "source",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        }
+      ],
+      "reasoning": "Deploy QA — verifying site edits auto-log"
     }
   ],
-  "pdf_stale": false
+  "pdf_stale": true,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": ""
 }
