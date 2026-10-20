@@ -1833,11 +1833,12 @@ async function wireAiEdit(recipeId) {
       // Upload via the bridge (same as submissions)
       await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
         'Edit request: ' + recipeId);
-      // Update the inbox index
+      // Update the inbox index — include the request text inline so the
+      // log can show it without fetching each entry file.
       const idxRes = await fetch('data/inbox/index.json?v=' + Date.now());
       let idx = idxRes.ok ? await idxRes.json() : [];
       idx.push({ id: entryId, status: 'pending', type: 'edit', edit_target: recipeId,
-        created_at: entry.created_at });
+        created_at: entry.created_at, text: text.slice(0, 140) });
       await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2),
         'Edit request index: ' + entryId);
       st.className = 'form-status ok';
@@ -1950,6 +1951,11 @@ async function maybeUploadPhoto(d) {
   const path = 'assets/images/' + d.id + '.jpg';
   await ghPutB64(path, b64, 'Add photo for ' + d.title);
   d.banner_image = path;
+  // A fresh user photo replaces any AI-generated placeholder — and flag the
+  // replacement so saveRecipe can log it even though the banner_image path
+  // itself doesn't change (same filename).
+  d.photo_generated = false;
+  d._photoReplaced = true;
 }
 
 function drawIngEditor() {
@@ -2140,7 +2146,14 @@ async function saveRecipe(id) {
     // Save via the worker-side history endpoint (server diffs + appends history).
     const actor = 'site-editor (' + getEditorName() + ')';
     const reasoningEl = $('#edit-reasoning');
-    const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+    let reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+    // Photo-only edit: the banner path doesn't change, so give the save a
+    // reasoning so the auto-log records it (and drop the temp flag so it
+    // never lands in the recipe JSON).
+    if (d._photoReplaced) {
+      delete d._photoReplaced;
+      if (!reasoning) reasoning = 'Replaced photo';
+    }
     let saveResult;
     try {
       saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, currentEditSha, 'edit');
@@ -2187,24 +2200,8 @@ async function saveRecipe(id) {
     if (i >= 0) recipes[i] = metaEntry;
     metaById[id] = metaEntry;
     byId[id] = d;
-    // Log the direct edit in Recent submissions.
-    try {
-      const entryId = 'edit-' + Date.now().toString(36);
-      const entry = {
-        id: entryId, type: 'direct-edit', edit_target: id,
-        text: null, url: null, image: null, note: 'Direct edit via site',
-        status: 'done', created_at: new Date().toISOString(),
-        recipe_id: id, fail_reason: null
-      };
-      await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
-        'Direct edit log: ' + d.title);
-      const inboxRes = await fetch('data/inbox/index.json?v=' + Date.now());
-      let inboxIdx = inboxRes.ok ? await inboxRes.json() : [];
-      inboxIdx.push({ id: entryId, status: 'done', type: 'direct-edit',
-        edit_target: id, created_at: entry.created_at });
-      await ghPut('data/inbox/index.json', JSON.stringify(inboxIdx, null, 2),
-        'Direct edit log index: ' + entryId);
-    } catch (e) { console.warn('edit log failed', e); }
+    // The worker auto-logs this edit to Recent submissions (no separate
+    // inbox write needed here — handleSaveRecipe logs every edit itself).
     st.className = 'form-status ok';
     st.textContent = 'Saved — the site rebuilds in about a minute.';
     toast('Saved — the site rebuilds in about a minute.');
@@ -2239,6 +2236,7 @@ async function saveNewRecipe() {
     const actor = 'site-editor (' + getEditorName() + ')';
     const reasoningEl = $('#edit-reasoning');
     const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+    delete d._photoReplaced; // temp flag from maybeUploadPhoto — never persisted
     const saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, null, 'intake');
     if (saveResult.history) d.history = saveResult.history;
     const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
@@ -3001,7 +2999,15 @@ function removeSubmitPhoto() {
   const photoInput = $('#s-photo');
   if (photoInput) photoInput.value = '';
 }
-async function loadInboxList() {
+// Format an ISO timestamp for the log, in the user's local timezone.
+function formatLogTimestamp(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+async function loadInboxList(showAll = !!window._inboxShowAll) {
   const host = $('#inbox-list');
   if (!host) return;
   let idx = [];
@@ -3010,14 +3016,15 @@ async function loadInboxList() {
     const r = await fetch('data/inbox/index.json?v=' + Date.now());
     if (r.ok) idx = await r.json();
   } catch (e) { /* no inbox yet */ }
-  // Refresh the list every 60s while the submit page is open,
-  // so entries update when the checker processes them.
+  // Refresh the list every 60s while the submit page is open, preserving
+  // whether the user expanded it with "Show all".
   if (!window._inboxRefreshTimer) {
     window._inboxRefreshTimer = setInterval(() => {
-      if (document.getElementById('inbox-list')) loadInboxList();
+      if (document.getElementById('inbox-list')) loadInboxList(!!window._inboxShowAll);
       else { clearInterval(window._inboxRefreshTimer); window._inboxRefreshTimer = null; }
     }, 60000);
   }
+  window._inboxShowAll = showAll;
   if (!idx.length) {
     host.innerHTML = '<p>Nothing submitted yet.</p>';
     return;
@@ -3027,22 +3034,32 @@ async function loadInboxList() {
     : s === 'duplicate' ? '⧉ duplicate — skipped'
     : s === 'needs_input' ? '? needs your input'
     : s === 'working' ? '… working on it' : '… in the inbox';
-  // For edit requests, fetch the full entry to show the request text
+  const visible = (showAll ? idx.slice() : idx.slice(-10)).reverse();
+  // For edit requests, show the request text: prefer the text stored inline
+  // in the index summary; for older entries without it, fetch the full
+  // entries — in parallel so "Show all" never freezes the page.
   const editDetails = {};
-  for (const s of idx.slice(-10)) {
-    if (s.type === 'edit') {
+  const needsFetch = visible.filter(s => s.type === 'edit' && !s.text);
+  if (needsFetch.length) {
+    const fetched = await Promise.all(needsFetch.map(async s => {
       try {
         const r = await fetch('data/inbox/' + s.id + '.json?v=' + Date.now());
-        if (r.ok) editDetails[s.id] = await r.json();
+        if (r.ok) return [s.id, await r.json()];
       } catch (e) { /* skip */ }
-    }
+      return [s.id, {}];
+    }));
+    for (const [id, full] of fetched) editDetails[id] = full;
   }
-  host.innerHTML = '<ul class="pairing-list">' + idx.slice(-10).reverse().map(s => {
+  const ts = s => {
+    const f = formatLogTimestamp(s.created_at);
+    return f ? ' <span style="color:var(--muted);font-size:0.85em">' + esc(f) + '</span>' : '';
+  };
+  host.innerHTML = '<ul class="pairing-list">' + visible.map(s => {
     // Edit requests get special display
     if (s.type === 'edit') {
       const full = editDetails[s.id] || {};
       const targetTitle = s.edit_target && recipeMeta(s.edit_target) ? recipeMeta(s.edit_target).title : (s.edit_target || 'recipe');
-      const reqText = full.text || '';
+      const reqText = s.text || full.text || '';
       const preview = reqText.length > 100 ? reqText.slice(0, 97) + '…' : reqText;
       const editBadge = s.status === 'done' ? '✓ applied' : badge(s.status);
       return '<li><strong>✏️ Edit: ' + esc(targetTitle) + '</strong> — ' + editBadge +
@@ -3050,19 +3067,30 @@ async function loadInboxList() {
         (s.status === 'done' && s.edit_target ?
           ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
         (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
+        ts(s) +
         '</li>';
     }
-    // Direct edits (via site edit page) and deletions get their own display
+    // Direct edits (via site edit page or bridge) and deletions get their
+    // own display. Direct-edit entries may carry title/actor/note from the
+    // bridge auto-log.
     if (s.type === 'direct-edit') {
-      const targetTitle = s.edit_target && recipeMeta(s.edit_target) ? recipeMeta(s.edit_target).title : (s.edit_target || 'recipe');
+      const targetTitle = s.title || (s.edit_target && recipeMeta(s.edit_target) ? recipeMeta(s.edit_target).title : (s.edit_target || 'recipe'));
+      // Strip the "site-editor (...)" wrapper only when it wraps the whole
+      // string (alternation precedence means a plain | would over-strip).
+      const cleanActor = (s.actor || '').replace(/^site-editor \((.*)\)$/, '$1').trim();
+      const actor = cleanActor && cleanActor !== 'Anonymous' ? cleanActor : null;
+      const note = s.note && s.note !== 'Direct edit via site' ? s.note : '';
       return '<li><strong>✏️ Edited: ' + esc(targetTitle) + '</strong> — ✓ saved' +
+        (actor ? ' · <span style="color:var(--muted)">by ' + esc(actor) + '</span>' : '') +
+        (note ? '<br><span style="color:var(--muted)">' + esc(note.length > 140 ? note.slice(0, 137) + '…' : note) + '</span>' : '') +
         (s.edit_target ?
           ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
+        ts(s) +
         '</li>';
     }
     if (s.type === 'delete') {
       const targetTitle = s.note ? s.note.replace(/^Deleted via site: /, '') : (s.edit_target || 'recipe');
-      return '<li><strong>🗑️ Deleted: ' + esc(targetTitle) + '</strong> — ✓ removed</li>';
+      return '<li><strong>🗑️ Deleted: ' + esc(targetTitle) + '</strong> — ✓ removed' + ts(s) + '</li>';
     }
     // Show the recipe title once it's processed
     let titlePart = '';
@@ -3096,8 +3124,19 @@ async function loadInboxList() {
     }
     return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart + dupPart +
       (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
+      ts(s) +
       '</li>';
-  }).join('') + '</ul>';
+  }).join('') + '</ul>' +
+    (!showAll && idx.length > 10
+      ? '<p><button class="btn secondary" id="inbox-show-all">Show all (' + idx.length + ')</button></p>'
+      : '') +
+    (showAll
+      ? '<p><button class="btn secondary" id="inbox-show-less">Show recent only</button></p>'
+      : '');
+  const showAllBtn = $('#inbox-show-all');
+  if (showAllBtn) showAllBtn.onclick = () => loadInboxList(true);
+  const showLessBtn = $('#inbox-show-less');
+  if (showLessBtn) showLessBtn.onclick = () => loadInboxList(false);
 }
 
 async function sendSubmission() {
