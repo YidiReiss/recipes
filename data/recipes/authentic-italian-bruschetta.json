@@ -103,7 +103,16 @@
         }
       ],
       "reasoning": "prep = 5 base + dice 2 tomatoes 3.5 + chiffonade basil 2 + slice baguette 3 + garlic rub 1 + dice onion 3 + measure oil/oregano/salt/vinegar 4 = 21.5 → 25"
+    },
+    {
+      "ts": "2026-10-20T02:28:50.745Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
