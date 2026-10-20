@@ -10,7 +10,7 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 20,
   "cook_minutes": 10,
   "servings": "2",
   "leftover_friendly": false,
@@ -86,6 +86,19 @@
         "prep_minutes: 10 → 15"
       ],
       "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    },
+    {
+      "ts": "2026-10-20T02:10:16.523Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 15,
+          "to": 20
+        }
+      ],
+      "reasoning": "prep = 5 base + assemble/layer/score fish 8 + slice lemon 1.5 + basil 1 + crush garlic 1 + measure oil/pepper/salt 3 = 19.5 → 20"
     }
   ]
 }
