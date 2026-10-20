@@ -53,7 +53,7 @@
     "tags": [
       "quick"
     ],
-    "prep_minutes": 20,
+    "prep_minutes": 25,
     "cook_minutes": 5,
     "servings": "8",
     "leftover_friendly": false,
@@ -396,7 +396,7 @@
       "comfort",
       "make-ahead"
     ],
-    "prep_minutes": 15,
+    "prep_minutes": 20,
     "cook_minutes": 57,
     "servings": 12,
     "leftover_friendly": true,
@@ -1027,7 +1027,7 @@
     "tags": [
       "quick"
     ],
-    "prep_minutes": 15,
+    "prep_minutes": 20,
     "cook_minutes": 10,
     "servings": "2",
     "leftover_friendly": false,
@@ -1616,7 +1616,7 @@
       "shabbat",
       "make-ahead"
     ],
-    "prep_minutes": 15,
+    "prep_minutes": 20,
     "cook_minutes": 50,
     "servings": 2,
     "leftover_friendly": true,
@@ -1724,7 +1724,7 @@
     "tags": [
       "make-ahead"
     ],
-    "prep_minutes": 15,
+    "prep_minutes": 20,
     "cook_minutes": 50,
     "servings": "10-12",
     "leftover_friendly": false,
@@ -1872,7 +1872,7 @@
       "dip",
       "spicy"
     ],
-    "prep_minutes": 15,
+    "prep_minutes": 20,
     "cook_minutes": 0,
     "servings": 10,
     "leftover_friendly": true,
