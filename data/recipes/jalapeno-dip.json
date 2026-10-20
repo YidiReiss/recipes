@@ -59,9 +59,9 @@
   "notes": "Transcribed from a text submission. '2 garlic presses full of garli' kept as written (pressed garlic, 2 presses).",
   "pairings": [],
   "pdf": "pdfs/jalapeno-dip.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
-  "prep_minutes": 5,
+  "prep_minutes": 15,
   "servings": 10,
   "source": "Text submission",
   "tags": [
@@ -84,6 +84,15 @@
         }
       ],
       "reasoning": "Backfill: estimated servings 10 (dip 3 tbsp/person on ~30 tbsp yield from 1.25 cups mayo + peppers)"
+    },
+    {
+      "ts": "2026-10-20T01:47:47Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 5 → 15"
+      ],
+      "reasoning": "Yidi flagged 5 min as unrealistic — seeding/rinsing/cutting jalapenos, squeezing peppers, pressing garlic, food processor setup take ~15 min"
     }
   ]
 }
