@@ -1,6 +1,6 @@
 {
   "id": "chocolate-cake",
-  "title": "Chocolate Cake (QA)",
+  "title": "Chocolate Cake",
   "kosher_status": "dairy",
   "kosher_for_passover": false,
   "categories": [
@@ -180,9 +180,27 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-10-20T14:16:34.010Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "title",
+          "from": "Chocolate Cake (QA)",
+          "to": "Chocolate Cake"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Reverting QA title change"
     }
   ],
-  "pdf_stale": false,
+  "pdf_stale": true,
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": ""
