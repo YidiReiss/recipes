@@ -130,6 +130,15 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
+    },
+    {
+      "ts": "2026-10-20T02:28:35.977Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
   "pdf_stale": false
