@@ -9,7 +9,7 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": 10,
+  "prep_minutes": 15,
   "cook_minutes": 37,
   "servings": 8,
   "leftover_friendly": false,
@@ -82,6 +82,16 @@
         }
       ],
       "reasoning": "Backfill: prep 10 min estimated (5 base + beat/mix batter 4 + eggs 1; crust and topping are store-bought), servings 8 estimated (9-inch pie vessel standard). Cook 37 kept as stated."
+    },
+    {
+      "ts": "2026-10-20T01:58:33Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 10 → 15"
+      ],
+      "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
     }
-  ]
+  ],
+  "pdf_stale": true
 }
