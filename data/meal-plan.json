@@ -788,8 +788,9 @@
           "id": "mmvgwjhsv",
           "text": "qa-delete-test",
           "have": false,
-          "updatedAt": 1792513978591,
-          "updatedBy": "smvgwjhsv4gogjw"
+          "updatedAt": 1792514013392,
+          "updatedBy": "smvgwjhsv4gogjw",
+          "deleted": true
         }
       ],
       "haveGenerated": [],
