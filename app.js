@@ -124,9 +124,16 @@ async function bridgeSaveRecipe(path, recipe, actor, reasoning, baseSha, action)
 function getEditorName() {
   let name = null;
   try { name = localStorage.getItem('editor_name'); } catch (e) {}
-  if (!name) {
-    name = (window.prompt('Your name (for change history):') || '').trim() || 'Anonymous';
-    try { localStorage.setItem('editor_name', name); } catch (e) {}
+  // 'Anonymous' is a fallback label, never a stored identity: a saved
+  // 'Anonymous' (from a dismissed prompt) counts as unset so the prompt
+  // is offered again on the next save.
+  if (!name || name === 'Anonymous') {
+    const entered = (window.prompt('Your name (for change history):') || '').trim();
+    if (entered && entered !== 'Anonymous') {
+      try { localStorage.setItem('editor_name', entered); } catch (e) {}
+      return entered;
+    }
+    return 'Anonymous';
   }
   return name;
 }
@@ -2142,9 +2149,13 @@ async function saveRecipe(id) {
   st.className = 'form-status';
   st.textContent = 'Saving…';
   try {
+    // Resolve the editor name FIRST, synchronously inside the tap handler:
+    // window.prompt() called after an await (e.g. the photo upload) is
+    // silently swallowed by mobile browsers and returns null.
+    const editorName = getEditorName();
     await maybeUploadPhoto(d);
     // Save via the worker-side history endpoint (server diffs + appends history).
-    const actor = 'site-editor (' + getEditorName() + ')';
+    const actor = 'site-editor (' + editorName + ')';
     const reasoningEl = $('#edit-reasoning');
     let reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
     // Photo-only edit: the banner path doesn't change, so give the save a
@@ -2231,9 +2242,12 @@ async function saveNewRecipe() {
   st.className = 'form-status';
   st.textContent = 'Saving…';
   try {
+    // Editor name first, inside the tap (see saveRecipe — prompt() after
+    // an await gets swallowed by mobile browsers).
+    const editorName = getEditorName();
     await maybeUploadPhoto(d);
     // Save via the worker-side history endpoint (initializes history with creation entry).
-    const actor = 'site-editor (' + getEditorName() + ')';
+    const actor = 'site-editor (' + editorName + ')';
     const reasoningEl = $('#edit-reasoning');
     const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
     delete d._photoReplaced; // temp flag from maybeUploadPhoto — never persisted
