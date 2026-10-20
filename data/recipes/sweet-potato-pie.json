@@ -10,7 +10,7 @@
   "tags": [
     "make-ahead"
   ],
-  "prep_minutes": 10,
+  "prep_minutes": 15,
   "cook_minutes": 50,
   "servings": "10-12",
   "leftover_friendly": false,
@@ -90,6 +90,16 @@
         }
       ],
       "reasoning": "Backfill: prep 10 min estimated (5 base + egg 1 + mix 3 + pour; canned sweet potato + ready crust are pre-prepped so 0). Cook 50 and servings 10-12 kept as stated."
+    },
+    {
+      "ts": "2026-10-20T01:58:33Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 10 → 15"
+      ],
+      "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
     }
-  ]
+  ],
+  "pdf_stale": true
 }
