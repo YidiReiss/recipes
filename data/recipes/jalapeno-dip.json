@@ -61,7 +61,7 @@
   "pdf": "pdfs/jalapeno-dip.pdf",
   "pdf_stale": true,
   "photo_generated": true,
-  "prep_minutes": 15,
+  "prep_minutes": 20,
   "servings": 10,
   "source": "Text submission",
   "tags": [
@@ -93,6 +93,19 @@
         "prep_minutes: 5 → 15"
       ],
       "reasoning": "Yidi flagged 5 min as unrealistic — seeding/rinsing/cutting jalapenos, squeezing peppers, pressing garlic, food processor setup take ~15 min"
+    },
+    {
+      "ts": "2026-10-20T02:10:07.786Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 15,
+          "to": 20
+        }
+      ],
+      "reasoning": "prep = 5 base + mayo measure 1 + jalapenos seed/rinse/cut 3 + pickled peppers squeeze 2 + garlic press 1 + salt 1 + honey 1 + food processor setup 3 + process 1 = 18 → 20"
     }
   ]
 }
