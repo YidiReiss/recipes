@@ -71,11 +71,11 @@
   "kosher_status": "pareve",
   "leftover_friendly": true,
   "leftover_note": "",
-  "notes": "From Nava's Mom. Source: Ree Drummond / The Pioneer Woman \u2014 https://thepioneerwoman.com/cooking/simple-sesame-noodles/. Handwritten on the printout: reduce the canola oil from 4 tbsp to 1-2 tbsp (applied).",
+  "notes": "From Nava's Mom. Source: Ree Drummond / The Pioneer Woman — https://thepioneerwoman.com/cooking/simple-sesame-noodles/. Handwritten on the printout: reduce the canola oil from 4 tbsp to 1-2 tbsp (applied).",
   "pairings": [],
   "pdf": "pdfs/simple-sesame-noodles.pdf",
   "photo_generated": false,
-  "prep_minutes": 10,
+  "prep_minutes": 20,
   "servings": "8",
   "source": "https://thepioneerwoman.com/cooking/simple-sesame-noodles/",
   "tags": [
@@ -85,5 +85,17 @@
     "noodles"
   ],
   "tags_need_review": false,
-  "title": "Simple Sesame Noodles"
+  "title": "Simple Sesame Noodles",
+  "history": [
+    {
+      "ts": "2026-10-20T01:58:33Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 10 → 20"
+      ],
+      "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    }
+  ],
+  "pdf_stale": true
 }
