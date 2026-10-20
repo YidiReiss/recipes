@@ -1318,7 +1318,7 @@ function pluralizeScaledUnit(unit, formattedQty) {
 async function renderRecipe(app, id) {
   const r = await ensureRecipe(id);
   if (!r) {
-    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
+    app.innerHTML = '<a class="back-link" href="#/recipes">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2></div>';
     return;
   }
@@ -1387,7 +1387,7 @@ async function renderRecipe(app, id) {
     (r.leftover_friendly ? 'Good for leftovers.' : 'Best eaten fresh.');
 
   app.innerHTML =
-    '<a class="back-link no-print" href="#/">← All recipes</a>' +
+    '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
     '<article class="recipe-print">' +
       '<div class="recipe-hero">' + bannerHTML(r) + '</div>' +
       '<h1 class="recipe-title">' + esc(r.title) + '</h1>' +
