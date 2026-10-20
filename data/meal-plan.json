@@ -807,13 +807,14 @@
           "id": "mmvgx4z85",
           "text": "qa-xsession-test",
           "have": true,
-          "updatedAt": 1792515113861,
+          "updatedAt": 1792515139018,
           "updatedBy": "smvgx6z5q1n7vxg",
           "haveSession": "smvgx6z5q1n7vxg",
           "haveAt": 1792515113861,
           "haveSessions": [
             "smvgx6z5q1n7vxg"
-          ]
+          ],
+          "deleted": true
         }
       ],
       "haveGenerated": [],
