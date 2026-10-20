@@ -1,0 +1,13 @@
+{
+  "id": "edit-57194cbd-prep2",
+  "type": "direct-edit",
+  "edit_target": "chocolate-cake",
+  "text": null,
+  "url": null,
+  "image": null,
+  "note": "Prep time re-estimated: 15 \u2192 20 min (Sous Chef itemized logic)",
+  "status": "done",
+  "created_at": "2026-10-20T02:17:22Z",
+  "recipe_id": "chocolate-cake",
+  "fail_reason": null
+}
