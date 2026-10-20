@@ -938,5 +938,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Deploy QA — verifying site edits auto-log",
     "created_at": "2026-10-20T14:11:45.594Z"
+  },
+  {
+    "id": "edit-mvgro3xi-mwlb",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chocolate-cake",
+    "recipe_id": "chocolate-cake",
+    "title": "Chocolate Cake",
+    "actor": "site-editor (Anonymous)",
+    "note": "Reverting QA title change",
+    "created_at": "2026-10-20T14:16:34.010Z"
   }
 ]
