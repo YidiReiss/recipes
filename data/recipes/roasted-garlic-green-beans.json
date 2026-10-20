@@ -9,7 +9,7 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": 5,
+  "prep_minutes": 15,
   "cook_minutes": 25,
   "servings": 4,
   "leftover_friendly": false,
@@ -58,5 +58,17 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "history": [
+    {
+      "ts": "2026-10-20T01:58:33Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 5 → 15"
+      ],
+      "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    }
+  ],
+  "pdf_stale": true
 }
