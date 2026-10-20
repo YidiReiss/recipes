@@ -1089,14 +1089,16 @@
     "categories": [
       "main"
     ],
-    "tags": [],
-    "prep_minutes": null,
-    "cook_minutes": null,
-    "servings": null,
+    "tags": [
+      "vegetarian"
+    ],
+    "prep_minutes": 20,
+    "cook_minutes": 60,
+    "servings": "16",
     "leftover_friendly": false,
-    "tags_need_review": true,
+    "tags_need_review": false,
     "photo_generated": true,
-    "search_text": "Recipe content was empty in the source document; ingredients and instructions could not be extracted."
+    "search_text": "pie crust mushrooms (or 1 box + 1 can) large onion flour salt white pepper baking powder muenster cheese (can mix mozzarella) egg milk"
   },
   {
     "id": "mushroom-kugel-for-passover-and-all-year-round",
