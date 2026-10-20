@@ -796,11 +796,12 @@
           "id": "mmvgwloa4",
           "text": "qa-check-test",
           "have": false,
-          "updatedAt": 1792514120102,
+          "updatedAt": 1792514157755,
           "updatedBy": "smvgwjhsv4gogjw",
           "haveSession": null,
           "haveAt": 0,
-          "haveSessions": []
+          "haveSessions": [],
+          "deleted": true
         }
       ],
       "haveGenerated": [],
