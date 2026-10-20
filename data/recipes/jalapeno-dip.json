@@ -59,7 +59,7 @@
   "notes": "Transcribed from a text submission. '2 garlic presses full of garli' kept as written (pressed garlic, 2 presses).",
   "pairings": [],
   "pdf": "pdfs/jalapeno-dip.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "prep_minutes": 20,
   "servings": 10,
@@ -106,6 +106,15 @@
         }
       ],
       "reasoning": "prep = 5 base + mayo measure 1 + jalapenos seed/rinse/cut 3 + pickled peppers squeeze 2 + garlic press 1 + salt 1 + honey 1 + food processor setup 3 + process 1 = 18 → 20"
+    },
+    {
+      "ts": "2026-10-20T02:30:04.389Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ]
 }
