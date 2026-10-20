@@ -795,14 +795,12 @@
         {
           "id": "mmvgwloa4",
           "text": "qa-check-test",
-          "have": true,
-          "updatedAt": 1792514088903,
+          "have": false,
+          "updatedAt": 1792514120102,
           "updatedBy": "smvgwjhsv4gogjw",
-          "haveSession": "smvgwjhsv4gogjw",
-          "haveAt": 1792514088903,
-          "haveSessions": [
-            "smvgwjhsv4gogjw"
-          ]
+          "haveSession": null,
+          "haveAt": 0,
+          "haveSessions": []
         }
       ],
       "haveGenerated": [],
