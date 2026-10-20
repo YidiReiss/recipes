@@ -208,8 +208,9 @@ async function boot() {
   try {
     const cb = '?v=' + Date.now();
     const metaRes = await fetch('data/recipes/meta.json' + cb);
-    if (!metaRes.ok) throw new Error('no metadata');
-    const meta = await metaRes.json();
+    // Missing metadata (e.g. a fresh install before seeding) means an empty
+    // collection, not a fatal error.
+    const meta = metaRes.ok ? await metaRes.json() : [];
     metaById = {};
     recipes = [];
     (Array.isArray(meta) ? meta : []).forEach(m => {
@@ -649,7 +650,7 @@ function shoppingListHTML() {
   });
   const items = buildShoppingList();
   const from = shoppingFromYmd();
-  const marks = normalizeHaveMarks(week.haveGenerated);
+  const marks = activeHaveMarks(week.haveGenerated);
   // Conflict: item marked have by 2+ distinct sessions and not acknowledged
   const conflictKeys = new Set();
   const byKey = {};
@@ -670,7 +671,7 @@ function shoppingListHTML() {
   const toBuy = [];
   const haveIts = [];
   const optionalIts = [];
-  const promoted = new Set(week.optionalPromoted || []);
+  const promoted = promotedKeySet(week);
   items.forEach(it => {
     const mark = marks.find(m => m.key === it.key);
     if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
@@ -692,8 +693,8 @@ function shoppingListHTML() {
       haveIts.push(it);
     }
   });
-  const manToBuy = week.manualItems.filter(m => !m.have);
-  const manHave = week.manualItems.filter(m => m.have);
+  const manToBuy = week.manualItems.filter(m => !m.deleted && !m.have);
+  const manHave = week.manualItems.filter(m => !m.deleted && m.have);
 
   const conflictBadge = k =>
     conflictKeys.has(k)
@@ -731,7 +732,7 @@ function shoppingListHTML() {
   ).join('');
 
   let html = '';
-  if (!items.length && !week.manualItems.length) {
+  if (!items.length && !week.manualItems.some(m => !m.deleted)) {
     html = '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
@@ -903,14 +904,15 @@ async function renderShopping(app) {
         const split = genItem.dataset.shopSplit || null;
         const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
         // Promoted optional item: tapping "○" sends it back to Optional.
-        const isPromoted = Array.isArray(week.optionalPromoted) && week.optionalPromoted.includes(k);
-        if (isPromoted && !existing && split !== 'need') {
-          week.optionalPromoted = week.optionalPromoted.filter(x => x !== k);
+        const isPromoted = promotedKeySet(week).has(k);
+        if (isPromoted && (!existing || existing.removed) && split !== 'need') {
+          setPromoted(week, k, false);
           markShopDirty(); rerender(); return;
         }
-        if (existing && split !== 'need') {
-          // Uncheck: remove my mark (tapping the checked portion unchecks all).
-          week.haveGenerated = week.haveGenerated.filter(x => !(x.key === k && x.session === sid));
+        if (existing && !existing.removed && split !== 'need') {
+          // Uncheck: tombstone my mark (tapping the checked portion unchecks
+          // all) so older checked copies in sync can never resurrect it.
+          existing.removed = true; existing.at = now;
         } else {
           // Check: capture the quantity on the line at check time, so later additions
           // of the same ingredient split into a separate unchecked line.
@@ -922,8 +924,10 @@ async function renderShopping(app) {
             mark.unit = line.unit || '';
           }
           if (existing) {
-            // Update existing mark (split "need" tap) instead of duplicating.
+            // Update existing mark (split "need" tap, or re-check after an
+            // uncheck) instead of duplicating.
             Object.assign(existing, mark);
+            delete existing.removed;
           } else {
             week.haveGenerated.push(mark);
           }
@@ -934,11 +938,12 @@ async function renderShopping(app) {
         const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
         if (m) {
           if (m.have && m.haveSession === sid) {
-            m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = [];
+            m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = []; m.updatedAt = now; m.updatedBy = sid;
           } else {
             m.have = true; m.haveSession = sid; m.haveAt = now;
             if (!Array.isArray(m.haveSessions)) m.haveSessions = [];
             if (!m.haveSessions.includes(sid)) m.haveSessions.push(sid);
+            m.updatedAt = now; m.updatedBy = sid;
           }
         }
         markShopDirty(); rerender(); return;
@@ -948,9 +953,8 @@ async function renderShopping(app) {
     const optAdd = e.target.closest('[data-opt-add]');
     if (optAdd) {
       const week = getWeek(thisWeekKey());
-      if (!Array.isArray(week.optionalPromoted)) week.optionalPromoted = [];
       const k = optAdd.dataset.optAdd;
-      if (!week.optionalPromoted.includes(k)) week.optionalPromoted.push(k);
+      setPromoted(week, k, true);
       markShopDirty(); rerender(); return;
     }
     const optHave = e.target.closest('[data-opt-have]');
@@ -960,16 +964,16 @@ async function renderShopping(app) {
       const k = optHave.dataset.optHave;
       week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
       // Remove from promoted if it was there.
-      if (Array.isArray(week.optionalPromoted)) {
-        week.optionalPromoted = week.optionalPromoted.filter(x => x !== k);
-      }
+      setPromoted(week, k, false);
       const line = buildShoppingList().find(it => it.key === k);
       const mark = { key: k, session: sid, at: now };
       if (line && line.qty !== null && line.qty !== undefined) {
         mark.qty = line.qty;
         mark.unit = line.unit || '';
       }
-      week.haveGenerated.push(mark);
+      const exMark = week.haveGenerated.find(x => x.key === k && x.session === sid);
+      if (exMark) { Object.assign(exMark, mark); delete exMark.removed; }
+      else week.haveGenerated.push(mark);
       markShopDirty(); rerender(); return;
     }
     // Dismiss conflict warning
@@ -984,7 +988,8 @@ async function renderShopping(app) {
     const del = e.target.closest('[data-mandel]');
     if (del) {
       const week = getWeek(thisWeekKey());
-      week.manualItems = (week.manualItems || []).filter(x => x.id !== del.dataset.mandel);
+      const dm = (week.manualItems || []).find(x => x.id === del.dataset.mandel);
+      if (dm) { dm.deleted = true; dm.updatedAt = Date.now(); dm.updatedBy = getSessionId(); }
       saveShop(); rerender(); return;
     }
     // Add manual item
@@ -994,7 +999,7 @@ async function renderShopping(app) {
       if (!text) return;
       const week = getWeek(thisWeekKey());
       if (!Array.isArray(week.manualItems)) week.manualItems = [];
-      week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false });
+      week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false, updatedAt: Date.now(), updatedBy: getSessionId() });
       saveShop(); rerender();
       const ni = $('#shop-new');
       if (ni) ni.focus();
@@ -1007,9 +1012,9 @@ async function renderShopping(app) {
   const copyBtn = $('#shop-copy');
   if (copyBtn) copyBtn.addEventListener('click', () => {
     const week = getWeek(thisWeekKey());
-    const haveKeys = new Set(normalizeHaveMarks(week.haveGenerated).map(m => m.key));
+    const haveKeys = new Set(activeHaveMarks(week.haveGenerated).map(m => m.key));
     const toBuy = buildShoppingList().filter(it => !haveKeys.has(it.key));
-    const manToBuy = (week.manualItems || []).filter(m => !m.have);
+    const manToBuy = (week.manualItems || []).filter(m => !m.deleted && !m.have);
     const lines = toBuy.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
     const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
     const done = () => toast('Shopping list copied');
@@ -1024,9 +1029,9 @@ function renderLanding(app) {
   document.title = 'Reiss Family Recipes';
   const week = getWeek(thisWeekKey());
   const items = buildShoppingList();
-  const haveKeys = new Set(normalizeHaveMarks(week.haveGenerated).map(m => m.key));
+  const haveKeys = new Set(activeHaveMarks(week.haveGenerated).map(m => m.key));
   const toBuyCount = items.filter(it => !haveKeys.has(it.key)).length +
-    (week.manualItems || []).filter(m => !m.have).length;
+    (week.manualItems || []).filter(m => !m.deleted && !m.have).length;
   const plannedCount = week.days.reduce((n, d) =>
     n + normalizeSlot(d.lunch).dishes.length + normalizeSlot(d.dinner).dishes.length, 0);
 
@@ -2581,29 +2586,103 @@ function normalizeHaveMarks(arr) {
   if (!Array.isArray(arr)) return [];
   return arr.map(x => typeof x === 'string' ? { key: x, session: 'legacy', at: 0 } : x);
 }
-// Union shopping state from `source` week into `target` week (in place).
-// Used everywhere we combine local + server state so neither side wipes the other.
+// Have-marks are {key, session, at}. Supports legacy string array format.
+// A mark with removed: true is a tombstone: the user unchecked it. Tombstones
+// are kept and merged by timestamp so an older checked copy on the server or
+// another device can never resurrect the check.
+function activeHaveMarks(arr) {
+  // Collapse to one entry per (key, session) by newest `at` first, so a stale
+  // duplicate can never shadow a tombstone; then drop tombstones.
+  return mergeHaveMarks(arr, []).filter(m => !m.removed);
+}
+// Merge have-marks by (key, session): the entry with the newest `at` wins,
+// so unchecks (removed tombstones) survive older checked copies, while
+// concurrent checks from two sessions still union (different sessions).
+function mergeHaveMarks(localArr, serverArr) {
+  const byId = new Map();
+  [...normalizeHaveMarks(localArr), ...normalizeHaveMarks(serverArr)].forEach(m => {
+    if (!m || !m.key) return;
+    const id = m.key + '|' + m.session;
+    const cur = byId.get(id);
+    if (!cur || (m.at || 0) >= (cur.at || 0)) byId.set(id, m);
+  });
+  return [...byId.values()];
+}
+// Merge manual items by id. A tombstone (deleted: true) always wins over a
+// live copy; otherwise the copy with the newest updatedAt decides the have
+// state, and haveSessions union when the merged state is "have" (so the
+// two-shopper conflict badge still works).
+function mergeManualItems(localArr, serverArr) {
+  const byId = new Map();
+  [...(Array.isArray(localArr) ? localArr : []), ...(Array.isArray(serverArr) ? serverArr : [])].forEach(item => {
+    if (!item || !item.id) return;
+    const cur = byId.get(item.id);
+    if (!cur) { byId.set(item.id, { ...item }); return; }
+    if (item.deleted || cur.deleted) {
+      byId.set(item.id, { ...cur, ...item, deleted: true, updatedAt: Math.max(cur.updatedAt || 0, item.updatedAt || 0) });
+      return;
+    }
+    const newer = (item.updatedAt || item.haveAt || 0) >= (cur.updatedAt || cur.haveAt || 0) ? item : cur;
+    const merged = { ...cur, ...newer };
+    if (merged.have) {
+      merged.haveSessions = [...new Set([...(cur.haveSessions || []), ...(item.haveSessions || [])])];
+    }
+    byId.set(item.id, merged);
+  });
+  return [...byId.values()];
+}
+// optionalPromoted entries are {key, promotedAt, removedAt}. Legacy entries
+// are plain key strings, treated as {key, promotedAt: 0, removedAt: null}.
+// An entry is ACTIVE when promotedAt is set and later than removedAt.
+// Un-promoting stamps removedAt instead of dropping the entry, so the
+// removal can win merges against older promoted copies; merges carry the
+// latest of each timestamp forward.
+function normalizePromotedList(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(x => typeof x === 'string' ? { key: x, promotedAt: 0, removedAt: null } : x);
+}
+function promotedIsActive(p) {
+  return !!p && p.promotedAt !== null && p.promotedAt !== undefined &&
+    (p.removedAt === null || p.removedAt === undefined || p.promotedAt > p.removedAt);
+}
+function promotedKeySet(week) {
+  return new Set(normalizePromotedList(week && week.optionalPromoted).filter(promotedIsActive).map(p => p.key));
+}
+function setPromoted(week, key, on) {
+  const arr = normalizePromotedList(week.optionalPromoted);
+  const ex = arr.find(p => p.key === key);
+  const now = Date.now();
+  if (ex) {
+    if (on) ex.promotedAt = now; else ex.removedAt = now;
+  } else {
+    arr.push(on ? { key, promotedAt: now, removedAt: null } : { key, promotedAt: null, removedAt: now });
+  }
+  week.optionalPromoted = arr;
+}
+function mergePromoted(localArr, serverArr) {
+  const byKey = new Map();
+  const maxTs = (a, b) => (a === null || a === undefined) ? (b ?? null) : (b === null || b === undefined) ? a : Math.max(a, b);
+  [...normalizePromotedList(localArr), ...normalizePromotedList(serverArr)].forEach(p => {
+    if (!p || !p.key) return;
+    const cur = byKey.get(p.key);
+    if (!cur) { byKey.set(p.key, { ...p }); return; }
+    byKey.set(p.key, { key: p.key, promotedAt: maxTs(cur.promotedAt, p.promotedAt), removedAt: maxTs(cur.removedAt, p.removedAt) });
+  });
+  return [...byKey.values()];
+}
+// Merge shopping state from `source` week into `target` week (in place).
+// Used everywhere we combine local + server state. Merges are timestamp-
+// and tombstone-aware: concurrent "have" marks from two devices still
+// union, but deletes and unchecks are never resurrected by older copies.
 function mergeWeekState(target, source) {
   if (!target || !source) return target;
-  const tMarks = normalizeHaveMarks(target.haveGenerated);
-  const seen = new Set(tMarks.map(m => m.key + '|' + m.session));
-  normalizeHaveMarks(source.haveGenerated).forEach(m => {
-    const id = m.key + '|' + m.session;
-    if (!seen.has(id)) { tMarks.push(m); seen.add(id); }
-  });
-  target.haveGenerated = tMarks;
-  const tManual = Array.isArray(target.manualItems) ? target.manualItems : (target.manualItems = []);
-  const seenId = new Set(tManual.map(m => m.id));
-  (Array.isArray(source.manualItems) ? source.manualItems : []).forEach(m => {
-    if (m.id && !seenId.has(m.id)) { tManual.push(m); seenId.add(m.id); }
-  });
+  target.haveGenerated = mergeHaveMarks(target.haveGenerated, source.haveGenerated);
+  target.manualItems = mergeManualItems(target.manualItems, source.manualItems);
   if (source.conflictAcked) {
     target.conflictAcked = { ...(target.conflictAcked || {}), ...source.conflictAcked };
   }
   // Merge optional promotions (union) so a promotion isn't lost in sync.
-  const tPromoted = new Set(Array.isArray(target.optionalPromoted) ? target.optionalPromoted : []);
-  (Array.isArray(source.optionalPromoted) ? source.optionalPromoted : []).forEach(k => tPromoted.add(k));
-  target.optionalPromoted = [...tPromoted];
+  target.optionalPromoted = mergePromoted(target.optionalPromoted, source.optionalPromoted);
   return target;
 }
 // Fetch the meal plan from the live bridge API first (no Pages rebuild lag),
@@ -2687,26 +2766,12 @@ async function pollShopServer() {
     const localWeek = getWeek(key);
     const serverWeek = (server.weeks || {})[key];
     if (!serverWeek) return;
-    // Merge have-marks: union by (key, session)
-    const localMarks = normalizeHaveMarks(localWeek.haveGenerated);
-    const serverMarks = normalizeHaveMarks(serverWeek.haveGenerated);
-    const seen = new Set(localMarks.map(m => m.key + '|' + m.session));
-    serverMarks.forEach(m => {
-      if (!seen.has(m.key + '|' + m.session)) localMarks.push(m);
-    });
-    localWeek.haveGenerated = localMarks;
-    // Merge manual items
-    (serverWeek.manualItems || []).forEach(sm => {
-      const lm = (localWeek.manualItems || []).find(x => x.id === sm.id);
-      if (!lm) {
-        localWeek.manualItems.push(sm);
-      } else if (sm.have && !lm.have) {
-        lm.have = true; lm.haveSession = sm.haveSession; lm.haveAt = sm.haveAt;
-        lm.haveSessions = [...new Set([...(lm.haveSessions || []), ...(sm.haveSessions || [])])];
-      } else if (sm.have && lm.have) {
-        lm.haveSessions = [...new Set([...(lm.haveSessions || []), ...(sm.haveSessions || [])])];
-      }
-    });
+    // Merge have-marks (timestamp/tombstone-aware: unchecks survive)
+    localWeek.haveGenerated = mergeHaveMarks(localWeek.haveGenerated, serverWeek.haveGenerated);
+    // Merge manual items (tombstones win: deletes survive)
+    localWeek.manualItems = mergeManualItems(localWeek.manualItems, serverWeek.manualItems);
+    // Merge optional promotions (timestamp-aware: un-promotes survive)
+    localWeek.optionalPromoted = mergePromoted(localWeek.optionalPromoted, serverWeek.optionalPromoted);
     // Merge conflict acks
     if (serverWeek.conflictAcked) {
       localWeek.conflictAcked = { ...(localWeek.conflictAcked || {}), ...serverWeek.conflictAcked };
