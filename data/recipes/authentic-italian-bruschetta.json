@@ -9,7 +9,7 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": 20,
+  "prep_minutes": 25,
   "cook_minutes": 5,
   "servings": "8",
   "leftover_friendly": false,
@@ -90,6 +90,19 @@
         "prep_minutes: 10 → 20"
       ],
       "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    },
+    {
+      "ts": "2026-10-20T02:10:11.713Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 20,
+          "to": 25
+        }
+      ],
+      "reasoning": "prep = 5 base + dice 2 tomatoes 3.5 + chiffonade basil 2 + slice baguette 3 + garlic rub 1 + dice onion 3 + measure oil/oregano/salt/vinegar 4 = 21.5 → 25"
     }
   ],
   "pdf_stale": true
