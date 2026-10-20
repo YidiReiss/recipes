@@ -10,7 +10,7 @@
     "shabbat",
     "make-ahead"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 20,
   "cook_minutes": 50,
   "servings": "2",
   "leftover_friendly": true,
@@ -94,6 +94,19 @@
         "prep_minutes: 10 → 15"
       ],
       "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    },
+    {
+      "ts": "2026-10-20T02:10:18.746Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 15,
+          "to": 20
+        }
+      ],
+      "reasoning": "prep = 5 base + handle crusts 1 + dump squash 1 + measure flour 1 + sugar 1 + soymilk 1 + oil 1 + crack eggs 1 + cinnamon 1 + mix 2 + pour 1 = 16 → 20"
     }
   ],
   "pdf_stale": true
