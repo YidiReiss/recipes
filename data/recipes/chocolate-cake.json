@@ -109,7 +109,16 @@
         }
       ],
       "reasoning": "prep = 5 base + dump mix 1 + pudding 1 + sour cream 1 + crack 3 eggs 1 + measure oil 1 + water 1 + chips 1 + grease/flour bundt 2 + stand mixer 3 + pour 1 = 18 → 20"
+    },
+    {
+      "ts": "2026-10-20T02:29:37.087Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
