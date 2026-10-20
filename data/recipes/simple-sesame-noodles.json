@@ -95,7 +95,16 @@
         "prep_minutes: 10 → 20"
       ],
       "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
+    },
+    {
+      "ts": "2026-10-20T02:29:50.079Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
