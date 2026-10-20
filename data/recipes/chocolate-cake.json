@@ -198,9 +198,18 @@
         }
       ],
       "reasoning": "Reverting QA title change"
+    },
+    {
+      "ts": "2026-10-20T15:14:21.352Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true,
+  "pdf_stale": false,
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": ""
