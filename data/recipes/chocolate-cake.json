@@ -11,7 +11,7 @@
     "comfort",
     "make-ahead"
   ],
-  "prep_minutes": 10,
+  "prep_minutes": 15,
   "cook_minutes": 57,
   "servings": 12,
   "leftover_friendly": true,
@@ -87,6 +87,16 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 10 (stand mixer + grease bundt pan) and servings 12 (10-inch bundt, rich) per Sous Chef rules. cook 57 kept from source (55-60)."
+    },
+    {
+      "ts": "2026-10-20T01:58:33Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "prep_minutes: 10 → 15"
+      ],
+      "reasoning": "Yidi flagged sub-15-min prep estimates as unrealistic; re-estimated using Sous Chef logic (conservative home-cook pace + 15-min floor)"
     }
-  ]
+  ],
+  "pdf_stale": true
 }
