@@ -806,14 +806,12 @@
         {
           "id": "mmvgx4z85",
           "text": "qa-xsession-test",
-          "have": true,
-          "updatedAt": 1792514985365,
-          "updatedBy": "smvgx4z85lyoags",
-          "haveSession": "smvgx4z85lyoags",
-          "haveAt": 1792514985365,
-          "haveSessions": [
-            "smvgx4z85lyoags"
-          ]
+          "have": false,
+          "updatedAt": 1792515074174,
+          "updatedBy": "smvgx6z5q1n7vxg",
+          "haveSession": null,
+          "haveAt": 0,
+          "haveSessions": []
         }
       ],
       "haveGenerated": [],
