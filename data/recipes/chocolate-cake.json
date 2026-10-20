@@ -171,9 +171,18 @@
         }
       ],
       "reasoning": "Deploy QA — verifying site edits auto-log"
+    },
+    {
+      "ts": "2026-10-20T14:14:39.410Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true,
+  "pdf_stale": false,
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": ""
