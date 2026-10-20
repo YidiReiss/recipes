@@ -107,7 +107,16 @@
         }
       ],
       "reasoning": "prep = 5 base + handle crusts 1 + dump squash 1 + measure flour 1 + sugar 1 + soymilk 1 + oil 1 + crack eggs 1 + cinnamon 1 + mix 2 + pour 1 = 16 → 20"
+    },
+    {
+      "ts": "2026-10-20T02:27:36.127Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
