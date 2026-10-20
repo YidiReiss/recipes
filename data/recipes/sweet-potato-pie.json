@@ -112,7 +112,16 @@
         }
       ],
       "reasoning": "prep = 5 base + open/drain/mash sweet potato 3 + measure soymilk 1 + sugar 1 + flour 1 + crack eggs 1 + cinnamon 1 + salt 1 + handle crust 1 + mixer 2 = 17 → 20"
+    },
+    {
+      "ts": "2026-10-20T02:27:57.946Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
