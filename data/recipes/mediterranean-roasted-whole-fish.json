@@ -76,7 +76,7 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-10-20T01:58:33Z",
@@ -99,6 +99,15 @@
         }
       ],
       "reasoning": "prep = 5 base + assemble/layer/score fish 8 + slice lemon 1.5 + basil 1 + crush garlic 1 + measure oil/pepper/salt 3 = 19.5 → 20"
+    },
+    {
+      "ts": "2026-10-20T02:29:25.939Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
     }
   ]
 }
