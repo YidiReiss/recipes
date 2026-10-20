@@ -903,16 +903,23 @@ async function renderShopping(app) {
         const k = genItem.dataset.shop;
         const split = genItem.dataset.shopSplit || null;
         const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
+        // "Have" belongs to the item, not to the session that checked it:
+        // sessions live in sessionStorage, so every new tab or device is a
+        // new session. Unchecking must therefore work from ANY session —
+        // keying it to the checking session made cross-session items
+        // impossible to uncheck and added the tapper as a false second
+        // checker instead (Argon QA, 2026-10-20).
+        const anyHave = week.haveGenerated.some(x => x.key === k && !x.removed);
         // Promoted optional item: tapping "○" sends it back to Optional.
         const isPromoted = promotedKeySet(week).has(k);
-        if (isPromoted && (!existing || existing.removed) && split !== 'need') {
+        if (isPromoted && !anyHave && split !== 'need') {
           setPromoted(week, k, false);
           markShopDirty(); rerender(); return;
         }
-        if (existing && !existing.removed && split !== 'need') {
-          // Uncheck: tombstone my mark (tapping the checked portion unchecks
-          // all) so older checked copies in sync can never resurrect it.
-          existing.removed = true; existing.at = now;
+        if (anyHave && split !== 'need') {
+          // Uncheck: tombstone EVERY active mark for this key (any session's)
+          // so no checked copy in sync can resurrect it.
+          week.haveGenerated.forEach(x => { if (x.key === k && !x.removed) { x.removed = true; x.at = now; } });
         } else {
           // Check: capture the quantity on the line at check time, so later additions
           // of the same ingredient split into a separate unchecked line.
@@ -937,7 +944,10 @@ async function renderShopping(app) {
       if (manItem) {
         const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
         if (m) {
-          if (m.have && m.haveSession === sid) {
+          if (m.have) {
+            // Any session can uncheck a manual item (the checking session may
+            // be a closed tab or another device); newest updatedAt wins in
+            // sync, so this uncheck propagates.
             m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = []; m.updatedAt = now; m.updatedBy = sid;
           } else {
             m.have = true; m.haveSession = sid; m.haveAt = now;
