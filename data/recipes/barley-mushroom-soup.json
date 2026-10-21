@@ -1,0 +1,128 @@
+{
+  "id": "barley-mushroom-soup",
+  "title": "Barley Mushroom Soup",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup"
+  ],
+  "tags": [
+    "comfort",
+    "shabbat"
+  ],
+  "prep_minutes": 25,
+  "cook_minutes": 130,
+  "servings": "8",
+  "leftover_friendly": true,
+  "leftover_note": "Reheats well; barley will absorb broth \u2014 add a splash of water when reheating.",
+  "banner_image": "assets/images/barley-mushroom-soup.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "large onion",
+          "prep": "diced"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "bay leaf",
+          "prep": "crumbled"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "margarine"
+        },
+        {
+          "qty": "1/2",
+          "unit": "lb",
+          "item": "fresh mushrooms",
+          "prep": "sliced"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "flour",
+          "prep": "sifted"
+        },
+        {
+          "qty": "8",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "2/3",
+          "unit": "cup",
+          "item": "pearl barley",
+          "prep": "cleaned and rinsed in a colander"
+        },
+        {
+          "qty": "1",
+          "unit": "stalk",
+          "item": "celery",
+          "prep": "diced"
+        },
+        {
+          "qty": "2",
+          "unit": "",
+          "item": "carrots",
+          "prep": "diced"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "salt",
+          "prep": "or to taste"
+        },
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "pepper"
+        },
+        {
+          "qty": "1 1/2",
+          "unit": "",
+          "item": "portions of flanken",
+          "prep": "for the hearty meat variation \u2014 add with the water and cook as above",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Saut\u00e9 the onion and bay leaf in the margarine until tender.",
+    "Add the mushrooms and saut\u00e9 until the onions are golden.",
+    "Push the vegetables aside and stir in the flour until smooth.",
+    "Gradually stir in the water. Add the remaining ingredients (barley, celery, carrots, salt, pepper).",
+    "Bring to a boil and simmer for 1 1/2 to 2 hours."
+  ],
+  "tips": [
+    {
+      "title": "Hearty meat variation",
+      "text": "For a hearty meat soup, add 1 1/2 portions of flanken with the water and cook as above. (With flanken this becomes a meat soup.)"
+    }
+  ],
+  "notes": "By Meichal Weingarten, cookbook page photo. Family note: the carrot was handwritten as 2 (applied). A couple of other handwritten notes on the page were too hard to read and were not applied. The soup is pareve as written; the flanken variation makes it a meat soup. Banner is AI-generated (the submitted photo is of the cookbook page) and flagged for replacement with a real photo.",
+  "source": "Meichal Weingarten cookbook (photo submission, family batch)",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/barley-mushroom-soup.pdf",
+  "history": [
+    {
+      "ts": "2026-10-21T20:30:00.000Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from cookbook page photo (Barley Mushroom Soup by Meichal Weingarten). Servings estimated: 8 cups liquid + 0.5 x ~4.5 cups solids x 0.9 = ~10 cups / 1.25 cups starter soup = 8. Prep: 5 base + 7x1 handling (bay leaf, margarine, flour, water, barley, salt, pepper) + 3 dice onion + 3.5 slice 1/2 lb mushrooms + 3 dice celery + 3.5 dice 2 carrots = 25. Cook: saute 10 + simmer 1.5-2 hours (upper bound 120) = 130. Banner AI-generated (submitted photo is of the cookbook page)."
+    }
+  ]
+}
