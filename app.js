@@ -1720,7 +1720,7 @@ function historyHTML(history) {
 async function renderDelete(app, id) {
   const r = await ensureRecipe(id);
   if (!r) {
-    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
+    app.innerHTML = '<a class="back-link" href="#/recipes">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2><p>It may have already been deleted.</p></div>';
     return;
   }
@@ -1811,7 +1811,7 @@ async function renderDelete(app, id) {
 function renderEdit(app, id) {
   const r = byId[id];
   if (!r) {
-    app.innerHTML = '<a class="back-link" href="#/">← All recipes</a>' +
+    app.innerHTML = '<a class="back-link" href="#/recipes">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2></div>';
     return;
   }
@@ -1895,7 +1895,7 @@ function renderAdd(app) {
   editDraft = blankRecipe();
   document.title = 'Add recipe — Reiss Family Recipes';
   app.innerHTML =
-    '<a class="back-link no-print" href="#/">← All recipes</a>' +
+    '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
     '<h1 class="recipe-title">Add recipe</h1>' +
     recipeFormHTML(editDraft, '#/');
   wireRecipeForm(saveNewRecipe);
@@ -2861,7 +2861,7 @@ function clearSubmitDraft() {
 function renderSubmit(app) {
   document.title = 'Submit a recipe — Reiss Family Recipes';
   app.innerHTML =
-    '<a class="back-link no-print" href="#/">← All recipes</a>' +
+    '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
     '<h1 class="recipe-title">Submit a recipe</h1>' +
     '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, upload a PDF, or a combination. ' +
     'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
