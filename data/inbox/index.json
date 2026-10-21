@@ -1317,7 +1317,7 @@
     "file": null,
     "note": "Split from a 6-photo batch at Yidi\u2019s request - this entry is ONLY the Carrot Loaf (the main recipe on the second photo, which it shares with the Creamy Broccoli Kugel Continued column at the top). This entry was listed in the parent split note (inbox-mviilvvl-6hj) but the child was never created, so it is being filed now. CAUTION: the ingredient list is partially cut off at the photo\u2019s left edge \u2014 dry ingredient amounts and the carrot/nut quantities are not visible. If they cannot be read confidently, mark needs_input rather than guessing.",
     "text": null,
-    "status": "pending",
+    "status": "needs_input",
     "created_at": "2026-10-21T20:35:00.000Z",
     "recipe_id": null,
     "fail_reason": null,
