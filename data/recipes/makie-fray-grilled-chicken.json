@@ -1,0 +1,111 @@
+{
+  "banner_image": "assets/images/makie-fray-grilled-chicken.jpg",
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "cook_minutes": 10,
+  "id": "makie-fray-grilled-chicken",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "pargiot (dark chicken cutlets)",
+          "qty": "1.5",
+          "unit": "lb"
+        },
+        {
+          "item": "olive oil",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "honey",
+          "needs_review": true,
+          "qty": "2 1/2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "mustard (Grey Poupon Dijon)",
+          "prep": "heaping",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "garlic powder",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "salt",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "pepper",
+          "qty": "1/4",
+          "unit": "tsp"
+        },
+        {
+          "item": "onion powder",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "parsley",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "jerusalem mix",
+          "qty": "1",
+          "unit": "tsp"
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Whisk together the olive oil, honey, mustard, garlic powder, salt, pepper, onion powder, parsley, and jerusalem mix in a bowl until combined.",
+    "Add the pargiot to a shallow dish or zip-top bag, pour the marinade over, and turn to coat well. Cover and refrigerate — marinate as long as possible, per the card (this is inactive time, not counted in prep or cook).",
+    "Heat a large skillet over medium-high heat with a thin film of oil. Working in batches if needed, sear the pargiot 4-5 minutes per side until golden and cooked through.",
+    "Rest 2-3 minutes, then serve."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "",
+  "kosher_status": "meat",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "Honey: card says 1/4 C, amended in blue ink to 2 1/2 tbsp — used the amended amount (flagged for review). Mustard's 'grey poupon-mild or coarse…' is cut off in the photo.",
+  "pairings": [],
+  "pdf": "pdfs/makie-fray-grilled-chicken.pdf",
+  "pdf_stale": false,
+  "prep_minutes": 20,
+  "servings": "4",
+  "source": "Handwritten recipe card (Makie/Fray), submitted via inbox photo 2026-10-21",
+  "tags": [
+    "marinade",
+    "pan-seared",
+    "make-ahead"
+  ],
+  "tags_need_review": true,
+  "tips": [
+    {
+      "text": "The card says 'marinate as long as possible + grill' — the family usually pan-sears.",
+      "title": "Grill option"
+    }
+  ],
+  "title": "Makie/Fray Grilled Chicken",
+  "history": [
+    {
+      "ts": "2026-10-21T21:18:27.487Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from inbox-mvijlz2q-10x (handwritten Makie/Fray card photo, 2026-10-21). Per Yidi's note: complete dish, not standalone marinade — 1.5 lb pargiot is an ingredient; pan-sear (family's usual method) instead of the card's 'grill'. Estimates — servings: main, boneless chicken anchor 6 oz raw/person; 1.5 lb = 24 oz; 24/6 = 4. prep: 5 base + 9 marinade ingredients needing measuring/pouring (oil, honey, mustard, garlic powder, salt, pepper, onion powder, parsley, jerusalem mix) = 9 + protein tri"
+    }
+  ]
+}
