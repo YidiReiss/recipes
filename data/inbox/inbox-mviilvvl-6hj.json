@@ -1,0 +1,20 @@
+{
+  "id": "inbox-mviilvvl-6hj",
+  "url": null,
+  "image": "data/inbox/inbox-mviilvvl-6hj.jpg",
+  "images": [
+    "data/inbox/inbox-mviilvvl-6hj.jpg",
+    "data/inbox/inbox-mviilvvl-6hj-p2.jpg",
+    "data/inbox/inbox-mviilvvl-6hj-p3.jpg",
+    "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
+    "data/inbox/inbox-mviilvvl-6hj-p5.jpg",
+    "data/inbox/inbox-mviilvvl-6hj-p6.jpg"
+  ],
+  "file": null,
+  "note": "For the French onion soup we don’t add sugar",
+  "text": null,
+  "status": "pending",
+  "created_at": "2026-10-21T19:38:40.975Z",
+  "recipe_id": null,
+  "fail_reason": null
+}
