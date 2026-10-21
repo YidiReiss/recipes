@@ -1,15 +1,1 @@
-{
-  "id": "inbox-mvijlz2q-10x",
-  "url": null,
-  "image": "data/inbox/inbox-mvijlz2q-10x.jpg",
-  "images": [
-    "data/inbox/inbox-mvijlz2q-10x.jpg"
-  ],
-  "file": null,
-  "note": null,
-  "text": null,
-  "status": "pending",
-  "created_at": "2026-10-21T20:06:35.247Z",
-  "recipe_id": null,
-  "fail_reason": null
-}
+{"id": "inbox-mvijlz2q-10x", "url": null, "image": "data/inbox/inbox-mvijlz2q-10x.jpg", "images": ["data/inbox/inbox-mvijlz2q-10x.jpg"], "file": null, "note": null, "text": null, "status": "working", "created_at": "2026-10-21T20:06:35.247Z", "recipe_id": null, "fail_reason": null, "needs": null}
