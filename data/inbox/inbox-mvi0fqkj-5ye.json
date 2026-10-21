@@ -1,16 +1,17 @@
 {
-  "id": "inbox-mvi0fqkj-5ye",
-  "url": null,
-  "image": "data/inbox/inbox-mvi0fqkj-5ye.jpg",
-  "images": [
-    "data/inbox/inbox-mvi0fqkj-5ye.jpg",
-    "data/inbox/inbox-mvi0fqkj-5ye-p2.jpg"
-  ],
-  "file": null,
-  "note": "QA test - multi-photo (please ignore)",
-  "text": null,
-  "status": "pending",
-  "created_at": "2026-10-21T11:09:51.673Z",
-  "recipe_id": null,
-  "fail_reason": null
+ "id": "inbox-mvi0fqkj-5ye",
+ "url": null,
+ "image": "data/inbox/inbox-mvi0fqkj-5ye.jpg",
+ "images": [
+  "data/inbox/inbox-mvi0fqkj-5ye.jpg",
+  "data/inbox/inbox-mvi0fqkj-5ye-p2.jpg"
+ ],
+ "file": null,
+ "note": "QA test - multi-photo (please ignore)",
+ "text": null,
+ "status": "done",
+ "created_at": "2026-10-21T11:09:51.673Z",
+ "recipe_id": null,
+ "fail_reason": null,
+ "test_note": "test_mode completed"
 }
