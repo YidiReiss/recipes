@@ -1,0 +1,16 @@
+{
+  "id": "inbox-mvil5off-fried-cabbage-and-noodles",
+  "url": null,
+  "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+  "images": [
+    "data/inbox/inbox-mvijyqyi-60q.jpg"
+  ],
+  "file": null,
+  "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Fried Cabbage and Noodles. CAUTION: orphan fragment - only the start of the recipe is in the batch; the ingredient list is cut off and the instructions are missing entirely.",
+  "text": null,
+  "status": "pending",
+  "created_at": "2026-10-21T20:49:50.000Z",
+  "recipe_id": null,
+  "fail_reason": null,
+  "needs": null
+}
