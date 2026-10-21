@@ -1289,9 +1289,9 @@
       "data/inbox/inbox-mvijyqyi-60q-p2.jpg"
     ],
     "file": null,
-    "note": null,
+    "note": " \u2014 Auto-split into 3 separate submissions: inbox-mvil5off-elbows-and-tuna-casserole, inbox-mvil5off-curried-chick-pea-casserole, inbox-mvil5off-fried-cabbage-and-noodles.",
     "text": null,
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-10-21T20:16:31.523Z",
     "recipe_id": null,
     "fail_reason": null
@@ -1349,5 +1349,35 @@
     "actor": "site-editor (Yidi)",
     "note": "Changed title",
     "created_at": "2026-10-21T20:40:59.251Z"
+  },
+  {
+    "id": "inbox-mvil5off-elbows-and-tuna-casserole",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Elbows and Tuna Casserole.",
+    "status": "pending",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": null,
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvil5off-curried-chick-pea-casserole",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q-p2.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Curried Chick Pea Casserole.",
+    "status": "pending",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": null,
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvil5off-fried-cabbage-and-noodles",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Fried Cabbage and Noodles.",
+    "status": "pending",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": null,
+    "fail_reason": null
   }
 ]
