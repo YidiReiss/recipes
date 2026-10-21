@@ -1,1 +1,1293 @@
-[{"id":"inbox-mv4gjtyw-1ko","url":"https://eatwithclarity.com/gochujang-korean-tofu/#wprm-recipe-container-31554","image":null,"note":null,"status":"done","created_at":"2026-10-11T23:32:06.392Z","recipe_id":"gochujang-korean-tofu","fail_reason":null},{"id":"inbox-mv4makxq-37k","url":null,"image":"data/inbox/inbox-mv4makxq-37k.jpg","note":"Try to extract the image for the recipe from the submission. Also, it's great to freeze before the egg wash if making in advance. I usually only make it with sauteed onions, turkey and pastrami","status":"done","created_at":"2026-10-12T02:12:54.786Z","recipe_id":"deli-roll","fail_reason":null},{"id":"inbox-mv5uic1w-20k","url":null,"image":"data/inbox/inbox-mv5uic1w-20k.jpg","note":"This should be called Kayla's Bridal Shower Challah","status":"done","created_at":"2026-10-12T22:50:39.546Z","recipe_id":"kaylas-bridal-shower-challah","fail_reason":null},{"id":"inbox-mv5ukp0j-6tt","url":null,"image":"data/inbox/inbox-mv5ukp0j-6tt.jpg","note":"Babbish Baked Ziti","status":"done","created_at":"2026-10-12T22:52:35.341Z","recipe_id":"babbish-baked-ziti","fail_reason":null},{"id":"inbox-mv5uld8s-5de","url":null,"image":"data/inbox/inbox-mv5uld8s-5de.jpg","note":null,"status":"done","created_at":"2026-10-12T22:53:00.803Z","recipe_id":"saucy-salmon-bites","fail_reason":null},{"id":"inbox-mv5xr99y-7fm","url":null,"image":"data/inbox/inbox-mv5xr99y-7fm.jpg","note":"You can use the picture in the image as the image (like extra the food part) or use as a reference","status":"done","created_at":"2026-10-13T00:21:34.405Z","recipe_id":"no-fry-hot-poppers","fail_reason":null},{"id":"inbox-mv5y73s0-5r4","url":null,"image":"data/inbox/inbox-mv5y73s0-5r4.jpg","note":"Reiss Mushroom Salad","status":"done","created_at":"2026-10-13T00:33:54.241Z","recipe_id":"reiss-mushroom-salad","fail_reason":null},{"id":"inbox-mv5y95dn-jl","url":null,"image":"data/inbox/inbox-mv5y95dn-jl.jpg","note":"Reiss Mushroom Salad","status":"done","created_at":"2026-10-13T00:35:29.094Z","recipe_id":"reiss-mushroom-salad","fail_reason":null},{"id":"inbox-mv61lp6t-3rt","url":"https://youtu.be/3iUyRYuYiIk?is=cDqAhLwOE1lXPGWl","image":null,"note":null,"status":"done","created_at":"2026-10-13T02:09:11.621Z","recipe_id":"dairy-free-chicken-fettuccine-alfredo","fail_reason":null},{"id":"inbox-mv626nrz-7mw","url":"https://youtu.be/G0n2OHlBPcQ?is=s41fwE0fDr5jD5Jl","image":null,"note":null,"text":null,"status":"done","created_at":"2026-10-13T02:25:29.568Z","recipe_id":"michelin-star-beef-short-ribs-fallow","fail_reason":null},{"id":"inbox-mv6ig0vc-63r","url":null,"image":"data/inbox/inbox-mv6ig0vc-63r.jpg","note":null,"text":null,"status":"done","created_at":"2026-10-13T10:00:42.570Z","recipe_id":"cookie-dough-fudge-pie","fail_reason":null},{"id":"inbox-mv6iior8-7jt","url":null,"image":null,"note":"Tomato Dip Recipe, tomatoes are sliced into quarters before adding to food processor","text":"4 tomatoes (take out stem and middle piece from the top)\n1 tsp salt\n6 cloves fresh garlic (use garlic press)\nSprinkle around Black pepper\nDash Cayenne pepper\n1-2 tbsp vinegar\n\nPut all the above in food processor with S blade\n\nAdd slowly 1/4 C Olive oil (not extra virgin) while the above is mixing with the s blade on medium to low speed","status":"done","created_at":"2026-10-13T10:02:44.565Z","recipe_id":"tomato-dip","fail_reason":null},{"id":"inbox-mv8w55e4-5jh","url":null,"image":"data/inbox/inbox-mv8w55e4-5jh.jpg","note":"From Nava's Mom","text":null,"status":"done","created_at":"2026-10-15T01:59:41.359Z","recipe_id":"simple-sesame-noodles","fail_reason":null},{"id":"edit-mv9qj9lk","status":"done","type":"direct-edit","edit_target":"cucumber-salad","created_at":"2026-10-15T16:10:27.032Z"},{"id":"edit-mv9s2445","status":"done","type":"direct-edit","edit_target":"cucumber-salad","created_at":"2026-10-15T16:53:06.005Z"},{"id":"edit-mva88da6","status":"done","type":"direct-edit","edit_target":"tomato-dip","created_at":"2026-10-16T00:25:51.678Z"},{"id":"edit-mva89ad2","status":"done","type":"direct-edit","edit_target":"taco-salad","created_at":"2026-10-16T00:26:34.551Z"},{"id":"edit-mva8a1t9","status":"done","type":"direct-edit","edit_target":"plov","created_at":"2026-10-16T00:27:10.125Z"},{"id":"edit-mva8cav5","status":"done","type":"direct-edit","edit_target":"sarkaneez","created_at":"2026-10-16T00:28:55.169Z"},{"id":"edit-mva8ia6n","status":"done","type":"direct-edit","edit_target":"shola","created_at":"2026-10-16T00:33:34.223Z"},{"id":"edit-mva8jgi1","status":"done","type":"direct-edit","edit_target":"strawberry-icebox-pie","created_at":"2026-10-16T00:34:29.065Z"},{"id":"edit-mva8k9i3","status":"done","type":"direct-edit","edit_target":"asian-garlic-green-beans","created_at":"2026-10-16T00:35:06.651Z"},{"id":"edit-mva8l19k","status":"done","type":"direct-edit","edit_target":"chocolate-chip-cookies","created_at":"2026-10-16T00:35:42.632Z"},{"id":"edit-mva8lwnb","status":"done","type":"direct-edit","edit_target":"fish-tacos-with-lime-crema","created_at":"2026-10-16T00:36:23.303Z"},{"id":"edit-mva8mp6b","status":"done","type":"direct-edit","edit_target":"mediterranean-roasted-whole-fish","created_at":"2026-10-16T00:37:00.275Z"},{"id":"edit-mva8nlyj","status":"done","type":"direct-edit","edit_target":"chicken-broccoli-and-mushroom-stir-fry","created_at":"2026-10-16T00:37:42.763Z"},{"id":"edit-mvacw8l4","status":"done","type":"direct-edit","edit_target":"roasted-salmon-with-green-herbs","created_at":"2026-10-16T02:36:23.800Z"},{"id":"edit-mvacwzns","status":"done","type":"direct-edit","edit_target":"cornflake-chicken","created_at":"2026-10-16T02:36:58.888Z"},{"id":"edit-mvacxtoe","status":"done","type":"direct-edit","edit_target":"cinnamon-rolls","created_at":"2026-10-16T02:37:37.790Z"},{"id":"edit-mvacymqf","status":"done","type":"direct-edit","edit_target":"strawberries-and-cream-mini-muffins","created_at":"2026-10-16T02:38:15.447Z"},{"id":"edit-mvaczlbf","status":"done","type":"direct-edit","edit_target":"roasted-sweet-potatoes-and-brussels-sprouts","created_at":"2026-10-16T02:39:00.267Z"},{"id":"edit-mvad333m","status":"done","type":"direct-edit","edit_target":"carrot-kugel-muffins","created_at":"2026-10-16T02:41:43.282Z"},{"id":"edit-mvad43dk","status":"done","type":"direct-edit","edit_target":"sausage-peppers-and-onions","created_at":"2026-10-16T02:42:30.296Z"},{"id":"edit-mvad4uh6","status":"done","type":"direct-edit","edit_target":"bran-surprise-muffins","created_at":"2026-10-16T02:43:05.418Z"},{"id":"edit-mvad5l7y","status":"done","type":"direct-edit","edit_target":"saucy-salmon-bites","created_at":"2026-10-16T02:43:40.078Z"},{"id":"edit-mvad6e4f","status":"done","type":"direct-edit","edit_target":"caramel-chewy-pie","created_at":"2026-10-16T02:44:17.535Z"},{"id":"edit-mvad781m","status":"done","type":"direct-edit","edit_target":"penne-alla-vodka","created_at":"2026-10-16T02:44:56.314Z"},{"id":"edit-mvadmarq","status":"done","type":"direct-edit","edit_target":"carrot-kugel-muffins","created_at":"2026-10-16T02:56:39.686Z"},{"id":"edit-mvadn1ee","status":"done","type":"direct-edit","edit_target":"sausage-peppers-and-onions","created_at":"2026-10-16T02:57:14.198Z"},{"id":"edit-mvadnrjy","status":"done","type":"direct-edit","edit_target":"bran-surprise-muffins","created_at":"2026-10-16T02:57:48.094Z"},{"id":"edit-mvadogjt","status":"done","type":"direct-edit","edit_target":"caramel-chewy-pie","created_at":"2026-10-16T02:58:20.489Z"},{"id":"edit-mvadp7r3","status":"done","type":"direct-edit","edit_target":"penne-alla-vodka","created_at":"2026-10-16T02:58:55.743Z"},{"id":"edit-mvbboxm8","status":"done","type":"direct-edit","edit_target":"no-fry-hot-poppers","created_at":"2026-10-16T18:50:29.552Z"},{"id":"inbox-mvbbx3da-5ap","url":null,"image":"data/inbox/inbox-mvbbx3da-5ap.jpg","note":null,"text":null,"status":"done","created_at":"2026-10-16T18:56:52.178Z","recipe_id":"maple-balsamic-brussels-sprouts-with-smoky-almond-bits","fail_reason":null},{"id":"inbox-mvbc0x0t-36d","url":null,"image":null,"note":null,"text":"Jalapeno dip recipe\n1 and a 1/4 cup mayo\n2 jalapenos take out seeds and rinse and cut into 6ths\n6 or 7 hot pickled peppers squeeze juice out\n2 garlic presses full of garli\nDash of salt - depends on the mayo, taste before\nSmall Squeeze of honey\nMix in food processor on","status":"done","created_at":"2026-10-16T18:59:48.653Z","recipe_id":"jalapeno-dip","fail_reason":null},{"id":"inbox-mvd7vo76-4hi","url":null,"image":"data/inbox/inbox-mvd7vo76-4hi.jpg","note":null,"text":null,"status":"needs_input","created_at":"2026-10-18T02:39:19.070Z","recipe_id":null,"fail_reason":null,"needs":["title","ingredients","instructions"]},{"id":"inbox-mvdafv1t-dxjg","status":"done","type":"edit","edit_target":"avocado-and-crab-bruschetta","created_at":"2026-10-18T03:50:59.057Z","recipe_id":"avocado-and-crab-bruschetta","fail_reason":null},{"id":"inbox-mvdcfzn7-3on","url":null,"image":null,"note":null,"text":"Yidis Braised French Roast\n * Yield: 6–8 servings\n * Prep Time: 20 minutes (plus 2–24 hours dry-brining and overnight chilling)\n * Cook Time: ~2.5 to 3 hours\nIngredients\nThe Meat & Dry Brine\n * 1 (3 to 3.5 lb) Kosher Brick Roast, French Roast, or Underblade Chuck Roast\n * Coarse kosher salt (about 1/2 tsp per pound—lightly applied since kosher meat is already pre-salted)\nThe Sear, Aromatics & Deglaze\n * 1 tbsp high-smoke-point neutral oil (avocado or canola)\n * 1 to 2 large yellow onions, thinly sliced\n * 1/2 cup plain water (for deglazing)\nThe Savory Braising Sauce\n * 3 tbsp deli or Dijon mustard\n * 1 tbsp soy sauce\n * 1.5 tbsp whiskey (bourbon, rye, or scotch)\n * 1 tsp brown sugar\n * 4–5 cloves garlic, thinly sliced\n * 1 tsp coarsely cracked black pepper\nFor Serving (Garnish)\n * 2–3 scallions, thinly sliced (green tops and light-green parts, kept raw)\nEquipment Needed\n * Wire cooling rack + rimmed baking sheet (for dry-brining)\n * Heavy cast-iron skillet (for searing and deglazing)\n * Snug oven-safe baking dish or roasting pan (such as an 8x8 or 9x9 square baking pan)\n * Heavy-duty aluminum foil\n * Leave-in meat thermometer probe\n * Immersion blender (for finishing the gravy)\nStep-by-Step Instructions\nPhase 1: Dry-Brining (2 to 24 Hours Ahead)\n * Salt & Air-Dry: Sprinkle the roast lightly on both sides with coarse kosher salt. Place the meat on a wire rack set inside a rimmed sheet pan and refrigerate uncovered for at least 2 hours (and up to 24 hours) so the salt reabsorbs into the muscle fibers. (Do not add black pepper yet.)\nPhase 2: Cast-Iron Sear & Sauce Setup\n * Preheat Oven: Set your oven to 300°F (targeting a true oven ambient temperature around 285°F–300°F).\n * Hard Sear: Blot both sides of the dry-brined roast bone-dry with paper towels. Heat 1 tbsp neutral oil in a heavy cast-iron skillet over medium-high heat until shimmering. Place the roast heavily marbled/fat-seam side down first and sear undisturbed for 3.5 to 4 minutes until a deep mahogany crust forms. Flip and sear the flat underside for 3 to 3.5 minutes, plus 60 seconds on the thick edges. Remove the roast from the skillet and set aside.\n * Sweat the Onions: Lower the heat under the cast-iron skillet to medium. Toss in the sliced yellow onions and cook for 2–3 minutes, stirring to coat them in the rendered beef fat and pick up the browned bits. Transfer the onions into the bottom of your oven-safe baking dish and set the seared roast right on top of the onion bed with the marbled/fat-seam side facing up.\n * Deglaze the Skillet: With the cast-iron skillet over medium-low heat, pour in the 1/2 cup plain water. Let it bubble for 30–60 seconds while scraping up every bit of dark browned beef fond from the iron with a wooden spoon or spatula, then turn off the heat.\n * Whisk & Pour the Sauce: In a small bowl, whisk together the 3 tbsp mustard, 1 tbsp soy sauce, 1.5 tbsp whiskey, 1 tsp brown sugar, 1 tsp cracked black pepper, and 4–5 thinly sliced garlic cloves. Pour the hot deglazing water from the skillet into the bowl, stir to combine, and pour the entire mixture directly over the top of the roast. (The liquid will only come about 1/2 inch up the bottom of the pan—it will double in volume as the meat and onions release their juices.)\nPhase 3: The Two-Stage Low-and-Slow Braise\n * Seal & Braise to 180°F–190°F: Insert a leave-in meat thermometer probe straight into the thickest center dome of the roast. Seal the baking dish tightly with two layers of heavy-duty aluminum foil, crimping tightly around the rims and handles so no steam escapes. Bake at 300°F for roughly 1 hour and 40 minutes to 2 hours, until the center probe reads 180°F–190°F.\n * The Collagen-Melting Hold (250°F): Once the center reaches 185°F–190°F, test the thickest part of the dome with a probe or skewer. To give the internal collagen enough time at temperature to fully unwind into gelatin without overcooking the muscle fibers, baste the top of the meat with the pan juices, keep it covered (removing the foil only for the final 10–15 minutes to set the top bark), drop the oven temperature to 250°F, and hold the roast in the 190°F–195°F internal zone for an additional 25 to 35 minutes until the probe slides into the thickest center with smooth, buttery resistance.\nPhase 4: Immersion-Blended Gravy & Overnight Chill\n * Rest the Meat: Remove the pan from the oven and let the roast rest in the warm pan juices for 30 to 45 minutes. Transfer the whole, unsliced roast to a storage container.\n * Skim & Blend the Sauce: Tilt the baking pan and spoon off roughly 75% of the clear yellow fat floating on the surface of the liquid (leaving a couple of tablespoons behind for richness and gloss). Pour the remaining broth, braised onions, and sliced garlic into a saucepan or deep vessel. Simmer briskly over medium-high heat for 5–8 minutes to slightly concentrate, then puree with an immersion blender until the onions, garlic, and mustard emulsify into a thick, velvety gravy.\n * Chill Overnight: Pour the blended gravy over and around the whole roast, cover, and refrigerate overnight. Chilling solidifies the internal gelatin so the roast slices cleanly without fraying.\nPhase 5: Slicing & Shabbat Lunch Rewarming\n * Slice Cold Against the Grain: Remove the cold, firm roast from the refrigerator. Check the flat underside to identify the direction of the long, parallel muscle fibers, and slice perpendicular (at a 90-degree angle) to those fibers into 3/8-inch to 1/2-inch thick slabs.\n * Shingle & Warm: Spread a layer of the blended onion-mustard gravy across the bottom of your warming pan. Shingle the cold beef slices tightly together over the gravy (keeping the slices pressed against each other prevents the cut faces from drying out), and spoon the remaining gravy over the top. Cover tightly with foil and warm on a hot plate/blech for 60 to 90 minutes before serving.\n * Garnish: Right before serving, scatter the freshly sliced raw scallions over the top.\n\nNote: this braise still tastes extremely beefy, the sauce doesn't take over.","status":"done","created_at":"2026-10-18T04:47:04.244Z","recipe_id":"yidis-braised-french-roast","fail_reason":null},{"id":"backfill-ash-e-jow-persian-ba-954","status":"done","type":"edit","edit_target":"ash-e-jow-persian-barley-soup","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"ash-e-jow-persian-barley-soup","fail_reason":null},{"id":"backfill-babbish-baked-ziti-954","status":"done","type":"edit","edit_target":"babbish-baked-ziti","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"babbish-baked-ziti","fail_reason":null},{"id":"backfill-bachash-954","status":"done","type":"edit","edit_target":"bachash","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"bachash","fail_reason":null},{"id":"backfill-baked-feta-pasta-954","status":"done","type":"edit","edit_target":"baked-feta-pasta","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"baked-feta-pasta","fail_reason":null},{"id":"backfill-baked-ziti-954","status":"done","type":"edit","edit_target":"baked-ziti","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"baked-ziti","fail_reason":null},{"id":"backfill-borscht-954","status":"done","type":"edit","edit_target":"borscht","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"borscht","fail_reason":null},{"id":"backfill-brisket-with-vegetab-954","status":"done","type":"edit","edit_target":"brisket-with-vegetables-and-dried-fruit","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"brisket-with-vegetables-and-dried-fruit","fail_reason":null},{"id":"backfill-broccoli-cranberry-s-cook0","status":"done","type":"edit","edit_target":"broccoli-cranberry-salad","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"broccoli-cranberry-salad","fail_reason":null},{"id":"backfill-chaneem-954","status":"done","type":"edit","edit_target":"chaneem","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"chaneem","fail_reason":null},{"id":"backfill-chicken-soup-954","status":"done","type":"edit","edit_target":"chicken-soup","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"chicken-soup","fail_reason":null},{"id":"backfill-chocolate-cake-954","status":"done","type":"edit","edit_target":"chocolate-cake","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"chocolate-cake","fail_reason":null},{"id":"backfill-chulent-954","status":"failed","type":"edit","edit_target":"chulent","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":null,"fail_reason":"Chulent recipe has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first."},{"id":"backfill-coca-cola-meatballs-954","status":"done","type":"edit","edit_target":"coca-cola-meatballs","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"coca-cola-meatballs","fail_reason":null},{"id":"backfill-cookie-dough-fudge-p-954","status":"done","type":"edit","edit_target":"cookie-dough-fudge-pie","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"cookie-dough-fudge-pie","fail_reason":null},{"id":"backfill-cranberry-pot-roast-954","status":"done","type":"edit","edit_target":"cranberry-pot-roast","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"cranberry-pot-roast","fail_reason":null},{"id":"backfill-crispy-baked-chicken-954","status":"done","type":"edit","edit_target":"crispy-baked-chicken-wings","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"crispy-baked-chicken-wings","fail_reason":null},{"id":"backfill-crispy-coated-garlic-954","status":"done","type":"edit","edit_target":"crispy-coated-garlic-chicken","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"crispy-coated-garlic-chicken","fail_reason":null},{"id":"backfill-crumb-cake-954","status":"done","type":"edit","edit_target":"crumb-cake","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"crumb-cake","fail_reason":null},{"id":"backfill-cucumber-salad-cook0","status":"done","type":"edit","edit_target":"cucumber-salad","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"cucumber-salad","fail_reason":null},{"id":"backfill-forty-clove-garlic-c-954","status":"done","type":"edit","edit_target":"forty-clove-garlic-chicken","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"forty-clove-garlic-chicken","fail_reason":null},{"id":"backfill-hearty-meat-and-vege-954","status":"done","type":"edit","edit_target":"hearty-meat-and-vegetable-soup","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"hearty-meat-and-vegetable-soup","fail_reason":null},{"id":"backfill-jalapeno-dip-954","status":"done","type":"edit","edit_target":"jalapeno-dip","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"jalapeno-dip","fail_reason":null},{"id":"backfill-jalapeno-dip-cook0","status":"done","type":"edit","edit_target":"jalapeno-dip","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"jalapeno-dip","fail_reason":null},{"id":"backfill-kani-salad-cook0","status":"done","type":"edit","edit_target":"kani-salad","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"kani-salad","fail_reason":null},{"id":"backfill-kaylas-bridal-shower-954","status":"done","type":"edit","edit_target":"kaylas-bridal-shower-challah","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"kaylas-bridal-shower-challah","fail_reason":null},{"id":"backfill-lagman-954","status":"done","type":"edit","edit_target":"lagman","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"lagman","fail_reason":null},{"id":"backfill-manti-954","status":"done","type":"edit","edit_target":"manti","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"manti","fail_reason":null},{"id":"backfill-meat-lasagna-954","status":"done","type":"edit","edit_target":"meat-lasagna","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"meat-lasagna","fail_reason":null},{"id":"backfill-minute-steak-954","status":"done","type":"edit","edit_target":"minute-steak","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"minute-steak","fail_reason":null},{"id":"backfill-mushroom-cheese-quic-954","status":"done","type":"edit","edit_target":"mushroom-cheese-quiche","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":null,"fail_reason":"Mushroom Cheese Quiche has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first.","note":"superseded: recipe content + prep/cook/servings added via inbox-mvg0z1qo-32d intake"},{"id":"backfill-mushroom-kugel-for-p-954","status":"done","type":"edit","edit_target":"mushroom-kugel-for-passover-and-all-year-round","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"mushroom-kugel-for-passover-and-all-year-round","fail_reason":null},{"id":"backfill-no-fry-hot-poppers-954","status":"done","type":"edit","edit_target":"no-fry-hot-poppers","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"no-fry-hot-poppers","fail_reason":null},{"id":"backfill-popcorn-cauliflower-954","status":"done","type":"edit","edit_target":"popcorn-cauliflower","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"popcorn-cauliflower","fail_reason":null},{"id":"backfill-potato-kugel-954","status":"done","type":"edit","edit_target":"potato-kugel","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"potato-kugel","fail_reason":null},{"id":"backfill-roasted-cherry-tomat-954","status":"done","type":"edit","edit_target":"roasted-cherry-tomatoes-with-basil","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"roasted-cherry-tomatoes-with-basil","fail_reason":null},{"id":"backfill-roasted-flounder-wit-954","status":"done","type":"edit","edit_target":"roasted-flounder-with-cherry-tomatoes-and-capers","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"roasted-flounder-with-cherry-tomatoes-and-capers","fail_reason":null},{"id":"backfill-roasted-potatoes-954","status":"done","type":"edit","edit_target":"roasted-potatoes","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"roasted-potatoes","fail_reason":null},{"id":"backfill-salmon-loaf-en-crout-954","status":"done","type":"edit","edit_target":"salmon-loaf-en-croute-with-cucumber-dill-sauce","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"salmon-loaf-en-croute-with-cucumber-dill-sauce","fail_reason":null},{"id":"backfill-sauteed-zucchini-and-954","status":"done","type":"edit","edit_target":"sauteed-zucchini-and-cherry-tomatoes","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"sauteed-zucchini-and-cherry-tomatoes","fail_reason":null},{"id":"backfill-smothered-onion-chic-954","status":"done","type":"edit","edit_target":"smothered-onion-chicken","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"smothered-onion-chicken","fail_reason":null},{"id":"backfill-split-pea-soup-954","status":"done","type":"edit","edit_target":"split-pea-soup","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"split-pea-soup","fail_reason":null},{"id":"backfill-squash-kugel-954","status":"done","type":"edit","edit_target":"squash-kugel","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"squash-kugel","fail_reason":null},{"id":"backfill-stuffed-cabbage-954","status":"done","type":"edit","edit_target":"stuffed-cabbage","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"stuffed-cabbage","fail_reason":null},{"id":"backfill-stuffed-onions-954","status":"done","type":"edit","edit_target":"stuffed-onions","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"stuffed-onions","fail_reason":null},{"id":"backfill-sweet-potato-pie-954","status":"done","type":"edit","edit_target":"sweet-potato-pie","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"sweet-potato-pie","fail_reason":null},{"id":"backfill-tofutti-pareve-chees-954","status":"done","type":"edit","edit_target":"tofutti-pareve-cheesecake","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"tofutti-pareve-cheesecake","fail_reason":null},{"id":"backfill-tomato-dip-cook0","status":"done","type":"edit","edit_target":"tomato-dip","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"tomato-dip","fail_reason":null},{"id":"backfill-veal-and-potato-cass-954","status":"done","type":"edit","edit_target":"veal-and-potato-casserole","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"veal-and-potato-casserole","fail_reason":null},{"id":"backfill-zucchini-stuffed-chi-954","status":"done","type":"edit","edit_target":"zucchini-stuffed-chicken","created_at":"2026-10-18T05:22:34.241715+00:00","recipe_id":"zucchini-stuffed-chicken","fail_reason":null},{"id":"inbox-mveclf2i-2qf","url":null,"image":null,"file":"data/inbox/inbox-mveclf2i-2qf.pdf","note":"This should be called the Reiss stuffed cabbage recipe","text":null,"status":"done","created_at":"2026-10-18T21:39:09.537Z","recipe_id":"reiss-stuffed-cabbage","fail_reason":null},{"id":"inbox-mvfvny5k-eo09","status":"done","type":"edit","edit_target":"kani-salad","created_at":"2026-10-19T23:20:40.617Z","recipe_id":"kani-salad"},{"id":"inbox-mvg0z1qo-32d","url":null,"image":"data/inbox/inbox-mvg0z1qo-32d.jpg","file":null,"note":null,"text":"Mushroom Cheese Quiche \n2 pie crust\n2 cans of mushrooms (or box and can)\n2 LG onions\n1 1/2 tbsp flour (can put up to 1/3 cup flour)\n~1 tsp salt\n1/4 tsp white pepper \n1/2 tsp baking powder \n6 oz muster cheese (can mix mozzarella)\n2 eggs\n2/3 cup milk\n\nThis is what you should use for the ingredients but I'm going to send you a picture which is a handwritten recipe which has a lot of other quantities but you should not use those only use that for the instructions for what to do not for the ingredients","status":"done","created_at":"2026-10-20T01:49:19.000Z","recipe_id":"mushroom-cheese-quiche","fail_reason":null},{"id":"edit-57194cbb-prep0","status":"done","type":"direct-edit","edit_target":"jalapeno-dip","created_at":"2026-10-20T02:17:18Z"},{"id":"edit-57194cbc-prep1","status":"done","type":"direct-edit","edit_target":"authentic-italian-bruschetta","created_at":"2026-10-20T02:17:20Z"},{"id":"edit-57194cbd-prep2","status":"done","type":"direct-edit","edit_target":"chocolate-cake","created_at":"2026-10-20T02:17:22Z"},{"id":"edit-57194cbe-prep3","status":"done","type":"direct-edit","edit_target":"mediterranean-roasted-whole-fish","created_at":"2026-10-20T02:17:24Z"},{"id":"edit-57194cbf-prep4","status":"done","type":"direct-edit","edit_target":"squash-kugel","created_at":"2026-10-20T02:17:26Z"},{"id":"edit-57194cc0-prep5","status":"done","type":"direct-edit","edit_target":"sweet-potato-pie","created_at":"2026-10-20T02:17:28Z"},{"id":"edit-mvgpm54n-9n4l","status":"done","type":"direct-edit","edit_target":"_smoke-test","recipe_id":"_smoke-test","title":"Deploy Smoke Test — Edited","actor":"deploy-smoke-test","note":"Smoke test edit to verify auto-log.","created_at":"2026-10-20T13:19:03.234Z"},{"id":"edit-mvgrhx2b-0al4","status":"done","type":"direct-edit","edit_target":"chocolate-cake","recipe_id":"chocolate-cake","title":"Chocolate Cake (QA)","actor":"site-editor (Anonymous)","note":"Deploy QA — verifying site edits auto-log","created_at":"2026-10-20T14:11:45.594Z"},{"id":"edit-mvgro3xi-mwlb","status":"done","type":"direct-edit","edit_target":"chocolate-cake","recipe_id":"chocolate-cake","title":"Chocolate Cake","actor":"site-editor (Anonymous)","note":"Reverting QA title change","created_at":"2026-10-20T14:16:34.010Z"},{"id":"inbox-mvhgu9mc-2y4","url":null,"image":null,"file":null,"note":null,"text":"Title it something like Zucchini scale salmon \nSkinned side of the salmon)\nSmear the fillet with dijon Honey mustard, put thinly sliced zucchini with peel... Will look like scales\nCombine in a bowl\nFresh dill finely chopped,  5 cloves fresh garlic, olive oil black pepper and salt. Smear it over the zucchini \"scales\" \nBake half hour 375 uncovered","status":"done","created_at":"2026-10-21T02:01:13.524Z","recipe_id":"zucchini-scale-salmon","fail_reason":null},{"id":"inbox-mvhgw9ha-4b6","url":null,"image":null,"file":null,"note":null,"text":"Dill dip salmon\nDill dip:\n1 cups of mayo \n2 tbsp fresh dill or 4 frozen dill cubes\n2 tbsp lemon juice \n4 cloves of minced garlic \n1 tbsp of honey \nHimalayan salt \nPepper\n\nFor salmon sprinkle salt, pepper, garlic powder on fish, then schmear the dill dip on it. bake it on 400 (reg oven, 375 on convection oven), until internal temp of 125 on the thickest part","status":"done","created_at":"2026-10-21T02:02:46.654Z","recipe_id":"dill-dip-salmon","fail_reason":null},{"id":"edit-mvhgwsvn-9bl4","status":"done","type":"direct-edit","edit_target":"cookie-dough-fudge-pie","recipe_id":"cookie-dough-fudge-pie","title":"Cookie Dough Fudge Pie","actor":"site-editor (Muse)","note":"Category cleanup: \"desserts\" is not a standard category - normalized to \"dessert\" (fixes the duplicate dessert tile / category list).","created_at":"2026-10-21T02:03:09.904Z"},{"id":"edit-mvhgwvos-nkdg","status":"done","type":"direct-edit","edit_target":"reiss-mushroom-salad","recipe_id":"reiss-mushroom-salad","title":"Reiss Mushroom Salad","actor":"site-editor (Muse)","note":"Category cleanup: \"Salad\" is not a standard category - normalized to \"salad\" (fixes the duplicate dessert tile / category list).","created_at":"2026-10-21T02:03:13.796Z"},{"id":"inbox-mvhh83xm-2hg","url":null,"image":null,"file":null,"note":null,"text":"Broiled Salmon with Pesto\n\n--Salmon--\nto keep even thickness, remove tail and thin parts\nRemove any bones\nSprinkle 1 Tablespoon kosher salt\nkeep in fridge 1-4 hours\n\n(Set rack 7\" from broiling element)\n\nPat with paper towel\nschmere with honey (around 2 tablespoons)\n\nbroil at 500 for 6 minutes (Turn halfway through)\nLower heat to 250 for 7.5 - 9 minutes (Turn halfway through)\nlooking for internal temp of 125\n\n(if gets too dark, cover with aluminum foil)\n\n--Pesto--\n1/4 cup almonds\n1 chili pepper cleaned\n4 garlic cloves\n\n(4 anchovies, rinsed and patted dry)\nblitz in food processor for 15 seconds\n\n--Add\n6 oz arugula\n1/4 cup extra virgin olive oil\n1/4 cup lemon juice\n1.5 teaspoon kosher salt\nblitz in food processor for 30 seconds","status":"done","created_at":"2026-10-21T02:11:59.338Z","recipe_id":"broiled-salmon-with-pesto","fail_reason":null},{"id":"edit-mvhhhk0m-9acc","status":"done","type":"direct-edit","edit_target":"gochujang-korean-tofu","recipe_id":"gochujang-korean-tofu","title":"Crispy Gochujang Korean Tofu","actor":"site-editor (Muse)","note":"Per Yidi: tofu is not a category - removed from categories (kept main) and added as a tag. Pasta stays a category.","created_at":"2026-10-21T02:19:18.798Z"},{"id":"inbox-mvhhpoxp-4n4","url":null,"image":"data/inbox/inbox-mvhhpoxp-4n4.jpg","file":null,"note":"This also can be done with salmon instead of chicken","text":null,"status":"done","created_at":"2026-10-21T02:25:41.299Z","recipe_id":"bang-bang-airfryer-chicken","fail_reason":null},{"id":"inbox-mvhi613c-351","url":null,"image":"data/inbox/inbox-mvhi613c-351.jpg","file":null,"note":null,"text":null,"status":"done","created_at":"2026-10-21T02:38:23.489Z","recipe_id":"olive-chicken","fail_reason":null},{"id":"inbox-mvhi8oxf-7i1","url":null,"image":"data/inbox/inbox-mvhi8oxf-7i1.jpg","file":null,"note":null,"text":null,"status":"done","created_at":"2026-10-21T02:40:27.921Z","recipe_id":"sweet-and-sour-meatballs","fail_reason":null},{"id":"inbox-mviilvvl-6hj","url":null,"image":"data/inbox/inbox-mviilvvl-6hj.jpg","images":["data/inbox/inbox-mviilvvl-6hj.jpg","data/inbox/inbox-mviilvvl-6hj-p2.jpg","data/inbox/inbox-mviilvvl-6hj-p3.jpg","data/inbox/inbox-mviilvvl-6hj-p4.jpg","data/inbox/inbox-mviilvvl-6hj-p5.jpg","data/inbox/inbox-mviilvvl-6hj-p6.jpg"],"file":null,"note":"For the French onion soup we don’t add sugar — Split into 5 separate submissions at Yidi's request (Oct 21, 2026): inbox-mvij2axp-fos, inbox-mvij2axp-hlc, inbox-mvij2axp-cbk, inbox-mvij2axp-ctl, inbox-mvij2axp-bms.","text":null,"status":"done","created_at":"2026-10-21T19:38:40.975Z","recipe_id":null,"fail_reason":null,"needs":null},{"id":"inbox-mvij2axp-fos","url":null,"image":"data/inbox/inbox-mviilvvl-6hj.jpg","images":["data/inbox/inbox-mviilvvl-6hj.jpg"],"file":null,"note":"Split from a 6-photo batch at Yidi's request - this entry is ONLY the French Onion Soup (cookbook page 68). Family note from the original submission: 'For the French onion soup we don't add sugar' - omit the sugar from the ingredients and the instructions. The Garlic Baguette box at the bottom of the page is part of this recipe. The book marks it DAIRY.","text":null,"status":"done","created_at":"2026-10-21T19:51:13.000Z","recipe_id":"french-onion-soup","fail_reason":null,"needs":null},{"id":"inbox-mvij2axp-hlc","url":null,"image":"data/inbox/inbox-mviilvvl-6hj-p2.jpg","images":["data/inbox/inbox-mviilvvl-6hj-p2.jpg","data/inbox/inbox-mviilvvl-6hj-p3.jpg"],"file":null,"note":"Split from a 6-photo batch at Yidi's request - this entry is ONLY the Honey Lemon Chicken (RecipeTin Eats printout, pages 1-2 of 3; the recipe text is complete on these two pages). Apply the handwritten edits on page 1: chicken breast 2 lb (replaces 1 lb / 500g); butter replaced with oil (handwritten 'oil' next to the butter - this also keeps the dish kosher); garlic 3-4 cloves (replaces 1 clove); chicken broth 2 cups (replaces 3/4 cup); lemon juice 1/2 cup (replaces 1/4 cup); soy sauce 2 tsp (replaces 1 tsp); flour unchanged. The handwritten water amount is unclear (printed amount is 2 tbsp) - if it cannot be read confidently, keep 2 tbsp and note in the recipe that the family's water edit was unclear.","text":null,"status":"done","created_at":"2026-10-21T19:51:13.000Z","recipe_id":"honey-lemon-chicken","fail_reason":null,"needs":null},{"id":"inbox-mvij2axp-cbk","url":null,"image":"data/inbox/inbox-mviilvvl-6hj-p4.jpg","images":["data/inbox/inbox-mviilvvl-6hj-p4.jpg","data/inbox/inbox-mviilvvl-6hj-p5.jpg"],"file":null,"note":"Split from a 6-photo batch at Yidi's request - this entry is ONLY the Creamy Broccoli Kugel. It starts on the first photo and CONTINUES in the 'Continued' column at the top of the second photo (8-inch square pan, yields 9 servings, bake 30 minutes). The second photo's main recipe (Carrot Loaf) is a separate submission - ignore it here. The fragment at the top-right of the first photo (mentions a 9-inch pan) is the end of an unrelated recipe - ignore it.","text":null,"status":"done","created_at":"2026-10-21T19:51:13.000Z","recipe_id":"creamy-broccoli-kugel","fail_reason":null,"needs":null},{"id":"inbox-mvij2axp-bms","url":null,"image":"data/inbox/inbox-mviilvvl-6hj-p6.jpg","images":["data/inbox/inbox-mviilvvl-6hj-p6.jpg"],"file":null,"note":"Split from a 6-photo batch at Yidi's request - this entry is ONLY the Barley Mushroom Soup (by Meichal Weingarten). Handwritten annotations are on the page (the carrot looks changed to 2; a couple of other notes are hard to read) - apply what is legible. Includes the flanken meat variation printed at the bottom.","text":null,"status":"done","created_at":"2026-10-21T19:51:13.000Z","recipe_id":"barley-mushroom-soup","fail_reason":null,"needs":null},{"id":"inbox-mvijb41b-i2","url":null,"image":"data/inbox/inbox-mvijb41b-i2.jpg","images":["data/inbox/inbox-mvijb41b-i2.jpg"],"file":null,"note":null,"text":null,"status":"done","created_at":"2026-10-21T19:58:07.345Z","recipe_id":"babka-straws","fail_reason":null,"needs":null},{"id":"inbox-mvijlz2q-10x","url":null,"image":"data/inbox/inbox-mvijlz2q-10x.jpg","images":["data/inbox/inbox-mvijlz2q-10x.jpg"],"file":null,"note":"Yidi's instructions 2026-10-21: the marinade is for 1.5 lb pargiot (dark chicken cutlets). Do NOT publish as a standalone marinade - make it the complete dish: the chicken (1.5 lb pargiot) is an ingredient, servings set from that amount, and the instructions cover marinating the chicken and then pan-searing it (the family's usual method).","text":null,"status":"pending","created_at":"2026-10-21T20:06:35.247Z","recipe_id":null,"fail_reason":null,"needs":null},{"id":"inbox-mvijnnnk-76k","url":null,"image":"data/inbox/inbox-mvijnnnk-76k.jpg","images":["data/inbox/inbox-mvijnnnk-76k.jpg"],"file":null,"note":"It’s a spinach strawberry salad","text":null,"status":"done","created_at":"2026-10-21T20:07:52.687Z","recipe_id":"spinach-strawberry-salad","fail_reason":null,"needs":null},{"id":"inbox-mvijy4db-3kd","url":null,"image":"data/inbox/inbox-mvijy4db-3kd.jpg","images":["data/inbox/inbox-mvijy4db-3kd.jpg"],"file":null,"note":null,"text":null,"status":"duplicate","created_at":"2026-10-21T20:16:01.221Z","recipe_id":null,"fail_reason":null,"duplicate_of":"sweet-and-sour-meatballs"},{"id":"inbox-mvijyqyi-60q","url":null,"image":"data/inbox/inbox-mvijyqyi-60q.jpg","images":["data/inbox/inbox-mvijyqyi-60q.jpg","data/inbox/inbox-mvijyqyi-60q-p2.jpg"],"file":null,"note":" — Auto-split into 3 separate submissions: inbox-mvil5off-elbows-and-tuna-casserole, inbox-mvil5off-curried-chick-pea-casserole, inbox-mvil5off-fried-cabbage-and-noodles. (summary sent)","text":null,"status":"done","created_at":"2026-10-21T20:16:31.523Z","recipe_id":null,"fail_reason":null},{"id":"edit-mvik1rrv-osl1","status":"done","type":"direct-edit","edit_target":"sheet-pan-garlic-butter-mushrooms","recipe_id":"sheet-pan-garlic-butter-mushrooms","title":"Sheet Pan Garlic Mushrooms","actor":"site-editor (Nava)","note":"Changed title, kosher_status, leftover_note, ingredients, notes, source, needs_kosher_review, kosher_review_notes","created_at":"2026-10-21T20:18:47.528Z"},{"id":"inbox-mvikqweq-q5sl","status":"done","type":"edit","edit_target":"creamy-broccoli-kugel","created_at":"2026-10-21T20:38:21.074Z","text":"We actually buy frozen broccoli pieces, microwave it, make the mixture separate and mix the broccoli in. \n\nWe also don't use the bullion and"},{"id":"inbox-mviktbov-8ui7","status":"done","type":"edit","edit_target":"barley-mushroom-soup","created_at":"2026-10-21T20:40:14.191Z","text":"Instead of the flanken, we usually put sets of chicken legs (separated leg and thigh) remove skin, and sear it a bit with the veggies after "},{"id":"edit-mvikubn1-0hpg","status":"done","type":"direct-edit","edit_target":"barley-mushroom-soup","recipe_id":"barley-mushroom-soup","title":"Mushroom Barley Soup","actor":"site-editor (Yidi)","note":"Changed title","created_at":"2026-10-21T20:40:59.251Z"},{"id":"inbox-mvil5off-elbows-and-tuna-casserole","url":null,"image":"data/inbox/inbox-mvijyqyi-60q.jpg","note":"Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Elbows and Tuna Casserole.","status":"done","created_at":"2026-10-21T20:49:50.000Z","recipe_id":"elbows-and-tuna-casserole","fail_reason":null},{"id":"inbox-mvil5off-curried-chick-pea-casserole","url":null,"image":"data/inbox/inbox-mvijyqyi-60q-p2.jpg","note":"Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Curried Chick Pea Casserole.","status":"done","created_at":"2026-10-21T20:49:50.000Z","recipe_id":"curried-chick-pea-casserole","fail_reason":null},{"id":"inbox-mvil5off-fried-cabbage-and-noodles","url":null,"image":"data/inbox/inbox-mvijyqyi-60q.jpg","note":"Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Fried Cabbage and Noodles.","status":"needs_input","created_at":"2026-10-21T20:49:50.000Z","recipe_id":null,"fail_reason":null}]
+[
+  {
+    "id": "inbox-mv4gjtyw-1ko",
+    "url": "https://eatwithclarity.com/gochujang-korean-tofu/#wprm-recipe-container-31554",
+    "image": null,
+    "note": null,
+    "status": "done",
+    "created_at": "2026-10-11T23:32:06.392Z",
+    "recipe_id": "gochujang-korean-tofu",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv4makxq-37k",
+    "url": null,
+    "image": "data/inbox/inbox-mv4makxq-37k.jpg",
+    "note": "Try to extract the image for the recipe from the submission. Also, it's great to freeze before the egg wash if making in advance. I usually only make it with sauteed onions, turkey and pastrami",
+    "status": "done",
+    "created_at": "2026-10-12T02:12:54.786Z",
+    "recipe_id": "deli-roll",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5uic1w-20k",
+    "url": null,
+    "image": "data/inbox/inbox-mv5uic1w-20k.jpg",
+    "note": "This should be called Kayla's Bridal Shower Challah",
+    "status": "done",
+    "created_at": "2026-10-12T22:50:39.546Z",
+    "recipe_id": "kaylas-bridal-shower-challah",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5ukp0j-6tt",
+    "url": null,
+    "image": "data/inbox/inbox-mv5ukp0j-6tt.jpg",
+    "note": "Babbish Baked Ziti",
+    "status": "done",
+    "created_at": "2026-10-12T22:52:35.341Z",
+    "recipe_id": "babbish-baked-ziti",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5uld8s-5de",
+    "url": null,
+    "image": "data/inbox/inbox-mv5uld8s-5de.jpg",
+    "note": null,
+    "status": "done",
+    "created_at": "2026-10-12T22:53:00.803Z",
+    "recipe_id": "saucy-salmon-bites",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5xr99y-7fm",
+    "url": null,
+    "image": "data/inbox/inbox-mv5xr99y-7fm.jpg",
+    "note": "You can use the picture in the image as the image (like extra the food part) or use as a reference",
+    "status": "done",
+    "created_at": "2026-10-13T00:21:34.405Z",
+    "recipe_id": "no-fry-hot-poppers",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5y73s0-5r4",
+    "url": null,
+    "image": "data/inbox/inbox-mv5y73s0-5r4.jpg",
+    "note": "Reiss Mushroom Salad",
+    "status": "done",
+    "created_at": "2026-10-13T00:33:54.241Z",
+    "recipe_id": "reiss-mushroom-salad",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv5y95dn-jl",
+    "url": null,
+    "image": "data/inbox/inbox-mv5y95dn-jl.jpg",
+    "note": "Reiss Mushroom Salad",
+    "status": "done",
+    "created_at": "2026-10-13T00:35:29.094Z",
+    "recipe_id": "reiss-mushroom-salad",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv61lp6t-3rt",
+    "url": "https://youtu.be/3iUyRYuYiIk?is=cDqAhLwOE1lXPGWl",
+    "image": null,
+    "note": null,
+    "status": "done",
+    "created_at": "2026-10-13T02:09:11.621Z",
+    "recipe_id": "dairy-free-chicken-fettuccine-alfredo",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv626nrz-7mw",
+    "url": "https://youtu.be/G0n2OHlBPcQ?is=s41fwE0fDr5jD5Jl",
+    "image": null,
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-13T02:25:29.568Z",
+    "recipe_id": "michelin-star-beef-short-ribs-fallow",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv6ig0vc-63r",
+    "url": null,
+    "image": "data/inbox/inbox-mv6ig0vc-63r.jpg",
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-13T10:00:42.570Z",
+    "recipe_id": "cookie-dough-fudge-pie",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv6iior8-7jt",
+    "url": null,
+    "image": null,
+    "note": "Tomato Dip Recipe, tomatoes are sliced into quarters before adding to food processor",
+    "text": "4 tomatoes (take out stem and middle piece from the top)\n1 tsp salt\n6 cloves fresh garlic (use garlic press)\nSprinkle around Black pepper\nDash Cayenne pepper\n1-2 tbsp vinegar\n\nPut all the above in food processor with S blade\n\nAdd slowly 1/4 C Olive oil (not extra virgin) while the above is mixing with the s blade on medium to low speed",
+    "status": "done",
+    "created_at": "2026-10-13T10:02:44.565Z",
+    "recipe_id": "tomato-dip",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mv8w55e4-5jh",
+    "url": null,
+    "image": "data/inbox/inbox-mv8w55e4-5jh.jpg",
+    "note": "From Nava's Mom",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-15T01:59:41.359Z",
+    "recipe_id": "simple-sesame-noodles",
+    "fail_reason": null
+  },
+  {
+    "id": "edit-mv9qj9lk",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cucumber-salad",
+    "created_at": "2026-10-15T16:10:27.032Z"
+  },
+  {
+    "id": "edit-mv9s2445",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cucumber-salad",
+    "created_at": "2026-10-15T16:53:06.005Z"
+  },
+  {
+    "id": "edit-mva88da6",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "tomato-dip",
+    "created_at": "2026-10-16T00:25:51.678Z"
+  },
+  {
+    "id": "edit-mva89ad2",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "taco-salad",
+    "created_at": "2026-10-16T00:26:34.551Z"
+  },
+  {
+    "id": "edit-mva8a1t9",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "plov",
+    "created_at": "2026-10-16T00:27:10.125Z"
+  },
+  {
+    "id": "edit-mva8cav5",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sarkaneez",
+    "created_at": "2026-10-16T00:28:55.169Z"
+  },
+  {
+    "id": "edit-mva8ia6n",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "shola",
+    "created_at": "2026-10-16T00:33:34.223Z"
+  },
+  {
+    "id": "edit-mva8jgi1",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "strawberry-icebox-pie",
+    "created_at": "2026-10-16T00:34:29.065Z"
+  },
+  {
+    "id": "edit-mva8k9i3",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "asian-garlic-green-beans",
+    "created_at": "2026-10-16T00:35:06.651Z"
+  },
+  {
+    "id": "edit-mva8l19k",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chocolate-chip-cookies",
+    "created_at": "2026-10-16T00:35:42.632Z"
+  },
+  {
+    "id": "edit-mva8lwnb",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "fish-tacos-with-lime-crema",
+    "created_at": "2026-10-16T00:36:23.303Z"
+  },
+  {
+    "id": "edit-mva8mp6b",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "mediterranean-roasted-whole-fish",
+    "created_at": "2026-10-16T00:37:00.275Z"
+  },
+  {
+    "id": "edit-mva8nlyj",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chicken-broccoli-and-mushroom-stir-fry",
+    "created_at": "2026-10-16T00:37:42.763Z"
+  },
+  {
+    "id": "edit-mvacw8l4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-salmon-with-green-herbs",
+    "created_at": "2026-10-16T02:36:23.800Z"
+  },
+  {
+    "id": "edit-mvacwzns",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cornflake-chicken",
+    "created_at": "2026-10-16T02:36:58.888Z"
+  },
+  {
+    "id": "edit-mvacxtoe",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cinnamon-rolls",
+    "created_at": "2026-10-16T02:37:37.790Z"
+  },
+  {
+    "id": "edit-mvacymqf",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "strawberries-and-cream-mini-muffins",
+    "created_at": "2026-10-16T02:38:15.447Z"
+  },
+  {
+    "id": "edit-mvaczlbf",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-sweet-potatoes-and-brussels-sprouts",
+    "created_at": "2026-10-16T02:39:00.267Z"
+  },
+  {
+    "id": "edit-mvad333m",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "carrot-kugel-muffins",
+    "created_at": "2026-10-16T02:41:43.282Z"
+  },
+  {
+    "id": "edit-mvad43dk",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sausage-peppers-and-onions",
+    "created_at": "2026-10-16T02:42:30.296Z"
+  },
+  {
+    "id": "edit-mvad4uh6",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "bran-surprise-muffins",
+    "created_at": "2026-10-16T02:43:05.418Z"
+  },
+  {
+    "id": "edit-mvad5l7y",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "saucy-salmon-bites",
+    "created_at": "2026-10-16T02:43:40.078Z"
+  },
+  {
+    "id": "edit-mvad6e4f",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "caramel-chewy-pie",
+    "created_at": "2026-10-16T02:44:17.535Z"
+  },
+  {
+    "id": "edit-mvad781m",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "penne-alla-vodka",
+    "created_at": "2026-10-16T02:44:56.314Z"
+  },
+  {
+    "id": "edit-mvadmarq",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "carrot-kugel-muffins",
+    "created_at": "2026-10-16T02:56:39.686Z"
+  },
+  {
+    "id": "edit-mvadn1ee",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sausage-peppers-and-onions",
+    "created_at": "2026-10-16T02:57:14.198Z"
+  },
+  {
+    "id": "edit-mvadnrjy",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "bran-surprise-muffins",
+    "created_at": "2026-10-16T02:57:48.094Z"
+  },
+  {
+    "id": "edit-mvadogjt",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "caramel-chewy-pie",
+    "created_at": "2026-10-16T02:58:20.489Z"
+  },
+  {
+    "id": "edit-mvadp7r3",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "penne-alla-vodka",
+    "created_at": "2026-10-16T02:58:55.743Z"
+  },
+  {
+    "id": "edit-mvbboxm8",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "no-fry-hot-poppers",
+    "created_at": "2026-10-16T18:50:29.552Z"
+  },
+  {
+    "id": "inbox-mvbbx3da-5ap",
+    "url": null,
+    "image": "data/inbox/inbox-mvbbx3da-5ap.jpg",
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-16T18:56:52.178Z",
+    "recipe_id": "maple-balsamic-brussels-sprouts-with-smoky-almond-bits",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvbc0x0t-36d",
+    "url": null,
+    "image": null,
+    "note": null,
+    "text": "Jalapeno dip recipe\n1 and a 1/4 cup mayo\n2 jalapenos take out seeds and rinse and cut into 6ths\n6 or 7 hot pickled peppers squeeze juice out\n2 garlic presses full of garli\nDash of salt - depends on the mayo, taste before\nSmall Squeeze of honey\nMix in food processor on",
+    "status": "done",
+    "created_at": "2026-10-16T18:59:48.653Z",
+    "recipe_id": "jalapeno-dip",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvd7vo76-4hi",
+    "url": null,
+    "image": "data/inbox/inbox-mvd7vo76-4hi.jpg",
+    "note": null,
+    "text": null,
+    "status": "needs_input",
+    "created_at": "2026-10-18T02:39:19.070Z",
+    "recipe_id": null,
+    "fail_reason": null,
+    "needs": [
+      "title",
+      "ingredients",
+      "instructions"
+    ]
+  },
+  {
+    "id": "inbox-mvdafv1t-dxjg",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "avocado-and-crab-bruschetta",
+    "created_at": "2026-10-18T03:50:59.057Z",
+    "recipe_id": "avocado-and-crab-bruschetta",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvdcfzn7-3on",
+    "url": null,
+    "image": null,
+    "note": null,
+    "text": "Yidis Braised French Roast\n * Yield: 6\u20138 servings\n * Prep Time: 20 minutes (plus 2\u201324 hours dry-brining and overnight chilling)\n * Cook Time: ~2.5 to 3 hours\nIngredients\nThe Meat & Dry Brine\n * 1 (3 to 3.5 lb) Kosher Brick Roast, French Roast, or Underblade Chuck Roast\n * Coarse kosher salt (about 1/2 tsp per pound\u2014lightly applied since kosher meat is already pre-salted)\nThe Sear, Aromatics & Deglaze\n * 1 tbsp high-smoke-point neutral oil (avocado or canola)\n * 1 to 2 large yellow onions, thinly sliced\n * 1/2 cup plain water (for deglazing)\nThe Savory Braising Sauce\n * 3 tbsp deli or Dijon mustard\n * 1 tbsp soy sauce\n * 1.5 tbsp whiskey (bourbon, rye, or scotch)\n * 1 tsp brown sugar\n * 4\u20135 cloves garlic, thinly sliced\n * 1 tsp coarsely cracked black pepper\nFor Serving (Garnish)\n * 2\u20133 scallions, thinly sliced (green tops and light-green parts, kept raw)\nEquipment Needed\n * Wire cooling rack + rimmed baking sheet (for dry-brining)\n * Heavy cast-iron skillet (for searing and deglazing)\n * Snug oven-safe baking dish or roasting pan (such as an 8x8 or 9x9 square baking pan)\n * Heavy-duty aluminum foil\n * Leave-in meat thermometer probe\n * Immersion blender (for finishing the gravy)\nStep-by-Step Instructions\nPhase 1: Dry-Brining (2 to 24 Hours Ahead)\n * Salt & Air-Dry: Sprinkle the roast lightly on both sides with coarse kosher salt. Place the meat on a wire rack set inside a rimmed sheet pan and refrigerate uncovered for at least 2 hours (and up to 24 hours) so the salt reabsorbs into the muscle fibers. (Do not add black pepper yet.)\nPhase 2: Cast-Iron Sear & Sauce Setup\n * Preheat Oven: Set your oven to 300\u00b0F (targeting a true oven ambient temperature around 285\u00b0F\u2013300\u00b0F).\n * Hard Sear: Blot both sides of the dry-brined roast bone-dry with paper towels. Heat 1 tbsp neutral oil in a heavy cast-iron skillet over medium-high heat until shimmering. Place the roast heavily marbled/fat-seam side down first and sear undisturbed for 3.5 to 4 minutes until a deep mahogany crust forms. Flip and sear the flat underside for 3 to 3.5 minutes, plus 60 seconds on the thick edges. Remove the roast from the skillet and set aside.\n * Sweat the Onions: Lower the heat under the cast-iron skillet to medium. Toss in the sliced yellow onions and cook for 2\u20133 minutes, stirring to coat them in the rendered beef fat and pick up the browned bits. Transfer the onions into the bottom of your oven-safe baking dish and set the seared roast right on top of the onion bed with the marbled/fat-seam side facing up.\n * Deglaze the Skillet: With the cast-iron skillet over medium-low heat, pour in the 1/2 cup plain water. Let it bubble for 30\u201360 seconds while scraping up every bit of dark browned beef fond from the iron with a wooden spoon or spatula, then turn off the heat.\n * Whisk & Pour the Sauce: In a small bowl, whisk together the 3 tbsp mustard, 1 tbsp soy sauce, 1.5 tbsp whiskey, 1 tsp brown sugar, 1 tsp cracked black pepper, and 4\u20135 thinly sliced garlic cloves. Pour the hot deglazing water from the skillet into the bowl, stir to combine, and pour the entire mixture directly over the top of the roast. (The liquid will only come about 1/2 inch up the bottom of the pan\u2014it will double in volume as the meat and onions release their juices.)\nPhase 3: The Two-Stage Low-and-Slow Braise\n * Seal & Braise to 180\u00b0F\u2013190\u00b0F: Insert a leave-in meat thermometer probe straight into the thickest center dome of the roast. Seal the baking dish tightly with two layers of heavy-duty aluminum foil, crimping tightly around the rims and handles so no steam escapes. Bake at 300\u00b0F for roughly 1 hour and 40 minutes to 2 hours, until the center probe reads 180\u00b0F\u2013190\u00b0F.\n * The Collagen-Melting Hold (250\u00b0F): Once the center reaches 185\u00b0F\u2013190\u00b0F, test the thickest part of the dome with a probe or skewer. To give the internal collagen enough time at temperature to fully unwind into gelatin without overcooking the muscle fibers, baste the top of the meat with the pan juices, keep it covered (removing the foil only for the final 10\u201315 minutes to set the top bark), drop the oven temperature to 250\u00b0F, and hold the roast in the 190\u00b0F\u2013195\u00b0F internal zone for an additional 25 to 35 minutes until the probe slides into the thickest center with smooth, buttery resistance.\nPhase 4: Immersion-Blended Gravy & Overnight Chill\n * Rest the Meat: Remove the pan from the oven and let the roast rest in the warm pan juices for 30 to 45 minutes. Transfer the whole, unsliced roast to a storage container.\n * Skim & Blend the Sauce: Tilt the baking pan and spoon off roughly 75% of the clear yellow fat floating on the surface of the liquid (leaving a couple of tablespoons behind for richness and gloss). Pour the remaining broth, braised onions, and sliced garlic into a saucepan or deep vessel. Simmer briskly over medium-high heat for 5\u20138 minutes to slightly concentrate, then puree with an immersion blender until the onions, garlic, and mustard emulsify into a thick, velvety gravy.\n * Chill Overnight: Pour the blended gravy over and around the whole roast, cover, and refrigerate overnight. Chilling solidifies the internal gelatin so the roast slices cleanly without fraying.\nPhase 5: Slicing & Shabbat Lunch Rewarming\n * Slice Cold Against the Grain: Remove the cold, firm roast from the refrigerator. Check the flat underside to identify the direction of the long, parallel muscle fibers, and slice perpendicular (at a 90-degree angle) to those fibers into 3/8-inch to 1/2-inch thick slabs.\n * Shingle & Warm: Spread a layer of the blended onion-mustard gravy across the bottom of your warming pan. Shingle the cold beef slices tightly together over the gravy (keeping the slices pressed against each other prevents the cut faces from drying out), and spoon the remaining gravy over the top. Cover tightly with foil and warm on a hot plate/blech for 60 to 90 minutes before serving.\n * Garnish: Right before serving, scatter the freshly sliced raw scallions over the top.\n\nNote: this braise still tastes extremely beefy, the sauce doesn't take over.",
+    "status": "done",
+    "created_at": "2026-10-18T04:47:04.244Z",
+    "recipe_id": "yidis-braised-french-roast",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-ash-e-jow-persian-ba-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "ash-e-jow-persian-barley-soup",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "ash-e-jow-persian-barley-soup",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-babbish-baked-ziti-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "babbish-baked-ziti",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "babbish-baked-ziti",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-bachash-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "bachash",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "bachash",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-baked-feta-pasta-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "baked-feta-pasta",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "baked-feta-pasta",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-baked-ziti-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "baked-ziti",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "baked-ziti",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-borscht-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "borscht",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "borscht",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-brisket-with-vegetab-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "brisket-with-vegetables-and-dried-fruit",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "brisket-with-vegetables-and-dried-fruit",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-broccoli-cranberry-s-cook0",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "broccoli-cranberry-salad",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "broccoli-cranberry-salad",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-chaneem-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "chaneem",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "chaneem",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-chicken-soup-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "chicken-soup",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "chicken-soup",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-chocolate-cake-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "chocolate-cake",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "chocolate-cake",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-chulent-954",
+    "status": "failed",
+    "type": "edit",
+    "edit_target": "chulent",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": null,
+    "fail_reason": "Chulent recipe has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first."
+  },
+  {
+    "id": "backfill-coca-cola-meatballs-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "coca-cola-meatballs",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "coca-cola-meatballs",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-cookie-dough-fudge-p-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "cookie-dough-fudge-pie",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cookie-dough-fudge-pie",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-cranberry-pot-roast-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "cranberry-pot-roast",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cranberry-pot-roast",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-crispy-baked-chicken-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "crispy-baked-chicken-wings",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crispy-baked-chicken-wings",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-crispy-coated-garlic-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "crispy-coated-garlic-chicken",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crispy-coated-garlic-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-crumb-cake-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "crumb-cake",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "crumb-cake",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-cucumber-salad-cook0",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "cucumber-salad",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "cucumber-salad",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-forty-clove-garlic-c-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "forty-clove-garlic-chicken",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "forty-clove-garlic-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-hearty-meat-and-vege-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "hearty-meat-and-vegetable-soup",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "hearty-meat-and-vegetable-soup",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-jalapeno-dip-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "jalapeno-dip",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "jalapeno-dip",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-jalapeno-dip-cook0",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "jalapeno-dip",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "jalapeno-dip",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-kani-salad-cook0",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "kani-salad",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "kani-salad",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-kaylas-bridal-shower-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "kaylas-bridal-shower-challah",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "kaylas-bridal-shower-challah",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-lagman-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "lagman",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "lagman",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-manti-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "manti",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "manti",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-meat-lasagna-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "meat-lasagna",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "meat-lasagna",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-minute-steak-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "minute-steak",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "minute-steak",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-mushroom-cheese-quic-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "mushroom-cheese-quiche",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": null,
+    "fail_reason": "Mushroom Cheese Quiche has no ingredients or instructions on file, so prep/cook/servings could not be estimated. The recipe content needs to be added first.",
+    "note": "superseded: recipe content + prep/cook/servings added via inbox-mvg0z1qo-32d intake"
+  },
+  {
+    "id": "backfill-mushroom-kugel-for-p-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "mushroom-kugel-for-passover-and-all-year-round",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "mushroom-kugel-for-passover-and-all-year-round",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-no-fry-hot-poppers-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "no-fry-hot-poppers",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "no-fry-hot-poppers",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-popcorn-cauliflower-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "popcorn-cauliflower",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "popcorn-cauliflower",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-potato-kugel-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "potato-kugel",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "potato-kugel",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-roasted-cherry-tomat-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "roasted-cherry-tomatoes-with-basil",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "roasted-cherry-tomatoes-with-basil",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-roasted-flounder-wit-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "roasted-flounder-with-cherry-tomatoes-and-capers",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "roasted-flounder-with-cherry-tomatoes-and-capers",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-roasted-potatoes-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "roasted-potatoes",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "roasted-potatoes",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-salmon-loaf-en-crout-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-sauteed-zucchini-and-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "sauteed-zucchini-and-cherry-tomatoes",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "sauteed-zucchini-and-cherry-tomatoes",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-smothered-onion-chic-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "smothered-onion-chicken",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "smothered-onion-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-split-pea-soup-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "split-pea-soup",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "split-pea-soup",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-squash-kugel-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "squash-kugel",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "squash-kugel",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-stuffed-cabbage-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "stuffed-cabbage",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "stuffed-cabbage",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-stuffed-onions-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "stuffed-onions",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "stuffed-onions",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-sweet-potato-pie-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "sweet-potato-pie",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "sweet-potato-pie",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-tofutti-pareve-chees-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "tofutti-pareve-cheesecake",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "tofutti-pareve-cheesecake",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-tomato-dip-cook0",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "tomato-dip",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "tomato-dip",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-veal-and-potato-cass-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "veal-and-potato-casserole",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "veal-and-potato-casserole",
+    "fail_reason": null
+  },
+  {
+    "id": "backfill-zucchini-stuffed-chi-954",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "zucchini-stuffed-chicken",
+    "created_at": "2026-10-18T05:22:34.241715+00:00",
+    "recipe_id": "zucchini-stuffed-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mveclf2i-2qf",
+    "url": null,
+    "image": null,
+    "file": "data/inbox/inbox-mveclf2i-2qf.pdf",
+    "note": "This should be called the Reiss stuffed cabbage recipe",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-18T21:39:09.537Z",
+    "recipe_id": "reiss-stuffed-cabbage",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvfvny5k-eo09",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "kani-salad",
+    "created_at": "2026-10-19T23:20:40.617Z",
+    "recipe_id": "kani-salad"
+  },
+  {
+    "id": "inbox-mvg0z1qo-32d",
+    "url": null,
+    "image": "data/inbox/inbox-mvg0z1qo-32d.jpg",
+    "file": null,
+    "note": null,
+    "text": "Mushroom Cheese Quiche \n2 pie crust\n2 cans of mushrooms (or box and can)\n2 LG onions\n1 1/2 tbsp flour (can put up to 1/3 cup flour)\n~1 tsp salt\n1/4 tsp white pepper \n1/2 tsp baking powder \n6 oz muster cheese (can mix mozzarella)\n2 eggs\n2/3 cup milk\n\nThis is what you should use for the ingredients but I'm going to send you a picture which is a handwritten recipe which has a lot of other quantities but you should not use those only use that for the instructions for what to do not for the ingredients",
+    "status": "done",
+    "created_at": "2026-10-20T01:49:19.000Z",
+    "recipe_id": "mushroom-cheese-quiche",
+    "fail_reason": null
+  },
+  {
+    "id": "edit-57194cbb-prep0",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "jalapeno-dip",
+    "created_at": "2026-10-20T02:17:18Z"
+  },
+  {
+    "id": "edit-57194cbc-prep1",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "authentic-italian-bruschetta",
+    "created_at": "2026-10-20T02:17:20Z"
+  },
+  {
+    "id": "edit-57194cbd-prep2",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chocolate-cake",
+    "created_at": "2026-10-20T02:17:22Z"
+  },
+  {
+    "id": "edit-57194cbe-prep3",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "mediterranean-roasted-whole-fish",
+    "created_at": "2026-10-20T02:17:24Z"
+  },
+  {
+    "id": "edit-57194cbf-prep4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "squash-kugel",
+    "created_at": "2026-10-20T02:17:26Z"
+  },
+  {
+    "id": "edit-57194cc0-prep5",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sweet-potato-pie",
+    "created_at": "2026-10-20T02:17:28Z"
+  },
+  {
+    "id": "edit-mvgpm54n-9n4l",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "_smoke-test",
+    "recipe_id": "_smoke-test",
+    "title": "Deploy Smoke Test \u2014 Edited",
+    "actor": "deploy-smoke-test",
+    "note": "Smoke test edit to verify auto-log.",
+    "created_at": "2026-10-20T13:19:03.234Z"
+  },
+  {
+    "id": "edit-mvgrhx2b-0al4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chocolate-cake",
+    "recipe_id": "chocolate-cake",
+    "title": "Chocolate Cake (QA)",
+    "actor": "site-editor (Anonymous)",
+    "note": "Deploy QA \u2014 verifying site edits auto-log",
+    "created_at": "2026-10-20T14:11:45.594Z"
+  },
+  {
+    "id": "edit-mvgro3xi-mwlb",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "chocolate-cake",
+    "recipe_id": "chocolate-cake",
+    "title": "Chocolate Cake",
+    "actor": "site-editor (Anonymous)",
+    "note": "Reverting QA title change",
+    "created_at": "2026-10-20T14:16:34.010Z"
+  },
+  {
+    "id": "inbox-mvhgu9mc-2y4",
+    "url": null,
+    "image": null,
+    "file": null,
+    "note": null,
+    "text": "Title it something like Zucchini scale salmon \nSkinned side of the salmon)\nSmear the fillet with dijon Honey mustard, put thinly sliced zucchini with peel... Will look like scales\nCombine in a bowl\nFresh dill finely chopped,\u00a0 5 cloves fresh garlic, olive oil black pepper and salt. Smear it over the zucchini \"scales\" \nBake half hour 375 uncovered",
+    "status": "done",
+    "created_at": "2026-10-21T02:01:13.524Z",
+    "recipe_id": "zucchini-scale-salmon",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvhgw9ha-4b6",
+    "url": null,
+    "image": null,
+    "file": null,
+    "note": null,
+    "text": "Dill dip salmon\nDill dip:\n1 cups of mayo \n2 tbsp fresh dill or 4 frozen dill cubes\n2 tbsp lemon juice \n4 cloves of minced garlic \n1 tbsp of honey \nHimalayan salt \nPepper\n\nFor salmon sprinkle salt, pepper, garlic powder on fish, then schmear the dill dip on it. bake it on 400 (reg oven, 375 on convection oven), until internal temp of 125 on the thickest part",
+    "status": "done",
+    "created_at": "2026-10-21T02:02:46.654Z",
+    "recipe_id": "dill-dip-salmon",
+    "fail_reason": null
+  },
+  {
+    "id": "edit-mvhgwsvn-9bl4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cookie-dough-fudge-pie",
+    "recipe_id": "cookie-dough-fudge-pie",
+    "title": "Cookie Dough Fudge Pie",
+    "actor": "site-editor (Muse)",
+    "note": "Category cleanup: \"desserts\" is not a standard category - normalized to \"dessert\" (fixes the duplicate dessert tile / category list).",
+    "created_at": "2026-10-21T02:03:09.904Z"
+  },
+  {
+    "id": "edit-mvhgwvos-nkdg",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "reiss-mushroom-salad",
+    "recipe_id": "reiss-mushroom-salad",
+    "title": "Reiss Mushroom Salad",
+    "actor": "site-editor (Muse)",
+    "note": "Category cleanup: \"Salad\" is not a standard category - normalized to \"salad\" (fixes the duplicate dessert tile / category list).",
+    "created_at": "2026-10-21T02:03:13.796Z"
+  },
+  {
+    "id": "inbox-mvhh83xm-2hg",
+    "url": null,
+    "image": null,
+    "file": null,
+    "note": null,
+    "text": "Broiled Salmon with Pesto\n\n--Salmon--\nto keep even thickness, remove tail and thin parts\nRemove any bones\nSprinkle 1 Tablespoon kosher salt\nkeep in fridge 1-4 hours\n\n(Set rack 7\" from broiling element)\n\nPat with paper towel\nschmere with honey (around 2 tablespoons)\n\nbroil at 500 for 6 minutes (Turn halfway through)\nLower heat to 250 for 7.5 - 9 minutes (Turn halfway through)\nlooking for internal temp of 125\n\n(if gets too dark, cover with aluminum foil)\n\n--Pesto--\n1/4 cup almonds\n1 chili pepper cleaned\n4 garlic cloves\n\n(4 anchovies, rinsed and patted dry)\nblitz in food processor for 15 seconds\n\n--Add\n6 oz arugula\n1/4 cup extra virgin olive oil\n1/4 cup lemon juice\n1.5 teaspoon kosher salt\nblitz in food processor for 30 seconds",
+    "status": "done",
+    "created_at": "2026-10-21T02:11:59.338Z",
+    "recipe_id": "broiled-salmon-with-pesto",
+    "fail_reason": null
+  },
+  {
+    "id": "edit-mvhhhk0m-9acc",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "gochujang-korean-tofu",
+    "recipe_id": "gochujang-korean-tofu",
+    "title": "Crispy Gochujang Korean Tofu",
+    "actor": "site-editor (Muse)",
+    "note": "Per Yidi: tofu is not a category - removed from categories (kept main) and added as a tag. Pasta stays a category.",
+    "created_at": "2026-10-21T02:19:18.798Z"
+  },
+  {
+    "id": "inbox-mvhhpoxp-4n4",
+    "url": null,
+    "image": "data/inbox/inbox-mvhhpoxp-4n4.jpg",
+    "file": null,
+    "note": "This also can be done with salmon instead of chicken",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T02:25:41.299Z",
+    "recipe_id": "bang-bang-airfryer-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvhi613c-351",
+    "url": null,
+    "image": "data/inbox/inbox-mvhi613c-351.jpg",
+    "file": null,
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T02:38:23.489Z",
+    "recipe_id": "olive-chicken",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvhi8oxf-7i1",
+    "url": null,
+    "image": "data/inbox/inbox-mvhi8oxf-7i1.jpg",
+    "file": null,
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T02:40:27.921Z",
+    "recipe_id": "sweet-and-sour-meatballs",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mviilvvl-6hj",
+    "url": null,
+    "image": "data/inbox/inbox-mviilvvl-6hj.jpg",
+    "images": [
+      "data/inbox/inbox-mviilvvl-6hj.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p2.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p3.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p5.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p6.jpg"
+    ],
+    "file": null,
+    "note": "For the French onion soup we don\u2019t add sugar \u2014 Split into 5 separate submissions at Yidi's request (Oct 21, 2026): inbox-mvij2axp-fos, inbox-mvij2axp-hlc, inbox-mvij2axp-cbk, inbox-mvij2axp-ctl, inbox-mvij2axp-bms.",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:38:40.975Z",
+    "recipe_id": null,
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvij2axp-fos",
+    "url": null,
+    "image": "data/inbox/inbox-mviilvvl-6hj.jpg",
+    "images": [
+      "data/inbox/inbox-mviilvvl-6hj.jpg"
+    ],
+    "file": null,
+    "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the French Onion Soup (cookbook page 68). Family note from the original submission: 'For the French onion soup we don't add sugar' - omit the sugar from the ingredients and the instructions. The Garlic Baguette box at the bottom of the page is part of this recipe. The book marks it DAIRY.",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:51:13.000Z",
+    "recipe_id": "french-onion-soup",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvij2axp-hlc",
+    "url": null,
+    "image": "data/inbox/inbox-mviilvvl-6hj-p2.jpg",
+    "images": [
+      "data/inbox/inbox-mviilvvl-6hj-p2.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p3.jpg"
+    ],
+    "file": null,
+    "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the Honey Lemon Chicken (RecipeTin Eats printout, pages 1-2 of 3; the recipe text is complete on these two pages). Apply the handwritten edits on page 1: chicken breast 2 lb (replaces 1 lb / 500g); butter replaced with oil (handwritten 'oil' next to the butter - this also keeps the dish kosher); garlic 3-4 cloves (replaces 1 clove); chicken broth 2 cups (replaces 3/4 cup); lemon juice 1/2 cup (replaces 1/4 cup); soy sauce 2 tsp (replaces 1 tsp); flour unchanged. The handwritten water amount is unclear (printed amount is 2 tbsp) - if it cannot be read confidently, keep 2 tbsp and note in the recipe that the family's water edit was unclear.",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:51:13.000Z",
+    "recipe_id": "honey-lemon-chicken",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvij2axp-cbk",
+    "url": null,
+    "image": "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
+    "images": [
+      "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
+      "data/inbox/inbox-mviilvvl-6hj-p5.jpg"
+    ],
+    "file": null,
+    "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the Creamy Broccoli Kugel. It starts on the first photo and CONTINUES in the 'Continued' column at the top of the second photo (8-inch square pan, yields 9 servings, bake 30 minutes). The second photo's main recipe (Carrot Loaf) is a separate submission - ignore it here. The fragment at the top-right of the first photo (mentions a 9-inch pan) is the end of an unrelated recipe - ignore it.",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:51:13.000Z",
+    "recipe_id": "creamy-broccoli-kugel",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvij2axp-bms",
+    "url": null,
+    "image": "data/inbox/inbox-mviilvvl-6hj-p6.jpg",
+    "images": [
+      "data/inbox/inbox-mviilvvl-6hj-p6.jpg"
+    ],
+    "file": null,
+    "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the Barley Mushroom Soup (by Meichal Weingarten). Handwritten annotations are on the page (the carrot looks changed to 2; a couple of other notes are hard to read) - apply what is legible. Includes the flanken meat variation printed at the bottom.",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:51:13.000Z",
+    "recipe_id": "barley-mushroom-soup",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvijb41b-i2",
+    "url": null,
+    "image": "data/inbox/inbox-mvijb41b-i2.jpg",
+    "images": [
+      "data/inbox/inbox-mvijb41b-i2.jpg"
+    ],
+    "file": null,
+    "note": null,
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T19:58:07.345Z",
+    "recipe_id": "babka-straws",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvijlz2q-10x",
+    "url": null,
+    "image": "data/inbox/inbox-mvijlz2q-10x.jpg",
+    "images": [
+      "data/inbox/inbox-mvijlz2q-10x.jpg"
+    ],
+    "file": null,
+    "note": "Yidi's instructions 2026-10-21: the marinade is for 1.5 lb pargiot (dark chicken cutlets). Do NOT publish as a standalone marinade - make it the complete dish: the chicken (1.5 lb pargiot) is an ingredient, servings set from that amount, and the instructions cover marinating the chicken and then pan-searing it (the family's usual method).",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T20:06:35.247Z",
+    "recipe_id": "makie-fray-grilled-chicken",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvijnnnk-76k",
+    "url": null,
+    "image": "data/inbox/inbox-mvijnnnk-76k.jpg",
+    "images": [
+      "data/inbox/inbox-mvijnnnk-76k.jpg"
+    ],
+    "file": null,
+    "note": "It\u2019s a spinach strawberry salad",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T20:07:52.687Z",
+    "recipe_id": "spinach-strawberry-salad",
+    "fail_reason": null,
+    "needs": null
+  },
+  {
+    "id": "inbox-mvijy4db-3kd",
+    "url": null,
+    "image": "data/inbox/inbox-mvijy4db-3kd.jpg",
+    "images": [
+      "data/inbox/inbox-mvijy4db-3kd.jpg"
+    ],
+    "file": null,
+    "note": null,
+    "text": null,
+    "status": "duplicate",
+    "created_at": "2026-10-21T20:16:01.221Z",
+    "recipe_id": null,
+    "fail_reason": null,
+    "duplicate_of": "sweet-and-sour-meatballs"
+  },
+  {
+    "id": "inbox-mvijyqyi-60q",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+    "images": [
+      "data/inbox/inbox-mvijyqyi-60q.jpg",
+      "data/inbox/inbox-mvijyqyi-60q-p2.jpg"
+    ],
+    "file": null,
+    "note": " \u2014 Auto-split into 3 separate submissions: inbox-mvil5off-elbows-and-tuna-casserole, inbox-mvil5off-curried-chick-pea-casserole, inbox-mvil5off-fried-cabbage-and-noodles. (summary sent)",
+    "text": null,
+    "status": "done",
+    "created_at": "2026-10-21T20:16:31.523Z",
+    "recipe_id": null,
+    "fail_reason": null
+  },
+  {
+    "id": "edit-mvik1rrv-osl1",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sheet-pan-garlic-butter-mushrooms",
+    "recipe_id": "sheet-pan-garlic-butter-mushrooms",
+    "title": "Sheet Pan Garlic Mushrooms",
+    "actor": "site-editor (Nava)",
+    "note": "Changed title, kosher_status, leftover_note, ingredients, notes, source, needs_kosher_review, kosher_review_notes",
+    "created_at": "2026-10-21T20:18:47.528Z"
+  },
+  {
+    "id": "inbox-mvikqweq-q5sl",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "creamy-broccoli-kugel",
+    "created_at": "2026-10-21T20:38:21.074Z",
+    "text": "We actually buy frozen broccoli pieces, microwave it, make the mixture separate and mix the broccoli in. \n\nWe also don't use the bullion and"
+  },
+  {
+    "id": "inbox-mviktbov-8ui7",
+    "status": "done",
+    "type": "edit",
+    "edit_target": "barley-mushroom-soup",
+    "created_at": "2026-10-21T20:40:14.191Z",
+    "text": "Instead of the flanken, we usually put sets of chicken legs (separated leg and thigh) remove skin, and sear it a bit with the veggies after "
+  },
+  {
+    "id": "edit-mvikubn1-0hpg",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "barley-mushroom-soup",
+    "recipe_id": "barley-mushroom-soup",
+    "title": "Mushroom Barley Soup",
+    "actor": "site-editor (Yidi)",
+    "note": "Changed title",
+    "created_at": "2026-10-21T20:40:59.251Z"
+  },
+  {
+    "id": "inbox-mvil5off-elbows-and-tuna-casserole",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Elbows and Tuna Casserole.",
+    "status": "done",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": "elbows-and-tuna-casserole",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvil5off-curried-chick-pea-casserole",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q-p2.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Curried Chick Pea Casserole.",
+    "status": "done",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": "curried-chick-pea-casserole",
+    "fail_reason": null
+  },
+  {
+    "id": "inbox-mvil5off-fried-cabbage-and-noodles",
+    "url": null,
+    "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
+    "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Fried Cabbage and Noodles.",
+    "status": "needs_input",
+    "created_at": "2026-10-21T20:49:50.000Z",
+    "recipe_id": null,
+    "fail_reason": null
+  }
+]
