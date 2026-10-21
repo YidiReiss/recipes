@@ -1,0 +1,121 @@
+{
+  "id": "olive-chicken",
+  "title": "Olive Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "sheet-pan",
+    "mediterranean",
+    "olives"
+  ],
+  "prep_minutes": 30,
+  "cook_minutes": 35,
+  "servings": "6",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "banner_image": "assets/images/olive-chicken.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "3",
+          "unit": "oz",
+          "item": "tomato paste",
+          "prep": "heaping 1/4 cup"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "dried oregano"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "dried basil"
+        },
+        {
+          "qty": "6",
+          "unit": "",
+          "item": "dark meat chicken cutlets"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "kosher salt",
+          "prep": "to taste"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "black pepper",
+          "prep": "freshly ground, to taste"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "sliced green olives with pimentos"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "sliced black olives"
+        },
+        {
+          "qty": "2",
+          "unit": "",
+          "item": "ripe tomatoes",
+          "prep": "diced"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "red onion",
+          "prep": "thinly sliced into half-moons"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "red pepper flakes",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 400°F.",
+    "In a small bowl, mix the tomato paste with the oregano and basil. Smear the paste over the chicken; place the chicken on a baking sheet. Season with salt and pepper.",
+    "Spread the sliced olives over the chicken; top with the diced tomatoes and onions. Sprinkle with red pepper flakes, if desired. Drizzle with olive oil.",
+    "Bake for 25–35 minutes."
+  ],
+  "tips": [],
+  "notes": "If you've never cooked with pargiyot (dark meat chicken cutlets), put it on your to-do list — unlike white meat cutlets, they don't dry out, even if you overcook them. Try them with shawarma spice for an easy weeknight dinner.",
+  "source": "Cookbook page (Poultry section)",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/olive-chicken.pdf",
+  "pdf_stale": false,
+  "history": [
+    {
+      "ts": "2026-10-21T02:49:07.803Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from cookbook page photo (Poultry p.154). Servings 6 explicit on page. Prep: 5 base + 9x1 handling (tomato paste, oregano, basil, salt, pepper, green olives, black olives, olive oil, pepper flakes) + 1 arrange chicken + 3.5 dice 2 tomatoes + 3 slice red onion + 5 smear/spread assembly = 26.5 -> 30. Cook: bake 25-35 min -> upper bound 35. Banner AI-generated (submitted photo is of the recipe page)."
+    }
+  ]
+}
