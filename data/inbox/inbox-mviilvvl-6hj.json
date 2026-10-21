@@ -11,13 +11,11 @@
     "data/inbox/inbox-mviilvvl-6hj-p6.jpg"
   ],
   "file": null,
-  "note": "For the French onion soup we don\u2019t add sugar",
+  "note": "For the French onion soup we don’t add sugar — Split into 5 separate submissions at Yidi's request (Oct 21, 2026): inbox-mvij2axp-fos, inbox-mvij2axp-hlc, inbox-mvij2axp-cbk, inbox-mvij2axp-ctl, inbox-mvij2axp-bms.",
   "text": null,
-  "status": "needs_input",
+  "status": "done",
   "created_at": "2026-10-21T19:38:40.975Z",
   "recipe_id": null,
   "fail_reason": null,
-  "needs": [
-    "recipe_selection"
-  ]
+  "needs": null
 }
