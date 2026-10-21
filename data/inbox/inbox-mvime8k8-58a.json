@@ -9,8 +9,8 @@
   "file": null,
   "note": "Cheesey Garlic Bread Recipe",
   "text": null,
-  "status": "working",
+  "status": "done",
   "created_at": "2026-10-21T21:24:33.351Z",
-  "recipe_id": null,
+  "recipe_id": "cheesey-garlic-bread",
   "fail_reason": null
 }
