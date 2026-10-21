@@ -984,5 +984,16 @@
     "actor": "site-editor (Muse)",
     "note": "Category cleanup: \"desserts\" is not a standard category - normalized to \"dessert\" (fixes the duplicate dessert tile / category list).",
     "created_at": "2026-10-21T02:03:09.904Z"
+  },
+  {
+    "id": "edit-mvhgwvos-nkdg",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "reiss-mushroom-salad",
+    "recipe_id": "reiss-mushroom-salad",
+    "title": "Reiss Mushroom Salad",
+    "actor": "site-editor (Muse)",
+    "note": "Category cleanup: \"Salad\" is not a standard category - normalized to \"salad\" (fixes the duplicate dessert tile / category list).",
+    "created_at": "2026-10-21T02:03:13.796Z"
   }
 ]
