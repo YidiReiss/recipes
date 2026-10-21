@@ -1,0 +1,153 @@
+{
+  "id": "babka-straws",
+  "title": "Babka Straws",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert"
+  ],
+  "tags": [
+    "baking",
+    "freezer-friendly"
+  ],
+  "prep_minutes": 60,
+  "cook_minutes": 20,
+  "servings": "24",
+  "leftover_friendly": true,
+  "leftover_note": "Freeze well, baked or raw.",
+  "banner_image": "assets/images/babka-straws.jpg",
+  "photo_generated": false,
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "sheets",
+          "item": "puff pastry",
+          "prep": "thawed"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "egg",
+          "prep": "for egg wash"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "water",
+          "prep": "for egg wash"
+        }
+      ]
+    },
+    {
+      "section": "Chocolate Filling",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "confectioners' sugar"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "cocoa powder"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        },
+        {
+          "qty": "1/8",
+          "unit": "tsp",
+          "item": "cinnamon"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "sea salt",
+          "prep": "a pinch"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "water"
+        }
+      ]
+    },
+    {
+      "section": "Sweet Crumbs",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "flour"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "sea salt",
+          "prep": "a pinch"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Line 3 baking sheets with parchment paper (work in batches, if necessary). Set aside. Preheat the oven to 375\u00b0F.",
+    "Prepare the chocolate filling: in a small bowl, combine the confectioners' sugar, cocoa powder, vanilla, cinnamon, sea salt, oil, and water. Stir until creamy.",
+    "Prepare the sweet crumbs: in a second bowl, combine the flour, sugar, oil, vanilla, and salt. Mix until crumbly.",
+    "Working with one sheet of puff pastry at a time, roll the dough out to form a large rectangle. With the short side facing you, spread half of the chocolate mixture on the lower half of the dough; fold the uncoated half over the chocolate side.",
+    "Using a pizza cutter, cut the pastry into 1-inch strips. Twist the ends in opposite directions to give the straws a spiraled look. Transfer each strip to one of the baking sheets, spaced an inch or so apart. Refrigerate for 10 minutes. While the straws are chilling, repeat with the second sheet of puff pastry and the remaining chocolate filling.",
+    "Remove the pans from the fridge; brush the straws lightly with egg wash. Sprinkle with the sweet crumbs. Bake until puffed and golden, about 20 minutes."
+  ],
+  "tips": [
+    {
+      "title": "Make ahead",
+      "text": "These straws freeze well, whether baked or raw."
+    },
+    {
+      "title": "Keep the pastry cold",
+      "text": "The trick to having them roll and shape nicely is for the puff pastry to be nice and cold \u2014 if it was thawing on the counter, put it back into the freezer or fridge until the dough stiffens up."
+    }
+  ],
+  "notes": "By Chanie Apfelbaum (Millennial Kosher). Yield: 2 dozen straws. The 10-minute refrigerator chill is passive time. The banner photo is cropped from the finished-dish photo on the submitted cookbook page.",
+  "source": "Millennial Kosher (Chanie Apfelbaum) \u2014 cookbook page photo",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/babka-straws.pdf",
+  "history": [
+    {
+      "ts": "2026-10-21T20:30:00.000Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from cookbook page photo (Babka Straws by Chanie Apfelbaum, Millennial Kosher). Yield 2 dozen straws = 24 servings explicit. Prep: 5 base + 14x1 handling (puff pastry, egg, water x2, confectioners' sugar, cocoa, vanilla x2, cinnamon, sea salt x2, oil x2, flour, sugar) + 3 mix chocolate filling + 2 mix sweet crumbs + 8 roll out pastry + 8 spread/fold + 2 cut strips + 12 twist ends (2 dozen) + 3 brush egg wash + 2 line pans = 59 -> 60. Cook: bake about 20 minutes = 20 (10-minute chill is passive). Banner cropped from the submitted page's finished-dish photo."
+    }
+  ]
+}
