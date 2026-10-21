@@ -1,0 +1,104 @@
+{
+  "id": "spinach-strawberry-salad",
+  "title": "Spinach Strawberry Salad",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "salad"
+  ],
+  "tags": [
+    "quick",
+    "no-cook"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 0,
+  "servings": "4",
+  "leftover_friendly": false,
+  "leftover_note": "Best dressed just before serving.",
+  "banner_image": "assets/images/spinach-strawberry-salad.jpg",
+  "photo_generated": false,
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "4",
+          "unit": "cup",
+          "item": "raw spinach"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "strawberries",
+          "prep": "sliced"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "parmesan",
+          "prep": "shaved or grated"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "candied pecans"
+        }
+      ]
+    },
+    {
+      "section": "Lemon Vinaigrette",
+      "items": [
+        {
+          "qty": "4",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "lemon juice",
+          "prep": "fresh"
+        },
+        {
+          "qty": "2 1/4",
+          "unit": "tbsp",
+          "item": "honey"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "sea salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "lemon zest"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Lemon vinaigrette: in a small bowl, whisk the ingredients together until blended.",
+    "Salad: in a large serving bowl, place the spinach, strawberries, parmesan, and pecans.",
+    "Just before serving, drizzle the salad with the lemon vinaigrette. Enjoy!"
+  ],
+  "tips": [],
+  "notes": "By Cooking With Ruthie. Yidi's note: 'It's a spinach strawberry salad'. The printout says prep 10 mins, serves 4 \u2014 prep raised to the 15-minute floor. The printed honey amount is 3 tbsp; a handwritten edit on the printout looked like 2 1/4 tbsp but was hard to read \u2014 worth double-checking. Use kosher-certified parmesan. Banner photo is the recipe's own og:image from cookingwithruthie.com.",
+  "source": "Cooking With Ruthie \u2014 https://cookingwithruthie.com/2015/04/13/strawberry-spinach-salad-with-lemon-vinaigrette/",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/spinach-strawberry-salad.pdf",
+  "history": [
+    {
+      "ts": "2026-10-21T20:30:00.000Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from printout photo (Cooking With Ruthie, strawberry-spinach-salad-with-lemon-vinaigrette). Servings 4 explicit. Prep: source says 10 mins, raised to the 15-minute floor. Cook 0 (no heat). Banner: recipe's own og:image."
+    }
+  ]
+}
