@@ -1,1 +1,16 @@
-{"id": "inbox-mvijnnnk-76k", "url": null, "image": "data/inbox/inbox-mvijnnnk-76k.jpg", "images": ["data/inbox/inbox-mvijnnnk-76k.jpg"], "file": null, "note": "It\u2019s a spinach strawberry salad", "text": null, "status": "working", "created_at": "2026-10-21T20:07:52.687Z", "recipe_id": null, "fail_reason": null, "needs": null}
+{
+  "id": "inbox-mvijnnnk-76k",
+  "url": null,
+  "image": "data/inbox/inbox-mvijnnnk-76k.jpg",
+  "images": [
+    "data/inbox/inbox-mvijnnnk-76k.jpg"
+  ],
+  "file": null,
+  "note": "It\u2019s a spinach strawberry salad",
+  "text": null,
+  "status": "done",
+  "created_at": "2026-10-21T20:07:52.687Z",
+  "recipe_id": "spinach-strawberry-salad",
+  "fail_reason": null,
+  "needs": null
+}
