@@ -715,12 +715,39 @@ function tilesHTML() {
     '<button type="button" class="cat-tile" data-tile="' + esc(act) + '">' +
       (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '<span class="tile-ph"></span>') +
       '<span class="tile-label">' + esc(label) + ' <em>' + count + '</em></span></button>';
+  // Pinned hero photos (Yidi, 2026-10-21): one hand-picked representative
+  // recipe per tile — representativeness is a judgment call, so the picks
+  // are curated, not computed. Fallback when a hero is deleted, leaves the
+  // group, or loses its photo: the first member with a photo that no
+  // earlier tile is already using (keeps tiles duplicate-free).
+  const TILE_HEROES = {
+    'kosher:meat': 'brisket-with-vegetables-and-dried-fruit',
+    'kosher:dairy': 'baked-ziti',
+    'kosher:pareve': 'potato-kugel',
+    'cat:main': 'michelin-star-beef-short-ribs-fallow',
+    'cat:side': 'roasted-potatoes',
+    'cat:soup': 'chicken-soup',
+    'cat:salad': 'cucumber-salad',
+    'cat:fish': 'mediterranean-roasted-whole-fish',
+    'cat:chicken': 'forty-clove-garlic-chicken',
+    'cat:baking': 'cinnamon-rolls',
+    'cat:dessert': 'chocolate-cake',
+    'cat:appetizer': 'authentic-italian-bruschetta'
+  };
+  const usedImgs = new Set();
+  const pickImg = (key, rs) => {
+    const hero = rs.find(r => r.id === TILE_HEROES[key]);
+    if (hero && hero.banner_image && !usedImgs.has(hero.banner_image)) { usedImgs.add(hero.banner_image); return hero.banner_image; }
+    const fresh = rs.find(r => r.banner_image && !usedImgs.has(r.banner_image));
+    const chosen = fresh || rs.find(r => r.banner_image);
+    if (chosen) usedImgs.add(chosen.banner_image);
+    return chosen ? chosen.banner_image : '';
+  };
   const out = [];
   ['meat', 'dairy', 'pareve'].forEach(k => {
     const rs = recipes.filter(r => r.kosher_status === k);
     if (!rs.length) return;
-    const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
-    out.push(tile(k[0].toUpperCase() + k.slice(1), rs.length, img, 'kosher:' + k));
+    out.push(tile(k[0].toUpperCase() + k.slice(1), rs.length, pickImg('kosher:' + k, rs), 'kosher:' + k));
   });
   // Curated category tiles (Yidi, 2026-10-20): a fixed editorial order —
   // the old allCats().slice(0, 6) took the first six ALPHABETICALLY, which
@@ -729,8 +756,7 @@ function tilesHTML() {
   TILE_CATS.forEach(c => {
     const rs = recipes.filter(r => (r.categories || []).includes(c));
     if (!rs.length) return;
-    const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
-    out.push(tile(c[0].toUpperCase() + c.slice(1), rs.length, img, 'cat:' + c));
+    out.push(tile(c[0].toUpperCase() + c.slice(1), rs.length, pickImg('cat:' + c, rs), 'cat:' + c));
   });
   return out.join('');
 }
