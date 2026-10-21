@@ -7,9 +7,9 @@
     "data/inbox/inbox-mviilvvl-6hj-p5.jpg"
   ],
   "file": null,
-  "note": "QA test T3: two cookbook pages where the Broccoli Kugel continues onto the Carrot Loaf page. Expect: split plan with 2 recipes; the second photo shared by both.",
+  "note": "QA test T3: two cookbook pages where the Broccoli Kugel continues onto the Carrot Loaf page. Expect: split plan with 2 recipes; the second photo shared by both. \u2014 test_mode completed",
   "text": null,
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-21T20:11:10.000Z",
   "recipe_id": null,
   "fail_reason": null,
