@@ -1325,7 +1325,7 @@
   },
   {
     "id": "inbox-mvikqweq-q5sl",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "creamy-broccoli-kugel",
     "created_at": "2026-10-21T20:38:21.074Z",
@@ -1333,7 +1333,7 @@
   },
   {
     "id": "inbox-mviktbov-8ui7",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "barley-mushroom-soup",
     "created_at": "2026-10-21T20:40:14.191Z",
