@@ -1,0 +1,127 @@
+{
+  "id": "french-onion-soup",
+  "title": "French Onion Soup",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "soup"
+  ],
+  "tags": [
+    "comfort",
+    "shabbat"
+  ],
+  "prep_minutes": 20,
+  "cook_minutes": 85,
+  "servings": "6",
+  "leftover_friendly": true,
+  "leftover_note": "Reheats well; add the baguette and cheese topping fresh.",
+  "banner_image": "assets/images/french-onion-soup.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "Soup",
+      "items": [
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "all-purpose flour"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "onion soup mix"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "black pepper",
+          "prep": "ground"
+        },
+        {
+          "qty": "1/3",
+          "unit": "cup",
+          "item": "butter"
+        },
+        {
+          "qty": "2",
+          "unit": "",
+          "item": "large onions",
+          "prep": "thinly sliced"
+        },
+        {
+          "qty": "6",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "6",
+          "unit": "",
+          "item": "baguette slices"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "Mozzarella cheese",
+          "prep": "shredded"
+        }
+      ]
+    },
+    {
+      "section": "Garlic Baguette",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "French-style baguette"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "butter",
+          "prep": "melted"
+        },
+        {
+          "qty": "2",
+          "unit": "cloves",
+          "item": "garlic",
+          "prep": "minced"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Mix the flour, onion soup mix, salt, and pepper in a small bowl. Set aside. (The family's version omits the sugar.)",
+    "In a large pot, melt the butter. Add the onions and caramelize about 25 minutes on low heat, mixing occasionally. Add the flour mixture to the onions and stir to create a roux. Slowly add the water to the roux, stirring. Bring to a boil, reduce the heat, and simmer 30 to 40 minutes.",
+    "Preheat the oven to broil. Ladle the soup into 6 oven-safe bowls. Float a baguette slice on top of each bowl. Sprinkle about 2 tablespoons of the shredded mozzarella onto each slice. Set the bowls on a cookie sheet and place under the broiler for 4 minutes. Serve immediately.",
+    "For the garlic baguette: preheat the oven to 400\u00b0F. Slice the baguette on a diagonal about 1-inch thick and place on a cookie sheet lined with baking paper. Brush each slice with melted butter and sprinkle with the minced garlic. Bake 10 minutes."
+  ],
+  "tips": [
+    {
+      "title": "Family note",
+      "text": "The family does not add sugar to this soup \u2014 leave it out."
+    }
+  ],
+  "notes": "Cookbook page 68 (marked DAIRY), submitted as a photo. Family note from the submission: no sugar, and the Garlic Baguette box at the bottom of the page is part of this recipe. Banner is AI-generated (the submitted photo is of the recipe page) and flagged for replacement with a real photo.",
+  "source": "Cookbook page 68 (photo submission, family batch)",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/french-onion-soup.pdf",
+  "history": [
+    {
+      "ts": "2026-10-21T20:30:00.000Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from cookbook page photo (French Onion Soup, p.68, DAIRY). Servings 6 explicit on page. Prep: 5 base + 10x1 handling (flour, onion soup mix, salt, pepper, water, baguette slices, mozzarella, butter, baguette, garlic) + 3.5 slice 2 onions + 1 mince garlic (press) = 19.5 -> 20. Cook: caramelize 25 + bring-to-boil ramp 8 + simmer 30-40 (upper 40) + broil 4 + garlic baguette bake 10 = 87 -> 85. Banner AI-generated (submitted photo is of the recipe page)."
+    }
+  ]
+}
