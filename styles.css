@@ -131,6 +131,8 @@ body {
 
 .filter-field { display: flex; flex-direction: column; gap: 0.2rem; }
 
+.filter-actions { margin-left: auto; }
+
 .filter-field label {
   font-size: 0.75rem;
   text-transform: uppercase;

@@ -621,11 +621,15 @@ function tilesHTML() {
     const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
     out.push(tile(k[0].toUpperCase() + k.slice(1), rs.length, img, 'kosher:' + k));
   });
-  allCats().slice(0, 6).forEach(c => {
+  // Curated category tiles (Yidi, 2026-10-20): a fixed editorial order —
+  // the old allCats().slice(0, 6) took the first six ALPHABETICALLY, which
+  // buried main/side/fish/soup and promoted typo categories like "desserts".
+  const TILE_CATS = ['main', 'side', 'soup', 'salad', 'fish', 'chicken', 'baking', 'dessert', 'appetizer'];
+  TILE_CATS.forEach(c => {
     const rs = recipes.filter(r => (r.categories || []).includes(c));
     if (!rs.length) return;
     const img = (rs.find(r => r.banner_image) || {}).banner_image || '';
-    out.push(tile(c, rs.length, img, 'cat:' + c));
+    out.push(tile(c[0].toUpperCase() + c.slice(1), rs.length, img, 'cat:' + c));
   });
   return out.join('');
 }
@@ -801,10 +805,11 @@ function renderRecipes(app) {
       '</select></div>' +
       '<label class="check-row"><input type="checkbox" id="f-kfp"' + (filters.kfp ? ' checked' : '') + '> Kosher for Passover</label>' +
       '<label class="check-row"><input type="checkbox" id="f-left"' + (filters.leftovers ? ' checked' : '') + '> Good leftovers</label>' +
+      '<div class="filter-actions"><button class="btn secondary" id="f-clear" type="button">Clear filters</button></div>' +
     '</div>' +
     '<p class="result-count" id="result-count"></p>' +
     '<div class="no-print" style="margin:0 0 1rem"><a class="btn" href="#/add">+ Add recipe</a> ' +
-    '<a class="btn secondary" href="#/submit">Submit a link or photo</a></div>' +
+    '<a class="btn secondary" href="#/submit">Submit recipe</a></div>' +
     '<div class="card-grid" id="grid"></div></section>';
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
@@ -817,6 +822,18 @@ function renderRecipes(app) {
   $('#f-sort').addEventListener('change', e => { filters.sort = e.target.value; drawGrid(); });
   $('#f-kfp').addEventListener('change', e => { filters.kfp = e.target.checked; drawGrid(); });
   $('#f-left').addEventListener('change', e => { filters.leftovers = e.target.checked; drawGrid(); });
+  $('#f-clear').addEventListener('click', () => {
+    Object.assign(filters, { q: '', kosher: 'all', kfp: false, category: 'all', tag: 'all', maxTime: 0, leftovers: false, sort: 'asc' });
+    $('#q').value = '';
+    $('#f-kosher').value = 'all';
+    $('#f-cat').value = 'all';
+    $('#f-tag').value = 'all';
+    $('#f-time').value = '0';
+    $('#f-sort').value = 'asc';
+    $('#f-kfp').checked = false;
+    $('#f-left').checked = false;
+    drawGrid();
+  });
   const fz = $('#filters'), ft = $('#filter-toggle');
   ft.addEventListener('click', () => {
     const hidden = fz.style.display === 'none';
