@@ -1,0 +1,84 @@
+{
+  "banner_image": "assets/images/elbows-and-tuna-casserole.jpg",
+  "categories": [
+    "main",
+    "pasta"
+  ],
+  "cook_minutes": 35,
+  "id": "elbows-and-tuna-casserole",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "elbow-shaped pasta",
+          "prep": "cooked and drained",
+          "qty": "16",
+          "unit": "oz"
+        },
+        {
+          "item": "tuna",
+          "prep": "drained",
+          "qty": "2",
+          "unit": "can"
+        },
+        {
+          "item": "concentrated cream of mushroom soup",
+          "prep": "see note",
+          "qty": "1",
+          "unit": "can"
+        },
+        {
+          "item": "low-fat milk",
+          "prep": null,
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "freshly ground black pepper",
+          "prep": null,
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "mozzarella cheese",
+          "prep": "grated",
+          "qty": "1",
+          "unit": "package"
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350\u00b0.",
+    "Place pasta in a large bowl. If the pot in which you cooked the pasta is big enough to hold all the ingredients, use it as the mixing bowl (you'll have one less item to wash).",
+    "Flake tuna into the bowl or pot and add mushroom soup, milk, pepper, and grated cheese, reserving 1/3 cup of cheese to put on top of the casserole. Mix together.",
+    "Spray a 9x9-inch casserole or baking dish with vegetable oil cooking spray or lightly coat with butter or margarine. Pour in the noodle mixture and top with the reserved cheese; bake for 35 minutes. Dig in!"
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "dairy",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "This recipe made its way to our kitchen via a cousin many years ago. Since then it has become a faithful family favorite. Family handwritten edits applied from the cookbook page: pasta is 1 box (16 oz), tuna is 2 cans, the 6 oz cheddar was replaced with 1 package of mozzarella, the 1/2 cup potato sticks were crossed out, and bake time changed from 45 to 35 minutes. The '1-can' on the mushroom soup line appears struck through but the substitution note implies the soup is normally used - kept as printed, flagged for review. Handwritten addition in the substitution note: add 1/2 medium onion and 1 garlic clove.",
+  "pairings": [],
+  "pdf": "pdfs/elbows-and-tuna-casserole.pdf",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "prep_minutes": 20,
+  "servings": "3-4",
+  "source": "Cookbook page (photo submission, family batch)",
+  "tags": [
+    "comfort",
+    "family",
+    "weeknight"
+  ],
+  "tags_need_review": true,
+  "tips": [
+    {
+      "text": "If you cannot find cream of mushroom soup on your grocer's shelf or if you do not like the taste of it, make the following substitution: Melt 1 teaspoon of butter or margarine in a small frying pan over a medium flame and saut\u00e9 6 ounces of sliced fresh mushrooms until soft, about 5 to 7 minutes. Gradually mix in 2 tablespoons of flour, being careful to avoid lumps. Slowly add 3/4 cup of low-fat milk, stirring constantly until thickened. If necessary, add 1/2 teaspoon of salt. Handwritten family addition: add 1/2 medium onion and 1 garlic clove.",
+      "title": "Cream of mushroom soup substitution"
+    }
+  ],
+  "title": "Elbows and Tuna Casserole"
+}
