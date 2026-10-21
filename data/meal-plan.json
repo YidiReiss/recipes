@@ -692,8 +692,13 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "roasted-salmon-with-green-herbs",
+                "leftovers": false,
+                "cookDate": null
+              }
+            ],
             "skipped": false,
             "note": ""
           }
