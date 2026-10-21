@@ -1,0 +1,163 @@
+{
+  "id": "sweet-and-sour-meatballs",
+  "title": "Sweet and Sour Meatballs",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "beef"
+  ],
+  "tags": [
+    "shabbat",
+    "freezer-friendly",
+    "sweet-and-sour"
+  ],
+  "prep_minutes": 40,
+  "cook_minutes": 75,
+  "servings": "6",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "banner_image": "assets/images/sweet-and-sour-meatballs.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "Sweet and Sour Sauce",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "canola oil"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "onion",
+          "prep": "diced"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "kosher salt",
+          "prep": "divided"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "coarsely ground black pepper",
+          "prep": "divided"
+        },
+        {
+          "qty": "1",
+          "unit": "can",
+          "item": "jellied cranberry sauce"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "brown sugar"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "large lemon",
+          "prep": "juiced"
+        },
+        {
+          "qty": "2",
+          "unit": "can",
+          "item": "tomato sauce",
+          "prep": "15 oz cans"
+        },
+        {
+          "qty": "15",
+          "unit": "oz",
+          "item": "water",
+          "prep": "use a tomato sauce can to measure"
+        }
+      ]
+    },
+    {
+      "section": "Meatballs",
+      "items": [
+        {
+          "qty": "2.2",
+          "unit": "lb",
+          "item": "ground beef"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "egg",
+          "prep": "beaten"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "panko breadcrumbs"
+        },
+        {
+          "qty": "1 tbsp + 2 tsp",
+          "unit": "",
+          "item": "granulated garlic"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "coarsely ground black pepper"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "sweet and sour sauce",
+          "prep": "from above"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "In a large pot set over medium-high heat, add the oil, onion, 1 tablespoon of the salt, and 1 teaspoon of the pepper. Cook for about 8 minutes, stirring often, until the onions are translucent.",
+    "Add the remaining sauce ingredients; stir to combine. Remove from heat.",
+    "To a large bowl, add all the meatball ingredients. Use your hands to gently mix the meat to incorporate the ingredients — be gentle and do not overwork the mixture, so the meatballs stay tender.",
+    "Return the sweet and sour sauce to a boil. Carefully add the meatballs, one at a time. Return to a boil again, then reduce the heat to low and cover the pot.",
+    "Simmer the meatballs for 1 hour, gently stirring every 15 minutes."
+  ],
+  "tips": [
+    {
+      "title": "Freezer tip",
+      "text": "These freeze really, really well. Double the recipe and make portions to fit your needs. Refrigerate until completely cool, then place a layer of plastic wrap directly onto the meatballs and cover the freezer container with an airtight lid. Write the date on the container; use within 2 months."
+    },
+    {
+      "title": "Unstuffed cabbage variation",
+      "text": "Add 3 cups shredded white cabbage to the sauce and use 1 cup raw rice instead of breadcrumbs in the meat mixture for a quick and easy version of unstuffed cabbage."
+    }
+  ],
+  "notes": "Every. Single. Shabbos. On repeat. From a magazine page photo submitted via Mom's chat. The sauce method's final words were cut off in the photo ('Remove f…') and read as 'Remove from heat.' The banner is an AI-generated stand-in (the submitted photo is of the recipe page) and is flagged for replacement with a real photo.",
+  "source": "Magazine page photo",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/sweet-and-sour-meatballs.pdf",
+  "pdf_stale": false,
+  "history": [
+    {
+      "ts": "2026-10-21T02:49:09.488Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from magazine page photo. Servings: anchor 2.2 lb ground beef = 35.2 oz; main meat 6 oz/person -> 35.2/6 = 5.9 -> nearest even = 6. Prep: 5 base + 15x1 handling + 3 dice onion + 1.5 juice lemon + 12 roll ~20 meatballs = 36.5 -> 40. Cook: 8 min saute + 60 min simmer + 8 min bring-to-boil ramps = 76 -> 75. Banner AI-generated (submitted photo is of the recipe page)."
+    }
+  ]
+}
