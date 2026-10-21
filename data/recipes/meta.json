@@ -2258,5 +2258,28 @@
     "tags_need_review": true,
     "photo_generated": true,
     "search_text": "pargiot (dark chicken cutlets) olive oil honey mustard (Grey Poupon Dijon) garlic powder salt pepper onion powder parsley jerusalem mix Honey: card says 1/4 C, amended in blue ink to 2 1/2 tbsp \u2014 used the amended amount (flagged for review). Mustard's 'grey poupon-mild or coarse\u2026' is cut off in the photo."
+  },
+  {
+    "id": "cheesey-garlic-bread",
+    "title": "Cheesey Garlic Bread",
+    "banner_image": "assets/images/cheesey-garlic-bread.jpg",
+    "kosher_status": "dairy",
+    "kosher_for_passover": false,
+    "categories": [
+      "side",
+      "baking"
+    ],
+    "tags": [
+      "appetizer",
+      "vegetarian",
+      "make-ahead"
+    ],
+    "prep_minutes": 25,
+    "cook_minutes": 20,
+    "servings": "8",
+    "leftover_friendly": false,
+    "tags_need_review": false,
+    "photo_generated": true,
+    "search_text": "unsalted butter garlic Parmesan flat-leaf parsley kosher salt black pepper baguette or rustic crusty loaf fresh mozzarella Submitted as phone screenshots of the NYT Cooking Garlic Bread page. Title 'Cheesey Garlic Bread' per the submitter's note. The butter can be made 2 days ahead (see tip)."
   }
 ]
