@@ -1,7 +1,7 @@
 {
   "id": "sheet-pan-garlic-butter-mushrooms",
-  "title": "Sheet Pan Garlic Butter Mushrooms",
-  "kosher_status": "dairy",
+  "title": "Sheet Pan Garlic Mushrooms",
+  "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
     "side"
@@ -13,11 +13,11 @@
   "cook_minutes": 15,
   "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/sheet-pan-garlic-butter-mushrooms.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "2",
@@ -55,11 +55,6 @@
           "qty": "3",
           "unit": "lb",
           "item": "cremini mushrooms"
-        },
-        {
-          "qty": null,
-          "unit": null,
-          "item": "butter (called for in the instructions; amount not listed)"
         }
       ]
     }
@@ -72,7 +67,66 @@
     "Serve immediately."
   ],
   "pairings": [],
-  "notes": "The ingredient list calls for avocado oil, but the instructions say to whisk together butter, garlic, lemon juice, and oregano — no butter amount is given in the ingredient list.",
-  "source": null,
-  "tags_need_review": true
+  "notes": "No butter in this recipe, only avocado oil",
+  "source": "",
+  "tags_need_review": true,
+  "pdf": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-10-21T20:18:47.528Z",
+      "actor": "site-editor (Nava)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "title",
+          "from": "Sheet Pan Garlic Butter Mushrooms",
+          "to": "Sheet Pan Garlic Mushrooms"
+        },
+        {
+          "field": "kosher_status",
+          "from": "dairy",
+          "to": "pareve"
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 7 items])"
+        },
+        {
+          "field": "notes",
+          "from": "The ingredient list calls for avocado oil, but the instructions say to whisk together butter, garlic, lemon juice, and oregano — no butter amount is given in the ingredient list.",
+          "to": "No butter in this recipe, only avocado oil"
+        },
+        {
+          "field": "source",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
+    }
+  ]
 }
