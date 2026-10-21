@@ -801,14 +801,14 @@
   "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
-   "main",
-   "tofu"
+   "main"
   ],
   "tags": [
    "vegan",
    "spicy",
    "gluten-free",
-   "crispy"
+   "crispy",
+   "tofu"
   ],
   "prep_minutes": 15,
   "cook_minutes": 30,
