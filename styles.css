@@ -992,6 +992,14 @@ footer.site-footer {
 .shop-have-btn:hover { border-color: var(--accent); color: var(--accent); }
 .shop-item.have .shop-have-btn { border-color: var(--accent); color: var(--accent); }
 .shop-item.have span { color: var(--ink-soft); }
+.shop-staples-section { margin: 1rem 0; }
+.shop-staples-section summary {
+  cursor: pointer; font-weight: 700; padding: 0.5rem 0; color: var(--ink-soft);
+}
+.shop-staple-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.5rem; font-weight: 600; cursor: pointer;
+}
 .shop-have-section { margin-top: 1.25rem; }
 .shop-have-section summary {
   cursor: pointer; font-weight: 700; padding: 0.5rem 0; color: var(--ink-soft);

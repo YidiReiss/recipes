@@ -478,6 +478,107 @@ function normalizeSlot(slot) {
   else if (slot.custom) dishes.push({ custom: slot.custom, leftovers: false, cookDate: null });
   return { dishes, skipped: !!slot.skipped, note: slot.note || '' };
 }
+/* Pantry staples: items the Reiss kitchen always has. The shopping list's
+   "Hide pantry staples" toggle moves generated To Buy lines whose clean base
+   name exactly matches this set into a collapsed section. Exact match only,
+   on the groupKey-normalized base name: "flour" hides, "flour tortillas"
+   doesn't; "water" hides, "coconut water" doesn't. Set curated by Yidi
+   (2026-10-21): hide only what he'd bet is already in the kitchen — niche
+   items (nutmeg, dried herbs, vanilla, honey, specialty oils/flours) stay
+   visible. */
+const PANTRY_STAPLES = new Set([
+  // water
+  'water', 'cold water', 'warm water', 'hot water', 'ice water', 'boiling water',
+  'lukewarm water', 'room temperature water', 'tap water',
+  // salt & pepper
+  'salt', 'kosher salt', 'coarse kosher salt', 'sea salt', 'fine sea salt', 'table salt',
+  'black pepper', 'ground black pepper', 'freshly ground black pepper',
+  'freshly cracked black pepper', 'white pepper', 'ground white pepper',
+  'salt and pepper', 'salt & pepper',
+  // everyday oils
+  'oil', 'olive oil', 'extra virgin olive oil', 'vegetable oil', 'neutral vegetable oil',
+  'canola oil', 'neutral oil', 'cooking spray',
+  // spice shakers & ground spices (this kitchen's standards)
+  'garlic powder', 'onion powder', 'paprika', 'sweet paprika', 'smoked paprika',
+  'cinnamon', 'ground cinnamon', 'cumin', 'ground cumin', 'coriander', 'ground coriander',
+  'turmeric', 'ground turmeric', 'chili powder', 'cayenne', 'cayenne pepper', 'ground cayenne',
+  'red pepper flake', 'crushed red pepper', 'crushed red pepper flake', 'taco seasoning',
+  'bay leaf', 'bay leave',
+  // flour, sugar, baking
+  'flour', 'all purpose flour', 'unbleached all purpose flour',
+  'sugar', 'granulated sugar', 'brown sugar', 'light brown sugar',
+  'powdered sugar', 'confectioners sugar', 'cornstarch', 'baking powder', 'baking soda'
+]);
+function isPantryStaple(base) {
+  const norm = String(base || '').toLowerCase().replace(/-/g, ' ').replace(/['\u2019]/g, '').replace(/\s+/g, ' ').trim();
+  return PANTRY_STAPLES.has(norm);
+}
+function getHideStaples() {
+  try { return localStorage.getItem('recipe-hide-staples') === '1'; } catch (e) { return false; }
+}
+function setHideStaples(v) {
+  try { localStorage.setItem('recipe-hide-staples', v ? '1' : '0'); } catch (e) {}
+}
+/* Split generated To Buy lines into visible vs pantry-staple lines. A staple
+   the user explicitly promoted from Optional stays visible — an explicit
+   "I need this" beats the view filter. */
+function partitionStaples(toBuy, week) {
+  if (!getHideStaples()) return { active: toBuy, staples: [] };
+  const promoted = promotedKeySet(week);
+  const active = [], staples = [];
+  toBuy.forEach(it => {
+    (isPantryStaple((it.key || '').split('|')[0]) && !promoted.has(it.key) ? staples : active).push(it);
+  });
+  return { active, staples };
+}
+/* Split aggregated shopping lines into To Buy / Already Have / Optional,
+   quantity-aware: if you marked "1 cup honey" as Have and the plan now needs
+   3 cups, Already Have shows the 1 cup and To Buy keeps a "2 cups" remainder
+   line. Shared by the shopping page render and Copy list so they agree. */
+function splitShopItems(items, week) {
+  const marks = activeHaveMarks(week.haveGenerated);
+  const promoted = promotedKeySet(week);
+  const toBuy = [], haveIts = [], optionalIts = [];
+  items.forEach(it => {
+    const mark = marks.find(m => m.key === it.key);
+    if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
+    if (!mark) { toBuy.push(it); return; }
+    const markedQty = (mark.qty !== null && mark.qty !== undefined) ? mark.qty : null;
+    const curQty = (it.qty !== null && it.qty !== undefined) ? it.qty : null;
+    if (markedQty !== null && curQty !== null && curQty > markedQty + 1e-9) {
+      const base = it.key.split('|')[0];
+      const remainder = Math.round((curQty - markedQty) * 100) / 100;
+      haveIts.push({
+        key: it.key, split: 'have',
+        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim()
+      });
+      toBuy.push({
+        key: it.key, split: 'need',
+        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim()
+      });
+    } else {
+      haveIts.push(it);
+    }
+  });
+  return { toBuy, haveIts, optionalIts };
+}
+/* Re-render the shopping list preserving which collapsible sections are
+   open — taps and the 15s background sync re-render constantly and would
+   otherwise slam Optional / Pantry staples / Already have shut each time. */
+function renderShopWrap() {
+  const wrapEl = $('#shop-wrap');
+  if (!wrapEl) return;
+  const openState = {};
+  ['shop-opt-section', 'shop-staples-section', 'shop-have-section'].forEach(cls => {
+    const d = wrapEl.querySelector('details.' + cls);
+    if (d) openState[cls] = d.open;
+  });
+  wrapEl.innerHTML = shoppingListHTML();
+  Object.keys(openState).forEach(cls => {
+    const d = wrapEl.querySelector('details.' + cls);
+    if (d) d.open = openState[cls];
+  });
+}
 function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
@@ -668,35 +769,12 @@ function shoppingListHTML() {
         !(week.conflictAcked && week.conflictAcked['m:' + m.id])) conflictKeys.add('m:' + m.id);
   });
 
-  // Split into To Buy vs Already Have vs Optional, with quantity-aware splitting:
-  // if you checked "1 cup honey" and later need 3 cups total, show
-  // "1 cup honey" checked + "2 cups honey" unchecked as separate lines.
-  // Optional items: undecided → Optional section; promoted → To Buy; marked → Already Have.
-  const toBuy = [];
-  const haveIts = [];
-  const optionalIts = [];
-  const promoted = promotedKeySet(week);
-  items.forEach(it => {
-    const mark = marks.find(m => m.key === it.key);
-    if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
-    if (!mark) { toBuy.push(it); return; }
-    const markedQty = (mark.qty !== null && mark.qty !== undefined) ? mark.qty : null;
-    const curQty = (it.qty !== null && it.qty !== undefined) ? it.qty : null;
-    if (markedQty !== null && curQty !== null && curQty > markedQty + 1e-9) {
-      const base = it.key.split('|')[0];
-      const remainder = Math.round((curQty - markedQty) * 100) / 100;
-      haveIts.push({
-        key: it.key, split: 'have',
-        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim()
-      });
-      toBuy.push({
-        key: it.key, split: 'need',
-        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim()
-      });
-    } else {
-      haveIts.push(it);
-    }
-  });
+  // Split into To Buy vs Already Have vs Optional (quantity-aware — see
+  // splitShopItems; Copy list uses the same split so the two always agree).
+  const { toBuy, haveIts, optionalIts } = splitShopItems(items, week);
+  // Pantry staples toggle: generated staple lines move to their own collapsed
+  // section. Undecided Optional lines and manual items are never filtered.
+  const { active: activeToBuy, staples: stapleIts } = partitionStaples(toBuy, week);
   const manToBuy = week.manualItems.filter(m => !m.deleted && !m.have);
   const manHave = week.manualItems.filter(m => !m.deleted && m.have);
 
@@ -705,7 +783,7 @@ function shoppingListHTML() {
       ? '<span class="shop-conflict">⚠️ Both grabbed this — check for duplicates ' +
         '<button class="link-btn" data-confack="' + esc(k) + '" type="button">dismiss</button></span>'
       : '';
-  const genToBuyLis = toBuy.map(it =>
+  const genToBuyLis = activeToBuy.map(it =>
     '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
       '<span>' + esc(it.label) + '</span></div>'
@@ -714,6 +792,13 @@ function shoppingListHTML() {
     '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
       '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>'
+  ).join('');
+  // Staple rows reuse the exact To Buy row template (same keys, same split
+  // attribute) so the delegated have-toggle handlers work unchanged.
+  const stapleLis = stapleIts.map(it =>
+    '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
+      '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
+      '<span>' + esc(it.label) + '</span></div>'
   ).join('');
   const manToBuyLis = manToBuy.map(m =>
     '<div class="shop-item manual" data-manual="' + esc(m.id) + '">' +
@@ -742,10 +827,16 @@ function shoppingListHTML() {
   } else {
     if (genToBuyLis || manToBuyLis) {
       html += '<h3 class="shop-sub">To buy</h3><div class="shop-list" data-gen="1">' + genToBuyLis + manToBuyLis + '</div>';
+    } else if (stapleLis) {
+      html += '<h3 class="shop-sub">To buy</h3><p class="muted">Nothing left to buy.</p>';
     }
     if (optLis) {
       html += '<details class="shop-opt-section"><summary>Optional (' + optionalIts.length + ')</summary>' +
         '<div class="shop-list" data-opt="1">' + optLis + '</div></details>';
+    }
+    if (stapleLis) {
+      html += '<details class="shop-staples-section"><summary>Pantry staples (' + stapleIts.length + ')</summary>' +
+        '<div class="shop-list" data-staples="1">' + stapleLis + '</div></details>';
     }
     if (genHaveLis || manHaveLis) {
       html += '<details class="shop-have-section"><summary>Already have (' + (haveIts.length + manHave.length) + ')</summary>' +
@@ -892,18 +983,20 @@ async function renderShopping(app) {
   document.title = 'Shopping List — Reiss Family Recipes';
   app.innerHTML =
     '<section class="page-head"><h1>Shopping List</h1>' +
-    '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p></section>' +
+    '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p>' +
+    '<label class="shop-staple-toggle no-print"><input type="checkbox" id="shop-hide-staples"' + (getHideStaples() ? ' checked' : '') + '> Hide pantry staples</label></section>' +
     '<div id="shop-wrap"></div>' +
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
 
   // Fetch full JSONs for planned recipes only (parallel).
   await ensurePlannedRecipes();
-  const wrap = $('#shop-wrap');
-  if (wrap) wrap.innerHTML = shoppingListHTML();
+  renderShopWrap();
 
   const shopWrap = $('#shop-wrap');
   const saveShop = () => { markShopDirty(); };
-  const rerender = () => { $('#shop-wrap').innerHTML = shoppingListHTML(); };
+  const rerender = () => renderShopWrap();
+  const stapleToggle = $('#shop-hide-staples');
+  if (stapleToggle) stapleToggle.addEventListener('change', () => { setHideStaples(stapleToggle.checked); rerender(); });
   // Start 15s background sync while the shopping page is open
   startShopPoll();
 
@@ -1039,10 +1132,11 @@ async function renderShopping(app) {
   const copyBtn = $('#shop-copy');
   if (copyBtn) copyBtn.addEventListener('click', () => {
     const week = getWeek(thisWeekKey());
-    const haveKeys = new Set(activeHaveMarks(week.haveGenerated).map(m => m.key));
-    const toBuy = buildShoppingList().filter(it => !haveKeys.has(it.key));
+    // Copy exactly what the To buy section shows: full lines + quantity-split
+    // remainders, minus undecided optionals and (toggle on) pantry staples.
+    const { active } = partitionStaples(splitShopItems(buildShoppingList(), week).toBuy, week);
     const manToBuy = (week.manualItems || []).filter(m => !m.deleted && !m.have);
-    const lines = toBuy.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
+    const lines = active.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
     const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
     const done = () => toast('Shopping list copied');
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2805,9 +2899,7 @@ async function pollShopServer() {
     }
     saveShopLocal();
     // Re-render if we're on the shopping page
-    if ((location.hash || '#/') === '#/shopping' && $('#shop-wrap')) {
-      $('#shop-wrap').innerHTML = shoppingListHTML();
-    }
+    if ((location.hash || '#/') === '#/shopping') renderShopWrap();
   } catch (e) { /* offline or worker not yet deployed — non-fatal */ }
 }
 // 15s poll while the shopping page is open
