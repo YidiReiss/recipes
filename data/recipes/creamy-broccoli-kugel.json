@@ -120,7 +120,16 @@
         }
       ],
       "reasoning": "Family update: frozen broccoli pieces (microwaved) instead of fresh bunch, removed vegetable bouillon, almond milk instead of nondairy creamer. Mixture made separately and mixed into the broccoli."
+    },
+    {
+      "ts": "2026-10-21T20:57:17.036Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
