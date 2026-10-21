@@ -692,15 +692,17 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "dill-dip-salmon",
                 "leftovers": false,
                 "cookDate": null
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -822,7 +824,13 @@
           "deleted": true
         }
       ],
-      "haveGenerated": [],
+      "haveGenerated": [
+        {
+          "key": "garlic powder|",
+          "session": "smviev103m8q92u",
+          "at": 1792605215955
+        }
+      ],
       "optionalPromoted": []
     }
   }
