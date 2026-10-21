@@ -1,16 +1,1 @@
-{
-  "id": "inbox-mvij2axp-fos",
-  "url": null,
-  "image": "data/inbox/inbox-mviilvvl-6hj.jpg",
-  "images": [
-    "data/inbox/inbox-mviilvvl-6hj.jpg"
-  ],
-  "file": null,
-  "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the French Onion Soup (cookbook page 68). Family note from the original submission: 'For the French onion soup we don't add sugar' - omit the sugar from the ingredients and the instructions. The Garlic Baguette box at the bottom of the page is part of this recipe. The book marks it DAIRY.",
-  "text": null,
-  "status": "pending",
-  "created_at": "2026-10-21T19:51:13.000Z",
-  "recipe_id": null,
-  "fail_reason": null,
-  "needs": null
-}
+{"id": "inbox-mvij2axp-fos", "url": null, "image": "data/inbox/inbox-mviilvvl-6hj.jpg", "images": ["data/inbox/inbox-mviilvvl-6hj.jpg"], "file": null, "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the French Onion Soup (cookbook page 68). Family note from the original submission: 'For the French onion soup we don't add sugar' - omit the sugar from the ingredients and the instructions. The Garlic Baguette box at the bottom of the page is part of this recipe. The book marks it DAIRY.", "text": null, "status": "working", "created_at": "2026-10-21T19:51:13.000Z", "recipe_id": null, "fail_reason": null, "needs": null}
