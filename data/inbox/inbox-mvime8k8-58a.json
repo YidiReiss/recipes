@@ -1,0 +1,16 @@
+{
+  "id": "inbox-mvime8k8-58a",
+  "url": null,
+  "image": "data/inbox/inbox-mvime8k8-58a.jpg",
+  "images": [
+    "data/inbox/inbox-mvime8k8-58a.jpg",
+    "data/inbox/inbox-mvime8k8-58a-p2.jpg"
+  ],
+  "file": null,
+  "note": "Cheesey Garlic Bread Recipe",
+  "text": null,
+  "status": "pending",
+  "created_at": "2026-10-21T21:24:33.351Z",
+  "recipe_id": null,
+  "fail_reason": null
+}
