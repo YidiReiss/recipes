@@ -1,8 +1,7 @@
 {
   "banner_image": "assets/images/gochujang-korean-tofu.jpg",
   "categories": [
-    "main",
-    "tofu"
+    "main"
   ],
   "cook_minutes": 30,
   "id": "gochujang-korean-tofu",
@@ -124,7 +123,8 @@
     "vegan",
     "spicy",
     "gluten-free",
-    "crispy"
+    "crispy",
+    "tofu"
   ],
   "tags_need_review": false,
   "title": "Crispy Gochujang Korean Tofu",
@@ -142,5 +142,25 @@
       "text": "Press the tofu well and don't crowd the pan — space lets the edges crisp."
     }
   ],
-  "photo_generated": true
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-21T02:19:18.798Z",
+      "actor": "site-editor (Muse)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "2 items (main; tofu)",
+          "to": "1 items (main)"
+        },
+        {
+          "field": "tags",
+          "from": "4 items (vegan; spicy; gluten-free; …)",
+          "to": "5 items (vegan; spicy; gluten-free; …)"
+        }
+      ],
+      "reasoning": "Per Yidi: tofu is not a category - removed from categories (kept main) and added as a tag. Pasta stays a category."
+    }
+  ]
 }
