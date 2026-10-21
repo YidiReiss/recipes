@@ -25,12 +25,8 @@
         {
           "qty": "1",
           "unit": "",
-          "item": "large bunch broccoli"
-        },
-        {
-          "qty": "1",
-          "unit": "cube",
-          "item": "vegetable bouillon"
+          "item": "frozen broccoli pieces",
+          "prep": "microwaved"
         },
         {
           "qty": "1 1/2",
@@ -45,7 +41,8 @@
         {
           "qty": "1/2",
           "unit": "cup",
-          "item": "nondairy creamer"
+          "item": "almond milk",
+          "prep": null
         },
         {
           "qty": "1/2",
@@ -72,14 +69,14 @@
     }
   ],
   "instructions": [
-    "Preheat the oven to 350\u00b0F.",
-    "Thoroughly wash the broccoli and trim off the tough ends. Cook in a 3-quart saucepan with water to cover until tender but not too soft. Add the vegetable bouillon to the water and continue to cook. Drain and mash the broccoli.",
-    "Combine the margarine, flour, and nondairy creamer in a 1 1/2-quart saucepan. Simmer over a low flame until thickened. Remove from the flame and allow to cool 5 minutes.",
+    "Preheat the oven to 350°F.",
+    "Microwave the frozen broccoli pieces until tender. Drain and mash the broccoli.",
+    "Combine the margarine, flour, and almond milk in a 1 1/2-quart saucepan. Simmer over a low flame until thickened. Remove from the flame and allow to cool 5 minutes.",
     "Add the mayonnaise, onion soup mix, and eggs and mix well. Add the cooled mixture to the broccoli and mix until well combined.",
     "Grease an 8-inch square pan. Pour 1/4 cup of the crumbs on the bottom of the pan and pour the broccoli mixture on top. Sprinkle the top with the remaining 1/4 cup corn flake crumbs. Bake for 30 minutes."
   ],
   "tips": [],
-  "notes": "Cookbook page; the recipe continues in a 'Continued' column on the next page (Carrot Loaf on that page is a separate recipe, not included here). Yields 9 servings. Use pareve margarine, nondairy creamer, mayonnaise, and bouillon. Banner is AI-generated (the submitted photos are of cookbook pages) and flagged for replacement with a real photo.",
+  "notes": "Cookbook page; the recipe continues in a 'Continued' column on the next page (Carrot Loaf on that page is a separate recipe, not included here). Yields 9 servings. Use pareve margarine, almond milk, and mayonnaise. Family update: frozen broccoli pieces (microwaved) instead of fresh, no bouillon, almond milk instead of nondairy creamer. Banner is AI-generated (the submitted photos are of cookbook pages) and flagged for replacement with a real photo.",
   "source": "Cookbook page (photo submission, family batch)",
   "pairings": [],
   "tags_need_review": false,
@@ -95,6 +92,35 @@
         "Created recipe"
       ],
       "reasoning": "Intake from cookbook page photos (Creamy Broccoli Kugel, recipe continued in column on next page). Servings 9 explicit on page. Prep: 5 base + 8x1 handling (bouillon, margarine, flour, nondairy creamer, mayonnaise, onion soup mix, eggs, corn flake crumbs) + 3 wash/trim broccoli + 2 mash broccoli = 18 -> 20. Cook: broccoli cook 10 (no explicit time, conservative) + sauce thicken 5 + bake 30 = 45. Banner AI-generated (submitted photos are of cookbook pages)."
+    },
+    {
+      "ts": "2026-10-21T20:53:56.223Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 9 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "5 items (Preheat the oven to 350°F.; Thoroughly wash the broccoli and trim of; Combine the margarine, flour, and nondai; …)",
+          "to": "5 items (Preheat the oven to 350°F.; Microwave the frozen broccoli pieces unt; Combine the margarine, flour, and almond; …)"
+        },
+        {
+          "field": "notes",
+          "from": "Cookbook page; the recipe continues in a 'Continued' column on the next page (Carrot Loaf on that page is a separate recipe, not included here). Yields 9 servings. Use pareve margarine, nondairy creamer, mayonnaise, and bouillon. Banner is AI-generated (the submitted photos are of cookbook pages) and flagged for replacement with a real photo.",
+          "to": "Cookbook page; the recipe continues in a 'Continued' column on the next page (Carrot Loaf on that page is a separate recipe, not included here). Yields 9 servings. Use pareve margarine, almond milk, and mayonnaise. Family update: frozen broccoli pieces (microwaved) instead of fresh, no bouillon, almond milk instead of nondairy creamer. Banner is AI-generated (the submitted photos are of cookbook pages) and flagged for replacement with a real photo."
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Family update: frozen broccoli pieces (microwaved) instead of fresh bunch, removed vegetable bouillon, almond milk instead of nondairy creamer. Mixture made separately and mixed into the broccoli."
     }
-  ]
+  ],
+  "pdf_stale": true
 }
