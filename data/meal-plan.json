@@ -695,14 +695,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "dill-dip-salmon",
-                "leftovers": false,
-                "cookDate": null
-              }
-            ]
+            "note": ""
           }
         },
         {
