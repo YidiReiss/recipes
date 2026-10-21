@@ -973,5 +973,16 @@
     "created_at": "2026-10-21T02:02:46.654Z",
     "recipe_id": null,
     "fail_reason": null
+  },
+  {
+    "id": "edit-mvhgwsvn-9bl4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cookie-dough-fudge-pie",
+    "recipe_id": "cookie-dough-fudge-pie",
+    "title": "Cookie Dough Fudge Pie",
+    "actor": "site-editor (Muse)",
+    "note": "Category cleanup: \"desserts\" is not a standard category - normalized to \"dessert\" (fixes the duplicate dessert tile / category list).",
+    "created_at": "2026-10-21T02:03:09.904Z"
   }
 ]
