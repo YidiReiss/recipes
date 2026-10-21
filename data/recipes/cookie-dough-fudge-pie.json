@@ -1,7 +1,7 @@
 {
   "banner_image": "assets/images/cookie-dough-fudge-pie.jpg",
   "categories": [
-    "desserts"
+    "dessert"
   ],
   "cook_minutes": 40,
   "id": "cookie-dough-fudge-pie",
@@ -147,6 +147,19 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 20 (two mixer batches + breaking/placing cookie dough pieces) per Sous Chef rules. cook/servings already set."
+    },
+    {
+      "ts": "2026-10-21T02:03:09.904Z",
+      "actor": "site-editor (Muse)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "1 items (desserts)",
+          "to": "1 items (dessert)"
+        }
+      ],
+      "reasoning": "Category cleanup: \"desserts\" is not a standard category - normalized to \"dessert\" (fixes the duplicate dessert tile / category list)."
     }
   ]
 }
