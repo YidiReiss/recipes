@@ -1355,9 +1355,9 @@
     "url": null,
     "image": "data/inbox/inbox-mvijyqyi-60q.jpg",
     "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Elbows and Tuna Casserole.",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-10-21T20:49:50.000Z",
-    "recipe_id": null,
+    "recipe_id": "elbows-and-tuna-casserole",
     "fail_reason": null
   },
   {
@@ -1365,9 +1365,9 @@
     "url": null,
     "image": "data/inbox/inbox-mvijyqyi-60q-p2.jpg",
     "note": "Split from inbox-mvijyqyi-60q (auto-split): this entry is ONLY Curried Chick Pea Casserole.",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-10-21T20:49:50.000Z",
-    "recipe_id": null,
+    "recipe_id": "curried-chick-pea-casserole",
     "fail_reason": null
   },
   {
