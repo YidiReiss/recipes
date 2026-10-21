@@ -1,0 +1,151 @@
+{
+  "id": "honey-lemon-chicken",
+  "title": "Honey Lemon Chicken",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "tags": [
+    "quick",
+    "weeknight"
+  ],
+  "prep_minutes": 30,
+  "cook_minutes": 15,
+  "servings": "6",
+  "leftover_friendly": true,
+  "leftover_note": "Reheats in the pan; turn to coat in the sauce.",
+  "banner_image": "assets/images/honey-lemon-chicken.jpg",
+  "photo_generated": true,
+  "ingredients": [
+    {
+      "section": "Chicken",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "lb",
+          "item": "chicken breast"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "salt and pepper",
+          "prep": "to taste"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "flour"
+        }
+      ]
+    },
+    {
+      "section": "Sauce",
+      "items": [
+        {
+          "qty": "1 1/2",
+          "unit": "tbsp",
+          "item": "oil"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "3-4",
+          "unit": "cloves",
+          "item": "garlic",
+          "prep": "minced"
+        },
+        {
+          "qty": "2",
+          "unit": "cup",
+          "item": "chicken broth"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "honey"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "lemon juice",
+          "prep": "fresh"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "soy sauce"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "water"
+        }
+      ]
+    },
+    {
+      "section": "To serve (optional)",
+      "items": [
+        {
+          "qty": "",
+          "unit": "",
+          "item": "lemon slices",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "parsley",
+          "prep": "finely chopped",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Slice each chicken breast horizontally to form 4 steaks in total. Optional (for more even cooking): pound to even thickness about 1 cm / 2/5\" thick.",
+    "Sprinkle each side generously with salt and pepper.",
+    "Place the flour in a shallow dish. Coat the chicken in the flour, shaking off excess.",
+    "Mix 1 tsp of the flour (reserved from step 3) with the water. Set aside.",
+    "Place the oil and olive oil in a skillet over medium-high heat until hot. Add the chicken and cook for 2 minutes or until golden brown. Turn and cook the other side until golden brown, then transfer to a plate to rest.",
+    "Add the garlic to the skillet and stir for 20 seconds or until golden. Add the chicken broth and bring to a simmer, scraping the brown bits from the bottom of the pan into the liquid.",
+    "Add the honey, lemon juice, soy sauce, and flour/water mixture to the skillet. Mix and bring to a simmer for 2 to 3 minutes until thickened into a syrup. Add salt and pepper to taste.",
+    "To serve, pour the sauce over the chicken and garnish with parsley and lemon slices if using. Alternatively, return the chicken to the pan for 30 seconds (to reheat), turning to coat in the sauce."
+  ],
+  "tips": [
+    {
+      "title": "Extra juicy chicken",
+      "text": "Bringing the chicken to room temperature really helps it cook very fast, keeping it extra juicy."
+    },
+    {
+      "title": "Veggie bonus",
+      "text": "Blanch asparagus or other fairly flat vegetables in the sauce while it simmers \u2014 add 1/4 cup of water and cook the veggies until crisp-tender."
+    },
+    {
+      "title": "Freezing",
+      "text": "Don't freeze the chicken in the sauce (it goes soggy when stored). Freeze the sauce separately from the cooked chicken."
+    }
+  ],
+  "notes": "RecipeTin Eats (Nagi) printout, pages 1-2 of 3 \u2014 the recipe text is complete on these two pages. Family handwritten edits applied: chicken 2 lb (replaces 1 lb / 500 g); butter replaced with oil (the printed recipe used butter with chicken \u2014 the family's oil swap keeps it kosher); garlic 3-4 cloves (replaces 1 clove); chicken broth 2 cups (replaces 3/4 cup); lemon juice 1/2 cup (replaces 1/4 cup); soy sauce 2 tsp (replaces 1 tsp); flour unchanged. The handwritten water amount was unreadable \u2014 kept the printed 2 tbsp; the family's exact amount is uncertain. Printed times (5 min prep, 7 min cook, serves 4) are for the original 1-lb recipe and were adjusted up for the doubled version. Banner is AI-generated (the submission is printout photos) and flagged for replacement with a real photo.",
+  "source": "RecipeTin Eats (Nagi) \u2014 family printout with handwritten edits",
+  "pairings": [],
+  "tags_need_review": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf": "pdfs/honey-lemon-chicken.pdf",
+  "history": [
+    {
+      "ts": "2026-10-21T20:30:00.000Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from RecipeTin Eats printout photos (pp.1-2 of 3, family handwritten edits). Servings: printed 4 for 1 lb; family doubled chicken to 2 lb = 32 oz / 6 oz per person = 5.3 -> 6. Prep: 5 base + 9x1 handling (salt/pepper, flour, oil, olive oil, broth, honey, soy sauce, water, lemon slices/parsley) + 2 juice lemons (1/2 cup fresh) + 2 mince 3-4 garlic cloves + 3.5 slice 2 lb breasts horizontally + 8 dredge/coat assembly = 29.5 -> 30. Cook: chicken 2 min per side = 4, doubled batch x2 = 8 + garlic/simmer 2 + sauce simmer 2-3 (upper 3) = 13 -> 15. Banner AI-generated (submission is printout pages)."
+    }
+  ]
+}
