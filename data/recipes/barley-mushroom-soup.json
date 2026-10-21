@@ -1,6 +1,6 @@
 {
   "id": "barley-mushroom-soup",
-  "title": "Barley Mushroom Soup",
+  "title": "Mushroom Barley Soup",
   "kosher_status": "pareve",
   "kosher_for_passover": false,
   "categories": [
@@ -14,7 +14,7 @@
   "cook_minutes": 130,
   "servings": "8",
   "leftover_friendly": true,
-  "leftover_note": "Reheats well; barley will absorb broth \u2014 add a splash of water when reheating.",
+  "leftover_note": "Reheats well; barley will absorb broth — add a splash of water when reheating.",
   "banner_image": "assets/images/barley-mushroom-soup.jpg",
   "photo_generated": true,
   "ingredients": [
@@ -88,15 +88,15 @@
           "qty": "1 1/2",
           "unit": "",
           "item": "portions of flanken",
-          "prep": "for the hearty meat variation \u2014 add with the water and cook as above",
+          "prep": "for the hearty meat variation — add with the water and cook as above",
           "optional": true
         }
       ]
     }
   ],
   "instructions": [
-    "Saut\u00e9 the onion and bay leaf in the margarine until tender.",
-    "Add the mushrooms and saut\u00e9 until the onions are golden.",
+    "Sauté the onion and bay leaf in the margarine until tender.",
+    "Add the mushrooms and sauté until the onions are golden.",
     "Push the vegetables aside and stir in the flour until smooth.",
     "Gradually stir in the water. Add the remaining ingredients (barley, celery, carrots, salt, pepper).",
     "Bring to a boil and simmer for 1 1/2 to 2 hours."
@@ -123,6 +123,25 @@
         "Created recipe"
       ],
       "reasoning": "Intake from cookbook page photo (Barley Mushroom Soup by Meichal Weingarten). Servings estimated: 8 cups liquid + 0.5 x ~4.5 cups solids x 0.9 = ~10 cups / 1.25 cups starter soup = 8. Prep: 5 base + 7x1 handling (bay leaf, margarine, flour, water, barley, salt, pepper) + 3 dice onion + 3.5 slice 1/2 lb mushrooms + 3 dice celery + 3.5 dice 2 carrots = 25. Cook: saute 10 + simmer 1.5-2 hours (upper bound 120) = 130. Banner AI-generated (submitted photo is of the cookbook page)."
+    },
+    {
+      "ts": "2026-10-21T20:40:59.251Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "title",
+          "from": "Barley Mushroom Soup",
+          "to": "Mushroom Barley Soup"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
