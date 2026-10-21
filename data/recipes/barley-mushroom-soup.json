@@ -1,7 +1,7 @@
 {
   "id": "barley-mushroom-soup",
   "title": "Mushroom Barley Soup",
-  "kosher_status": "pareve",
+  "kosher_status": "meat",
   "kosher_for_passover": false,
   "categories": [
     "soup"
@@ -85,17 +85,16 @@
           "item": "pepper"
         },
         {
-          "qty": "1 1/2",
+          "qty": "",
           "unit": "",
-          "item": "portions of flanken",
-          "prep": "for the hearty meat variation — add with the water and cook as above",
-          "optional": true
+          "item": "chicken legs",
+          "prep": "separated into leg and thigh, skin removed, seared with the vegetables"
         }
       ]
     }
   ],
   "instructions": [
-    "Sauté the onion and bay leaf in the margarine until tender.",
+    "Sauté the onion and bay leaf in the margarine until tender. Add the chicken legs and sear a bit with the vegetables.",
     "Add the mushrooms and sauté until the onions are golden.",
     "Push the vegetables aside and stir in the flour until smooth.",
     "Gradually stir in the water. Add the remaining ingredients (barley, celery, carrots, salt, pepper).",
@@ -107,10 +106,10 @@
       "text": "For a hearty meat soup, add 1 1/2 portions of flanken with the water and cook as above. (With flanken this becomes a meat soup.)"
     }
   ],
-  "notes": "By Meichal Weingarten, cookbook page photo. Family note: the carrot was handwritten as 2 (applied). A couple of other handwritten notes on the page were too hard to read and were not applied. The soup is pareve as written; the flanken variation makes it a meat soup. Banner is AI-generated (the submitted photo is of the cookbook page) and flagged for replacement with a real photo.",
+  "notes": "By Meichal Weingarten, cookbook page photo. Family note: the carrot was handwritten as 2 (applied). Family update: the flanken variation is replaced by chicken legs (separated into leg and thigh, skin removed, seared with the vegetables) - mandatory, not optional - so the soup is now a meat soup as written. A couple of other handwritten notes on the page were too hard to read and were not applied. Banner is AI-generated (the submitted photo is of a cookbook page) and flagged for replacement with a real photo.",
   "source": "Meichal Weingarten cookbook (photo submission, family batch)",
   "pairings": [],
-  "tags_need_review": false,
+  "tags_need_review": true,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
   "pdf": "pdfs/barley-mushroom-soup.pdf",
@@ -141,6 +140,39 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-10-21T20:53:58.041Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "kosher_status",
+          "from": "pareve",
+          "to": "meat"
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 12 items])",
+          "to": "1 items ([section: 12 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "5 items (Sauté the onion and bay leaf in the marg; Add the mushrooms and sauté until the on; Push the vegetables aside and stir in th; …)",
+          "to": "5 items (Sauté the onion and bay leaf in the marg; Add the mushrooms and sauté until the on; Push the vegetables aside and stir in th; …)"
+        },
+        {
+          "field": "notes",
+          "from": "By Meichal Weingarten, cookbook page photo. Family note: the carrot was handwritten as 2 (applied). A couple of other handwritten notes on the page were too hard to read and were not applied. The soup is pareve as written; the flanken variation makes it a meat soup. Banner is AI-generated (the submitted photo is of the cookbook page) and flagged for replacement with a real photo.",
+          "to": "By Meichal Weingarten, cookbook page photo. Family note: the carrot was handwritten as 2 (applied). Family update: the flanken variation is replaced by chicken legs (separated into leg and thigh, skin removed, seared with the vegetables) - mandatory, not optional - so the soup is now a meat soup as written. A couple of other handwritten notes on the page were too hard to read and were not applied. Banner is AI-generated (the submitted photo is of a cookbook page) and flagged for replacement with a real photo."
+        },
+        {
+          "field": "tags_need_review",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Family update: flanken variation replaced by chicken legs (leg+thigh separated, skin removed, seared with vegetables) - mandatory not optional. Soup is now meat as written."
     }
   ],
   "pdf_stale": true
