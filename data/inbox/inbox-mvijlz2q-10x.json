@@ -1,18 +1,16 @@
 {
-  "id": "inbox-mvijlz2q-10x",
-  "url": null,
-  "image": "data/inbox/inbox-mvijlz2q-10x.jpg",
-  "images": [
-    "data/inbox/inbox-mvijlz2q-10x.jpg"
-  ],
-  "file": null,
-  "note": null,
-  "text": null,
-  "status": "needs_input",
-  "created_at": "2026-10-21T20:06:35.247Z",
-  "recipe_id": null,
-  "fail_reason": "Marinade recipe is complete, but it doesn't say how much chicken it covers \u2014 needed for servings.",
-  "needs": [
-    "servings"
-  ]
+ "id": "inbox-mvijlz2q-10x",
+ "url": null,
+ "image": "data/inbox/inbox-mvijlz2q-10x.jpg",
+ "images": [
+  "data/inbox/inbox-mvijlz2q-10x.jpg"
+ ],
+ "file": null,
+ "note": "Yidi answered 2026-10-21: the marinade is for 1.5 lb pargiot (dark chicken cutlets) \u2014 set servings from that.",
+ "text": null,
+ "status": "pending",
+ "created_at": "2026-10-21T20:06:35.247Z",
+ "recipe_id": null,
+ "fail_reason": null,
+ "needs": null
 }
