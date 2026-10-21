@@ -1339,5 +1339,16 @@
     "edit_target": "barley-mushroom-soup",
     "created_at": "2026-10-21T20:40:14.191Z",
     "text": "Instead of the flanken, we usually put sets of chicken legs (separated leg and thigh) remove skin, and sear it a bit with the veggies after "
+  },
+  {
+    "id": "edit-mvikubn1-0hpg",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "barley-mushroom-soup",
+    "recipe_id": "barley-mushroom-soup",
+    "title": "Mushroom Barley Soup",
+    "actor": "site-editor (Yidi)",
+    "note": "Changed title",
+    "created_at": "2026-10-21T20:40:59.251Z"
   }
 ]
