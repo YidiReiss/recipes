@@ -9,9 +9,9 @@
     "data/inbox/inbox-mviilvvl-6hj-p3.jpg"
   ],
   "file": null,
-  "note": "QA test T2: batch of separate recipes (French Onion Soup photo, Barley Mushroom Soup photo, Honey Lemon Chicken pp.1-2). Expect: split plan with 3 recipes.",
+  "note": "QA test T2: batch of separate recipes (French Onion Soup photo, Barley Mushroom Soup photo, Honey Lemon Chicken pp.1-2). Expect: split plan with 3 recipes. \u2014 test_mode completed",
   "text": null,
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-21T20:11:10.000Z",
   "recipe_id": null,
   "fail_reason": null,
