@@ -1,0 +1,104 @@
+{
+  "banner_image": "assets/images/curried-chick-pea-casserole.jpg",
+  "categories": [
+    "main",
+    "side"
+  ],
+  "cook_minutes": 45,
+  "id": "curried-chick-pea-casserole",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "vegetable oil",
+          "prep": null,
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "onions",
+          "prep": "chopped",
+          "qty": "1 1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "garlic",
+          "prep": "finely chopped",
+          "qty": "3-4",
+          "unit": "cloves"
+        },
+        {
+          "item": "bay leaf",
+          "prep": null,
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "canned cream-style corn",
+          "prep": null,
+          "qty": "1 1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "chick peas (1-pound can)",
+          "prep": "rinsed and drained",
+          "qty": "1",
+          "unit": "can"
+        },
+        {
+          "item": "curry powder",
+          "prep": null,
+          "qty": "2 1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "turmeric",
+          "prep": null,
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "ground cumin",
+          "prep": null,
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "water",
+          "prep": null,
+          "qty": "1",
+          "unit": "cup"
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 375\u00b0.",
+    "Lightly oil a 1-1/2-quart baking dish or spray with a nonstick cooking spray.",
+    "Heat oil in a large nonstick skillet over medium heat. Add onions, garlic, and bay leaf. Cook, stirring frequently, until onions are browned, about 15 minutes. Remove from heat and discard bay leaf.",
+    "Add remaining ingredients. Mix well. Spoon into prepared baking dish.",
+    "Bake, covered, 30 minutes."
+  ],
+  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "If you like Indian food, you'll love the wonderful blend of textures and spices in this easy casserole. Family handwritten edits applied: garlic raised to 3-4 cloves, the 1-1/2 cups cooked brown rice struck out, water raised to 1 cup, curry powder 2 1/2 tsp. A handwritten 'potatoes' note (circled 1) appears with no amount - not added, flagged for review. Checkmark on the page suggests the family has tried it.",
+  "pairings": [],
+  "pdf": "pdfs/curried-chick-pea-casserole.pdf",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "prep_minutes": 20,
+  "servings": "6",
+  "source": "Cookbook page 150, Lean and Luscious and Meatless (photo submission, family batch)",
+  "tags": [
+    "vegetarian",
+    "healthy",
+    "one-pot"
+  ],
+  "tags_need_review": true,
+  "tips": [],
+  "title": "Curried Chick Pea Casserole"
+}
