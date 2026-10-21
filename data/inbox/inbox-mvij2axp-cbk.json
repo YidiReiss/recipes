@@ -1,17 +1,1 @@
-{
-  "id": "inbox-mvij2axp-cbk",
-  "url": null,
-  "image": "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
-  "images": [
-    "data/inbox/inbox-mviilvvl-6hj-p4.jpg",
-    "data/inbox/inbox-mviilvvl-6hj-p5.jpg"
-  ],
-  "file": null,
-  "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the Creamy Broccoli Kugel. It starts on the first photo and CONTINUES in the 'Continued' column at the top of the second photo (8-inch square pan, yields 9 servings, bake 30 minutes). The second photo's main recipe (Carrot Loaf) is a separate submission - ignore it here. The fragment at the top-right of the first photo (mentions a 9-inch pan) is the end of an unrelated recipe - ignore it.",
-  "text": null,
-  "status": "pending",
-  "created_at": "2026-10-21T19:51:13.000Z",
-  "recipe_id": null,
-  "fail_reason": null,
-  "needs": null
-}
+{"id": "inbox-mvij2axp-cbk", "url": null, "image": "data/inbox/inbox-mviilvvl-6hj-p4.jpg", "images": ["data/inbox/inbox-mviilvvl-6hj-p4.jpg", "data/inbox/inbox-mviilvvl-6hj-p5.jpg"], "file": null, "note": "Split from a 6-photo batch at Yidi's request - this entry is ONLY the Creamy Broccoli Kugel. It starts on the first photo and CONTINUES in the 'Continued' column at the top of the second photo (8-inch square pan, yields 9 servings, bake 30 minutes). The second photo's main recipe (Carrot Loaf) is a separate submission - ignore it here. The fragment at the top-right of the first photo (mentions a 9-inch pan) is the end of an unrelated recipe - ignore it.", "text": null, "status": "working", "created_at": "2026-10-21T19:51:13.000Z", "recipe_id": null, "fail_reason": null, "needs": null}
