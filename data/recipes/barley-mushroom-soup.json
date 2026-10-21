@@ -173,7 +173,16 @@
         }
       ],
       "reasoning": "Family update: flanken variation replaced by chicken legs (leg+thigh separated, skin removed, seared with vegetables) - mandatory not optional. Soup is now meat as written."
+    },
+    {
+      "ts": "2026-10-21T20:57:31.862Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
