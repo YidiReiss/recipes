@@ -235,21 +235,12 @@ async function boot() {
   // Keep the meal plan fresh when someone else (e.g. Nava) saves:
   // re-fetch when the tab regains focus, unless mid-edit.
   const maybeRefreshPlan = async () => {
+    if (_savePlanInFlight > 0) return;
     if (editingSlot || document.hidden) return;
     const mp = await fetchLiveMealPlan();
     if (mp && typeof mp.weeks === 'object') {
-      // Merge, don't overwrite: preserve local shopping state.
-      Object.keys(mp.weeks).forEach(k => {
-        const serverWeek = mp.weeks[k];
-        const localWeek = mealPlan.weeks[k];
-        if (!localWeek || !Array.isArray(localWeek.days)) {
-          mealPlan.weeks[k] = serverWeek;
-        } else {
-          const merged = { ...serverWeek };
-          mergeWeekState(merged, localWeek);
-          mealPlan.weeks[k] = merged;
-        }
-      });
+      // Merge, don't overwrite: fresh days win, local shopping state unions in.
+      mealPlan = mergeMealPlan(mp, mealPlan);
       const h = location.hash || '#/';
       if (h === '#/planner' || h === '#/' || h === '') route();
     }
@@ -260,21 +251,12 @@ async function boot() {
 
 /* Re-fetch the meal plan (e.g. after someone else saves). Skips while editing. */
 async function refreshMealPlan() {
+  if (_savePlanInFlight > 0) return;
   if (editingSlot) return;
   const mp = await fetchLiveMealPlan();
   if (!mp) return;
   // Merge, don't overwrite: server wins for days (planner), union for shopping state.
-  Object.keys(mp.weeks).forEach(k => {
-    const serverWeek = mp.weeks[k];
-    const localWeek = mealPlan.weeks[k];
-    if (!localWeek || !Array.isArray(localWeek.days)) {
-      mealPlan.weeks[k] = serverWeek;
-    } else {
-      const merged = { ...serverWeek };
-      mergeWeekState(merged, localWeek);
-      mealPlan.weeks[k] = merged;
-    }
-  });
+  mealPlan = mergeMealPlan(mp, mealPlan);
 }
 
 /* ---------------- Router ---------------- */
@@ -695,10 +677,13 @@ function weekStripHTML() {
     const isShop = shopDay && weekDayYmd(mon, i) === shopDay;
     const parts = [];
     ['lunch', 'dinner'].forEach(m => {
-      const s = ds[m];
-      if (!s || s.skipped) return;
-      if (s.recipe && recipeMeta(s.recipe)) parts.push(recipeMeta(s.recipe).title);
-      else if (s.custom) parts.push(s.custom);
+      const s = normalizeSlot(ds[m]);
+      if (s.skipped) return;
+      s.dishes.forEach(dish => {
+        const meta = dish.recipe ? recipeMeta(dish.recipe) : null;
+        if (meta) parts.push(meta.title);
+        else if (dish.custom) parts.push(dish.custom);
+      });
     });
     out.push(
       '<a class="week-day' + (isShop ? ' is-shop' : '') + '" href="#/planner">' +
@@ -2700,9 +2685,148 @@ function saveSlot(key) {
   persistWeek(key, st, () => { editingSlot = null; renderPlanner($('#app')); });
 }
 
+/* ---------------- Meal plan sync: one serialized writer ----------------
+   Every write to data/meal-plan.json goes through saveMealPlan(): saves are
+   queued on a promise chain so rapid taps can't race, each attempt re-reads
+   the fresh server copy via the bridge (never the Pages CDN), merges it with
+   local state via mergeMealPlan(), applies the caller's mutator LAST, and
+   writes the result. Retries (at most 3 attempts, 400ms apart) happen only on
+   failure; a successful save is NOT verified with a re-read — the GitHub
+   Contents API is synchronous, so a SHA race surfaces as a failed write and
+   takes the retry path. */
+
+// Read the meal plan straight from the bridge /read endpoint (the same fetch
+// pattern fetchLiveMealPlan/pollShopServer use). Throws on any failure: a
+// save must never merge against a stale or empty copy.
+async function bridgeReadMealPlan() {
+  const r = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/meal-plan.json'));
+  if (!r.ok) throw new Error('meal-plan read failed (HTTP ' + r.status + ')');
+  const data = await r.json();
+  if (!data.ok || !data.content) throw new Error('meal-plan read failed (no content)');
+  const mp = JSON.parse(data.content);
+  if (!mp || typeof mp.weeks !== 'object') throw new Error('meal-plan read failed (bad shape)');
+  return mp;
+}
+
+/* Merge a fresh (server) meal plan with the local one. Fresh is the base:
+   for every shared week, fresh's days/shoppingDay/dismissedWarnings win and
+   ONLY the 4 shopping keys merge in from local (via mergeWeekState) — a
+   stale tab can never resurrect its days over the fresh copy. Weeks that
+   exist only locally (created offline, never saved) are kept untouched.
+   Top-level keys: recipePrefs merge per recipe id (latest updatedAt wins),
+   yieldLog unions by entry id (latest 200 by date), framework goes to the
+   copy with the latest updatedAt. */
+function mergeMealPlan(fresh, local) {
+  const f = (fresh && typeof fresh === 'object') ? fresh : {};
+  const l = (local && typeof local === 'object') ? local : {};
+  const merged = { ...f };
+  const fWeeks = (f.weeks && typeof f.weeks === 'object') ? f.weeks : {};
+  const lWeeks = (l.weeks && typeof l.weeks === 'object') ? l.weeks : {};
+  merged.weeks = {};
+  Object.keys(fWeeks).forEach(k => {
+    const fw = fWeeks[k];
+    const lw = lWeeks[k];
+    if (lw && fw && typeof fw === 'object' && typeof lw === 'object') {
+      const w = { ...fw };
+      mergeWeekState(w, lw);   // merges ONLY the 4 shopping keys from local
+      merged.weeks[k] = w;
+    } else {
+      merged.weeks[k] = fw;
+    }
+  });
+  Object.keys(lWeeks).forEach(k => {
+    if (!(k in merged.weeks)) merged.weeks[k] = lWeeks[k];   // local-only week: keep
+  });
+  // recipePrefs: per recipe id, latest updatedAt wins (tie -> fresh).
+  if (f.recipePrefs || l.recipePrefs) {
+    const fp = f.recipePrefs || {}, lp = l.recipePrefs || {};
+    const prefs = {};
+    Object.keys(fp).forEach(id => { prefs[id] = fp[id]; });
+    Object.keys(lp).forEach(id => {
+      const cur = prefs[id];
+      if (!cur || ((lp[id] && lp[id].updatedAt) || 0) > ((cur && cur.updatedAt) || 0)) {
+        prefs[id] = lp[id];
+      }
+    });
+    merged.recipePrefs = prefs;
+  }
+  // yieldLog: union by entry id, keep the latest 200 (by date, then id).
+  if (Array.isArray(f.yieldLog) || Array.isArray(l.yieldLog)) {
+    const byEntryId = new Map();
+    [...(Array.isArray(f.yieldLog) ? f.yieldLog : []),
+     ...(Array.isArray(l.yieldLog) ? l.yieldLog : [])].forEach(e => {
+      if (!e || typeof e !== 'object') return;
+      byEntryId.set(e.id || JSON.stringify(e), e);
+    });
+    merged.yieldLog = [...byEntryId.values()].sort((a, b) => {
+      const da = String(a.date || ''), db = String(b.date || '');
+      if (da !== db) return da < db ? -1 : 1;
+      const ia = String(a.id || ''), ib = String(b.id || '');
+      return ia < ib ? -1 : ia > ib ? 1 : 0;
+    }).slice(-200);
+  }
+  // framework: latest updatedAt wins (tie -> fresh).
+  if (f.framework || l.framework) {
+    const fu = (f.framework && f.framework.updatedAt) || 0;
+    const lu = (l.framework && l.framework.updatedAt) || 0;
+    merged.framework = lu > fu ? l.framework : (f.framework || l.framework);
+  }
+  return merged;
+}
+
+let _savePlanChain = Promise.resolve();
+let _savePlanInFlight = 0;
+function saveMealPlan(mutator, message) {
+  _savePlanInFlight++;
+  const run = async () => {
+    try { return await attemptSaveMealPlan(mutator, message); }
+    finally { _savePlanInFlight--; }
+  };
+  // Run on both settle paths so one failed save cannot poison the queue.
+  _savePlanChain = _savePlanChain.then(run, run);
+  return _savePlanChain;
+}
+
+async function attemptSaveMealPlan(mutator, message) {
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const fresh = await bridgeReadMealPlan();   // never the Pages CDN
+      const merged = mergeMealPlan(fresh, mealPlan);
+      if (mutator) mutator(merged);               // caller's change, applied last
+      await ghPut('data/meal-plan.json', JSON.stringify(merged, null, 2),
+        message || 'Update meal plan');
+      mealPlan = merged;
+      saveShopLocal();
+      return merged;
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 2) await new Promise(res => setTimeout(res, 400));
+    }
+  }
+  throw lastErr;
+}
+
 async function persistWeek(key, statusEl, done) {
+  // The caller's edit is already applied to the in-memory week. Shallow-copy
+  // that week now and re-apply it as the saveMealPlan mutator: the merge
+  // takes every week from the fresh server copy (so another device's newer
+  // days are never clobbered), and the mutator — applied last — puts this
+  // tab's edited week back on top, then mergeWeekState pulls the freshly
+  // merged shopping keys (haveGenerated/manualItems/optionalPromoted/
+  // conflictAcked) from the merged copy into it, so a concurrent device's
+  // shopping marks on this same week are never wiped by the snapshot.
+  const weekSnapshot = (mealPlan.weeks && mealPlan.weeks[key]) ? { ...mealPlan.weeks[key] } : undefined;
   try {
-    await ghPut('data/meal-plan.json', JSON.stringify(mealPlan, null, 2), 'Update meal plan: ' + key);
+    await saveMealPlan(merged => {
+      if (!weekSnapshot) return;
+      const prev = merged.weeks[key];
+      const next = { ...weekSnapshot };
+      if (prev && typeof prev === 'object') {
+        mergeWeekState(next, prev);
+      }
+      merged.weeks[key] = next;
+    }, 'Update meal plan: ' + key);
     toast('Saved — the site rebuilds in about a minute.');
     if (done) done();
   } catch (e) {
@@ -2863,12 +2987,12 @@ function loadShopLocal() {
     if (raw) {
       const lp = JSON.parse(raw);
       if (lp && typeof lp.weeks === 'object') {
-        // Merge, don't overwrite: local offline taps union with the server copy.
-        Object.keys(lp.weeks).forEach(k => {
-          mergeWeekState(getWeek(k), lp.weeks[k]);
-        });
-        // Persist the merged state so localStorage never goes stale.
-        try { localStorage.setItem(SHOP_LOCAL_KEY, JSON.stringify(mealPlan)); } catch (e) {}
+        // Merge, don't overwrite: run the full mergeMealPlan so local
+        // offline state recovers the same way everywhere — shopping keys
+        // union per week, and top-level keys (recipePrefs/yieldLog/
+        // framework) come back too, not just the current week's marks.
+        mealPlan = mergeMealPlan(mealPlan, lp);
+        saveShopLocal();
       }
     }
   } catch (e) { /* ignore */ }
@@ -2892,17 +3016,21 @@ async function syncShop() {
     _shopDirty = true;  // offline — stay dirty, retry on 'online' event
     return;
   }
-  // Pull + merge FIRST so we push the union (both devices' marks), never a stale overwrite.
-  await pollShopServer();
+  // saveMealPlan itself re-reads the fresh server copy and merges before
+  // writing, so the push is already the union (both devices' marks), never
+  // a stale overwrite — no separate pollShopServer() pull needed here (it
+  // would just double the /read calls).
   try {
-    await ghPut('data/meal-plan.json', JSON.stringify(mealPlan, null, 2), 'Shopping list sync');
+    await saveMealPlan(null, 'Shopping list sync');
     _shopDirty = false;
+    if ((location.hash || '#/') === '#/shopping') renderShopWrap();
   } catch (e) {
     _shopDirty = true;  // push failed — retry on next poll / online event
   }
 }
 // Poll server state via worker /read (bypasses Pages rebuild). Merges have-marks.
 async function pollShopServer() {
+  if (_savePlanInFlight > 0) return;
   try {
     const r = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/meal-plan.json'));
     if (!r.ok) return;
@@ -2910,20 +3038,9 @@ async function pollShopServer() {
     if (!data.ok || !data.content) return;
     const server = JSON.parse(data.content);
     if (!server || typeof server.weeks !== 'object') return;
-    const key = thisWeekKey();
-    const localWeek = getWeek(key);
-    const serverWeek = (server.weeks || {})[key];
-    if (!serverWeek) return;
-    // Merge have-marks (timestamp/tombstone-aware: unchecks survive)
-    localWeek.haveGenerated = mergeHaveMarks(localWeek.haveGenerated, serverWeek.haveGenerated);
-    // Merge manual items (tombstones win: deletes survive)
-    localWeek.manualItems = mergeManualItems(localWeek.manualItems, serverWeek.manualItems);
-    // Merge optional promotions (timestamp-aware: un-promotes survive)
-    localWeek.optionalPromoted = mergePromoted(localWeek.optionalPromoted, serverWeek.optionalPromoted);
-    // Merge conflict acks
-    if (serverWeek.conflictAcked) {
-      localWeek.conflictAcked = { ...(localWeek.conflictAcked || {}), ...serverWeek.conflictAcked };
-    }
+    // Full merge: fresh days win for every week, local shopping state
+    // (timestamp/tombstone-aware) unions in, top-level keys stay live.
+    mealPlan = mergeMealPlan(server, mealPlan);
     saveShopLocal();
     // Re-render if we're on the shopping page
     if ((location.hash || '#/') === '#/shopping') renderShopWrap();
