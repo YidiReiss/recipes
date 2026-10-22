@@ -6,8 +6,8 @@
   "url": null,
   "image": null,
   "note": null,
-  "status": "pending",
+  "status": "done",
   "created_at": "2026-10-22T01:58:47.271Z",
-  "recipe_id": null,
+  "recipe_id": "margherita-pizza",
   "fail_reason": null
 }
