@@ -835,6 +835,13 @@
           "session": "smviev103m8q92u",
           "at": 1792605345318,
           "removed": true
+        },
+        {
+          "key": "garlic|cup",
+          "session": "smvju547b7jqde8",
+          "at": 1792691347079,
+          "qty": 0.83,
+          "unit": "cup"
         }
       ],
       "optionalPromoted": []
