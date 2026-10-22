@@ -4,10 +4,10 @@
   "image": "assets/images/cinnamon-rolls.jpg",
   "note": null,
   "text": null,
-  "status": "failed",
+  "status": "pending",
   "created_at": "2026-10-22T01:06:10.369Z",
   "recipe_id": null,
-  "fail_reason": "QA staged failure — delete after QA",
+  "fail_reason": null,
   "needs": null,
   "test_mode": true
 }
