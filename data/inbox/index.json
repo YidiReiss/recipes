@@ -1377,5 +1377,16 @@
     "edit_target": "margherita-pizza",
     "created_at": "2026-10-22T01:58:47.271Z",
     "text": "Okay so we need some significant changes to this recipe.\n\n1) I have a standard pizza stone (not cast iron) and you need to preheat the oven "
+  },
+  {
+    "id": "edit-mviw9z5z-2619",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "4-year-chicken-tenders-fallow",
+    "recipe_id": "4-year-chicken-tenders-fallow",
+    "title": "4-Year Chicken Tenders (Fallow)",
+    "actor": "site-editor (Yidi)",
+    "note": "Changed ingredients, pairings, kosher_review_notes, leftover_note",
+    "created_at": "2026-10-22T02:01:05.462Z"
   }
 ]
