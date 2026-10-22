@@ -2281,5 +2281,29 @@
     "tags_need_review": false,
     "photo_generated": true,
     "search_text": "unsalted butter garlic Parmesan flat-leaf parsley kosher salt black pepper baguette or rustic crusty loaf fresh mozzarella Submitted as phone screenshots of the NYT Cooking Garlic Bread page. Title 'Cheesey Garlic Bread' per the submitter's note. The butter can be made 2 days ahead (see tip)."
+  },
+  {
+    "id": "4-year-chicken-tenders-fallow",
+    "title": "4-Year Chicken Tenders (Fallow)",
+    "banner_image": "assets/images/4-year-chicken-tenders-fallow.jpg",
+    "kosher_status": "meat",
+    "kosher_for_passover": false,
+    "categories": [
+      "main",
+      "chicken"
+    ],
+    "tags": [
+      "fried",
+      "hot honey",
+      "sriracha",
+      "youtube"
+    ],
+    "prep_minutes": 45,
+    "cook_minutes": 30,
+    "servings": "6",
+    "leftover_friendly": false,
+    "tags_need_review": false,
+    "photo_generated": false,
+    "search_text": "boneless, skinless chicken thighs water kosher salt sriracha honey rice vinegar sriracha chili flakes Sichuan peppercorns fennel seeds pinch of kosher salt pinch of MSG (kosher-certified) garlic potato starch all-purpose flour white pepper kosher salt baking powder cayenne pepper MSG (kosher-certified) garlic powder black pepper unsweetened soy milk (or almond or oat milk) lemon juice or white vinegar cornstarch canola or rapeseed oil, for frying flaky sea salt, for finishing Kosher (meat) adaptation of Fallow's YouTube video 'I Spent 4 Years Perfecting These Chicken Tenders' (Oct 2026), per Yidi's request. Two changes from the video: (1) the blue cheese ranch section was omitted entirely \u2014 it is dairy, incompatible with a meat meal; (2) the wet dredge's buttermilk is replaced with a pareve mix of 1 cup unsweetened soy/almond/oat milk + 1 tbsp lemon juice or vinegar, rested 5 minutes \u2014 the acid does buttermilk's job of helping the coating stick and crunch. The video brines in water/salt/sriracha rather than buttermilk because buttermilk darkened the crust on the first fry. 185\u2013190\u00b0C = 365\u2013375\u00b0F. The 24-hour marinade is inactive time. Make sure packaged spices, MSG, and the non-dairy milk carry a reliable hechsher."
   }
 ]
