@@ -913,7 +913,211 @@
             "note": ""
           }
         }
-      ]
+      ],
+      "haveGenerated": [],
+      "manualItems": [],
+      "optionalPromoted": []
+    },
+    "2026-11-01": {
+      "days": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "babbish-baked-ziti",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "babbish-baked-ziti",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "4-year-chicken-tenders-fallow",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "4-year-chicken-tenders-fallow",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "broiled-salmon-with-pesto",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "babbish-baked-ziti",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "4-year-chicken-tenders-fallow",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "ash-e-jow-persian-barley-soup",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Never made — worth a try"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "bachash",
+                "leftovers": false,
+                "cookDate": "2026-11-05",
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat lunch · Cook Thursday"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ],
+      "draftChips": {
+        "hostingFri": false,
+        "hostingSat": false,
+        "eatOut": [],
+        "useUp": []
+      },
+      "carryInPool": {},
+      "lunchWarnings": [
+        {
+          "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
+      "haveGenerated": [],
+      "manualItems": [],
+      "optionalPromoted": []
     }
   }
 }
