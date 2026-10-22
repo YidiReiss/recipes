@@ -1150,8 +1150,8 @@
   },
   "recipePrefs": {
     "coca-cola-meatballs": {
-      "rating": "favorite",
-      "updatedAt": 1792708298279,
+      "rating": null,
+      "updatedAt": 1792708381103,
       "updatedBy": "Anonymous"
     }
   }
