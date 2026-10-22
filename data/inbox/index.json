@@ -1331,16 +1331,18 @@
     "id": "inbox-qa-logresp-b",
     "url": null,
     "image": "assets/images/baked-ziti.jpg",
-    "note": "QA staged entry B — delete after QA",
+    "note": "QA staged entry B — delete after QA — Answer from Anonymous (Oct 21, 2026): QA answer: the dish is called Potato Kugel.",
     "text": null,
-    "status": "needs_input",
+    "status": "pending",
     "created_at": "2026-10-22T01:06:10.369Z",
     "recipe_id": null,
     "fail_reason": null,
-    "needs": [
-      "title"
-    ],
-    "test_mode": true
+    "needs": null,
+    "test_mode": true,
+    "images": [
+      "assets/images/baked-ziti.jpg",
+      "data/inbox/inbox-qa-logresp-b-r2.jpg"
+    ]
   },
   {
     "id": "inbox-qa-logresp-c",
