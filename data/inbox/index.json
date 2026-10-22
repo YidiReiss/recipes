@@ -1353,5 +1353,16 @@
     "actor": "site-editor (Yidi)",
     "note": "Changed ingredients, pairings",
     "created_at": "2026-10-22T02:15:04.879Z"
+  },
+  {
+    "id": "edit-mviwthou-ex8k",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "french-onion-soup",
+    "recipe_id": "french-onion-soup",
+    "title": "French Onion Soup",
+    "actor": "site-editor (Yidi)",
+    "note": "Changed pairings",
+    "created_at": "2026-10-22T02:16:15.616Z"
   }
 ]
