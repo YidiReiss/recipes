@@ -77,6 +77,7 @@ function toast(msg) {
 function closeModal() {
   const m = $('#modal');
   if (m) m.remove();
+  if (typeof closeInboxLightbox === 'function') closeInboxLightbox();
 }
 
 /* ---------------- Write bridge ----------------
@@ -3093,20 +3094,14 @@ function renderSubmit(app) {
   if (textInput) textInput.addEventListener('input', queueDraftSave);
   // Restore any saved draft (e.g. after Android killed the tab for the camera)
   restoreSubmitDraft();
+  window._inboxRespondOpen = null;
   loadInboxList();
 }
 
-/* Shared photo processing: resize to 2400px JPEG (q=0.85), append to
-   _submitPhotos (capped at 6) + localStorage draft, update hint and preview. */
-async function processPhotoFile(file, nameOverride) {
-  if (!Array.isArray(window._submitPhotos)) window._submitPhotos = [];
-  const photoHint = $('#s-photo-hint');
-  if (window._submitPhotos.length >= 6) {
-    if (photoHint) photoHint.textContent = '6 photos ready (limit is 6)';
-    toast('Maximum 6 photos per submission.');
-    updatePhotoPreview();
-    return;
-  }
+/* Shared photo resize helper: resize longest edge to 2400px JPEG (q=0.85),
+   falling back to raw base64 with extension guessed from MIME/filename.
+   Returns { b64, name, ext } (b64 is null if unreadable). */
+async function resizePhotoFile(file, nameOverride) {
   const name = nameOverride || (file && file.name) || 'photo.jpg';
   let b64 = null;
   let ext = 'jpg';
@@ -3138,6 +3133,21 @@ async function processPhotoFile(file, nameOverride) {
       b64 = null;
     }
   }
+  return { b64, name, ext };
+}
+
+/* Shared photo processing: resize to 2400px JPEG (q=0.85), append to
+   _submitPhotos (capped at 6) + localStorage draft, update hint and preview. */
+async function processPhotoFile(file, nameOverride) {
+  if (!Array.isArray(window._submitPhotos)) window._submitPhotos = [];
+  const photoHint = $('#s-photo-hint');
+  if (window._submitPhotos.length >= 6) {
+    if (photoHint) photoHint.textContent = '6 photos ready (limit is 6)';
+    toast('Maximum 6 photos per submission.');
+    updatePhotoPreview();
+    return;
+  }
+  const { b64, name, ext } = await resizePhotoFile(file, nameOverride);
   if (!b64) {
     if (photoHint) {
       const n = window._submitPhotos.length;
@@ -3349,20 +3359,27 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
   if (!host) return;
   let idx = [];
   try {
-    // Cache-buster: GitHub Pages aggressively caches JSON
-    const r = await fetch('data/inbox/index.json?v=' + Date.now());
-    if (r.ok) idx = await r.json();
+    // Read via live bridge first (no Pages CDN lag), falling back to public fetch
+    const liveIdx = await fetchLiveInboxJson('data/inbox/index.json');
+    if (Array.isArray(liveIdx)) idx = liveIdx;
   } catch (e) { /* no inbox yet */ }
   // Refresh the list every 60s while the submit page is open, preserving
-  // whether the user expanded it with "Show all".
+  // whether the user expanded it with "Show all" and skipping while a
+  // respond form is open so a half-typed answer is never wiped.
   if (!window._inboxRefreshTimer) {
     window._inboxRefreshTimer = setInterval(() => {
-      if (document.getElementById('inbox-list')) loadInboxList(!!window._inboxShowAll);
-      else { clearInterval(window._inboxRefreshTimer); window._inboxRefreshTimer = null; }
+      if (!document.getElementById('inbox-list')) {
+        clearInterval(window._inboxRefreshTimer);
+        window._inboxRefreshTimer = null;
+        return;
+      }
+      if (isInboxRespondActive()) return;
+      loadInboxList(!!window._inboxShowAll);
     }, 60000);
   }
   window._inboxShowAll = showAll;
   if (!idx.length) {
+    window._inboxRowsById = {};
     host.innerHTML = '<p>Nothing submitted yet.</p>';
     return;
   }
@@ -3380,13 +3397,23 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
   if (needsFetch.length) {
     const fetched = await Promise.all(needsFetch.map(async s => {
       try {
-        const r = await fetch('data/inbox/' + s.id + '.json?v=' + Date.now());
-        if (r.ok) return [s.id, await r.json()];
+        const full = await fetchLiveInboxJson('data/inbox/' + s.id + '.json');
+        if (full && typeof full === 'object') return [s.id, full];
       } catch (e) { /* skip */ }
       return [s.id, {}];
     }));
     for (const [id, full] of fetched) editDetails[id] = full;
   }
+  const rowsById = {};
+  visible.forEach(s => {
+    if (s && s.id) {
+      rowsById[s.id] = s.type === 'edit' && editDetails[s.id]
+        ? Object.assign({}, editDetails[s.id], s)
+        : s;
+    }
+  });
+  window._inboxRowsById = rowsById;
+
   const ts = s => {
     const f = formatLogTimestamp(s.created_at);
     return f ? ' <span style="color:var(--muted);font-size:0.85em">' + esc(f) + '</span>' : '';
@@ -3399,12 +3426,15 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
       const reqText = s.text || full.text || '';
       const preview = reqText.length > 100 ? reqText.slice(0, 97) + '…' : reqText;
       const editBadge = s.status === 'done' ? '✓ applied' : badge(s.status);
+      const editImgs = inboxEntryImages(s).length ? inboxEntryImages(s) : inboxEntryImages(full);
+      const editThumbs = editImgs.length ? renderInboxThumbsHTML(s.id, editImgs) : '';
       return '<li><strong>✏️ Edit: ' + esc(targetTitle) + '</strong> — ' + editBadge +
         (preview ? '<br><span style="color:var(--muted)">"' + esc(preview) + '"</span>' : '') +
         (s.status === 'done' && s.edit_target ?
           ' → <a href="#/recipe/' + encodeURIComponent(s.edit_target) + '">view recipe</a>' : '') +
         (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
         ts(s) +
+        editThumbs +
         '</li>';
     }
     // Direct edits (via site edit page or bridge) and deletions get their
@@ -3437,34 +3467,49 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
     } else if (s.recipe_id) {
       titlePart = ' → <a href="#/recipe/' + encodeURIComponent(s.recipe_id) + '">view recipe</a>';
     }
-    // Show what was submitted — list each piece: link, photo count/filename, text, note
+    // Show what was submitted — list each non-photo piece (link, text, note)
+    // and render clickable thumbnails in place of the old "📷 filename / N photos" text.
     const parts = [];
     if (s.url) {
       const shortUrl = s.url.length > 60 ? s.url.slice(0, 57) + '…' : s.url;
       parts.push('🔗 <a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(shortUrl) + '</a>');
     }
-    const imgs = Array.isArray(s.images) && s.images.length ? s.images : (s.image ? [s.image] : []);
-    if (imgs.length > 1) {
-      parts.push('📷 ' + imgs.length + ' photos');
-    } else if (imgs.length === 1) {
-      const fname = imgs[0].split('/').pop();
-      parts.push('📷 ' + esc(fname));
-    }
+    const imgs = inboxEntryImages(s);
     if (s.text) {
       const preview = s.text.length > 80 ? s.text.slice(0, 77) + '…' : s.text;
       parts.push('📝 <span title="' + esc(s.text.slice(0, 500)) + '">' + esc(preview) + '</span>');
     }
     if (s.note) parts.push('💬 ' + esc(s.note));
-    const what = parts.length ? parts.join(' · ') : 'empty submission';
+    const what = parts.length ? parts.join(' · ') : (imgs.length ? '' : 'empty submission');
+    const whatPart = what ? (' — ' + what) : '';
+    const thumbsPart = imgs.length ? renderInboxThumbsHTML(s.id, imgs) : '';
     // For duplicates, show what it's a duplicate of
     let dupPart = '';
     if (s.status === 'duplicate' && s.duplicate_of) {
       const dupTitle = recipeMeta(s.duplicate_of) ? esc(recipeMeta(s.duplicate_of).title) : esc(s.duplicate_of);
       dupPart = ' (duplicate of ' + dupTitle + ')';
     }
-    return '<li><strong>' + badge(s.status) + '</strong> — ' + what + titlePart + dupPart +
+    // Plain-language "What's needed" line + Respond action for needs_input rows;
+    // Retry button for failed rows.
+    let needsPart = '';
+    let actionPart = '';
+    if (s.status === 'needs_input') {
+      const needsText = formatNeedsList(s.needs);
+      if (needsText) {
+        needsPart = '<div class="log-needs">What’s needed: <strong>' + esc(needsText) + '</strong></div>';
+      }
+      actionPart = ' <button class="btn secondary log-action-btn" type="button" data-inbox-respond="' + esc(s.id) + '">Respond</button>' +
+        '<div class="respond-host" id="respond-host-' + esc(s.id) + '"></div>';
+    } else if (s.status === 'failed') {
+      actionPart = ' <button class="btn secondary log-action-btn" type="button" data-inbox-retry="' + esc(s.id) + '">Retry</button>' +
+        ' <span class="log-retry-status" id="retry-status-' + esc(s.id) + '"></span>';
+    }
+    return '<li><strong>' + badge(s.status) + '</strong>' + whatPart + titlePart + dupPart +
       (s.fail_reason ? ' <span style="color:var(--danger)">' + esc(s.fail_reason) + '</span>' : '') +
       ts(s) +
+      thumbsPart +
+      needsPart +
+      actionPart +
       '</li>';
   }).join('') + '</ul>' +
     (!showAll && idx.length > 10
@@ -3474,9 +3519,607 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
       ? '<p><button class="btn secondary" id="inbox-show-less">Show recent only</button></p>'
       : '');
   const showAllBtn = $('#inbox-show-all');
-  if (showAllBtn) showAllBtn.onclick = () => loadInboxList(true);
+  if (showAllBtn) showAllBtn.onclick = () => {
+    if (isInboxRespondActive()) { toast('Finish or cancel your response first'); return; }
+    loadInboxList(true);
+  };
   const showLessBtn = $('#inbox-show-less');
-  if (showLessBtn) showLessBtn.onclick = () => loadInboxList(false);
+  if (showLessBtn) showLessBtn.onclick = () => {
+    if (isInboxRespondActive()) { toast('Finish or cancel your response first'); return; }
+    loadInboxList(false);
+  };
+  host.onclick = e => {
+    const thumbBtn = e.target.closest('[data-thumb-id]');
+    if (thumbBtn) {
+      const entryId = thumbBtn.dataset.thumbId;
+      const startIdx = parseInt(thumbBtn.dataset.thumbIdx, 10) || 0;
+      const row = (window._inboxRowsById || {})[entryId];
+      if (!row) return;
+      const imgs = inboxEntryImages(row);
+      if (!imgs.length) return;
+      openInboxLightbox(imgs, startIdx, inboxRowCaptionContext(row, badge));
+      return;
+    }
+    const respBtn = e.target.closest('[data-inbox-respond]');
+    if (respBtn) {
+      const entryId = respBtn.dataset.inboxRespond;
+      toggleInboxRespondForm(entryId);
+      return;
+    }
+    const retryBtn = e.target.closest('[data-inbox-retry]');
+    if (retryBtn) {
+      const entryId = retryBtn.dataset.inboxRetry;
+      retryFailedInboxEntry(entryId, retryBtn);
+    }
+  };
+}
+
+/* ---------------- Inbox log helpers: thumbnails, lightbox, respond & retry ---------------- */
+const INBOX_NEEDS_LABELS = {
+  title: "the recipe's name",
+  ingredients: 'ingredient amounts / details',
+  instructions: 'the instructions',
+  servings: 'how much it makes (servings)',
+  clearer_photo: 'a clearer photo',
+  recipe_selection: 'which recipe(s) to add'
+};
+
+function formatNeedsList(needs) {
+  if (!Array.isArray(needs) || !needs.length) return '';
+  return needs
+    .filter(k => typeof k === 'string' && k.trim())
+    .map(k => {
+      const key = k.trim();
+      return INBOX_NEEDS_LABELS[key] || key;
+    })
+    .join(', ');
+}
+
+function inboxEntryImages(s) {
+  if (!s || typeof s !== 'object') return [];
+  if (Array.isArray(s.images) && s.images.length) return s.images.filter(Boolean);
+  if (s.image) return [s.image];
+  return [];
+}
+
+// One-shot fallback to raw.githubusercontent.com when a newly uploaded photo
+// has not yet deployed to GitHub Pages (60-120s rebuild window).
+function inboxImgFallback(imgEl) {
+  if (!imgEl || imgEl.dataset.rawFallback) return;
+  imgEl.dataset.rawFallback = '1';
+  const rel = imgEl.getAttribute('data-src-path') || imgEl.getAttribute('src') || '';
+  const clean = String(rel).split('?')[0].replace(/^\/+/, '');
+  if (!clean || /^https?:\/\//i.test(clean)) return;
+  imgEl.src = 'https://raw.githubusercontent.com/' + REPO.owner + '/' + REPO.repo + '/' +
+    REPO.branch + '/' + clean + '?t=' + Date.now();
+}
+
+function renderInboxThumbsHTML(entryId, imgs) {
+  if (!Array.isArray(imgs) || !imgs.length) return '';
+  return '<div class="log-thumbs">' + imgs.map((p, i) =>
+    '<button type="button" class="log-thumb-btn" data-thumb-id="' + esc(entryId) + '" data-thumb-idx="' + i + '" ' +
+      'aria-label="View photo ' + (i + 1) + ' of ' + imgs.length + '">' +
+      '<img class="log-thumb" src="' + esc(p) + '" data-src-path="' + esc(p) + '" alt="Photo ' + (i + 1) + '" ' +
+        'loading="lazy" onerror="inboxImgFallback(this)">' +
+    '</button>'
+  ).join('') + '</div>';
+}
+
+function inboxRowCaptionContext(row, badgeFn) {
+  if (!row) return '';
+  const statusLabel = typeof badgeFn === 'function' ? badgeFn(row.status) : (row.status || '');
+  if (row.recipe_id && recipeMeta(row.recipe_id)) {
+    return statusLabel + ' · ' + recipeMeta(row.recipe_id).title;
+  }
+  if (row.type === 'edit' && row.edit_target) {
+    const t = recipeMeta(row.edit_target) ? recipeMeta(row.edit_target).title : row.edit_target;
+    return 'Edit: ' + t + ' (' + statusLabel + ')';
+  }
+  if (row.note) {
+    const shortNote = row.note.length > 60 ? row.note.slice(0, 57) + '…' : row.note;
+    return statusLabel + ' · ' + shortNote;
+  }
+  return statusLabel;
+}
+
+let _lightboxState = null;
+let _lightboxKeyHandler = null;
+let _lightboxPrevOverflow = '';
+
+function openInboxLightbox(photos, startIndex, contextLabel) {
+  if (!Array.isArray(photos) || !photos.length) return;
+  closeInboxLightbox();
+  const idx = Math.max(0, Math.min(photos.length - 1, Number(startIndex) || 0));
+  _lightboxState = { photos, index: idx, context: contextLabel || '' };
+  if (typeof document !== 'undefined' && document.documentElement) {
+    _lightboxPrevOverflow = document.documentElement.style.overflow || '';
+    document.documentElement.style.overflow = 'hidden';
+  }
+  const overlay = document.createElement('div');
+  overlay.id = 'inbox-lightbox';
+  overlay.className = 'lightbox';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Submission photo viewer');
+  overlay.innerHTML =
+    '<button type="button" class="lightbox-close" id="lightbox-close-btn" aria-label="Close photo viewer">✕</button>' +
+    (photos.length > 1
+      ? '<button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev-btn" aria-label="Previous photo">‹</button>' +
+        '<button type="button" class="lightbox-nav lightbox-next" id="lightbox-next-btn" aria-label="Next photo">›</button>'
+      : '') +
+    '<div class="lightbox-stage">' +
+      '<img class="lightbox-img" id="lightbox-img" src="" alt="" onerror="inboxImgFallback(this)">' +
+      '<div class="lightbox-caption" id="lightbox-caption"></div>' +
+    '</div>';
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay || e.target.classList.contains('lightbox-stage')) {
+      closeInboxLightbox();
+    }
+  });
+  document.body.appendChild(overlay);
+  const closeBtn = $('#lightbox-close-btn');
+  if (closeBtn) closeBtn.onclick = () => closeInboxLightbox();
+  const prevBtn = $('#lightbox-prev-btn');
+  if (prevBtn) prevBtn.onclick = e => { e.stopPropagation(); stepInboxLightbox(-1); };
+  const nextBtn = $('#lightbox-next-btn');
+  if (nextBtn) nextBtn.onclick = e => { e.stopPropagation(); stepInboxLightbox(1); };
+
+  _lightboxKeyHandler = e => {
+    if (e.key === 'Escape') { e.preventDefault(); closeInboxLightbox(); }
+    else if (e.key === 'ArrowLeft' && _lightboxState && _lightboxState.photos.length > 1) {
+      e.preventDefault(); stepInboxLightbox(-1);
+    } else if (e.key === 'ArrowRight' && _lightboxState && _lightboxState.photos.length > 1) {
+      e.preventDefault(); stepInboxLightbox(1);
+    }
+  };
+  document.addEventListener('keydown', _lightboxKeyHandler);
+  updateInboxLightboxSlide();
+}
+
+function updateInboxLightboxSlide() {
+  if (!_lightboxState) return;
+  const { photos, index, context } = _lightboxState;
+  const src = photos[index] || '';
+  const img = $('#lightbox-img');
+  if (img) {
+    delete img.dataset.rawFallback;
+    img.setAttribute('data-src-path', src);
+    img.src = src;
+    img.alt = 'Photo ' + (index + 1) + ' of ' + photos.length;
+  }
+  const cap = $('#lightbox-caption');
+  if (cap) {
+    cap.textContent = 'Photo ' + (index + 1) + ' of ' + photos.length + (context ? ' — ' + context : '');
+  }
+}
+
+function stepInboxLightbox(delta) {
+  if (!_lightboxState || _lightboxState.photos.length <= 1) return;
+  const len = _lightboxState.photos.length;
+  _lightboxState.index = (_lightboxState.index + delta + len) % len;
+  updateInboxLightboxSlide();
+}
+
+function closeInboxLightbox() {
+  if (_lightboxKeyHandler) {
+    document.removeEventListener('keydown', _lightboxKeyHandler);
+    _lightboxKeyHandler = null;
+  }
+  const overlay = $('#inbox-lightbox');
+  if (overlay) overlay.remove();
+  if (_lightboxState && typeof document !== 'undefined' && document.documentElement) {
+    document.documentElement.style.overflow = _lightboxPrevOverflow;
+  }
+  _lightboxState = null;
+}
+
+// Self-healing refresh guard: returns true only when a respond form is both
+// flagged open and actually mounted in the DOM.
+function isInboxRespondActive() {
+  const openId = window._inboxRespondOpen;
+  if (!openId) return false;
+  if (typeof document !== 'undefined' && document.getElementById('respond-' + openId)) {
+    return true;
+  }
+  window._inboxRespondOpen = null;
+  return false;
+}
+
+function formatInboxAnswerDate(d = new Date()) {
+  const dt = (d instanceof Date && !isNaN(d.getTime())) ? d : new Date();
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function composeInboxAnswerNote(existingNote, editorName, answerText, dateStr) {
+  const who = (editorName && String(editorName).trim()) ? String(editorName).trim() : 'Anonymous';
+  const when = dateStr || formatInboxAnswerDate(new Date());
+  const trimmedAnswer = (answerText && String(answerText).trim()) ? String(answerText).trim() : '';
+  const body = trimmedAnswer || 'attached a clearer/additional photo.';
+  const addition = 'Answer from ' + who + ' (' + when + '): ' + body;
+  const prev = (existingNote && String(existingNote).trim()) ? String(existingNote).trim() : '';
+  return prev ? (prev + ' — ' + addition) : addition;
+}
+
+function patchInboxIndexRow(indexArr, entryId, patch) {
+  if (!Array.isArray(indexArr)) return [];
+  return indexArr.map(row => {
+    if (!row || row.id !== entryId) return row;
+    return Object.assign({}, row, patch);
+  });
+}
+
+// Read JSON from the live bridge first (bypasses GitHub Pages CDN lag),
+// falling back to public fetch only when offline or bridge-unreachable.
+async function fetchLiveInboxJson(path) {
+  const clean = String(path || '').replace(/^\/+/, '');
+  try {
+    const r = await fetch(BRIDGE + '/read?path=' + encodeURIComponent(clean));
+    if (r.ok) {
+      const data = await r.json();
+      if (data && data.ok && typeof data.content === 'string') {
+        return JSON.parse(data.content);
+      }
+    }
+  } catch (e) { /* fall through to public fetch */ }
+  try {
+    const r2 = await fetch(clean + '?v=' + Date.now());
+    if (r2.ok) return await r2.json();
+  } catch (e) { /* offline or 404 */ }
+  return null;
+}
+
+// Re-fetch data/inbox/index.json immediately before writing, patch the target
+// row, and save via bridgeSave; retries once automatically on failure.
+async function syncInboxIndexPatch(entryId, patch, commitMsg, fallbackEntry) {
+  let lastErr = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) {
+      await new Promise(r => setTimeout(r, 400));
+    }
+    try {
+      const idx = await fetchLiveInboxJson('data/inbox/index.json');
+      if (!Array.isArray(idx)) throw new Error('could not read inbox index');
+      const exists = idx.some(r => r && r.id === entryId);
+      const updated = exists
+        ? patchInboxIndexRow(idx, entryId, patch)
+        : idx.concat([Object.assign({}, fallbackEntry || { id: entryId }, patch)]);
+      await bridgeSave('data/inbox/index.json', JSON.stringify(updated, null, 2),
+        commitMsg || ('Log response index ' + entryId));
+      return updated;
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error('index update failed');
+}
+
+let _respondState = null;
+
+function closeInboxRespondForm() {
+  if (_respondState && _respondState.entryId) {
+    const host = $('#respond-host-' + _respondState.entryId);
+    if (host) host.innerHTML = '';
+  }
+  if (window._inboxRespondOpen) {
+    const existing = document.getElementById('respond-' + window._inboxRespondOpen);
+    if (existing && existing.parentElement) existing.parentElement.innerHTML = '';
+  }
+  window._inboxRespondOpen = null;
+  _respondState = null;
+}
+
+function toggleInboxRespondForm(entryId) {
+  if (!entryId) return;
+  if (window._inboxRespondOpen === entryId && document.getElementById('respond-' + entryId)) {
+    closeInboxRespondForm();
+    return;
+  }
+  closeInboxRespondForm();
+  const row = (window._inboxRowsById || {})[entryId];
+  if (!row) return;
+  const host = $('#respond-host-' + entryId);
+  if (!host) return;
+  const existingImgs = inboxEntryImages(row);
+  const attachCap = Math.max(2, 6 - existingImgs.length);
+  _respondState = {
+    entryId,
+    row,
+    attachCap,
+    photos: [],
+    savedPatch: null,
+    savedEntry: null
+  };
+  window._inboxRespondOpen = entryId;
+  const promptText = row.fail_reason || 'What would you like to add?';
+  host.innerHTML =
+    '<div class="respond-form" id="respond-' + esc(entryId) + '">' +
+      '<div class="respond-prompt">' + esc(promptText) + '</div>' +
+      '<textarea class="respond-textarea" id="respond-text-' + esc(entryId) + '" rows="3" ' +
+        'placeholder="Type the missing details…"></textarea>' +
+      '<div class="respond-attach-row">' +
+        '<input type="file" id="respond-file-' + esc(entryId) + '" accept="image/*" multiple style="display:none">' +
+        '<button class="btn secondary" id="respond-photo-btn-' + esc(entryId) + '" type="button">📷 Attach photo</button>' +
+        '<span class="form-hint" id="respond-photo-hint-' + esc(entryId) + '">Optional (up to ' + attachCap + ' photo' + (attachCap === 1 ? '' : 's') + ')</span>' +
+      '</div>' +
+      '<div class="respond-thumbs" id="respond-thumbs-' + esc(entryId) + '"></div>' +
+      '<div class="form-status" id="respond-status-' + esc(entryId) + '"></div>' +
+      '<div class="respond-actions">' +
+        '<button class="btn" id="respond-send-' + esc(entryId) + '" type="button">Send answer</button>' +
+        '<button class="btn secondary" id="respond-cancel-' + esc(entryId) + '" type="button">Cancel</button>' +
+      '</div>' +
+    '</div>';
+
+  const fileInput = $('#respond-file-' + entryId);
+  const photoBtn = $('#respond-photo-btn-' + entryId);
+  const photoHint = $('#respond-photo-hint-' + entryId);
+  if (photoBtn && fileInput) {
+    photoBtn.onclick = () => fileInput.click();
+    fileInput.addEventListener('change', async () => {
+      const files = Array.from(fileInput.files || []);
+      fileInput.value = '';
+      if (!files.length || !_respondState || _respondState.entryId !== entryId) return;
+      const rem = Math.max(0, _respondState.attachCap - _respondState.photos.length);
+      if (rem === 0) {
+        toast('Maximum ' + _respondState.attachCap + ' photo' + (_respondState.attachCap === 1 ? '' : 's') + ' for this response.');
+        return;
+      }
+      const slice = files.slice(0, rem);
+      const overflow = files.length > rem;
+      for (let i = 0; i < slice.length; i++) {
+        if (photoHint) photoHint.textContent = 'Processing photo ' + (i + 1) + ' of ' + slice.length + '…';
+        const res = await resizePhotoFile(slice[i]);
+        if (res.b64 && _respondState && _respondState.entryId === entryId) {
+          _respondState.photos.push(res);
+        }
+      }
+      renderRespondPhotoPreview(entryId);
+      if (overflow) {
+        toast('Kept the first ' + slice.length + ' photo' + (slice.length === 1 ? '' : 's') + ' (limit reached).');
+      }
+    });
+  }
+  const sendBtn = $('#respond-send-' + entryId);
+  if (sendBtn) sendBtn.onclick = () => submitInboxResponse(entryId);
+  const cancelBtn = $('#respond-cancel-' + entryId);
+  if (cancelBtn) cancelBtn.onclick = () => closeInboxRespondForm();
+  const ta = $('#respond-text-' + entryId);
+  if (ta && ta.focus) ta.focus();
+}
+
+function renderRespondPhotoPreview(entryId) {
+  if (!_respondState || _respondState.entryId !== entryId) return;
+  const wrap = $('#respond-thumbs-' + entryId);
+  const hint = $('#respond-photo-hint-' + entryId);
+  const photos = _respondState.photos || [];
+  if (hint) {
+    hint.textContent = photos.length
+      ? photos.length + ' photo' + (photos.length === 1 ? '' : 's') + ' attached'
+      : 'Optional (up to ' + _respondState.attachCap + ' photo' + (_respondState.attachCap === 1 ? '' : 's') + ')';
+  }
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  photos.forEach((p, idx) => {
+    const ext = (p.ext || 'jpg').toLowerCase();
+    const mime = ext === 'png' ? 'image/png'
+      : ext === 'webp' ? 'image/webp'
+      : ext === 'heic' ? 'image/heic'
+      : 'image/jpeg';
+    const tile = document.createElement('div');
+    tile.className = 'respond-thumb-tile';
+    const img = document.createElement('img');
+    img.className = 'log-thumb';
+    img.src = 'data:' + mime + ';base64,' + p.b64;
+    img.alt = 'Attached photo ' + (idx + 1);
+    const rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'respond-thumb-rm';
+    rm.textContent = '×';
+    rm.setAttribute('aria-label', 'Remove attached photo ' + (idx + 1));
+    rm.onclick = () => {
+      if (!_respondState || _respondState.entryId !== entryId) return;
+      _respondState.photos.splice(idx, 1);
+      renderRespondPhotoPreview(entryId);
+    };
+    tile.appendChild(img);
+    tile.appendChild(rm);
+    wrap.appendChild(tile);
+  });
+}
+
+async function submitInboxResponse(entryId) {
+  if (!_respondState || _respondState.entryId !== entryId) return;
+  const st = $('#respond-status-' + entryId);
+  const sendBtn = $('#respond-send-' + entryId);
+  const cancelBtn = $('#respond-cancel-' + entryId);
+  const photoBtn = $('#respond-photo-btn-' + entryId);
+  const textEl = $('#respond-text-' + entryId);
+
+  // Step 8 recovery path: if Step 6 already succeeded and the user tapped
+  // "Retry", redo ONLY Step 7 (index update).
+  if (_respondState.savedPatch) {
+    if (sendBtn) sendBtn.disabled = true;
+    if (cancelBtn) cancelBtn.disabled = true;
+    if (st) { st.className = 'form-status'; st.textContent = 'Updating inbox list…'; }
+    try {
+      await syncInboxIndexPatch(entryId, _respondState.savedPatch, 'Log response index ' + entryId, _respondState.savedEntry);
+      closeInboxRespondForm();
+      toast('Answer sent — it’ll be picked up within about 30 minutes.');
+      await loadInboxList(!!window._inboxShowAll);
+    } catch (e) {
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Retry'; }
+      if (cancelBtn) cancelBtn.disabled = false;
+      if (st) {
+        st.className = 'form-status error';
+        st.textContent = 'Your answer was saved to the entry, but updating the list failed (' + (e.message || e) + '). Tap Retry to finish re-queuing it.';
+      }
+    }
+    return;
+  }
+
+  const answerText = textEl ? textEl.value.trim() : '';
+  const attached = (_respondState.photos || []).slice();
+  // Validate non-empty before calling getEditorName() so an empty click never prompts
+  if (!answerText && !attached.length) {
+    if (st) {
+      st.className = 'form-status error';
+      st.textContent = 'Write an answer or attach a photo first.';
+    }
+    return;
+  }
+
+  // Step 1: resolve editor name synchronously inside the tap handler before any await
+  const editorName = getEditorName();
+
+  if (sendBtn) sendBtn.disabled = true;
+  if (cancelBtn) cancelBtn.disabled = true;
+  if (photoBtn) photoBtn.disabled = true;
+  if (st) { st.className = 'form-status'; st.textContent = 'Sending…'; }
+
+  // Step 2: fetch full entry file via bridge /read (fallback to public fetch;
+  // on 404 synthesize by copying the whole index row so test_mode/duplicate_of survive).
+  let entry = null;
+  try {
+    const fetched = await fetchLiveInboxJson('data/inbox/' + entryId + '.json');
+    if (fetched && typeof fetched === 'object' && fetched.id) {
+      entry = Object.assign({}, _respondState.row, fetched);
+    }
+  } catch (e) { /* synthesize below */ }
+  if (!entry) {
+    entry = Object.assign({}, _respondState.row, { id: entryId });
+  }
+
+  // Step 3: upload any attached photos sequentially BEFORE mutating entry
+  const existingImgs = inboxEntryImages(entry);
+  const newPaths = [];
+  try {
+    for (let i = 0; i < attached.length; i++) {
+      if (st) st.textContent = 'Uploading photo ' + (i + 1) + ' of ' + attached.length + '…';
+      const num = existingImgs.length + i + 1;
+      const ext = (attached[i].ext || 'jpg').toLowerCase();
+      const rPath = 'data/inbox/' + entryId + '-r' + num + '.' + ext;
+      await bridgeSave(rPath, String(attached[i].b64).replace(/\s+/g, ''),
+        'Log response photo ' + entryId + ' (-r' + num + ')', 'base64');
+      newPaths.push(rPath);
+    }
+  } catch (e) {
+    if (sendBtn) sendBtn.disabled = false;
+    if (cancelBtn) cancelBtn.disabled = false;
+    if (photoBtn) photoBtn.disabled = false;
+    if (st) {
+      st.className = 'form-status error';
+      st.textContent = 'Photo upload failed: ' + (e.message || e);
+    }
+    return;
+  }
+
+  if (newPaths.length) {
+    const combined = existingImgs.concat(newPaths);
+    entry.images = combined;
+    if (!entry.image) entry.image = combined[0];
+  }
+
+  // Step 4 & 5: compose note addition and clear needs/fail_reason, set status='pending'
+  entry.note = composeInboxAnswerNote(entry.note, editorName, answerText, formatInboxAnswerDate(new Date()));
+  entry.needs = null;
+  entry.fail_reason = null;
+  entry.status = 'pending';
+
+  // Step 6: bridgeSave the entry file
+  if (st) st.textContent = 'Saving answer…';
+  try {
+    await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Log response ' + entryId);
+  } catch (e) {
+    if (sendBtn) sendBtn.disabled = false;
+    if (cancelBtn) cancelBtn.disabled = false;
+    if (photoBtn) photoBtn.disabled = false;
+    if (st) {
+      st.className = 'form-status error';
+      st.textContent = 'Could not save response: ' + (e.message || e);
+    }
+    return;
+  }
+
+  // Step 7 & 8: re-fetch and patch data/inbox/index.json (with 1 automatic retry)
+  const patch = {
+    note: entry.note,
+    needs: null,
+    fail_reason: null,
+    status: 'pending'
+  };
+  if (entry.image) patch.image = entry.image;
+  if (Array.isArray(entry.images) && entry.images.length) patch.images = entry.images;
+
+  if (st) st.textContent = 'Updating inbox list…';
+  try {
+    await syncInboxIndexPatch(entryId, patch, 'Log response index ' + entryId, entry);
+  } catch (e) {
+    _respondState.savedPatch = patch;
+    _respondState.savedEntry = entry;
+    if (textEl) textEl.disabled = true;
+    if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Retry'; }
+    if (cancelBtn) cancelBtn.disabled = false;
+    if (st) {
+      st.className = 'form-status error';
+      st.textContent = 'Your answer was saved to the entry, but updating the list failed (' + (e.message || e) + '). Tap Retry to finish re-queuing it.';
+    }
+    return;
+  }
+
+  // Step 9: success
+  closeInboxRespondForm();
+  toast('Answer sent — it’ll be picked up within about 30 minutes.');
+  await loadInboxList(!!window._inboxShowAll);
+}
+
+const _retryPendingIndexPatches = {};
+
+async function retryFailedInboxEntry(entryId, btnEl) {
+  if (!entryId) return;
+  const stEl = $('#retry-status-' + entryId);
+  const row = (window._inboxRowsById || {})[entryId] || { id: entryId };
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Retrying…'; }
+  if (stEl) { stEl.style.color = 'var(--muted)'; stEl.textContent = ''; }
+
+  const patch = { status: 'pending', fail_reason: null, needs: null };
+
+  // Step 6 equivalent: update the entry file unless already saved on a prior attempt
+  if (!_retryPendingIndexPatches[entryId]) {
+    let entry = null;
+    try {
+      const fetched = await fetchLiveInboxJson('data/inbox/' + entryId + '.json');
+      if (fetched && typeof fetched === 'object' && fetched.id) {
+        entry = Object.assign({}, row, fetched);
+      }
+    } catch (e) { /* synthesize below */ }
+    if (!entry) {
+      entry = Object.assign({}, row, { id: entryId });
+    }
+    entry.status = 'pending';
+    entry.fail_reason = null;
+    entry.needs = null;
+    try {
+      await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Retry inbox ' + entryId);
+      _retryPendingIndexPatches[entryId] = entry;
+    } catch (e) {
+      if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Retry'; }
+      if (stEl) { stEl.style.color = 'var(--danger)'; stEl.textContent = 'Retry failed: ' + (e.message || e); }
+      return;
+    }
+  }
+
+  // Step 7 equivalent: update data/inbox/index.json (with 1 auto-retry)
+  try {
+    await syncInboxIndexPatch(entryId, patch, 'Retry inbox index ' + entryId, _retryPendingIndexPatches[entryId]);
+    delete _retryPendingIndexPatches[entryId];
+    toast('Re-queued — it’ll be retried within about 30 minutes.');
+    await loadInboxList(!!window._inboxShowAll);
+  } catch (e) {
+    if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Retry'; }
+    if (stEl) {
+      stEl.style.color = 'var(--danger)';
+      stEl.textContent = 'Entry reset, but list update failed — tap Retry again.';
+    }
+  }
 }
 
 async function sendSubmission() {
