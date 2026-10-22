@@ -737,14 +737,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "forty-clove-garlic-chicken",
-                "leftovers": false,
-                "cookDate": null
-              }
-            ]
+            "note": ""
           }
         },
         {
