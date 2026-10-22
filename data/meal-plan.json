@@ -950,12 +950,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "babbish-baked-ziti",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Leftovers cover a lunch"
+                "reason": "Pasta night · Leftovers cover a lunch"
               }
             ]
           }
@@ -968,7 +968,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "babbish-baked-ziti",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -985,7 +985,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
@@ -1003,7 +1003,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1038,7 +1038,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "babbish-baked-ziti",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1073,7 +1073,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1090,7 +1090,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "ash-e-jow-persian-barley-soup",
+                "recipe": "brisket-with-vegetables-and-dried-fruit",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
@@ -1108,12 +1108,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "bachash",
+                "recipe": "chulent",
                 "leftovers": false,
-                "cookDate": "2026-11-05",
+                "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch · Cook Thursday"
+                "reason": "Shabbat lunch"
               }
             ]
           },
