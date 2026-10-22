@@ -748,13 +748,8 @@
             "note": ""
           },
           "dinner": {
-            "dishes": [
-              {
-                "recipe": "chulent",
-                "leftovers": false,
-                "cookDate": null
-              }
-            ],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
             "note": ""
           }
