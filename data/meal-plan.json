@@ -728,58 +728,50 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
           }
         }
       ],
@@ -834,6 +826,94 @@
         }
       ],
       "optionalPromoted": []
+    },
+    "2026-10-25": {
+      "days": [
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Vacation — eating out / away"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ]
     }
   }
 }
