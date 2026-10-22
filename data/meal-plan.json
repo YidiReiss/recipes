@@ -1024,7 +1024,7 @@
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
-                "locked": false,
+                "locked": true,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
             ]
