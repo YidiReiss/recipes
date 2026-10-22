@@ -1,0 +1,258 @@
+{
+  "banner_image": "assets/images/4-year-chicken-tenders-fallow.jpg",
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "cook_minutes": 30,
+  "id": "4-year-chicken-tenders-fallow",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "boneless, skinless chicken thighs",
+          "prep": "",
+          "qty": "2",
+          "unit": "lb"
+        },
+        {
+          "item": "water",
+          "prep": "",
+          "qty": "4",
+          "unit": "cup"
+        },
+        {
+          "item": "kosher salt",
+          "prep": "",
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "sriracha",
+          "prep": "",
+          "qty": "1/4",
+          "unit": "cup"
+        }
+      ],
+      "section": "Chicken + marinade"
+    },
+    {
+      "items": [
+        {
+          "item": "honey",
+          "prep": "",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "rice vinegar",
+          "prep": "",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "sriracha",
+          "prep": "",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "chili flakes",
+          "prep": "",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "Sichuan peppercorns",
+          "prep": "whole",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "fennel seeds",
+          "prep": "",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "pinch of kosher salt",
+          "prep": "",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "pinch of MSG (kosher-certified)",
+          "prep": "",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "garlic",
+          "prep": "microplaned",
+          "qty": "2",
+          "unit": "cloves"
+        }
+      ],
+      "section": "Fallow hot honey"
+    },
+    {
+      "items": [
+        {
+          "item": "potato starch",
+          "prep": "",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "all-purpose flour",
+          "prep": "",
+          "qty": "2",
+          "unit": "cup"
+        },
+        {
+          "item": "white pepper",
+          "prep": "",
+          "qty": "2",
+          "unit": "tsp"
+        },
+        {
+          "item": "kosher salt",
+          "prep": "",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "baking powder",
+          "prep": "",
+          "qty": "2",
+          "unit": "tsp"
+        },
+        {
+          "item": "cayenne pepper",
+          "prep": "",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "MSG (kosher-certified)",
+          "prep": "",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "garlic powder",
+          "prep": "",
+          "qty": "2",
+          "unit": "tsp"
+        },
+        {
+          "item": "black pepper",
+          "prep": "freshly ground",
+          "qty": "1",
+          "unit": "tsp"
+        }
+      ],
+      "section": "Dry dredge"
+    },
+    {
+      "items": [
+        {
+          "item": "unsweetened soy milk (or almond or oat milk)",
+          "prep": "",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "lemon juice or white vinegar",
+          "prep": "",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "cornstarch",
+          "prep": "",
+          "qty": "3",
+          "unit": "tbsp"
+        }
+      ],
+      "section": "Wet dredge"
+    },
+    {
+      "items": [
+        {
+          "item": "canola or rapeseed oil, for frying",
+          "prep": "",
+          "qty": "8",
+          "unit": "cup"
+        },
+        {
+          "item": "flaky sea salt, for finishing",
+          "prep": "",
+          "qty": "1",
+          "unit": null
+        }
+      ],
+      "section": "Frying + finishing"
+    }
+  ],
+  "instructions": [
+    "Score the chicken: with a sharp knife, score both sides of each chicken thigh in a shallow crosshatch. An inconsistent, bumpy surface gives the coating something to grip — that is the whole 'crag' idea.",
+    "Marinate: whisk the water, kosher salt, and sriracha in a large bowl or container. Submerge the chicken, cover, and refrigerate for 24 hours. The chicken firms up slightly as the salt brines it. (Inactive time: 24 hours.)",
+    "Make the hot honey: combine the honey, rice vinegar, sriracha, chili flakes, whole Sichuan peppercorns, fennel seeds, pinch of salt, and pinch of MSG in a small saucepan. Warm over gentle heat until steaming — do not boil or reduce. Microplane in the garlic and cook 2–3 minutes on the gentlest simmer to cook out the rawness. Cool, then refrigerate; it infuses and thickens overnight.",
+    "Make the pareve 'buttermilk': stir the lemon juice (or vinegar) into the soy milk and let sit 5 minutes to curdle slightly. Whisk in the cornstarch until smooth. This replaces the video's buttermilk — the acid does the same job of helping the coating stick and crunch.",
+    "Make the dry dredge: whisk the potato starch, flour, white pepper, salt, baking powder, cayenne, MSG, garlic powder, and black pepper in a large bowl.",
+    "Heat the oil to 185–190°C (365–375°F) in a deep heavy pot. Start heating while you coat the chicken.",
+    "Coat the Fallow way: work with 5–6 pieces at a time. Sprinkle a handful of dry dredge over the chicken and mix with your hands to form a thin seasoned slurry layer on the meat. Dip each piece fully into the wet dredge, then back into the dry dredge, tumbling and turning repeatedly (about 60 turns) to build the craggy coating. Keep the pieces from touching each other.",
+    "Tap off the excess: lift each piece and tap it firmly — shake off the loose flour. The crag should sit in the scored crevices, not as a thick flour shell.",
+    "Fry immediately in batches: 5–6 pieces at a time, without crowding. Do not touch the chicken for the first couple of minutes until the crust sets. Fry about 4 1/2 minutes until deep golden all over. Probe the thickest part — it must reach 74°C (165°F). Drain on a wire rack.",
+    "Finish: while still warm, dip or drizzle the tenders with hot honey, let the excess drain off, shower with flaky salt, and serve."
+  ],
+  "prep_minutes": 45,
+  "kosher_for_passover": false,
+  "kosher_status": "meat",
+  "leftover_friendly": false,
+  "needs_kosher_review": false,
+  "notes": "Kosher (meat) adaptation of Fallow's YouTube video 'I Spent 4 Years Perfecting These Chicken Tenders' (Oct 2026), per Yidi's request. Two changes from the video: (1) the blue cheese ranch section was omitted entirely — it is dairy, incompatible with a meat meal; (2) the wet dredge's buttermilk is replaced with a pareve mix of 1 cup unsweetened soy/almond/oat milk + 1 tbsp lemon juice or vinegar, rested 5 minutes — the acid does buttermilk's job of helping the coating stick and crunch. The video brines in water/salt/sriracha rather than buttermilk because buttermilk darkened the crust on the first fry. 185–190°C = 365–375°F. The 24-hour marinade is inactive time. Make sure packaged spices, MSG, and the non-dairy milk carry a reliable hechsher.",
+  "pairings": null,
+  "pdf": "pdfs/4-year-chicken-tenders-fallow.pdf",
+  "photo_generated": false,
+  "servings": "6",
+  "source": "https://www.youtube.com/watch?v=FAae20DMp8E",
+  "tags": [
+    "fried",
+    "hot honey",
+    "sriracha",
+    "youtube"
+  ],
+  "tags_need_review": false,
+  "tips": [
+    {
+      "text": "After the wet dredge, tumble the chicken in the dry dredge about 60 times — that builds the craggy crust. Too little and it is bald; too much and it falls off.",
+      "title": "The 60-turn tumble"
+    },
+    {
+      "text": "The coating should live in the scored crevices, not as a thick flour shell. Tap each piece firmly before it hits the oil.",
+      "title": "Tap off the excess"
+    },
+    {
+      "text": "Fry 5–6 pieces at a time. Crowding drops the oil temperature and the baking powder will not lift the crust.",
+      "title": "Do not crowd the oil"
+    },
+    {
+      "text": "Fallow's whole point: thigh meat stays juicy and survives frying far better than breast tenders. Score it for grip.",
+      "title": "Use thighs, not breast"
+    }
+  ],
+  "title": "4-Year Chicken Tenders (Fallow)",
+  "history": [
+    {
+      "ts": "2026-10-22T01:56:57.879Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from Fallow's YouTube video 'I Spent 4 Years Perfecting These Chicken Tenders' (https://www.youtube.com/watch?v=FAae20DMp8E), transcript extracted via live browser. Kosher (meat) adaptation per Yidi's note: blue cheese ranch section omitted (dairy); wet dredge buttermilk replaced with 1 cup unsweetened soy/almond/oat milk + 1 tbsp lemon juice/vinegar rested 5 min (same acid function for coating adhesion/crunch; research: thetasteofkosher.com, aish.com). Estimates itemized — prep = 5 base "
+    }
+  ]
+}
