@@ -76,7 +76,7 @@
     }
   ],
   "pdf": "pdfs/cheesey-garlic-bread.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "prep_minutes": 25,
   "servings": "8",
@@ -126,6 +126,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-10-22T02:23:21.600Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
