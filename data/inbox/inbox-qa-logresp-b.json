@@ -1,0 +1,15 @@
+{
+  "id": "inbox-qa-logresp-b",
+  "url": null,
+  "image": "assets/images/baked-ziti.jpg",
+  "note": "QA staged entry B — delete after QA",
+  "text": null,
+  "status": "needs_input",
+  "created_at": "2026-10-22T01:06:10.369Z",
+  "recipe_id": null,
+  "fail_reason": null,
+  "needs": [
+    "title"
+  ],
+  "test_mode": true
+}
