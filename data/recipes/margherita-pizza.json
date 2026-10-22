@@ -93,7 +93,7 @@
   "notes": "Yidi 2026-10-21: no olive oil; Trader Joe’s dough (overnight thaw); +1 cup marinara; shredded mozzarella; plain tomatoes; tomato/basil/fresh mozz/mushrooms/purple onion optional; bake 5–10 min.",
   "source": null,
   "tags_need_review": false,
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-10-22T02:14:27.540Z",
@@ -140,6 +140,15 @@
         }
       ],
       "reasoning": "Shortened the notes field so the re-pressed PDF reads cleanly."
+    },
+    {
+      "ts": "2026-10-22T02:23:19.590Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
