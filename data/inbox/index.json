@@ -1309,5 +1309,53 @@
     "created_at": "2026-10-21T21:24:33.351Z",
     "recipe_id": "cheesey-garlic-bread",
     "fail_reason": null
+  },
+  {
+    "id": "inbox-qa-logresp-a",
+    "url": null,
+    "image": null,
+    "images": [
+      "assets/images/chicken-soup.jpg",
+      "assets/images/chocolate-cake.jpg"
+    ],
+    "note": "QA staged entry A — delete after QA",
+    "text": null,
+    "status": "needs_input",
+    "created_at": "2026-10-22T01:06:10.369Z",
+    "recipe_id": null,
+    "fail_reason": null,
+    "needs": [
+      "ingredients",
+      "instructions"
+    ],
+    "test_mode": true
+  },
+  {
+    "id": "inbox-qa-logresp-b",
+    "url": null,
+    "image": "assets/images/baked-ziti.jpg",
+    "note": "QA staged entry B — delete after QA",
+    "text": null,
+    "status": "needs_input",
+    "created_at": "2026-10-22T01:06:10.369Z",
+    "recipe_id": null,
+    "fail_reason": null,
+    "needs": [
+      "title"
+    ],
+    "test_mode": true
+  },
+  {
+    "id": "inbox-qa-logresp-c",
+    "url": null,
+    "image": "assets/images/cinnamon-rolls.jpg",
+    "note": null,
+    "text": null,
+    "status": "failed",
+    "created_at": "2026-10-22T01:06:10.369Z",
+    "recipe_id": null,
+    "fail_reason": "QA staged failure — delete after QA",
+    "needs": null,
+    "test_mode": true
   }
 ]
