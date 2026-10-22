@@ -8,6 +8,7 @@
   "id": "4-year-chicken-tenders-fallow",
   "ingredients": [
     {
+      "section": "Chicken + marinade",
       "items": [
         {
           "item": "boneless, skinless chicken thighs",
@@ -33,10 +34,10 @@
           "qty": "1/4",
           "unit": "cup"
         }
-      ],
-      "section": "Chicken + marinade"
+      ]
     },
     {
+      "section": "Fallow hot honey",
       "items": [
         {
           "item": "honey",
@@ -92,10 +93,10 @@
           "qty": "2",
           "unit": "cloves"
         }
-      ],
-      "section": "Fallow hot honey"
+      ]
     },
     {
+      "section": "Dry dredge",
       "items": [
         {
           "item": "potato starch",
@@ -151,10 +152,10 @@
           "qty": "1",
           "unit": "tsp"
         }
-      ],
-      "section": "Dry dredge"
+      ]
     },
     {
+      "section": "Wet dredge",
       "items": [
         {
           "item": "unsweetened soy milk (or almond or oat milk)",
@@ -174,14 +175,14 @@
           "qty": "3",
           "unit": "tbsp"
         }
-      ],
-      "section": "Wet dredge"
+      ]
     },
     {
+      "section": "Frying + finishing",
       "items": [
         {
-          "item": "canola or rapeseed oil, for frying",
-          "prep": "",
+          "item": "canola or grapeseed oil",
+          "prep": "for frying",
           "qty": "8",
           "unit": "cup"
         },
@@ -191,8 +192,7 @@
           "qty": "1",
           "unit": null
         }
-      ],
-      "section": "Frying + finishing"
+      ]
     }
   ],
   "instructions": [
@@ -213,7 +213,7 @@
   "leftover_friendly": false,
   "needs_kosher_review": false,
   "notes": "Kosher (meat) adaptation of Fallow's YouTube video 'I Spent 4 Years Perfecting These Chicken Tenders' (Oct 2026), per Yidi's request. Two changes from the video: (1) the blue cheese ranch section was omitted entirely — it is dairy, incompatible with a meat meal; (2) the wet dredge's buttermilk is replaced with a pareve mix of 1 cup unsweetened soy/almond/oat milk + 1 tbsp lemon juice or vinegar, rested 5 minutes — the acid does buttermilk's job of helping the coating stick and crunch. The video brines in water/salt/sriracha rather than buttermilk because buttermilk darkened the crust on the first fry. 185–190°C = 365–375°F. The 24-hour marinade is inactive time. Make sure packaged spices, MSG, and the non-dairy milk carry a reliable hechsher.",
-  "pairings": null,
+  "pairings": [],
   "pdf": "pdfs/4-year-chicken-tenders-fallow.pdf",
   "photo_generated": false,
   "servings": "6",
@@ -253,6 +253,42 @@
         "Created recipe"
       ],
       "reasoning": "Intake from Fallow's YouTube video 'I Spent 4 Years Perfecting These Chicken Tenders' (https://www.youtube.com/watch?v=FAae20DMp8E), transcript extracted via live browser. Kosher (meat) adaptation per Yidi's note: blue cheese ranch section omitted (dairy); wet dredge buttermilk replaced with 1 cup unsweetened soy/almond/oat milk + 1 tbsp lemon juice/vinegar rested 5 min (same acid function for coating adhesion/crunch; research: thetasteofkosher.com, aish.com). Estimates itemized — prep = 5 base "
+    },
+    {
+      "ts": "2026-10-22T02:01:05.462Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "5 items ([section: 4 items]; [section: 9 items]; [section: 9 items]; …)",
+          "to": "5 items ([section: 4 items]; [section: 9 items]; [section: 9 items]; …)"
+        },
+        {
+          "field": "pairings",
+          "from": null,
+          "to": "[]"
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "kosher_review_notes": "",
+  "leftover_note": "",
+  "pdf_stale": true
 }
