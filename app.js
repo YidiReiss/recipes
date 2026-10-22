@@ -59,6 +59,23 @@ const fmtTime = mins => {
   return h ? h + ' hr' + (m ? ' ' + m + ' min' : '') : m + ' min';
 };
 
+/* Parse a servings statement ("6", "6-8", 6) into { low, high } | null.
+   Hoisted to top level in Commit 2A (Smart Meal Planning v1): the planner's
+   yield math (leftoverServings) reuses the exact parser the recipe detail
+   page's scale bar uses, so both always agree on what "Serves 6-8" means. */
+function parseServings(s) {
+  if (s == null || s === '') return null;
+  if (typeof s === 'number' && isFinite(s)) return { low: s, high: s };
+  const m = String(s).match(/^\s*(\d+(?:\.\d+)?)\s*[-\u2013]\s*(\d+(?:\.\d+)?)\s*$/);
+  if (m) {
+    const low = parseFloat(m[1]), high = parseFloat(m[2]);
+    if (isFinite(low) && isFinite(high)) return { low: Math.min(low, high), high: Math.max(low, high) };
+    return null;
+  }
+  const n = parseFloat(s);
+  return isFinite(n) ? { low: n, high: n } : null;
+}
+
 /* base64 with proper unicode handling (GitHub API needs base64 content) */
 const toB64 = s => btoa(unescape(encodeURIComponent(s)));
 const fromB64 = b => decodeURIComponent(escape(atob(String(b).replace(/\s+/g, ''))));
@@ -276,6 +293,10 @@ function route() {
   if (h === '#/add') return renderAdd(app);
   if (h === '#/submit') return renderSubmit(app);
   if (h === '#/recipes') return renderRecipes(app);
+  if (h === '#/planner/tune') {
+    refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/planner/tune') renderQuickSort(app); });
+    return renderQuickSort(app);
+  }
   if (h === '#/planner') {
     // Grab the latest plan in case someone else just saved.
     refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/planner') renderPlanner(app); });
@@ -566,7 +587,11 @@ function buildShoppingList() {
   const mon = sundayOf(0);
   const week = getWeek(thisWeekKey());
   const from = shoppingFromYmd();
-  const ids = [];
+  // Commit 2A: collect { id, scale, variant } per planned dish instead of bare
+  // ids — quantities multiply by the dish's (manual-only) scale, and a variant
+  // dish buys only its chosen version's ingredients. Leftovers dishes stay
+  // excluded, as before.
+  const entries = [];
   week.days.forEach((d, i) => {
     ['lunch', 'dinner'].forEach(m => {
       const s = normalizeSlot(d[m]);
@@ -578,7 +603,7 @@ function buildShoppingList() {
         // Use cook date if set (prepare in advance), else meal date
         const effectiveDate = dish.cookDate || weekDayYmd(mon, i);
         if (from && effectiveDate < from) return; // already cooked
-        ids.push(rid);
+        entries.push({ id: rid, scale: dish.scale || 1, variant: dish.variant || null });
       });
     });
   });
@@ -589,11 +614,23 @@ function buildShoppingList() {
   // Optional: an item is optional only if ALL occurrences are optional.
   // If any recipe requires it, the aggregated line is required.
   const map = new Map();
-  ids.forEach(id => {
-    const r = byId[id];
+  entries.forEach(en => {
+    const r = byId[en.id];
     if (!r) return;  // not loaded yet (ensurePlannedRecipes fetches before shopping renders)
+    // Variant filter (Commit 2A): shared items (untagged) plus ONLY the chosen
+    // version's tagged items. A variant recipe planned without an explicit
+    // version buys the default version — never both proteins.
+    const scale = en.scale || 1;
+    let effVariant = en.variant || null;
+    if (Array.isArray(r.variants) && r.variants.length) {
+      if (!effVariant || !r.variants.some(v => v.key === effVariant)) {
+        const def = r.variants.find(v => v.default) || r.variants[0];
+        effVariant = def ? def.key : null;
+      }
+    }
     (r.ingredients || []).forEach(sec => {
       (sec.items || []).forEach(it => {
+        if (effVariant && it.variant && it.variant !== effVariant) return;
         const raw = (it.item || '').trim();
         if (!raw) return;
         const gkey = groupKey(raw);
@@ -604,11 +641,11 @@ function buildShoppingList() {
         const ul = unitRaw.toLowerCase();
         let convBase = null;
         if (qtyVal !== null && TSP_PER[ul]) {
-          convBase = qtyVal * TSP_PER[ul];
+          convBase = qtyVal * scale * TSP_PER[ul];
           unitRaw = '__tspbase__';
         } else if (qtyVal !== null && COUNT_TO_TSP[gkey] && (ul === '' || ul === 'clove' || ul === 'cloves')) {
           // count-to-volume: "1 onion" -> 24 tsp so it merges with "½ cup chopped onion"
-          convBase = qtyVal * COUNT_TO_TSP[gkey];
+          convBase = qtyVal * scale * COUNT_TO_TSP[gkey];
           unitRaw = '__tspbase__';
         }
         const nkey = gkey + '|' + unitRaw.toLowerCase();
@@ -622,7 +659,7 @@ function buildShoppingList() {
         if (convBase !== null) { e.qty += convBase; e.hasNum = true; }
         else {
           const n = qtyToNum(parseQty(it.qty));
-          if (n !== null) { e.qty += n; e.hasNum = true; }
+          if (n !== null) { e.qty += n * scale; e.hasNum = true; }
           else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
         }
       });
@@ -1472,18 +1509,8 @@ async function renderRecipe(app, id) {
   // Scale controls: compute on render, embed originals in data attributes.
   // Never re-parse DOM text (avoids compounding drift). Resets to 1x on navigation.
   // Servings can be a number or a range string like "6-8" — parse once, scale both ends.
-  function parseServings(s) {
-    if (s == null || s === '') return null;
-    if (typeof s === 'number' && isFinite(s)) return { low: s, high: s };
-    const m = String(s).match(/^\s*(\d+(?:\.\d+)?)\s*[-\u2013]\s*(\d+(?:\.\d+)?)\s*$/);
-    if (m) {
-      const low = parseFloat(m[1]), high = parseFloat(m[2]);
-      if (isFinite(low) && isFinite(high)) return { low: Math.min(low, high), high: Math.max(low, high) };
-      return null;
-    }
-    const n = parseFloat(s);
-    return isFinite(n) ? { low: n, high: n } : null;
-  }
+  // parseServings itself is hoisted to top level (Commit 2A) — see the helpers
+  // section; this renderer calls the shared one.
   function formatScaledServings(parsed, factor) {
     if (!parsed) return '';
     const low = Math.round(parsed.low * factor);
@@ -1508,7 +1535,12 @@ async function renderRecipe(app, id) {
       '</span></div>';
   };
 
-  const ingHTML = (r.ingredients || []).map(s =>
+  // Variant toggle (Commit 2B): when the recipe has versions, the
+  // ingredient list shows shared items + the selected version's items
+  // (default preselected). The servings scaler re-runs on the filtered
+  // list, so scaling keeps working per version.
+  let selectedVariant = variantDefaultKey(r.variants);
+  const ingListHTML = sections => (sections || []).map(s =>
     (s.section ? '<h3>' + esc(s.section) + '</h3>' : '') +
     '<ul class="ing-list">' + (s.items || []).map(i =>
       '<li><span class="qty ing-qty" data-base-qty="' + esc(i.qty || '') + '" data-unit="' + esc(i.unit || '') + '">' +
@@ -1517,6 +1549,21 @@ async function renderRecipe(app, id) {
       (i.optional ? ' <em class="opt-tag">optional</em>' : '') + '</li>'
     ).join('') + '</ul>'
   ).join('');
+  const ingHTML = ingListHTML(filterIngredientsForVariant(r.ingredients, selectedVariant));
+  const variantPillsHTML = (Array.isArray(r.variants) && r.variants.length)
+    ? '<div class="variant-pills no-print" role="group" aria-label="Recipe version">' +
+      r.variants.map(v => '<button type="button" class="variant-pill' +
+        (v.key === selectedVariant ? ' active' : '') + '" data-variant="' + esc(v.key) + '">' +
+        esc(v.label) + '</button>').join('') + '</div>'
+    : '';
+  let curRating = ((mealPlan.recipePrefs || {})[r.id] || {}).rating || null;
+  const ratingRowHTML =
+    '<div class="rating-row no-print"><span class="rating-label">Family rating:</span>' +
+    '<span class="seg-control" id="rating-seg">' +
+    [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']].map(([v, l]) =>
+      '<button type="button" class="seg-btn' + (curRating === v ? ' active' : '') +
+      '" data-rating="' + v + '">' + l + '</button>').join('') +
+    '</span></div>';
 
   const pairHTML = (r.pairings && r.pairings.length)
     ? '<section class="recipe-section"><h2>Pairings</h2><ul class="pairing-list">' +
@@ -1537,6 +1584,7 @@ async function renderRecipe(app, id) {
       '<div class="recipe-hero">' + bannerHTML(r) + '</div>' +
       '<h1 class="recipe-title">' + esc(r.title) + '</h1>' +
       badgesHTML(r) +
+      ratingRowHTML +
       (r.needs_kosher_review
         ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
           (r.kosher_review_notes ? '<br>' + esc(r.kosher_review_notes) : '') + '</div>'
@@ -1547,7 +1595,8 @@ async function renderRecipe(app, id) {
         '<span>Total <strong>' + esc(fmtTime(totalTime(r))) + '</strong></span>' +
         '<span>Serves <strong id="header-servings-val">' + esc(r.servings || '—') + '</strong></span>' +
       '</div>' +
-      '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + ingHTML + '</section>' +
+      '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + variantPillsHTML +
+      '<div id="ing-wrap">' + ingHTML + '</div></section>' +
       '<section class="recipe-section"><h2>Instructions</h2><ol class="steps">' +
         (r.instructions || []).map(s => '<li>' + esc(s) + '</li>').join('') +
       '</ol></section>' +
@@ -1646,6 +1695,32 @@ async function renderRecipe(app, id) {
       applyScale();
     });
   });
+  // Variant toggle: swap the ingredient list to the chosen version and
+  // re-run the scaler over the new nodes.
+  app.querySelectorAll('[data-variant]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedVariant = btn.dataset.variant;
+      app.querySelectorAll('[data-variant]').forEach(b =>
+        b.classList.toggle('active', b === btn));
+      const wrap = app.querySelector('#ing-wrap');
+      if (wrap) wrap.innerHTML = ingListHTML(filterIngredientsForVariant(r.ingredients, selectedVariant));
+      applyScale();
+    });
+  });
+  // Family rating: tap to set; tap the active one again to clear.
+  app.querySelectorAll('[data-rating]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const next = curRating === btn.dataset.rating ? null : btn.dataset.rating;
+      try {
+        await setRecipePref(r.id, { rating: next });
+        curRating = next;
+        app.querySelectorAll('[data-rating]').forEach(b =>
+          b.classList.toggle('active', b.dataset.rating === next));
+      } catch (e) {
+        toast('Couldn\u2019t save rating: ' + e.message);
+      }
+    });
+  });
   // Normalize initial render (e.g. "1 cups" in stored data → "1 cup").
   applyScale();
 }
@@ -1718,6 +1793,7 @@ function normalizeDraft(d) {
   d.pairings = d.pairings || [];
   d.tags = d.tags || [];
   d.categories = d.categories || [];
+  d.variants = Array.isArray(d.variants) ? d.variants : [];
   d.pdf = d.pdf || null;
   d.banner_image = d.banner_image || '';
   return d;
@@ -1767,6 +1843,10 @@ function recipeFormHTML(r, cancelHref) {
         '<input type="text" id="e-pdf" value="' + esc(r.pdf || '') + '" placeholder="pdfs/my-recipe.pdf"></div>' +
       '<div class="field"><label for="e-leftnote">Leftovers note</label>' +
         '<input type="text" id="e-leftnote" value="' + esc(r.leftover_note || '') + '"></div>' +
+      '<div class="field"><label>Versions (optional)</label><div id="variant-editor"></div>' +
+        '<button class="link-btn" id="variant-add" type="button">+ Add version</button>' +
+        '<div class="form-hint">A version is a named way of making this dish (e.g. Beef / Chicken). ' +
+        'Tag ingredients to a version in the Version column below; untagged ingredients are in every version.</div></div>' +
       '<div class="field"><label>Ingredients</label><div id="ing-editor"></div>' +
         '<button class="link-btn" id="ing-add-sec" type="button">+ Add section</button></div>' +
       '<div class="field"><label>Instructions</label><div id="steps-editor"></div>' +
@@ -2008,9 +2088,17 @@ function renderAdd(app) {
 }
 
 function wireRecipeForm(onSave) {
+  drawVariantEditor();
   drawIngEditor();
   drawStepsEditor();
   drawPairEditor();
+  const vAdd = $('#variant-add');
+  if (vAdd) vAdd.onclick = () => {
+    if (!Array.isArray(editDraft.variants)) editDraft.variants = [];
+    editDraft.variants.push({ key: '', label: '', default: editDraft.variants.length === 0 });
+    drawVariantEditor();
+    drawIngEditor();
+  };
   // Toggle kosher review notes visibility
   const krCb = $('#e-kosher-review'), krWrap = $('#e-kosher-notes-wrap');
   if (krCb && krWrap) krCb.addEventListener('change', () => {
@@ -2049,6 +2137,31 @@ function collectRecipeForm(d) {
     .filter(s => s.items.length);
   d.instructions = d.instructions.map(s => (s || '').trim()).filter(Boolean);
   d.pairings = d.pairings.filter(p => p.recipe_id);
+  // Versions: keep only named ones, with exactly one default; drop
+  // ingredient tags pointing at versions that no longer exist (an
+  // untagged ingredient is shared by every version).
+  const vars = (Array.isArray(d.variants) ? d.variants : [])
+    .map(v => ({
+      key: v.key || slugify(v.label || ''),
+      label: (v.label || '').trim(),
+      default: !!v.default
+    }))
+    .filter(v => v.label && v.key);
+  if (vars.length) {
+    let seenDefault = false;
+    vars.forEach(v => {
+      if (v.default && !seenDefault) seenDefault = true;
+      else if (v.default) v.default = false;
+    });
+    if (!seenDefault) vars[0].default = true;
+    d.variants = vars;
+  } else {
+    delete d.variants;
+  }
+  const varKeys = new Set(vars.map(v => v.key));
+  d.ingredients.forEach(s => (s.items || []).forEach(it => {
+    if (!it.variant || !varKeys.has(it.variant)) delete it.variant;
+  }));
 }
 
 function slugify(t) {
@@ -2103,6 +2216,59 @@ async function maybeUploadPhoto(d) {
   d._photoReplaced = true;
 }
 
+/* Version list editor (Commit 2B): names + which is default. Keys are
+   slugs derived from labels; renaming a version remaps its ingredient
+   tags, removing one untags its ingredients (they become shared). */
+function drawVariantEditor() {
+  const host = $('#variant-editor');
+  if (!host || !editDraft) return;
+  if (!Array.isArray(editDraft.variants)) editDraft.variants = [];
+  const vars = editDraft.variants;
+  host.innerHTML = vars.length ? vars.map((v, vi) =>
+    '<div class="mini-row variant-row">' +
+      '<input type="text" data-variant-label="' + vi + '" value="' + esc(v.label || '') + '" ' +
+        'placeholder="Version name (e.g. Chicken)" aria-label="Version name">' +
+      '<label class="variant-default"><input type="radio" name="variant-default" ' +
+        'data-variant-default="' + vi + '"' + (v.default ? ' checked' : '') + '> Default</label>' +
+      '<button class="link-btn danger" data-variant-del="' + vi + '" type="button">✕</button>' +
+    '</div>').join('')
+    : '<div class="form-hint">No versions — this dish has one way of making it.</div>';
+  host.querySelectorAll('[data-variant-label]').forEach(el =>
+    el.addEventListener('input', e => {
+      const vi = +e.target.dataset.variantLabel;
+      const v = editDraft.variants[vi];
+      if (!v) return;
+      const oldKey = v.key;
+      v.label = e.target.value;
+      v.key = uniqueVariantKey(editDraft.variants, e.target.value, vi);
+      if (oldKey && oldKey !== v.key) {
+        (editDraft.ingredients || []).forEach(s => (s.items || []).forEach(it => {
+          if (it.variant === oldKey) it.variant = v.key;
+        }));
+        drawIngEditor();
+      }
+    }));
+  host.querySelectorAll('[data-variant-default]').forEach(el =>
+    el.addEventListener('change', e => {
+      const vi = +e.target.dataset.variantDefault;
+      editDraft.variants.forEach((v, i) => { v.default = i === vi; });
+    }));
+  host.querySelectorAll('[data-variant-del]').forEach(el =>
+    el.addEventListener('click', e => {
+      const removed = editDraft.variants.splice(+e.target.dataset.variantDel, 1)[0];
+      if (removed && removed.key) {
+        (editDraft.ingredients || []).forEach(s => (s.items || []).forEach(it => {
+          if (it.variant === removed.key) delete it.variant;
+        }));
+      }
+      if (editDraft.variants.length && !editDraft.variants.some(v => v.default)) {
+        editDraft.variants[0].default = true;
+      }
+      drawVariantEditor();
+      drawIngEditor();
+    }));
+}
+
 function drawIngEditor() {
   const host = $('#ing-editor');
   if (!host) return;
@@ -2115,7 +2281,7 @@ function drawIngEditor() {
       '</div>' +
       '<div class="mini-row ing-header">' +
         '<span class="qty">Qty</span><span class="unit">Unit</span>' +
-        '<span class="ing-name">Ingredient</span><span class="prep">Prep</span><span class="ing-opt">Opt?</span><span class="ing-x"></span>' +
+        '<span class="ing-name">Ingredient</span><span class="prep">Prep</span><span class="ing-opt">Opt?</span><span class="ing-ver">Version</span><span class="ing-x"></span>' +
       '</div>' +
       (s.items || []).map((it, ii) =>
         '<div class="mini-row">' +
@@ -2124,6 +2290,12 @@ function drawIngEditor() {
           '<input type="text" data-item="' + si + '|' + ii + '|item" value="' + esc(it.item || '') + '" placeholder="Ingredient" aria-label="Ingredient">' +
           '<input type="text" data-item="' + si + '|' + ii + '|prep" value="' + esc(it.prep || '') + '" placeholder="Prep (sliced, diced…)" aria-label="Prep">' +
           '<input class="ing-opt-check" type="checkbox" data-item="' + si + '|' + ii + '|optional"' + (it.optional ? ' checked' : '') + ' aria-label="Optional" title="Optional">' +
+          '<select class="ing-variant" data-itemvariant="' + si + '|' + ii + '" aria-label="Version" title="Version">' +
+            '<option value="">Shared</option>' +
+            (editDraft.variants || []).filter(v => v.key).map(v =>
+              '<option value="' + esc(v.key) + '"' + (it.variant === v.key ? ' selected' : '') + '>' +
+              esc(v.label) + '</option>').join('') +
+          '</select>' +
           '<button class="link-btn danger" data-itemdel="' + si + '|' + ii + '" type="button">✕</button>' +
         '</div>'
       ).join('') +
@@ -2154,6 +2326,14 @@ function drawIngEditor() {
           if (prepEl) prepEl.value = newPrep;
         }
       }
+    }));
+  host.querySelectorAll('[data-itemvariant]').forEach(el =>
+    el.addEventListener('change', e => {
+      const [si, ii] = e.target.dataset.itemvariant.split('|').map(Number);
+      const item = editDraft.ingredients[si].items[ii];
+      if (!item) return;
+      if (e.target.value) item.variant = e.target.value;
+      else delete item.variant;   // Shared = no variant key stored
     }));
   host.querySelectorAll('[data-secdel]').forEach(el =>
     el.addEventListener('click', e => { editDraft.ingredients.splice(+e.target.dataset.secdel, 1); drawIngEditor(); }));
@@ -2468,6 +2648,9 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
   const label = (meal === 'lunch' ? 'Lunch' : 'Dinner') +
     (shabbat ? ' <span class="shabbat">· Shabbat</span>' : '');
   const s = normalizeSlot(slot);
+  const week = (mealPlan.weeks || {})[key] || {};
+  const lunchWarn = (meal === 'lunch' && Array.isArray(week.lunchWarnings))
+    ? week.lunchWarnings.find(w => w.day === di) : null;
   let body;
   if (editingSlot && editingSlot.key === key && editingSlot.di === di && editingSlot.meal === meal) {
     body = slotEditorHTML(s, editingSlot.dishIdx);
@@ -2479,22 +2662,45 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
       let dishBody;
       const meta = dish.recipe ? recipeMeta(dish.recipe) : null;
       if (meta) {
-        dishBody = '<a href="#/recipe/' + encodeURIComponent(meta.id) + '">' + esc(meta.title) + '</a>';
+        const title = meta.title + (dish.variant ? ' · ' + variantLabelFor(dish.recipe, dish.variant) : '');
+        dishBody = '<a href="#/recipe/' + encodeURIComponent(meta.id) + '">' + esc(title) + '</a>';
       } else if (dish.custom) {
         dishBody = '<span class="slot-custom">' + esc(dish.custom) + '</span>';
       } else {
         dishBody = '<span class="slot-skipped">—</span>';
       }
       if (dish.leftovers) dishBody += ' <span class="badge leftovers">Leftovers</span>';
+      if (dish.coverage != null) {
+        const need = lunchWarn && lunchWarn.kind === 'partial' ? lunchWarn.need : (di === 5 ? 1 : 2);
+        dishBody += ' <span class="badge warn">Only ' + esc(dish.coverage) + ' of ' + need + ' servings</span>';
+      }
+      if (dish.scale && dish.scale !== 1) {
+        dishBody += ' <span class="badge neutral">' + esc(dish.scale) + '×</span>';
+      }
       if (dish.cookDate) dishBody += ' <span class="slot-note">(cook ' + esc(dish.cookDate) + ')</span>';
+      if (dish.locked) dishBody += ' <span class="dish-lock" title="Locked — Draft Week won\u2019t change it">🔒</span>';
+      const at = key + '|' + di + '|' + meal + '|' + idx;
       const editBtn = canEdit
-        ? ' <button class="link-btn" data-dishedit="' + key + '|' + di + '|' + meal + '|' + idx + '" type="button">Edit</button>'
+        ? ' <button class="link-btn" data-dishedit="' + at + '" type="button">Edit</button>'
         : '';
-      return '<div class="dish-row">' + dishBody + editBtn + '</div>';
+      const swapBtn = (canEdit && dish.drafted && dish.recipe && !dish.locked && !dish.leftovers)
+        ? ' <button class="link-btn" data-dishswap="' + at + '" type="button" title="Swap for a similar dish">↻ Swap</button>'
+        : '';
+      const lockBtn = (canEdit && dish.drafted)
+        ? ' <button class="link-btn" data-dishlock="' + at + '" type="button">' +
+          (dish.locked ? '🔓 Unlock' : '🔒 Lock') + '</button>'
+        : '';
+      let row = '<div class="dish-row">' + dishBody + editBtn + swapBtn + lockBtn + '</div>';
+      if (dish.reason) row += '<div class="dish-reason">' + esc(dish.reason) + '</div>';
+      row += feedbackRowHTML(key, di, meal, idx, dish, week);
+      return row;
     }).join('');
     if (s.note) body += ' <span class="slot-note">— ' + esc(s.note) + '</span>';
   } else {
     body = '<span class="slot-skipped">—</span>';
+    if (lunchWarn && lunchWarn.kind === 'uncovered') {
+      body += ' <span class="badge warn">Not covered</span>';
+    }
   }
   const btns = canEdit
     ? '<div class="slot-actions"><button class="link-btn" data-slotadd="' + key + '|' + di + '|' + meal + '" type="button">' +
@@ -2512,6 +2718,22 @@ function slotEditorHTML(slot, dishIdx) {
   const currentLabel = (dish.recipe && recipeMeta(dish.recipe)) ? recipeMeta(dish.recipe).title
     : (dish.custom || '');
   const currentRid = (dish.recipe && recipeMeta(dish.recipe)) ? dish.recipe : '';
+  // Version pills for the dish being edited (rendered for the recipe it
+  // currently names; picking a different recipe re-opens the editor).
+  const evars = dish.recipe ? recipeVariantsFor(dish.recipe) : [];
+  const selVariant = dish.variant ||
+    (evars.length ? (evars.find(v => v.isDefault) || evars[0]).key : null);
+  const variantRow = evars.length
+    ? '<div class="se-variant"><span class="se-variant-label">Version:</span>' +
+      evars.map(v => '<button type="button" class="variant-pill' +
+        (v.key === selVariant ? ' active' : '') + '" data-sevariant="' + esc(v.key) + '">' +
+        esc(v.label) + '</button>').join('') + '</div>'
+    : '';
+  // A manual save marks the dish manual (drafted:false) and, per the
+  // spec invariant, locked — the checkbox starts there for drafted and
+  // brand-new dishes; an existing manual dish keeps its own state.
+  const lockChecked = dish.drafted ? true
+    : (dish.locked !== undefined ? !!dish.locked : true);
   return '<div class="slot-editor">' +
     '<div class="combo-wrap">' +
       '<input type="text" id="se-meal" placeholder="Type a recipe or your own dish…" autocomplete="off" ' +
@@ -2523,6 +2745,13 @@ function slotEditorHTML(slot, dishIdx) {
     '<label><input type="checkbox" id="se-advance"' + (dish.cookDate ? ' checked' : '') + '> Prepare in advance</label> ' +
     '<input type="date" id="se-cookdate" value="' + esc(dish.cookDate || '') + '"' +
       (dish.cookDate ? '' : ' style="display:none"') + ' aria-label="Cook date"><br>' +
+    '<label>Scale <select id="se-scale" aria-label="Scale">' +
+      [0.5, 1, 1.5, 2, 3].map(v => '<option value="' + v + '"' +
+        ((dish.scale || 1) === v ? ' selected' : '') + '>' + v + '×</option>').join('') +
+    '</select></label><br>' +
+    variantRow +
+    '<label><input type="checkbox" id="se-locked"' + (lockChecked ? ' checked' : '') +
+      '> Locked — Draft Week won\u2019t change this dish</label><br>' +
     '<label><input type="checkbox" id="se-skipped"' + (s.skipped ? ' checked' : '') + '> Skipped</label> ' +
     '<input type="text" id="se-note" placeholder="Note (optional)" value="' + esc(s.note || '') + '">' +
     '<div><button class="btn" id="se-save" type="button">Save</button> ' +
@@ -2535,16 +2764,20 @@ function slotEditorHTML(slot, dishIdx) {
 function wireCombo(input) {
   const list = $('#se-suggest');
   if (!list) return;
+  const lastCookedMap = computeLastCooked().byRecipe;
+  const todayStr = ymd(new Date());
   const draw = () => {
     const q = input.value.trim().toLowerCase();
     const matches = recipes
       .filter(r => !q || r.title.toLowerCase().includes(q))
       .slice(0, 8);
     if (!matches.length) { list.hidden = true; list.innerHTML = ''; return; }
-    list.innerHTML = matches.map(r =>
-      '<button type="button" class="combo-item" data-rid="' + esc(r.id) + '">' +
-        esc(r.title) + '</button>'
-    ).join('');
+    list.innerHTML = matches.map(r => {
+      const hint = lastCookedMap[r.id] ? lastMadeText(lastCookedMap[r.id], todayStr) : '';
+      return '<button type="button" class="combo-item" data-rid="' + esc(r.id) + '">' +
+        esc(r.title) +
+        (hint ? '<span class="combo-hint">' + esc(hint) + '</span>' : '') + '</button>';
+    }).join('');
     list.hidden = false;
   };
   input.addEventListener('input', () => { input.dataset.rid = ''; draw(); });
@@ -2554,7 +2787,10 @@ function wireCombo(input) {
     const b = e.target.closest('[data-rid]');
     if (!b) return;
     e.preventDefault();
-    input.value = b.textContent;
+    // The button may carry a "last made" hint span — use the recipe's
+    // own title, not the button's full text.
+    const rec = recipeMeta(b.dataset.rid);
+    input.value = rec ? rec.title : b.textContent;
     input.dataset.rid = b.dataset.rid;
     list.hidden = true;
     input.focus();
@@ -2566,8 +2802,11 @@ function renderPlanner(app) {
   const mon = sundayOf(plannerOffset);
   const key = ymd(mon);
   const week = getWeek(key);
+  seedDraftChips(key, week);
+  const chips = normalizeDraftChips(week.draftChips);
   const canEdit = editingEnabled();
   const label = plannerOffset === 0 ? 'This week' : 'Week of ' + prettyDate(mon);
+  const dayLetters = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   let days = '';
   for (let i = 0; i < 7; i++) {
@@ -2598,6 +2837,36 @@ function renderPlanner(app) {
       ? '<div class="no-print" style="text-align:center;margin-bottom:1rem">' +
         '<button class="link-btn" id="wk-today" type="button">Back to this week</button></div>'
       : '') +
+    // Draft Week chip bar: its own row, well away from the per-slot
+    // Clear buttons down in the day cards (Yidi's UI rule).
+    '<div class="draft-bar no-print">' +
+      '<div class="chip-row">' +
+        '<span class="chip-group-label">Hosting:</span>' +
+        '<label class="chip-check"><input type="checkbox" id="draft-hosting-fri"' +
+          (chips.hostingFri ? ' checked' : '') + '> Friday</label>' +
+        '<label class="chip-check"><input type="checkbox" id="draft-hosting-sat"' +
+          (chips.hostingSat ? ' checked' : '') + '> Saturday</label>' +
+      '</div>' +
+      '<div class="chip-row">' +
+        '<span class="chip-group-label">Eating out / skip dinner:</span>' +
+        dayLetters.map((L, i) =>
+          '<button type="button" class="day-chip' + (chips.eatOut.includes(i) ? ' active' : '') +
+          '" data-eatout="' + i + '" title="' + PLAN_DAY_NAMES[i] + '"' +
+          (i === 4 ? ' aria-label="Thursday — pizza night, always kept"' : '') + '>' + L + '</button>'
+        ).join('') +
+      '</div>' +
+      '<div class="chip-row">' +
+        '<span class="chip-group-label">Use up:</span>' +
+        '<span id="draft-useup-chips"></span>' +
+        '<input type="text" id="draft-useup-input" placeholder="Ingredient to use up" aria-label="Ingredient to use up">' +
+        '<button class="link-btn" id="draft-useup-add" type="button">Add</button>' +
+      '</div>' +
+      '<div class="draft-actions">' +
+        '<a class="link-btn" href="#/planner/tune">Tune rotation</a>' +
+        '<button class="btn" id="draft-week-btn" type="button">Draft Week ✨</button>' +
+      '</div>' +
+    '</div>' +
+    planWarningsHTML(key, week) +
     '<div id="days">' + days + '</div>';
 
   $('#wk-prev').onclick = () => { plannerOffset--; renderPlanner(app); };
@@ -2616,6 +2885,42 @@ function renderPlanner(app) {
     persistWeek(key, null, () => renderPlanner(app));
   });
 
+  // --- Draft Week chip bar wiring ---
+  app.querySelectorAll('[data-eatout]').forEach(b =>
+    b.addEventListener('click', () => b.classList.toggle('active')));
+  renderUseUpChips();
+  const useUpHost = $('#draft-useup-chips');
+  if (useUpHost) useUpHost.addEventListener('click', e => {
+    const del = e.target.closest('[data-useup-del]');
+    if (!del) return;
+    draftUseUp.splice(+del.dataset.useupDel, 1);
+    renderUseUpChips();
+  });
+  const addUseUp = () => {
+    const inp = $('#draft-useup-input');
+    const v = inp ? inp.value.trim() : '';
+    if (!v) return;
+    if (draftUseUp.length >= 5) { toast('Up to 5 use-up items.'); return; }
+    draftUseUp.push(v);
+    inp.value = '';
+    renderUseUpChips();
+    inp.focus();
+  };
+  const useUpAdd = $('#draft-useup-add');
+  if (useUpAdd) useUpAdd.addEventListener('click', addUseUp);
+  const useUpInput = $('#draft-useup-input');
+  if (useUpInput) useUpInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addUseUp(); }
+  });
+  const draftBtn = $('#draft-week-btn');
+  if (draftBtn) draftBtn.addEventListener('click', () => runDraftWeek(key, app));
+  const dismissBtn = app.querySelector('[data-dismiss-warnings]');
+  if (dismissBtn) dismissBtn.addEventListener('click', () => {
+    const wk = getWeek(key);
+    wk.dismissedWarnings = (Array.isArray(wk.lunchWarnings) ? wk.lunchWarnings : []).map(warningSignature);
+    persistWeek(key, null, () => renderPlanner(app));
+  });
+
   $('#days').addEventListener('click', e => {
     const t = e.target;
     if (t.id === 'se-save') return saveSlot(key);
@@ -2630,9 +2935,52 @@ function renderPlanner(app) {
       editingSlot = { key: k, di: +di, meal, dishIdx: +idx };
       return renderPlanner(app);
     }
+    if (t.dataset.dishswap) {
+      const [k, di, meal, idx] = t.dataset.dishswap.split('|');
+      applySwap(k, +di, meal, +idx)
+        .then(d => {
+          if (!d) toast('No swap options for this dish.');
+          renderPlanner(app);
+        })
+        .catch(err => { toast('Swap failed: ' + err.message); renderPlanner(app); });
+      return;
+    }
+    if (t.dataset.dishlock) {
+      const [k, di, meal, idx] = t.dataset.dishlock.split('|');
+      const s = planSlot(getWeek(k), +di, meal);
+      const dish = s.dishes[+idx];
+      if (!dish) return;
+      dish.locked = !dish.locked;
+      persistPlannedWeek(k, 'Lock dish: ' + k)
+        .then(() => renderPlanner(app))
+        .catch(err => { toast('Couldn\u2019t save: ' + err.message); renderPlanner(app); });
+      return;
+    }
+    if (t.dataset.fbrate) {
+      const [k, di, meal, idx, rating] = t.dataset.fbrate.split('|');
+      recordMealFeedback(k, +di, meal, +idx, { rating })
+        .then(() => renderPlanner(app))
+        .catch(err => { toast('Couldn\u2019t save rating: ' + err.message); renderPlanner(app); });
+      return;
+    }
+    if (t.dataset.fbleft) {
+      const [k, di, meal, idx, left] = t.dataset.fbleft.split('|');
+      recordMealFeedback(k, +di, meal, +idx, { left })
+        .then(() => renderPlanner(app))
+        .catch(err => { toast('Couldn\u2019t save feedback: ' + err.message); renderPlanner(app); });
+      return;
+    }
+    if (t.dataset.fbdismiss) {
+      const [k, di, meal, idx] = t.dataset.fbdismiss.split('|');
+      recordMealFeedback(k, +di, meal, +idx, { dismiss: true })
+        .then(() => renderPlanner(app))
+        .catch(err => { toast('Couldn\u2019t save feedback: ' + err.message); renderPlanner(app); });
+      return;
+    }
     if (t.dataset.clear) {
       const [k, di, meal] = t.dataset.clear.split('|');
       getWeek(k).days[+di][meal] = blankSlot();
+      recomputeWeekLunches(k);   // clearing a dinner can uncover lunches
       return persistWeek(k, null, () => renderPlanner(app));
     }
   });
@@ -2649,6 +2997,12 @@ function renderPlanner(app) {
         if (!advToggle.checked) cookDate.value = '';
       });
     }
+    // Version pills: single-select, read back by saveSlot.
+    app.querySelectorAll('[data-sevariant]').forEach(b =>
+      b.addEventListener('click', () => {
+        app.querySelectorAll('[data-sevariant]').forEach(x =>
+          x.classList.toggle('active', x === b));
+      }));
   }
 }
 
@@ -2667,6 +3021,25 @@ function saveSlot(key) {
   dish.leftovers = $('#se-leftovers').checked;
   const advChecked = $('#se-advance').checked;
   dish.cookDate = advChecked ? ($('#se-cookdate').value || null) : null;
+  // Manual-planning fields (Commit 2B): scale is set ONLY here, in the
+  // slot editor — the generator never writes it. Variant comes from
+  // the editor's version pills. A manual save marks the dish manual:
+  // drafted:false, reason:null, and locked per the Locked checkbox.
+  if (dish.recipe) {
+    const scaleSel = $('#se-scale');
+    const scaleVal = scaleSel ? parseFloat(scaleSel.value) : 1;
+    if (scaleVal && scaleVal !== 1) dish.scale = scaleVal;
+    const evars = recipeVariantsFor(dish.recipe);
+    if (evars.length) {
+      const activePill = document.querySelector('[data-sevariant].active');
+      dish.variant = activePill ? activePill.dataset.sevariant
+        : (evars.find(v => v.isDefault) || evars[0]).key;
+    }
+  }
+  dish.drafted = false;
+  dish.reason = null;
+  const lockBox = $('#se-locked');
+  dish.locked = lockBox ? lockBox.checked : true;
 
   const idx = editingSlot.dishIdx;
   if (idx === -1) {
@@ -2682,6 +3055,7 @@ function saveSlot(key) {
   slot.skipped = $('#se-skipped').checked;
   slot.note = $('#se-note').value.trim();
   getWeek(key).days[editingSlot.di][editingSlot.meal] = slot;
+  recomputeWeekLunches(key);   // dinner/scale changes move lunch coverage
   persistWeek(key, st, () => { editingSlot = null; renderPlanner($('#app')); });
 }
 
@@ -2836,6 +3210,1186 @@ async function persistWeek(key, statusEl, done) {
     if (statusEl) { statusEl.className = 'form-status error'; statusEl.textContent = msg; }
     else toast(msg);
   }
+}
+
+/* ================================================================
+   Smart Meal Planning v1 — logic core (Commit 2A)
+   Pure planning logic: classifier, yield math, rotation memory,
+   leftover-bucket lunch coverage, the Draft Week generator and
+   swap. No UI lives here (chip bar / Quick Sort / feedback row are
+   a later stage); every function below works off mealPlan + meta
+   and is exercised offline by smart-planning/commit2-test.cjs.
+
+   Week/day conventions (same as the planner): a week key is the
+   Sunday date 'YYYY-MM-DD'; day index 0=Sunday .. 5=Friday,
+   6=Saturday. Friday dinner (5/dinner) and Saturday lunch
+   (6/lunch) are the Shabbat meals.
+
+   Week-record fields this stage owns:
+   - week.carryInPool: snapshot of the Shabbat carry-in pool as
+     last computed by recomputeWeekLunches — { 'recipe|variant':
+     { recipe, variant, servings, cookOffset, source } } where
+     cookOffset is -2 (prev Fri dinner) or -1 (prev Sat lunch).
+   - week.carryInDeductions: { 'recipe|variant': servings } written
+     by draftWeek when it spends pool servings on the Shabbat-
+     leftovers night. recomputeWeekLunches charges the pool for
+     every leftovers dinner of a pool source still present in the
+     week's dinners — the recorded deduction when there is one,
+     else the standard 2 servings (a manually added leftovers
+     dinner of a Shabbat main records no entry but still eats
+     from the pool) — so a manual delete refunds the pool.
+   - week.lunchWarnings: [{ day, kind: 'partial'|'uncovered',
+     have, need }] — rebuilt from scratch by every recompute.
+   Dish field added here: dish.coverage — on a partially covered
+   lunch placement, the servings actually available (the badge
+   reads "Only <coverage> of <need> servings").
+   ================================================================ */
+
+/* ---------------- Planning date helpers ---------------- */
+function weekKeyDate(key) {          // 'YYYY-MM-DD' -> Date at local noon
+  const p = String(key || '').split('-').map(Number);
+  return new Date(p[0] || 1970, (p[1] || 1) - 1, p[2] || 1, 12, 0, 0, 0);
+}
+function addDaysToKey(key, n) {
+  const d = weekKeyDate(key);
+  d.setDate(d.getDate() + n);
+  return ymd(d);
+}
+function daysBetweenKeys(a, b) {     // whole days from a to b (b minus a)
+  return Math.round((weekKeyDate(b) - weekKeyDate(a)) / 86400000);
+}
+function prevWeekKeyOf(key) { return addDaysToKey(key, -7); }
+/* The stored week record for a key, or null — never creates one. */
+function planningRawWeek(key) {
+  const wk = (mealPlan && mealPlan.weeks) ? mealPlan.weeks[key] : null;
+  return (wk && Array.isArray(wk.days)) ? wk : null;
+}
+/* Normalized slot for a stored week, written back so mutations stick
+   (normalizeSlot returns a fresh object for legacy-format slots). */
+function planSlot(week, di, meal) {
+  const s = normalizeSlot(week.days[di] && week.days[di][meal]);
+  if (week.days[di]) week.days[di][meal] = s;
+  return s;
+}
+function planningPrefs() { return (mealPlan && mealPlan.recipePrefs) || {}; }
+/* Meta entries for the whole collection (the loaded meta list). */
+function allPlanningMeta() {
+  if (Array.isArray(recipes) && recipes.length) return recipes;
+  return Object.values(metaById || {});
+}
+
+/* ---------------- Classifier ----------------
+   inferPlanningMeta(metaEntry) -> { slotClass, effort, shabbatFit,
+   mainEligible }. Pure and deterministic. `mainEligible` is the
+   spec's main-slot eligibility gate, exposed as a field so the
+   generator and Quick Sort can apply it without recomputing:
+   a recipe may fill a main slot only if its categories include
+   'main', or it carries no categories at all ("unclassified" —
+   every real non-main in the collection carries at least one
+   non-main category, and a recipePrefs slotClass override lifts
+   the gate; see effectivePlanningMeta). */
+const PLAN_RE = {
+  chulent: /\bch(?:u|o)lent\b/i,
+  groundBeef: /\b(ground\s+(?:beef|meat)|minced?\s+beef|burgers?|meatballs?|kofta|meatloaf|hamburger)\b/i,
+  beefRoast: /\b(brisket|chuck|short\s*ribs?|flanken|corned\s+beef|beef\s+stew|stew\s+beef|beef\s+shank|pot\s+roast|roast\s+beef)\b/i,
+  beefWord: /\bbeef\b(?!\s+(?:broth|stock|bouillon|fat))/i,
+  chickenWord: /\bchicken\b(?!\s+(?:broth|stock|bouillon|schmaltz|fat))/i,
+  fishWord: /\b(salmon|tuna|tilapia|trout|branzino|sea\s+bass|halibut|cod|flounder|snapper|sardines?|anchov\w*|mackerel|herring|whitefish|fish)\b/i,
+  pastaWord: /\b(pasta|noodles?|spaghetti|ziti|lasagna|lasagne|macaroni|penne|fettuccine|linguine|gnocchi|ramen|udon|soba|orzo)\b/i,
+  vegWord: /\b(tofu|tempeh|seitan|vegetarian|vegan)\b/i,
+  lunchSignal: /\b(kugel|overnight|slow[\s-]?cook\w*|crock\s*pot|make[\s-]?ahead|room\s+temp\w*)\b/i
+};
+function inferPlanningMeta(meta) {
+  if (!meta) return { slotClass: 'other', effort: 'weeknight', shabbatFit: 'friday', mainEligible: false };
+  const cats = (meta.categories || []).map(c => String(c).toLowerCase().trim());
+  const title = String(meta.title || '');
+  const hay = (title + ' ' + String(meta.search_text || '') + ' ' + cats.join(' ')).toLowerCase();
+  const kosher = String(meta.kosher_status || '').toLowerCase();
+  const tags = (meta.tags || []).map(t => String(t).toLowerCase().trim());
+  const total = totalTime(meta);
+  const mainEligible = cats.includes('main') || cats.length === 0;
+
+  // Chulent: class by its actual protein; always Shabbat effort, lunch fit.
+  if (PLAN_RE.chulent.test(title) || PLAN_RE.chulent.test(String(meta.id || ''))) {
+    let cls = 'veg';
+    if (PLAN_RE.chickenWord.test(hay)) cls = 'chicken';
+    else if (PLAN_RE.groundBeef.test(hay)) cls = 'ground-beef';
+    else if (PLAN_RE.beefWord.test(hay) || kosher === 'meat') cls = 'beef-roast';
+    else if (PLAN_RE.fishWord.test(hay)) cls = 'fish';
+    return { slotClass: cls, effort: 'shabbat', shabbatFit: 'lunch', mainEligible };
+  }
+
+  // slotClass, in the spec's priority order. The protein regexes carry a
+  // broth/stock negative lookahead so "chicken broth" never makes a soup
+  // (or anything else) a chicken main.
+  let slotClass = 'other';
+  if (PLAN_RE.groundBeef.test(hay)) slotClass = 'ground-beef';
+  else if (PLAN_RE.beefRoast.test(hay) || PLAN_RE.beefWord.test(hay)) slotClass = 'beef-roast';
+  else if (PLAN_RE.chickenWord.test(hay)) slotClass = 'chicken';
+  else if (PLAN_RE.fishWord.test(hay)) slotClass = 'fish';
+  else if (cats.includes('pasta') || PLAN_RE.pastaWord.test(hay)) slotClass = 'pasta';
+  else if (PLAN_RE.vegWord.test(hay)) slotClass = 'veg';
+
+  // effort: 'special' is manual-override only, never inferred.
+  let effort;
+  if (tags.includes('shabbat')) effort = 'shabbat';
+  else if (slotClass === 'beef-roast') effort = 'shabbat';
+  else if (!total) effort = (kosher === 'meat') ? 'shabbat' : 'weeknight';
+  else if (total <= 45) effort = 'weeknight';
+  else if (total >= 90) effort = 'shabbat';
+  else effort = (slotClass === 'pasta' || slotClass === 'chicken' || slotClass === 'fish')
+    ? 'weeknight' : 'shabbat';
+
+  // shabbatFit: strong make-ahead/room-temp signals -> lunch; a
+  // leftover-friendly hot main reheats for either meal -> both;
+  // everything else is a Friday (hot, cooked) dish.
+  let shabbatFit = 'friday';
+  if (cats.includes('salad') || PLAN_RE.lunchSignal.test(title + ' ' + String(meta.search_text || ''))) {
+    shabbatFit = 'lunch';
+  } else if (meta.leftover_friendly) {
+    shabbatFit = 'both';
+  }
+  return { slotClass, effort, shabbatFit, mainEligible };
+}
+/* inferPlanningMeta + recipePrefs overrides (slotClass also lifts the
+   eligibility gate; effort overrides inference). Adds `rating` and
+   `variants` passthrough for the generator's convenience. */
+function effectivePlanningMeta(id) {
+  const meta = recipeMeta(id);
+  if (!meta) return null;
+  const out = inferPlanningMeta(meta);
+  const prefs = planningPrefs()[id] || null;
+  if (prefs) {
+    if (prefs.slotClass) { out.slotClass = prefs.slotClass; out.mainEligible = true; }
+    if (prefs.effort) out.effort = prefs.effort;
+  }
+  out.rating = prefs && prefs.rating ? prefs.rating : null;
+  out.variants = (Array.isArray(meta.variants) && meta.variants.length) ? meta.variants : null;
+  return out;
+}
+
+/* ---------------- Yield math ----------------
+   leftoverServings(dish, metaEntry, yieldLog?) -> POST-dinner leftover
+   servings. Learned yieldLog values are already post-dinner leftovers;
+   they are used directly and the 2 dinner servings are NEVER subtracted
+   from them a second time (the Argon-caught bug this function exists to
+   prevent). The -2 appears only in the inference/fallback paths, where
+   a total cooked yield is converted into what remains after dinner. */
+const YIELD_LEFT_VALUES = { 'none': 0, 'a little': 1, 'a lot': 2, 'most': 3 };
+function yieldMedian(values) {
+  const v = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(v.length / 2);
+  return v.length % 2 ? v[mid] : Math.round((v[mid - 1] + v[mid]) / 2);
+}
+function leftoverServings(dish, metaEntry, yieldLog) {
+  if (!dish || dish.leftovers || !dish.recipe) return 0;
+  const scale = dish.scale || 1;
+  const variant = dish.variant || null;
+  const log = Array.isArray(yieldLog) ? yieldLog : ((mealPlan && mealPlan.yieldLog) || []);
+  const entries = log.filter(e => e && e.recipe === dish.recipe &&
+    Object.prototype.hasOwnProperty.call(YIELD_LEFT_VALUES, e.left));
+  if (entries.length) {
+    const byDate = [...entries].sort((a, b) => {
+      const da = String(a.date || ''), db = String(b.date || '');
+      return da < db ? -1 : da > db ? 1 : 0;
+    });
+    // Exact recipe+scale+variant: latest 3, median, used directly.
+    const exact = byDate.filter(e => (e.scale || 1) === scale && (e.variant || null) === variant);
+    if (exact.length) return yieldMedian(exact.slice(-3).map(e => YIELD_LEFT_VALUES[e.left]));
+    // Cross-variant at the same scale: a serving is a serving — direct.
+    const sameScale = byDate.filter(e => (e.scale || 1) === scale);
+    if (sameScale.length) return yieldMedian(sameScale.slice(-3).map(e => YIELD_LEFT_VALUES[e.left]));
+    // Cross-scale inference: logged left L at scale s means (2 + L) total
+    // servings were cooked at s; scale that total to this dish and take
+    // dinner back off. Prefer a same-variant entry as the source.
+    const srcPool = byDate.filter(e => (e.variant || null) === variant);
+    const src = (srcPool.length ? srcPool : byDate).slice(-1)[0];
+    const inferred = ((2 + YIELD_LEFT_VALUES[src.left]) / (src.scale || 1)) * scale - 2;
+    return Math.max(0, Math.floor(inferred));
+  }
+  // Fallback: the servings statement. Unparseable -> conservative low of 4.
+  const meta = metaEntry || recipeMeta(dish.recipe);
+  const base = meta ? parseServings(meta.servings) : null;
+  const baseLow = base ? base.low : 4;
+  const rawLeft = Math.max(0, Math.floor(baseLow * scale - 2));
+  if (rawLeft === 0 && meta && meta.leftover_friendly && baseLow >= 3) return 1;
+  return rawLeft;
+}
+
+/* ---------------- Rotation memory ----------------
+   Latest date each recipe was actually cooked (a non-leftovers dish in
+   any stored week; leftovers appearances don't count as cooking), plus
+   the same per recipe+variant. Returns { byRecipe, byVariant } with
+   'YYYY-MM-DD' values; byVariant keys are 'recipeId|variantKey'. */
+function computeLastCooked() {
+  const byRecipe = {}, byVariant = {};
+  const weeks = (mealPlan && mealPlan.weeks) || {};
+  Object.keys(weeks).forEach(key => {
+    const wk = weeks[key];
+    if (!wk || !Array.isArray(wk.days)) return;
+    wk.days.forEach((day, i) => {
+      if (!day) return;
+      const date = addDaysToKey(key, i);
+      ['lunch', 'dinner'].forEach(m => {
+        const s = normalizeSlot(day[m]);
+        if (s.skipped) return;
+        s.dishes.forEach(dish => {
+          if (!dish.recipe || dish.leftovers) return;
+          if (!byRecipe[dish.recipe] || date > byRecipe[dish.recipe]) byRecipe[dish.recipe] = date;
+          if (dish.variant) {
+            const k = dish.recipe + '|' + dish.variant;
+            if (!byVariant[k] || date > byVariant[k]) byVariant[k] = date;
+          }
+        });
+      });
+    });
+  });
+  return { byRecipe, byVariant };
+}
+
+/* ---------------- Leftover buckets + lunch coverage ----------------
+   The Shabbat carry-in pool: the PREVIOUS week's Friday dinner and
+   Saturday lunch mains, keyed 'recipe|variant'. cookOffset is -2/-1
+   relative to this week's Sunday, so the 7-day window and the spacing
+   rule treat them exactly like this week's own dinners. */
+function buildCarryInPool(weekKey) {
+  const prev = planningRawWeek(prevWeekKeyOf(weekKey));
+  const pool = {};
+  if (!prev) return pool;
+  [{ day: 5, meal: 'dinner', offset: -2, source: 'Friday dinner' },
+   { day: 6, meal: 'lunch', offset: -1, source: 'Saturday lunch' }].forEach(sp => {
+    const day = prev.days[sp.day];
+    if (!day) return;
+    const s = normalizeSlot(day[sp.meal]);
+    if (s.skipped) return;
+    s.dishes.forEach(dish => {
+      if (!dish.recipe || dish.leftovers) return;
+      pool[dish.recipe + '|' + (dish.variant || '')] = {
+        recipe: dish.recipe,
+        variant: dish.variant || null,
+        servings: leftoverServings(dish, recipeMeta(dish.recipe)),
+        cookOffset: sp.offset,
+        source: sp.source
+      };
+    });
+  });
+  return pool;
+}
+
+/* recomputeWeekLunches(weekKey) — pure function of the stored weeks.
+   Rebuilds Mon–Fri lunch coverage from leftover buckets: this week's
+   dinners plus the Shabbat carry-in pool. A bucket stays usable for
+   up to 7 days after its cook day; allocation is earliest-lunch-first,
+   oldest-bucket-first (FIFO). Spacing: a source is ineligible on
+   day d when placing it there would put it on 3 consecutive days or
+   on the same day twice — i.e. it already appears on d itself (its
+   own leftovers dinner that night counts as an appearance), on both
+   d-1 and d-2, on both d-1 and d+1 (bridge), or on both d+1 and
+   d+2 — so the same leftovers never run more than 2 days in a row.
+   No placements on Sunday (fresh-cook priority) and
+   none on Saturday (Shabbat lunch is a planned main, not coverage).
+   Only lunch slots that are empty or hold nothing but drafted,
+   unlocked dishes are touched; manual dishes are never blocked,
+   moved, or removed. Partial coverage still places the dish (with
+   dish.coverage set) and records a warning instead of wasting the
+   serving. Mutates the stored week in place and returns it. */
+function recomputeWeekLunches(weekKey) {
+  const week = planningRawWeek(weekKey) || getWeek(weekKey);
+
+  // Carry-in pool, minus what this week's leftovers dinners eat.
+  const pool = buildCarryInPool(weekKey);
+  const deductions = (week.carryInDeductions && typeof week.carryInDeductions === 'object')
+    ? week.carryInDeductions : {};
+  const leftoverDinnerKeys = new Set();
+  week.days.forEach(day => {
+    if (!day) return;
+    normalizeSlot(day.dinner).dishes.forEach(d => {
+      if (d.leftovers && d.recipe) leftoverDinnerKeys.add(d.recipe + '|' + (d.variant || ''));
+    });
+  });
+  Object.keys(pool).forEach(k => {
+    // Every leftovers dinner of a pool source charges the pool: the
+    // generator's recorded carryInDeductions amount when there is
+    // one, else the standard 2 servings (a manually added leftovers
+    // dinner records no deduction entry but still eats from the pool).
+    if (leftoverDinnerKeys.has(k)) {
+      pool[k].servings = Math.max(0, pool[k].servings - (deductions[k] || 2));
+    }
+  });
+  week.carryInPool = pool;
+
+  // Buckets: carry-in first (oldest cook offsets), then this week's dinners.
+  const buckets = [];
+  Object.keys(pool).forEach(k => {
+    if (pool[k].servings > 0) buckets.push({ key: k, ...pool[k] });
+  });
+  week.days.forEach((day, i) => {
+    if (!day) return;
+    const s = normalizeSlot(day.dinner);
+    if (s.skipped) return;
+    s.dishes.forEach(dish => {
+      if (!dish.recipe || dish.leftovers) return;
+      const servings = leftoverServings(dish, recipeMeta(dish.recipe));
+      if (servings > 0) {
+        buckets.push({
+          key: dish.recipe + '|' + (dish.variant || ''),
+          recipe: dish.recipe, variant: dish.variant || null,
+          servings, cookOffset: i, source: 'dinner'
+        });
+      }
+    });
+  });
+  buckets.sort((a, b) => a.cookOffset - b.cookOffset);
+
+  // Clear the lunch slots we own (Mon–Fri, empty or all drafted+unlocked)
+  // BEFORE counting appearances, so yesterday's placements don't block
+  // today's rebuild.
+  const touchable = [];
+  for (let d = 1; d <= 5; d++) {
+    const s = planSlot(week, d, 'lunch');
+    if (s.skipped) continue;
+    if (s.dishes.length && !s.dishes.every(dish => dish.drafted && !dish.locked)) {
+      // Untouchable slot (locked or manual dishes): its leftovers
+      // dishes already ate from their buckets — charge the matching
+      // bucket (the dish's recorded coverage, else the day's need)
+      // so the same servings are never placed again on a later day.
+      const need = d === 5 ? 1 : 2;   // Friday: 1 serving (Nava only)
+      s.dishes.forEach(dish => {
+        if (!dish.leftovers || !dish.recipe) return;
+        const bucket = buckets.find(b => b.key === dish.recipe + '|' + (dish.variant || ''));
+        if (!bucket) return;
+        const amt = dish.coverage != null ? dish.coverage : need;
+        bucket.servings = Math.max(0, bucket.servings - Math.min(amt, bucket.servings));
+      });
+      continue;
+    }
+    s.dishes = [];
+    touchable.push(d);
+  }
+
+  // Appearances per source (for the spacing rule): every dish still in
+  // the week, plus each bucket source's own cook day.
+  const appearances = {};
+  const noteAppearance = (key, offset) => {
+    (appearances[key] = appearances[key] || new Set()).add(offset);
+  };
+  buckets.forEach(b => noteAppearance(b.key, b.cookOffset));
+  week.days.forEach((day, i) => {
+    if (!day) return;
+    ['lunch', 'dinner'].forEach(m => {
+      normalizeSlot(day[m]).dishes.forEach(dish => {
+        if (dish.recipe) noteAppearance(dish.recipe + '|' + (dish.variant || ''), i);
+      });
+    });
+  });
+
+  const warnings = [];
+  touchable.forEach(d => {
+    const need = d === 5 ? 1 : 2;   // Friday: 1 serving (Nava only)
+    const bucket = buckets.find(b => {
+      if (b.servings <= 0) return false;
+      if (d <= b.cookOffset || d - b.cookOffset > 7) return false;
+      const seen = appearances[b.key];
+      if (seen) {
+        if (seen.has(d)) return false;                                 // already on day d (e.g. its own leftovers dinner)
+        if (seen.has(d - 1) && seen.has(d - 2)) return false;           // would extend a run to 3 days
+        if (seen.has(d - 1) && seen.has(d + 1)) return false;           // would bridge into 3 days in a row
+        if (seen.has(d + 1) && seen.has(d + 2)) return false;           // would start a run of 3 days
+      }
+      return true;
+    });
+    const s = planSlot(week, d, 'lunch');
+    if (!bucket) {
+      warnings.push({ day: d, kind: 'uncovered', have: 0, need });
+      return;
+    }
+    const placed = Math.min(bucket.servings, need);
+    const dish = {
+      recipe: bucket.recipe, leftovers: true, cookDate: null,
+      drafted: true, locked: false, variant: bucket.variant || null,
+      reason: 'Leftovers from ' + (bucket.cookOffset < 0 ? 'Shabbat' : 'a dinner this week')
+    };
+    if (placed < need) {
+      dish.coverage = placed;
+      warnings.push({ day: d, kind: 'partial', have: placed, need });
+    }
+    bucket.servings -= placed;
+    noteAppearance(bucket.key, d);
+    s.dishes = [dish];
+  });
+  week.lunchWarnings = warnings;
+  return week;
+}
+
+/* ---------------- Generator: scoring ----------------
+   A slot is protected (the generator never touches it) when it is
+   skipped or holds any locked or manual (non-drafted) dish. Drafted,
+   unlocked dishes may be re-rolled. */
+function slotIsProtected(slot) {
+  const s = normalizeSlot(slot);
+  if (s.skipped) return true;
+  return s.dishes.some(d => d.locked || !d.drafted);
+}
+/* Per-slot kosher lock: once a slot holds a meat dish, further picks
+   must be meat/pareve; a dairy dish locks to dairy/pareve. Pareve
+   alone locks nothing. Returns null when there is no lock. */
+function slotKosherAllowed(slot) {
+  const s = normalizeSlot(slot);
+  let hasMeat = false, hasDairy = false;
+  s.dishes.forEach(d => {
+    if (!d.recipe) return;
+    const m = recipeMeta(d.recipe);
+    if (!m) return;
+    if (m.kosher_status === 'meat') hasMeat = true;
+    if (m.kosher_status === 'dairy') hasDairy = true;
+  });
+  if (hasMeat) return new Set(['meat', 'pareve']);
+  if (hasDairy) return new Set(['dairy', 'pareve']);
+  return null;
+}
+
+function scorePlanningCandidate(meta, pm, co, opts) {
+  let score = 0;
+  const factors = [];
+  if (pm.rating === 'favorite') { score += 30; factors.push('Favorite'); }
+  else if (pm.rating === 'fine') { score += 18; factors.push('Rated fine'); }
+  else score += 12;
+  const last = (opts.lastCooked || {})[meta.id] || null;
+  if (!last) {
+    // Never-cooked bonus: +6, but only for the first untried pick of
+    // the week (the cap is on the bonus, not on untried picks — with
+    // an empty history everything is untried and the draft must
+    // still be able to fill the framework).
+    if ((opts.untriedUsed || 0) < 1) { score += 6; factors.push('Never made — worth a try'); }
+  } else {
+    const days = daysBetweenKeys(last, opts.weekKey);
+    let pen = 0;
+    if (days < 7) pen = 40;
+    else if (days < 14) pen = 28;
+    else if (days < 21) pen = 16;
+    if (pm.rating === 'favorite' && days >= 14) pen = 0;   // favorites exempt after 2 wks
+    if (pen) score -= pen;
+    else if (days >= 21) factors.push('Not made in ' + Math.floor(days / 7) + ' wks');
+  }
+  const searchText = String(meta.search_text || '').toLowerCase();
+  let useUpScore = 0;
+  (opts.useUp || []).forEach(u => {
+    const t = String(u || '').trim().toLowerCase();
+    if (t && searchText.includes(t) && useUpScore < 24) {   // +8 per hit, capped at +24
+      useUpScore += 8;
+      factors.push('Uses ' + t + ' on hand');
+    }
+  });
+  score += useUpScore;
+  // Hosting: a bonus on NATURAL size only — the generator never scales.
+  if (opts.hosting) {
+    const low = (parseServings(meta.servings) || { low: 4 }).low;
+    if (low >= 8) { score += 20; factors.push('Big batch — good for hosting'); }
+    else if (low >= 6) { score += 12; factors.push('Serves a crowd'); }
+  }
+  // Leftover-selection bonus: a naturally big yield drafted early
+  // enough in the week leaves a later lunch it can cover.
+  if (opts.cookDay != null && opts.cookDay < 5 &&
+      leftoverServings({ recipe: meta.id, variant: co.variant || null }, meta) >= 2) {
+    score += 10;
+    factors.push('Leftovers cover a lunch');
+  }
+  return {
+    id: meta.id, title: meta.title,
+    variant: co.variant || null, variantLabel: co.variantLabel || null,
+    slotClass: co.cls, score, factors, meta
+  };
+}
+
+/* Enumerate scored candidates. opts: { classes:Set|null, efforts:Set,
+   fits:Set|null, kosher:Set|null, hosting, useUp:[], lastCooked:{},
+   untriedUsed, weekKey, cookDay }. A variant recipe contributes one
+   candidate per version (class from the version's meta entry); a
+   plain recipe contributes one (its inferred/overridden class). */
+function planningCandidates(opts) {
+  const out = [];
+  const useUp = (opts.useUp || []).slice(0, 5);
+  allPlanningMeta().forEach(meta => {
+    if (!meta || !meta.id) return;
+    const pm = effectivePlanningMeta(meta.id);
+    if (!pm || !pm.mainEligible) return;
+    if (pm.rating === 'skip') return;
+    if (pm.effort === 'special') return;
+    if (opts.efforts && !opts.efforts.has(pm.effort)) return;
+    if (opts.kosher && !opts.kosher.has(String(meta.kosher_status || '').toLowerCase())) return;
+    if (opts.fits && !opts.fits.has(pm.shabbatFit)) return;
+    const variants = (Array.isArray(meta.variants) && meta.variants.length) ? meta.variants : null;
+    const classOptions = [];
+    if (variants) {
+      variants.forEach(v => {
+        if (v && v.key) classOptions.push({ cls: v.slotClass || pm.slotClass, variant: v.key, variantLabel: v.label || v.key });
+      });
+    } else {
+      classOptions.push({ cls: pm.slotClass, variant: null, variantLabel: null });
+    }
+    classOptions.forEach(co => {
+      if (opts.classes && !opts.classes.has(co.cls)) return;
+      out.push(scorePlanningCandidate(meta, pm, co, { ...opts, useUp }));
+    });
+  });
+  return out;
+}
+
+/* Persist one planned week through the unified writer (Commit 1):
+   the snapshot of the week we just built is applied last, with the
+   freshly merged shopping keys preserved via mergeWeekState. */
+async function persistPlannedWeek(weekKey, message) {
+  const wk = (mealPlan && mealPlan.weeks) ? mealPlan.weeks[weekKey] : null;
+  if (!wk) return;
+  const snapshot = JSON.parse(JSON.stringify(wk));
+  await saveMealPlan(merged => {
+    const prev = merged.weeks[weekKey];
+    const next = { ...snapshot };
+    if (prev && typeof prev === 'object') mergeWeekState(next, prev);
+    merged.weeks[weekKey] = next;
+  }, message || ('Update meal plan: ' + weekKey));
+}
+
+/* ---------------- Generator: Draft Week ----------------
+   chips: { hostingFri, hostingSat, eatOut: [dayIdx...],
+            useUp: [text, ...] } — all optional.
+   HARD INVARIANT: the generator never writes dish.scale — every dish
+   it creates omits scale (manual-only, set in the slot editor).
+   Mutates the stored week, runs recomputeWeekLunches, persists via
+   saveMealPlan, and resolves to the week. */
+async function draftWeek(weekKey, chips) {
+  chips = chips || {};
+  const week = getWeek(weekKey);
+  const useUp = Array.isArray(chips.useUp) ? chips.useUp.slice(0, 5) : [];
+  const last = computeLastCooked();
+  const used = new Set();
+  let untriedUsed = 0;
+  week.days.forEach(day => {
+    ['lunch', 'dinner'].forEach(m => {
+      normalizeSlot(day[m]).dishes.forEach(d => { if (d.recipe) used.add(d.recipe); });
+    });
+  });
+
+  const clearDrafted = (di, meal) => {
+    const s = planSlot(week, di, meal);
+    s.dishes = s.dishes.filter(d => d.locked || !d.drafted);
+    return s;
+  };
+  const pickFor = (opts) => {
+    const cands = planningCandidates({
+      ...opts, useUp, lastCooked: last.byRecipe, untriedUsed, weekKey
+    }).filter(c => !used.has(c.id))
+      .sort((a, b) => (b.score - a.score) || String(a.title).localeCompare(String(b.title)));
+    const best = cands[0] || null;
+    if (best) {
+      used.add(best.id);
+      if (!last.byRecipe[best.id]) untriedUsed++;
+    }
+    return best;
+  };
+  const dishFromPick = (pick, slotPhrase) => {
+    const dish = { recipe: pick.id, leftovers: false, cookDate: null, drafted: true, locked: false };
+    if (pick.variant) dish.variant = pick.variant;
+    const parts = [];
+    if (slotPhrase) parts.push(slotPhrase);
+    if (pick.variantLabel) parts.push(pick.variantLabel + ' version');
+    pick.factors.forEach(f => parts.push(f));
+    dish.reason = parts.length ? parts.join(' · ') : null;
+    return dish;
+  };
+
+  // Eat-out chips are TWO-WAY — reconcile dinner slots with the chip
+  // state before anything fills them (Thu dinner is never touched —
+  // rule 1 — even when chipped):
+  // (a) a chipped day whose slot is not protected by manual/locked
+  //     dishes loses its drafted dishes and becomes skipped with the
+  //     auto-mark note 'Eat out' — even when a previous draft already
+  //     filled the slot;
+  // (b) a day no longer chipped whose slot carries that auto-mark
+  //     (skipped, note exactly 'Eat out') is un-skipped so it can be
+  //     drafted again. Manual skips (any other note) are never
+  //     touched in either direction.
+  {
+    const eatOut = new Set(Array.isArray(chips.eatOut) ? chips.eatOut : []);
+    for (let di = 0; di < 7; di++) {
+      if (di === 4 || !week.days[di]) continue;
+      const s = planSlot(week, di, 'dinner');
+      if (eatOut.has(di)) {
+        const protectedDish = s.dishes.some(d => d.locked || !d.drafted);
+        const manualSkip = s.skipped && s.note !== 'Eat out';
+        if (!protectedDish && !manualSkip) {
+          s.dishes = s.dishes.filter(d => d.locked || !d.drafted);
+          s.skipped = true; s.note = 'Eat out';
+        }
+      } else if (s.skipped && s.note === 'Eat out') {
+        s.skipped = false; s.note = '';
+      }
+    }
+  }
+
+  // Rule 2: Thursday dinner is the standing pizza night.
+  {
+    const s = planSlot(week, 4, 'dinner');
+    if (!s.skipped && !s.dishes.length) {
+      s.dishes.push({
+        custom: 'Pizza', leftovers: false, cookDate: null,
+        locked: true, drafted: true, reason: 'Standing — Thursday pizza night'
+      });
+    }
+  }
+
+  // Rule 3: Shabbat mains — Friday dinner + Saturday lunch. Shabbat
+  // effort, meat/pareve, fit matched to the meal; hosting chips add a
+  // natural-size bonus. One main per slot in v1.
+  const shabbatPicks = {};
+  [{ di: 5, meal: 'dinner', fits: new Set(['friday', 'both']), hosting: !!chips.hostingFri, label: 'Shabbat dinner' },
+   { di: 6, meal: 'lunch', fits: new Set(['lunch', 'both']), hosting: !!chips.hostingSat, label: 'Shabbat lunch' }]
+  .forEach(ss => {
+    if (slotIsProtected(week.days[ss.di][ss.meal])) return;
+    const s = clearDrafted(ss.di, ss.meal);
+    const kosher = slotKosherAllowed(s) || new Set(['meat', 'pareve']);
+    const pick = pickFor({
+      classes: null, efforts: new Set(['shabbat']), fits: ss.fits,
+      kosher, hosting: ss.hosting, cookDay: ss.di
+    });
+    if (pick) {
+      const dish = dishFromPick(pick, ss.label);
+      s.dishes.push(dish);
+      shabbatPicks[ss.di + ':' + ss.meal] = { pick, dish };
+    }
+  });
+  // Both mains high-effort (>= 90 min): one cooks on Thursday.
+  {
+    const friP = shabbatPicks['5:dinner'], satP = shabbatPicks['6:lunch'];
+    if (friP && satP && totalTime(friP.pick.meta) >= 90 && totalTime(satP.pick.meta) >= 90) {
+      const target = (friP.pick.slotClass === 'beef-roast' || totalTime(friP.pick.meta) >= totalTime(satP.pick.meta))
+        ? friP : satP;
+      target.dish.cookDate = addDaysToKey(weekKey, 4);
+      target.dish.reason = (target.dish.reason ? target.dish.reason + ' · ' : '') + 'Cook Thursday';
+    }
+  }
+
+  // Rule 4: Shabbat-leftovers night on MONDAY (fallback Tuesday) —
+  // never Sunday. Source: the previous week's Shabbat mains with a
+  // real yield (>= 2 leftover servings — leftoverServings already
+  // accounts for leftover_friendly, so a small proven yield never
+  // qualifies on friendliness alone). The 2 servings the dinner
+  // eats come out of the carry-in pool via week.carryInDeductions,
+  // which recomputeWeekLunches applies.
+  let leftoversDay = -1;
+  // Q4 (Yidi's pick, 2026-10-22 — "leftovers replace their own
+  // kind"): the leftovers source's class satisfies the matching
+  // framework slot in rule 5 — beef leftovers (ground-beef or
+  // beef-roast) satisfy the beef night, chicken leftovers ARE the
+  // chicken night, fish/veg leftovers satisfy the fish/veg night.
+  const LEFTOVER_SLOT_BY_CLASS = {
+    'ground-beef': 'ground-beef', 'beef-roast': 'ground-beef',
+    'chicken': 'chicken', 'pasta': 'pasta',
+    'fish': 'fishveg', 'veg': 'fishveg'
+  };
+  const FRAMEWORK_SLOT_NAMES = {
+    'ground-beef': 'the beef night', 'chicken': 'the chicken night',
+    'pasta': 'the pasta night', 'fishveg': 'the fish / veg night'
+  };
+  let leftoversSlot = null;
+  {
+    const pool = buildCarryInPool(weekKey);
+    const sources = Object.values(pool)
+      .filter(p => p.servings >= 2)
+      .sort((a, b) => (b.servings - a.servings) || (b.cookOffset - a.cookOffset)); // tie -> Saturday lunch (fresher)
+    const src = sources[0] || null;
+    if (src) {
+      for (const di of [1, 2]) {
+        if (slotIsProtected(week.days[di].dinner)) continue;
+        const s = clearDrafted(di, 'dinner');
+        const pm = effectivePlanningMeta(src.recipe);
+        let srcClass = pm ? pm.slotClass : null;
+        if (src.variant && pm && Array.isArray(pm.variants)) {
+          const v = pm.variants.find(v => v.key === src.variant);
+          if (v && v.slotClass) srcClass = v.slotClass;
+        }
+        leftoversSlot = LEFTOVER_SLOT_BY_CLASS[srcClass] || null;
+        s.dishes.push({
+          recipe: src.recipe, leftovers: true, cookDate: null,
+          drafted: true, locked: false, variant: src.variant || null,
+          reason: 'Leftovers from Shabbat' + (leftoversSlot
+            ? ' · covers ' + FRAMEWORK_SLOT_NAMES[leftoversSlot] : '')
+        });
+        week.carryInDeductions = { [src.recipe + '|' + (src.variant || '')]: 2 };
+        used.add(src.recipe);
+        leftoversDay = di;
+        break;
+      }
+    }
+  }
+
+  // Rule 5: the framework fills the remaining Sun–Wed dinners:
+  // ground-beef x1, pasta x1, chicken x1, fish/veg x1 — four classes
+  // for the four Sun–Wed nights. When the leftovers night was
+  // placed, its source satisfies its own framework slot (rule 4's
+  // leftoversSlot), so that class leaves the fresh queue and the
+  // three remaining classes fill the three fresh nights — no class
+  // is silently dropped. A leftovers source whose class maps to no
+  // framework slot replaces nothing: the full queue runs over the
+  // three fresh nights and the chicken/fish-veg tail alternates by
+  // week parity, so neither class is starved two weeks running.
+  // Weeknight effort only. A class with no candidate is dropped,
+  // never invented.
+  {
+    let classQueue = ['ground-beef', 'pasta', 'chicken', 'fishveg'];
+    if (leftoversDay >= 0) {
+      if (leftoversSlot) {
+        classQueue = classQueue.filter(c => c !== leftoversSlot);
+      } else if (Math.floor(daysBetweenKeys('1970-01-04', weekKey) / 7) % 2 === 1) {
+        classQueue = ['ground-beef', 'pasta', 'fishveg', 'chicken'];
+      }
+    }
+    const labels = {
+      'ground-beef': 'Ground-beef night', 'pasta': 'Pasta night',
+      'chicken': 'Chicken night', 'fishveg': 'Fish / veg night'
+    };
+    let qi = 0;
+    for (const di of [0, 1, 2, 3]) {
+      if (qi >= classQueue.length) break;
+      if (di === leftoversDay) continue;
+      if (slotIsProtected(week.days[di].dinner)) continue;
+      const cls = classQueue[qi];
+      const s = clearDrafted(di, 'dinner');
+      const classes = cls === 'fishveg' ? new Set(['fish', 'veg']) : new Set([cls]);
+      const pick = pickFor({
+        classes, efforts: new Set(['weeknight']), fits: null,
+        kosher: slotKosherAllowed(s), hosting: false, cookDay: di
+      });
+      if (pick) s.dishes.push(dishFromPick(pick, labels[cls]));
+      qi++;   // a class with no candidate is dropped, not retried on later days
+    }
+  }
+
+  // Rule 9: lunch coverage from the final dinners.
+  recomputeWeekLunches(weekKey);
+  await persistPlannedWeek(weekKey, 'Draft week: ' + weekKey);
+  return week;
+}
+
+/* ---------------- Swap ----------------
+   swapCandidates returns the top-5 scored candidates for the class of
+   the dish currently in the slot (a variant dish's class is its
+   version's class, so the variant follows the slot), excluding any
+   recipe already used elsewhere in the week. Swap scoring omits the
+   never-cooked bonus (untriedUsed is passed as already spent) so a
+   swap surfaces the strongest like-for-like replacements. */
+function swapCandidates(weekKey, dayIdx, meal, dishIdx) {
+  const week = planningRawWeek(weekKey);
+  if (!week || !week.days[dayIdx]) return [];
+  const s = normalizeSlot(week.days[dayIdx][meal]);
+  const dish = s.dishes[dishIdx];
+  if (!dish || !dish.recipe) return [];
+  const pm = effectivePlanningMeta(dish.recipe);
+  if (!pm) return [];
+  let cls = pm.slotClass;
+  if (dish.variant && Array.isArray(pm.variants)) {
+    const v = pm.variants.find(v => v.key === dish.variant);
+    if (v && v.slotClass) cls = v.slotClass;
+  }
+  const used = new Set();
+  week.days.forEach(day => {
+    ['lunch', 'dinner'].forEach(m => {
+      normalizeSlot(day[m]).dishes.forEach(d => { if (d.recipe) used.add(d.recipe); });
+    });
+  });
+  const opts = {
+    classes: new Set([cls]), useUp: [], lastCooked: computeLastCooked().byRecipe,
+    untriedUsed: 1, weekKey, cookDay: dayIdx
+  };
+  const isShabbatSlot = (dayIdx === 5 && meal === 'dinner') || (dayIdx === 6 && meal === 'lunch');
+  if (isShabbatSlot) {
+    opts.efforts = new Set(['shabbat']);
+    opts.fits = new Set([dayIdx === 5 ? 'friday' : 'lunch', 'both']);
+    opts.kosher = new Set(['meat', 'pareve']);
+  } else {
+    opts.efforts = new Set(['weeknight']);
+  }
+  const lockSet = slotKosherAllowed({ dishes: s.dishes.filter((d, i) => i !== dishIdx) });
+  if (lockSet) opts.kosher = lockSet;
+  return planningCandidates(opts)
+    .filter(c => c.id !== dish.recipe && !used.has(c.id))
+    .sort((a, b) => (b.score - a.score) || String(a.title).localeCompare(String(b.title)))
+    .slice(0, 5)
+    .map(c => ({
+      id: c.id, title: c.title, variant: c.variant, variantLabel: c.variantLabel,
+      slotClass: c.slotClass, score: c.score,
+      reason: (c.variantLabel ? c.variantLabel + ' version · ' : '') + c.factors.join(' · ')
+    }));
+}
+
+/* applySwap replaces the dish at the slot with `pick` ({id, variant,
+   reason} — typically from swapCandidates). With no pick it takes the
+   top candidate; since swapCandidates excludes the current dish,
+   repeated swaps cycle through the top-5. The new dish is drafted,
+   carries the slot class's variant, and NEVER carries a scale. A
+   dinner swap re-runs lunch coverage; the week persists via
+   saveMealPlan. Resolves to the new dish, or null if nothing changed. */
+async function applySwap(weekKey, dayIdx, meal, dishIdx, pick) {
+  const week = planningRawWeek(weekKey) || getWeek(weekKey);
+  if (!week.days[dayIdx]) return null;
+  const s = planSlot(week, dayIdx, meal);
+  const old = s.dishes[dishIdx];
+  if (!old || !old.recipe) return null;
+  let chosen = pick || null;
+  if (!chosen) {
+    const cands = swapCandidates(weekKey, dayIdx, meal, dishIdx);
+    if (!cands.length) return null;
+    chosen = cands[0];
+  }
+  const dish = {
+    recipe: chosen.id, leftovers: false, cookDate: null,
+    drafted: true, locked: false, reason: chosen.reason || null
+  };
+  if (chosen.variant) dish.variant = chosen.variant;
+  s.dishes[dishIdx] = dish;
+  if (meal === 'dinner') recomputeWeekLunches(weekKey);
+  await persistPlannedWeek(weekKey, 'Swap dish: ' + weekKey);
+  return dish;
+}
+
+/* ================================================================
+   Smart Meal Planning v1 — UI (Commit 2B)
+   Chip bar + Draft Week, lunch-coverage warnings, dish badges /
+   Swap / Lock, the slot-editor scale + variant controls, the
+   post-meal feedback row, the Quick Sort screen (#/planner/tune),
+   the detail-page rating control + variant toggle, and the recipe
+   editor's version support. All meal-plan writes go through
+   saveMealPlan / persistPlannedWeek (Commit 1 + 2A) — no new
+   write path is added here.
+   ================================================================ */
+
+/* The default version of a variant list: the one flagged default,
+   else the first (the recipe-page toggle and PDF both preselect it). */
+function variantDefaultKey(variants) {
+  if (!Array.isArray(variants) || !variants.length) return null;
+  const d = variants.find(v => v && v.default);
+  return (d || variants[0]).key || null;
+}
+
+/* Normalized [{key, label, isDefault}] for a recipe id, from the full
+   recipe when loaded (it carries the default flag), else from the
+   meta card's variants (no default flag there — first is default). */
+function recipeVariantsFor(rid) {
+  if (!rid) return [];
+  const full = byId[rid];
+  if (full && Array.isArray(full.variants) && full.variants.length) {
+    const defKey = variantDefaultKey(full.variants);
+    return full.variants.map(v => ({
+      key: v.key, label: v.label || v.key, isDefault: v.key === defKey
+    }));
+  }
+  const meta = recipeMeta(rid);
+  if (meta && Array.isArray(meta.variants) && meta.variants.length) {
+    return meta.variants.map((v, i) => ({
+      key: v.key, label: v.label || v.key, isDefault: i === 0
+    }));
+  }
+  return [];
+}
+
+function variantLabelFor(rid, key) {
+  if (!key) return '';
+  const v = recipeVariantsFor(rid).find(v => v.key === key);
+  return v ? v.label : key;
+}
+
+/* One ingredient item under a chosen version: shared items (untagged)
+   and optional add-ons show under every version; a variant-tagged
+   item shows only under its own version. */
+function ingredientVisibleForVariant(item, variantKey) {
+  if (!item) return false;
+  if (!item.variant) return true;
+  if (!variantKey) return false;
+  return item.variant === variantKey;
+}
+
+/* Sections filtered to a version; sections left empty are dropped. */
+function filterIngredientsForVariant(ingredients, variantKey) {
+  return (ingredients || [])
+    .map(s => ({
+      section: s.section || '',
+      items: (s.items || []).filter(i => ingredientVisibleForVariant(i, variantKey))
+    }))
+    .filter(s => s.items.length);
+}
+
+/* The chips object draftWeek() consumes, normalized from whatever was
+   stored on the week record (week.draftChips) or built from the DOM. */
+function normalizeDraftChips(chips) {
+  const c = (chips && typeof chips === 'object') ? chips : {};
+  return {
+    hostingFri: !!c.hostingFri,
+    hostingSat: !!c.hostingSat,
+    eatOut: Array.isArray(c.eatOut)
+      ? c.eatOut.filter(d => Number.isInteger(d) && d >= 0 && d <= 6) : [],
+    useUp: Array.isArray(c.useUp)
+      ? c.useUp.filter(t => typeof t === 'string' && t.trim()).map(t => t.trim()).slice(0, 5) : []
+  };
+}
+
+/* A recipePrefs entry with a patch applied and fresh stamps. A patch
+   value of null clears that field back to "use inferred" (Auto). */
+function buildPrefsEntry(existing, patch, byName, now) {
+  const e = { ...((existing && typeof existing === 'object') ? existing : {}) };
+  ['rating', 'effort', 'slotClass'].forEach(k => { if (k in patch) e[k] = patch[k]; });
+  e.updatedAt = now;
+  e.updatedBy = byName || e.updatedBy || '';
+  return e;
+}
+
+/* One write path for rating/effort overrides (Quick Sort pills and
+   the detail-page rating control both land here). */
+async function setRecipePref(id, patch) {
+  const name = getEditorName();
+  const now = Date.now();
+  await saveMealPlan(merged => {
+    if (!merged.recipePrefs || typeof merged.recipePrefs !== 'object') merged.recipePrefs = {};
+    merged.recipePrefs[id] = buildPrefsEntry(merged.recipePrefs[id], patch, name, now);
+  }, 'Recipe prefs: ' + id);
+}
+
+/* The yieldLog entry a feedback "Left:" tap records. `idStr` is passed
+   in so the entry shape stays a pure function of its inputs. */
+function buildYieldEntry(dish, dateStr, left, byName, idStr) {
+  return {
+    id: idStr,
+    recipe: dish.recipe,
+    scale: dish.scale || 1,
+    variant: dish.variant || null,
+    left,
+    date: dateStr,
+    updatedBy: byName || ''
+  };
+}
+
+/* Post-meal feedback writes. A rating tap updates recipePrefs only —
+   the prompt stays until the leftovers half is answered. A "Left:"
+   tap appends the yieldLog entry AND completes the dish's feedback
+   (dish.feedbackDone), so the prompt disappears permanently.
+   Dismiss (the ✕) completes the feedback WITHOUT a yield entry: it
+   means "not tracked", and recording a false left:'none' would teach
+   leftoverServings() that the recipe yields nothing. */
+async function recordMealFeedback(key, di, meal, idx, action) {
+  const week = getWeek(key);
+  const dish = normalizeSlot(week.days[di][meal]).dishes[idx];
+  if (!dish || !dish.recipe) return;
+  const name = getEditorName();
+  const entry = action.left
+    ? buildYieldEntry(dish, addDaysToKey(key, di), action.left, name,
+        'yl-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8))
+    : null;
+  const complete = !!action.left || !!action.dismiss;
+  await saveMealPlan(merged => {
+    if (action.rating) {
+      if (!merged.recipePrefs || typeof merged.recipePrefs !== 'object') merged.recipePrefs = {};
+      merged.recipePrefs[dish.recipe] =
+        buildPrefsEntry(merged.recipePrefs[dish.recipe], { rating: action.rating }, name, Date.now());
+    }
+    if (entry) {
+      if (!Array.isArray(merged.yieldLog)) merged.yieldLog = [];
+      merged.yieldLog.push(entry);
+    }
+    if (complete) {
+      const wk = (merged.weeks || {})[key];
+      if (wk && Array.isArray(wk.days) && wk.days[di]) {
+        const s = planSlot(wk, di, meal);
+        if (s.dishes[idx]) s.dishes[idx].feedbackDone = true;
+      }
+    }
+  }, 'Meal feedback: ' + key);
+}
+
+/* Identity of a lunch warning for dismissal purposes: if a recompute
+   produces a different warning, its signature differs and the strip
+   shows again. */
+function warningSignature(w) {
+  return [w.day, w.kind, w.have || 0, w.need || 0].join('|');
+}
+
+const PLAN_DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+function planWarningsHTML(key, week) {
+  const warns = (week && Array.isArray(week.lunchWarnings)) ? week.lunchWarnings : [];
+  if (!warns.length) return '';
+  const dismissed = new Set(Array.isArray(week.dismissedWarnings) ? week.dismissedWarnings : []);
+  const visible = warns.filter(w => !dismissed.has(warningSignature(w)));
+  if (!visible.length) return '';
+  const lines = visible.map(w => '<div class="warn-line">' + (w.kind === 'partial'
+    ? '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch only has ~' + (w.have || 0) +
+      ' leftover serving' + (w.have === 1 ? '' : 's') + ' (needs ' + w.need + ')'
+    : '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch isn\u2019t covered by leftovers') + '</div>').join('');
+  return '<div class="plan-warnings no-print">' + lines +
+    '<button class="warn-dismiss" data-dismiss-warnings="' + esc(key) +
+    '" type="button" aria-label="Dismiss warnings">✕</button></div>';
+}
+
+/* "Last made N wks ago" for the slot picker (display only). */
+function lastMadeText(dateStr, todayStr) {
+  if (!dateStr || !todayStr) return '';
+  const days = daysBetweenKeys(dateStr, todayStr);
+  if (days == null || days < 0) return '';
+  const weeks = Math.floor(days / 7);
+  if (weeks <= 0) return 'Last made this week';
+  if (weeks === 1) return 'Last made 1 wk ago';
+  return 'Last made ' + weeks + ' wks ago';
+}
+
+/* A unique slug key for a new/renamed recipe version, derived from its
+   label (existing ingredient tags follow a rename — see the editor). */
+function uniqueVariantKey(vars, label, exceptIdx) {
+  const base = slugify(label || '') || 'version';
+  let key = base, n = 2;
+  while ((vars || []).some((v, i) => i !== exceptIdx && v.key === key)) {
+    key = base + '-' + n;
+    n++;
+  }
+  return key;
+}
+
+/* Transient use-up chips for the planner header (seeded from the
+   week's stored draftChips whenever the displayed week changes). */
+let draftUseUp = [];
+let draftChipWeekKey = null;
+function seedDraftChips(key, week) {
+  if (draftChipWeekKey === key) return;
+  draftChipWeekKey = key;
+  draftUseUp = normalizeDraftChips(week && week.draftChips).useUp.slice();
+}
+
+function renderUseUpChips() {
+  const host = $('#draft-useup-chips');
+  if (!host) return;
+  host.innerHTML = draftUseUp.map((t, i) =>
+    '<span class="useup-chip">' + esc(t) +
+    '<button type="button" data-useup-del="' + i + '" aria-label="Remove">✕</button></span>'
+  ).join('');
+}
+
+/* Draft Week button flow: read the chip bar, remember the chips on
+   the week record (draftWeek persists the whole week, chips
+   included), run the generator, re-render. */
+async function runDraftWeek(key, app) {
+  const chips = {
+    hostingFri: !!($('#draft-hosting-fri') && $('#draft-hosting-fri').checked),
+    hostingSat: !!($('#draft-hosting-sat') && $('#draft-hosting-sat').checked),
+    eatOut: [...document.querySelectorAll('[data-eatout].active')].map(el => +el.dataset.eatout),
+    useUp: draftUseUp.slice(0, 5)
+  };
+  try {
+    getWeek(key).draftChips = chips;
+    draftUseUp = chips.useUp.slice();
+    await draftWeek(key, chips);
+    toast('Week drafted — the site rebuilds in about a minute.');
+  } catch (e) {
+    toast('Draft failed: ' + e.message);
+  }
+  renderPlanner(app || $('#app'));
+}
+
+/* The inline feedback row under a cooked dish on a PAST day (dinner
+   only in v1, per spec). Hosting on that slot hides the leftovers
+   half — guest counts skew the 2-person yield — never the rating. */
+function feedbackRowHTML(key, di, meal, idx, dish, week) {
+  if (meal !== 'dinner' || !dish || !dish.recipe || dish.leftovers || dish.feedbackDone) return '';
+  if (!(addDaysToKey(key, di) < ymd(new Date()))) return '';
+  const cur = (planningPrefs()[dish.recipe] || {}).rating || null;
+  const at = key + '|' + di + '|' + meal + '|' + idx;
+  const rateBtns = [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']].map(([v, l]) =>
+    '<button type="button" class="fb-btn' + (cur === v ? ' active' : '') +
+    '" data-fbrate="' + at + '|' + v + '">' + l + '</button>').join('');
+  let html = '<div class="feedback-row"><span class="fb-label">How was it?</span>' +
+    '<span class="fb-group">' + rateBtns + '</span>';
+  const chips = normalizeDraftChips(week && week.draftChips);
+  const hosting = di === 5 && chips.hostingFri;  // Friday dinner hosting
+  if (!hosting) {
+    const leftBtns = [['none', 'None'], ['a little', 'A little'], ['a lot', 'A lot'], ['most', 'Most']]
+      .map(([v, l]) => '<button type="button" class="fb-btn" data-fbleft="' + at + '|' + v + '">' +
+        l + '</button>').join('');
+    html += '<span class="fb-sep">· Left:</span><span class="fb-group">' + leftBtns +
+      '<button type="button" class="fb-btn fb-dismiss" data-fbdismiss="' + at +
+      '" aria-label="Dismiss feedback">✕</button></span>';
+  }
+  return html + '</div>';
+}
+
+/* ---------------- Quick Sort (#/planner/tune) ----------------
+   Every recipe grouped by its effective class; variant recipes get a
+   row under EACH version's class (prefs stay recipe-level). Pill
+   groups write recipePrefs overrides through saveMealPlan; the Auto
+   pill clears the override for that field. */
+const QS_CLASS_ORDER = [
+  ['ground-beef', 'Ground beef'], ['beef-roast', 'Beef & roasts'],
+  ['chicken', 'Chicken'], ['fish', 'Fish'], ['pasta', 'Pasta'],
+  ['veg', 'Veg & vegetarian'], ['other', 'Other']
+];
+function renderQuickSort(app) {
+  document.title = 'Tune rotation — Reiss Family Recipes';
+  const groups = new Map(QS_CLASS_ORDER.map(([k]) => [k, []]));
+  allPlanningMeta().forEach(meta => {
+    const pm = effectivePlanningMeta(meta.id);
+    if (!pm) return;
+    if (pm.variants) {
+      pm.variants.forEach(v => {
+        const bucket = groups.get(v.slotClass) || groups.get('other');
+        bucket.push({ meta, pm, variant: v });
+      });
+    } else {
+      (groups.get(pm.slotClass) || groups.get('other')).push({ meta, pm, variant: null });
+    }
+  });
+  const prefs = planningPrefs();
+  const pillGroup = (kind, id, effective, overrideVal, options) => {
+    let h = '<span class="pill-group">' +
+      '<button type="button" class="pill auto' + (overrideVal == null ? ' active' : '') +
+      '" data-qs="' + kind + '|' + esc(id) + '|">Auto</button>';
+    options.forEach(([v, l]) => {
+      h += '<button type="button" class="pill' + (effective === v ? ' active' : '') +
+        (overrideVal === v ? ' is-override' : '') +
+        '" data-qs="' + kind + '|' + esc(id) + '|' + v + '">' + l + '</button>';
+    });
+    return h + '</span>';
+  };
+  let body = '';
+  QS_CLASS_ORDER.forEach(([cls, label]) => {
+    const rows = (groups.get(cls) || [])
+      .sort((a, b) => String(a.meta.title).localeCompare(String(b.meta.title)));
+    if (!rows.length) return;
+    body += '<section class="qs-group"><h3>' + label +
+      ' <span class="muted">(' + rows.length + ')</span></h3>' + rows.map(row => {
+        const pref = prefs[row.meta.id] || {};
+        return '<div class="qs-row">' +
+          '<a class="qs-title" href="#/recipe/' + encodeURIComponent(row.meta.id) + '">' +
+            esc(row.meta.title) + '</a>' +
+          (row.variant ? ' <span class="badge neutral">variant · ' + esc(row.variant.label) + '</span>' : '') +
+          '<span class="qs-pills"><span class="qs-kind">Effort</span>' +
+            pillGroup('effort', row.meta.id, row.pm.effort, pref.effort || null,
+              [['weeknight', 'Weeknight'], ['shabbat', 'Shabbat'], ['special', 'Special']]) + '</span>' +
+          '<span class="qs-pills"><span class="qs-kind">Rating</span>' +
+            pillGroup('rating', row.meta.id, row.pm.rating, pref.rating || null,
+              [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']]) + '</span>' +
+        '</div>';
+      }).join('') + '</section>';
+  });
+  app.innerHTML =
+    '<a class="back-link no-print" href="#/planner">← Back to planner</a>' +
+    '<h1 class="recipe-title">Tune the rotation</h1>' +
+    '<p class="muted">Every recipe joins the rotation automatically, grouped by the ' +
+    'planner\u2019s best guess. Tap a pill only to correct it — Auto means the guess ' +
+    'stands. Ratings are shared: one family opinion per recipe.</p>' + body;
+  app.querySelectorAll('[data-qs]').forEach(b => b.addEventListener('click', async () => {
+    const [kind, id, val] = b.dataset.qs.split('|');
+    try {
+      await setRecipePref(id, { [kind]: val || null });
+      renderQuickSort(app);
+    } catch (e) {
+      toast('Couldn\u2019t save: ' + e.message);
+    }
+  }));
 }
 
 /* ---------------- Shopping list: offline-first with conflict detection ----------------
