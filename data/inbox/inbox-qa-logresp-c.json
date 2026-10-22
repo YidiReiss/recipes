@@ -1,0 +1,13 @@
+{
+  "id": "inbox-qa-logresp-c",
+  "url": null,
+  "image": "assets/images/cinnamon-rolls.jpg",
+  "note": null,
+  "text": null,
+  "status": "failed",
+  "created_at": "2026-10-22T01:06:10.369Z",
+  "recipe_id": null,
+  "fail_reason": "QA staged failure — delete after QA",
+  "needs": null,
+  "test_mode": true
+}
