@@ -953,9 +953,10 @@
                 "recipe": "babbish-baked-ziti",
                 "leftovers": false,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · Leftovers cover a lunch"
+                "scale": 2,
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
@@ -1073,7 +1074,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "borscht",
+                "recipe": "babbish-baked-ziti",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
