@@ -1147,5 +1147,12 @@
       "optionalPromoted": [],
       "shoppingDay": "2026-11-01"
     }
+  },
+  "recipePrefs": {
+    "coca-cola-meatballs": {
+      "rating": "favorite",
+      "updatedAt": 1792708298279,
+      "updatedBy": "Anonymous"
+    }
   }
 }
