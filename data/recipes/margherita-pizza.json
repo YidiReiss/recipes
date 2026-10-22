@@ -11,7 +11,7 @@
     "quick"
   ],
   "prep_minutes": 15,
-  "cook_minutes": 15,
+  "cook_minutes": 10,
   "servings": 4,
   "leftover_friendly": false,
   "leftover_note": null,
@@ -23,25 +23,25 @@
         {
           "qty": "1",
           "unit": "lb",
-          "item": "fresh store-bought pizza dough",
-          "prep": "at room temperature"
+          "item": "pizza dough (Trader Joe's preferred)",
+          "prep": "if frozen, thaw overnight in the fridge, then let it sit out at room temperature (favorite method: in the morning, put it in a small cooler with a towel on top and an ice pack)"
         },
         {
-          "qty": "2",
-          "unit": "tbsp",
-          "item": "olive oil"
+          "qty": "1",
+          "unit": "cup",
+          "item": "marinara sauce"
         },
         {
           "qty": "8",
           "unit": "oz",
-          "item": "fresh mozzarella",
-          "prep": "thinly sliced"
+          "item": "shredded mozzarella cheese"
         },
         {
           "qty": "2",
           "unit": null,
-          "item": "beefsteak tomatoes (8 oz each)",
-          "prep": "sliced"
+          "item": "tomatoes",
+          "prep": "sliced",
+          "optional": true
         },
         {
           "qty": "1/2",
@@ -56,19 +56,77 @@
         {
           "qty": "1/4",
           "unit": "cup",
-          "item": "fresh basil leaves"
+          "item": "fresh basil leaves",
+          "optional": true
+        },
+        {
+          "qty": "8",
+          "unit": "oz",
+          "item": "fresh mozzarella",
+          "prep": "thinly sliced",
+          "optional": true
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "mushrooms",
+          "prep": "sliced",
+          "optional": true
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "purple onion",
+          "prep": "sliced",
+          "optional": true
         }
       ]
     }
   ],
   "instructions": [
-    "Place a cast-iron pizza stone on the center rack of the oven and preheat the oven to 500°F.",
-    "Stretch the dough into a 14-inch round on a sheet of parchment. Drizzle with the olive oil and top evenly with the mozzarella and tomatoes. Sprinkle evenly with the salt and pepper.",
-    "Transfer the pizza and parchment to the hot pizza stone. Bake until the crust is golden and the cheese is beginning to brown in spots, 13 to 15 minutes.",
-    "Transfer the pizza to a cutting board, top with the basil, and cut into slices."
+    "Place a standard pizza stone on the center rack of the oven and preheat the oven to 500°F with the stone inside for at least 30 minutes.",
+    "Stretch the dough into a 14-inch round on a sheet of parchment. Spread with the marinara sauce, top evenly with the shredded cheese, and sprinkle evenly with the salt and pepper. Add any of the optional toppings (tomatoes, basil, fresh mozzarella, mushrooms, purple onion) if using.",
+    "Transfer the pizza and parchment to the hot pizza stone. Bake until the crust is golden and the cheese is beginning to brown in spots, 5 to 10 minutes.",
+    "Transfer the pizza to a cutting board, scatter over the basil if using, and cut into slices."
   ],
   "pairings": [],
-  "notes": "Doc updated olive oil from ¼ cup to 2 tbsp.",
+  "notes": "Yidi's 2026-10-21 updates: no olive oil; Trader Joe's dough with overnight-thaw method; marinara added; shredded mozzarella; tomatoes plain (not beefsteak); tomato/basil/fresh mozzarella/mushrooms/purple onion optional; bake 5-10 min on a standard pizza stone.",
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-10-22T02:14:27.540Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "cook_minutes",
+          "from": 15,
+          "to": 10
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 7 items])",
+          "to": "1 items ([section: 10 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "4 items (Place a cast-iron pizza stone on the cen; Stretch the dough into a 14-inch round o; Transfer the pizza and parchment to the ; …)",
+          "to": "4 items (Place a standard pizza stone on the cent; Stretch the dough into a 14-inch round o; Transfer the pizza and parchment to the ; …)"
+        },
+        {
+          "field": "notes",
+          "from": "Doc updated olive oil from ¼ cup to 2 tbsp.",
+          "to": "Yidi's 2026-10-21 updates: no olive oil; Trader Joe's dough with overnight-thaw method; marinara added; shredded mozzarella; tomatoes plain (not beefsteak); tomato/basil/fresh mozzarella/mushrooms/purple onion optional; bake 5-10 min on a standard pizza stone."
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Yidi's edit request (inbox-mviw6zfr-d04d): standard pizza stone (not cast iron) preheated 30+ min at 500F; removed olive oil; Trader Joe's dough with overnight-thaw + cooler method; added 1 cup marinara; shredded mozzarella; plain tomatoes (not beefsteak); tomatoes/basil/fresh mozzarella/mushrooms/purple onion marked optional; bake 5-10 min max."
+    }
+  ]
 }
