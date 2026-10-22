@@ -6,15 +6,12 @@
     "assets/images/chicken-soup.jpg",
     "assets/images/chocolate-cake.jpg"
   ],
-  "note": "QA staged entry A — delete after QA",
+  "note": "QA staged entry A — delete after QA — Answer from Anonymous (Oct 21, 2026): QA answer: the missing ingredients are 2 cups flour and 1 tsp salt; instructions: mix, shape, bake 30 minutes at 350.",
   "text": null,
-  "status": "needs_input",
+  "status": "pending",
   "created_at": "2026-10-22T01:06:10.369Z",
   "recipe_id": null,
   "fail_reason": null,
-  "needs": [
-    "ingredients",
-    "instructions"
-  ],
+  "needs": null,
   "test_mode": true
 }
