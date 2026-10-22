@@ -928,37 +928,47 @@
             "note": ""
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-feta-pasta",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night · Leftovers cover a lunch"
+                "reason": "Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-feta-pasta",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -966,11 +976,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "4-year-chicken-tenders-fallow",
@@ -980,13 +992,15 @@
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "4-year-chicken-tenders-fallow",
@@ -997,11 +1011,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "broiled-salmon-with-pesto",
@@ -1011,16 +1027,18 @@
                 "locked": false,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-feta-pasta",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1028,11 +1046,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1042,13 +1062,15 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "4-year-chicken-tenders-fallow",
@@ -1059,11 +1081,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "ash-e-jow-persian-barley-soup",
@@ -1073,13 +1097,15 @@
                 "locked": false,
                 "reason": "Shabbat dinner · Never made — worth a try"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "bachash",
@@ -1089,14 +1115,14 @@
                 "locked": false,
                 "reason": "Shabbat lunch · Cook Thursday"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
