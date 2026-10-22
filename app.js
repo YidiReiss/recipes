@@ -832,9 +832,9 @@ function shoppingListHTML() {
       '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button></div>'
   ).join('');
 
-  let html = '';
+  let html = '<div class="week-strip no-print">' + weekStripHTML() + '</div>';
   if (!items.length && !week.manualItems.some(m => !m.deleted)) {
-    html = '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
+    html += '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
     if (genToBuyLis || manToBuyLis) {
