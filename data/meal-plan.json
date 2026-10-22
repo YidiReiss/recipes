@@ -947,18 +947,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "babbish-baked-ziti",
-                "leftovers": false,
-                "cookDate": null,
-                "scale": 2,
-                "drafted": false,
-                "reason": null,
-                "locked": true
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -967,17 +956,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "babbish-baked-ziti",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1039,7 +1018,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "broiled-salmon-with-pesto",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1074,7 +1053,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "borscht",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1137,6 +1116,12 @@
       "lunchWarnings": [
         {
           "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 2,
           "kind": "uncovered",
           "have": 0,
           "need": 2
