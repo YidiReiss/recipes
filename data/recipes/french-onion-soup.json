@@ -145,7 +145,16 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-10-22T02:23:45.182Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
