@@ -8,6 +8,7 @@
   "id": "cheesey-garlic-bread",
   "ingredients": [
     {
+      "section": "",
       "items": [
         {
           "item": "unsalted butter",
@@ -53,8 +54,7 @@
           "qty": "1/2",
           "unit": "lb"
         }
-      ],
-      "section": ""
+      ]
     }
   ],
   "instructions": [
@@ -69,9 +69,14 @@
   "leftover_note": "",
   "needs_kosher_review": false,
   "notes": "Submitted as phone screenshots of the NYT Cooking Garlic Bread page. Title 'Cheesey Garlic Bread' per the submitter's note. The butter can be made 2 days ahead (see tip).",
-  "pairings": [],
+  "pairings": [
+    {
+      "recipe_id": "french-onion-soup",
+      "note": "Usually made a I side for the soup"
+    }
+  ],
   "pdf": "pdfs/cheesey-garlic-bread.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "prep_minutes": 25,
   "servings": "8",
@@ -98,6 +103,29 @@
         "Created recipe"
       ],
       "reasoning": "prep = 5 base + grate 4 garlic cloves 1.75 + measure butter 1 + measure Parmesan 1 + chop parsley 3 + salt 1 + pepper 1 + cut slits in baguette 3 + mix butter spread 2 + spread into slits 3 = 21.75 -> 25 (round up). cook = 15 bake + 5 second bake = 20. servings: side; 1 loaf baguette as a side, nearest even -> 8. Intake of Cheesey Garlic Bread (NYT Cooking garlic bread, submitted as screenshots)."
+    },
+    {
+      "ts": "2026-10-22T02:15:04.879Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "pairings",
+          "from": "[]",
+          "to": "1 items ({\"recipe_id\":\"french-onion-soup\",\"note\":)"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
   ]
 }
