@@ -90,7 +90,7 @@
     "Transfer the pizza to a cutting board, scatter over the basil if using, and cut into slices."
   ],
   "pairings": [],
-  "notes": "Yidi's 2026-10-21 updates: no olive oil; Trader Joe's dough with overnight-thaw method; marinara added; shredded mozzarella; tomatoes plain (not beefsteak); tomato/basil/fresh mozzarella/mushrooms/purple onion optional; bake 5-10 min on a standard pizza stone.",
+  "notes": "Yidi 2026-10-21: no olive oil; Trader Joe’s dough (overnight thaw); +1 cup marinara; shredded mozzarella; plain tomatoes; tomato/basil/fresh mozz/mushrooms/purple onion optional; bake 5–10 min.",
   "source": null,
   "tags_need_review": false,
   "pdf_stale": true,
@@ -127,6 +127,19 @@
         }
       ],
       "reasoning": "Yidi's edit request (inbox-mviw6zfr-d04d): standard pizza stone (not cast iron) preheated 30+ min at 500F; removed olive oil; Trader Joe's dough with overnight-thaw + cooler method; added 1 cup marinara; shredded mozzarella; plain tomatoes (not beefsteak); tomatoes/basil/fresh mozzarella/mushrooms/purple onion marked optional; bake 5-10 min max."
+    },
+    {
+      "ts": "2026-10-22T02:22:29.415Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "notes",
+          "from": "Yidi's 2026-10-21 updates: no olive oil; Trader Joe's dough with overnight-thaw method; marinara added; shredded mozzarella; tomatoes plain (not beefsteak); tomato/basil/fresh mozzarella/mushrooms/purple onion optional; bake 5-10 min on a standard pizza stone.",
+          "to": "Yidi 2026-10-21: no olive oil; Trader Joe’s dough (overnight thaw); +1 cup marinara; shredded mozzarella; plain tomatoes; tomato/basil/fresh mozz/mushrooms/purple onion optional; bake 5–10 min."
+        }
+      ],
+      "reasoning": "Shortened the notes field so the re-pressed PDF reads cleanly."
     }
   ]
 }
