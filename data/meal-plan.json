@@ -1050,7 +1050,7 @@
                 "custom": "Pizza",
                 "leftovers": false,
                 "cookDate": null,
-                "locked": true,
+                "locked": false,
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
