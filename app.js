@@ -3082,6 +3082,25 @@ async function bridgeReadMealPlan() {
   return mp;
 }
 
+/* Merge two draftSnapshot entries for the same week (learning loop,
+   Yidi 2026-10-22): the later-drafted entry is the base, but the
+   FIRST draft is never lost — firstDays/firstDraftedAt come from
+   whichever entry first-drafted earlier, and draftCount keeps the
+   max. Null-safe: returns whichever side exists. */
+function mergeDraftSnap(cur, inc) {
+  if (!cur || typeof cur !== 'object') return (inc && typeof inc === 'object') ? inc : cur;
+  if (!inc || typeof inc !== 'object') return cur;
+  const base = String(inc.draftedAt || '') > String(cur.draftedAt || '') ? inc : cur;
+  const early = String(inc.firstDraftedAt || inc.draftedAt || '') <
+    String(cur.firstDraftedAt || cur.draftedAt || '') ? inc : cur;
+  return {
+    ...base,
+    firstDays: Array.isArray(early.firstDays) ? early.firstDays : base.firstDays,
+    firstDraftedAt: early.firstDraftedAt || early.draftedAt || base.firstDraftedAt,
+    draftCount: Math.max(cur.draftCount || 1, inc.draftCount || 1)
+  };
+}
+
 /* Merge a fresh (server) meal plan with the local one. Fresh is the base:
    for every shared week, fresh's days/shoppingDay/dismissedWarnings win and
    ONLY the 4 shopping keys merge in from local (via mergeWeekState) — a
@@ -3144,6 +3163,20 @@ function mergeMealPlan(fresh, local) {
     const fu = (f.framework && f.framework.updatedAt) || 0;
     const lu = (l.framework && l.framework.updatedAt) || 0;
     merged.framework = lu > fu ? l.framework : (f.framework || l.framework);
+  }
+  // draftSnapshots: union by weekKey via mergeDraftSnap (latest draft
+  // is the base, the first draft is preserved), pruned to the 12 most
+  // recent weeks — weekKeys are ISO Sundays, so the sort is
+  // chronological. Pruning here means every save re-prunes, so a
+  // stale tab can never resurrect a pruned week.
+  if (f.draftSnapshots || l.draftSnapshots) {
+    const fs = (f.draftSnapshots && typeof f.draftSnapshots === 'object') ? f.draftSnapshots : {};
+    const ls = (l.draftSnapshots && typeof l.draftSnapshots === 'object') ? l.draftSnapshots : {};
+    const snaps = {};
+    Object.keys(fs).forEach(k => { snaps[k] = fs[k]; });
+    Object.keys(ls).forEach(k => { snaps[k] = mergeDraftSnap(snaps[k], ls[k]); });
+    merged.draftSnapshots = {};
+    Object.keys(snaps).sort().slice(-12).forEach(k => { merged.draftSnapshots[k] = snaps[k]; });
   }
   return merged;
 }
@@ -3742,11 +3775,22 @@ async function persistPlannedWeek(weekKey, message) {
   const wk = (mealPlan && mealPlan.weeks) ? mealPlan.weeks[weekKey] : null;
   if (!wk) return;
   const snapshot = JSON.parse(JSON.stringify(wk));
+  // Capture the draft snapshot synchronously too: a queued save that
+  // settles first can replace the in-memory plan with a copy computed
+  // before draftWeek recorded the snapshot, so the snapshot is
+  // re-applied inside the mutator (merged, never blind-overwritten).
+  const snapEntry = (mealPlan.draftSnapshots && mealPlan.draftSnapshots[weekKey])
+    ? JSON.parse(JSON.stringify(mealPlan.draftSnapshots[weekKey])) : null;
   await saveMealPlan(merged => {
     const prev = merged.weeks[weekKey];
     const next = { ...snapshot };
     if (prev && typeof prev === 'object') mergeWeekState(next, prev);
     merged.weeks[weekKey] = next;
+    if (snapEntry) {
+      merged.draftSnapshots = (merged.draftSnapshots && typeof merged.draftSnapshots === 'object')
+        ? merged.draftSnapshots : {};
+      merged.draftSnapshots[weekKey] = mergeDraftSnap(merged.draftSnapshots[weekKey], snapEntry);
+    }
   }, message || ('Update meal plan: ' + weekKey));
 }
 
@@ -4017,6 +4061,27 @@ async function draftWeek(weekKey, chips) {
 
   // Rule 9: lunch coverage from the final dinners.
   recomputeWeekLunches(weekKey);
+  // Learning loop (Yidi, 2026-10-22): preserve what the planner just
+  // proposed, so the weekly review can diff it against what the
+  // family actually ate. days = this draft; firstDays = the week's
+  // FIRST draft, kept across re-drafts (a mid-week re-draft must not
+  // rewrite what was originally proposed); draftCount counts drafts.
+  {
+    const prevSnap = (mealPlan.draftSnapshots && mealPlan.draftSnapshots[weekKey]) || null;
+    const daysCopy = JSON.parse(JSON.stringify(week.days));
+    const nowIso = new Date().toISOString();
+    mealPlan.draftSnapshots = (mealPlan.draftSnapshots && typeof mealPlan.draftSnapshots === 'object')
+      ? mealPlan.draftSnapshots : {};
+    mealPlan.draftSnapshots[weekKey] = {
+      draftedAt: nowIso,
+      firstDraftedAt: (prevSnap && prevSnap.firstDraftedAt) || nowIso,
+      draftCount: ((prevSnap && prevSnap.draftCount) || 0) + 1,
+      chips: JSON.parse(JSON.stringify(chips || {})),
+      days: daysCopy,
+      firstDays: (prevSnap && Array.isArray(prevSnap.firstDays)) ? prevSnap.firstDays : daysCopy,
+      lunchWarnings: JSON.parse(JSON.stringify(week.lunchWarnings || []))
+    };
+  }
   await persistPlannedWeek(weekKey, 'Draft week: ' + weekKey);
   return week;
 }
