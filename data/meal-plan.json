@@ -1004,12 +1004,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "broiled-salmon-with-pesto",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night · Leftovers cover a lunch"
+                "reason": "Leftovers cover a lunch"
               }
             ]
           }
@@ -1092,7 +1092,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "broiled-salmon-with-pesto",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
