@@ -1,0 +1,60 @@
+{
+  "id": "amnon-s-frozen-pizza",
+  "title": "Amnon's Frozen Pizza",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "frozen",
+    "store-bought",
+    "lunch",
+    "pizza",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 20,
+  "servings": "8",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/amnon-s-frozen-pizza.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "frozen Amnon's pizza (whole pie, 8 slices)"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven (exact temperature to confirm from the package).",
+    "Remove the pizza from all packaging and place it on a baking sheet or directly on the center rack.",
+    "Bake until the cheese is melted and bubbling and the crust is golden (exact time to confirm from the package).",
+    "Rest 2 minutes, cut into 8 slices, and serve."
+  ],
+  "pairings": [],
+  "notes": "Store-bought frozen staple. Serving = 1 slice (Yidi's rule); a whole pie is 8 slices. The printed package bake temperature/time could not be found online. Confirm exact directions from the package; Yidi will send a package photo from home.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/amnon-s-frozen-pizza.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-23T05:17:51.148Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission. Servings stated: 8 (1 slice = 1 serving; whole pie 8 slices). Prep: frozen pre-prepped -> floor 15. Cook estimated 20: standard frozen whole-pizza bake ~15-20 min; took 20 (conservative) since package time/temp unknown and flagged for Yidi to confirm."
+    }
+  ]
+}
