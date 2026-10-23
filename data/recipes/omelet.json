@@ -1,0 +1,125 @@
+{
+  "id": "omelet",
+  "title": "Omelet",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "eggs",
+    "breakfast",
+    "lunch",
+    "quick",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 7,
+  "servings": 1,
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/omelet.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "egg"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "olive oil",
+          "prep": "or butter"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "salt"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "black pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "shredded cheese",
+          "optional": true
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "mushroom",
+          "prep": "sliced",
+          "optional": true
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "onion",
+          "prep": "diced",
+          "optional": true
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "bell pepper",
+          "prep": "diced",
+          "optional": true
+        },
+        {
+          "qty": "1",
+          "unit": "handful",
+          "item": "baby spinach",
+          "optional": true
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "fresh herbs (parsley, chives, or dill)",
+          "prep": "chopped",
+          "optional": true
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "tomato",
+          "prep": "diced",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Whisk the eggs with salt and pepper until fully combined.",
+    "Heat the oil in a nonstick skillet over medium heat. If using onion, pepper, or mushrooms, sauté them 2-3 minutes first and set aside.",
+    "Pour in the eggs and tilt the pan to coat the bottom. As the edges set, lift them gently with a spatula and tilt the pan so the runny egg flows underneath.",
+    "When the top is almost set, add your fillings over one half.",
+    "Fold the omelet in half, slide onto a plate, and serve."
+  ],
+  "pairings": [],
+  "notes": "Everyday staple. Pareve as written — a cheese omelet is dairy.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/omelet.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "tips": [],
+  "history": [
+    {
+      "ts": "2026-10-23T04:47:33.466Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake of Yidi's 'Omelet' text submission. prep = 5 base + 1 (measure oil) + 1 (whisk eggs) + 3 (dice onion) + 3 (dice tomato) = 13 -> round up 15 -> 15 min floor = 15. cook = 3 (saute fillings, upper bound of stated 2-3) + 4 (eggs) = 7. servings = 1 stated (3 eggs). Fillings all optional ingredients; cheese omitted or added determines pareve vs dairy (noted). Banner AI-generated."
+    }
+  ]
+}
