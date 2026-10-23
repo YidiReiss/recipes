@@ -1,0 +1,59 @@
+{
+  "id": "ta-amti-bourekas-frozen",
+  "title": "Ta'amti Bourekas (Frozen)",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "frozen",
+    "store-bought",
+    "lunch",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 30,
+  "servings": "1",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/ta-amti-bourekas-frozen.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "",
+          "item": "frozen Ta'amti potato bourekas"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 375°F.",
+    "Place the frozen bourekas on a parchment-lined baking sheet, seam side down.",
+    "Bake 25-30 minutes, until puffed and deep golden brown.",
+    "Cool a few minutes before eating — the filling is very hot."
+  ],
+  "pairings": [],
+  "notes": "Store-bought frozen staple. 1 serving = 2 bourekas (the package serving size is 1 piece). Filling: potato — pareve; the household buys potato / non-dairy. The potato package's own printed directions could not be found online, so the directions here are standard bake-from-frozen. Confirm exact directions from the package; Yidi will send a package photo from home.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/ta-amti-bourekas-frozen.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-23T05:17:33.263Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission. Servings stated: 1 (2 bourekas). Cook: '25-30 minutes' -> upper bound 30. Prep: frozen pre-prepped -> 0 contribution; floor 15. Note carries the 'confirm package directions' caveat."
+    }
+  ]
+}
