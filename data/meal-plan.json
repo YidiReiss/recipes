@@ -981,8 +981,16 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Ground-beef night · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -993,11 +1001,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1008,11 +1034,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "chicken-mushroom-marsala",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1023,11 +1067,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "broiled-salmon-with-pesto",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1038,11 +1100,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1053,19 +1133,45 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "ash-e-jow-persian-barley-soup",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Never made — worth a try"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "bachash",
+                "leftovers": false,
+                "cookDate": "2026-11-05",
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat lunch · Cook Thursday"
+              }
+            ],
             "skipped": false,
             "note": ""
           },
@@ -1085,38 +1191,7 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [
-        {
-          "day": 1,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 2,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 3,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 4,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 5,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 1
-        }
-      ],
+      "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
@@ -1132,9 +1207,9 @@
   },
   "draftSnapshots": {
     "2026-11-01": {
-      "draftedAt": "2026-10-23T03:52:43.649Z",
+      "draftedAt": "2026-10-23T05:25:42.992Z",
       "firstDraftedAt": "2026-10-23T03:31:02.287Z",
-      "draftCount": 2,
+      "draftCount": 3,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
