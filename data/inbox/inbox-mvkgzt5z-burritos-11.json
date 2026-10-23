@@ -1,0 +1,19 @@
+{
+  "id": "inbox-mvkgzt5z-burritos-11",
+  "url": null,
+  "image": null,
+  "images": null,
+  "file": null,
+  "text": "Burritos\n\nMakes 4 burritos. No rice — ever.\n\nProtein (choose one):\nBeef (the usual): 1 lb ground beef + about 1 tbsp Ortega taco seasoning\nChicken: 1 lb boneless chicken breast, cut into bite-size pieces, seasoned with salt and pepper\n\nBeans (always):\n1 can (15 oz) black or pinto beans, drained and rinsed\n1 tsp cumin seeds\nPinch of crushed red pepper\n1 jalapeno, diced (optional — if we have it)\nSqueeze of lemon juice\n\nFresh:\n1 heart of romaine lettuce, sliced thin\n2 tomatoes, diced\nSalt and black pepper\n\nPickled purple onions (make ahead):\n1 purple onion, thinly sliced\n1/2 cup vinegar\n1/2 cup water\nPinch of salt\nPinch of sugar\n\nSauce:\n1/2 cup mayonnaise\n1 tbsp hot sauce\n1 clove garlic, crushed\n1/2 tsp paprika\n1 tsp honey\nSqueeze of lemon juice\n\nTo assemble:\n4 large flour tortillas\n\nInstructions:\n1. Pickled onions (make ahead if you can): put the sliced onion in a heatproof jar or bowl. Bring the vinegar, water, salt, and sugar to a boil; boil 2 minutes; pour over the onions and let cool.\n2. Beans: heat a little oil in a pan over medium heat. Add the cumin seeds, crushed red pepper, and jalapeno if using; heat until fragrant, about a minute. Add the beans and cook, mashing as they heat, until thick but not pasty, about 8-10 minutes. Take off the heat and stir in a squeeze of lemon juice.\n3. Beef version: heat a pan over medium-high heat. Add the ground beef as one big clump and sear/brown the outside before breaking it up; then cook through, breaking it into crumbles. Turn OFF the heat and stir in the taco seasoning.\n4. Chicken version (instead of step 3): season the chicken pieces with salt and pepper; cook in a hot oiled pan until cooked through and lightly browned, about 8-10 minutes. (A marinade is fine sometimes, but plain salt and pepper is the norm.)\n5. Salad: toss the sliced romaine and diced tomatoes with salt and pepper.\n6. Sauce: stir all the sauce ingredients together.\n7. Warm each tortilla in a dry pan until soft and pliable.\n8. Build each burrito: sauce down the middle, then beans, protein, lettuce-tomato salad, and pickled onions. Fold in the sides and roll up tight.",
+  "note": "Yidi's own burrito recipe, dictated in chat on 2026-10-22 — the recipe the planner's variants feature was designed around. Versions, in the three-list format: Always: large flour tortillas, black or pinto beans, cumin seeds, crushed red pepper, lemon juice, romaine lettuce, tomatoes, salt, black pepper, purple onion, vinegar, sugar, mayonnaise, hot sauce, garlic, paprika, honey. Versions: Beef (default) = ground beef + Ortega taco seasoning; Chicken = boneless chicken breast. Optional anytime: jalapeno. NO RICE — Yidi was explicit. Kosher: meat. Category: Main. Servings: 4 (an estimate from 1 lb of protein). Amounts: 1 lb beef is his; the taco seasoning (about 1 tbsp) is his own estimate; sauce proportions and bean spices are reasonable estimates — keep them sensible, do not mark needs_input over amounts. Leftover friendly: yes. Tags: burritos, mexican, dinner.",
+  "title": null,
+  "type": null,
+  "status": "pending",
+  "created_at": "2026-10-23T04:28:50.663Z",
+  "actor": "Yidi",
+  "recipe_id": null,
+  "fail_reason": null,
+  "needs": null,
+  "duplicate_of": null,
+  "edit_target": null
+}
