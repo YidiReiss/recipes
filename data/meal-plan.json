@@ -934,7 +934,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-ziti",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
@@ -952,7 +952,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-ziti",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -963,18 +963,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -985,7 +987,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -996,18 +998,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1018,7 +1022,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "babbish-baked-ziti",
+                "recipe": "baked-ziti",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1029,18 +1033,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Pasta night · #2 this week · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1051,7 +1057,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "borscht",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1062,6 +1068,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1071,9 +1081,7 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1084,7 +1092,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1095,34 +1103,38 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "ash-e-jow-persian-barley-soup",
+                "recipe": "brisket-with-vegetables-and-dried-fruit",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Shabbat dinner · Never made — worth a try"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "bachash",
+                "recipe": "chulent",
                 "leftovers": false,
-                "cookDate": "2026-11-05",
+                "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch · Cook Thursday"
+                "reason": "Shabbat lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
