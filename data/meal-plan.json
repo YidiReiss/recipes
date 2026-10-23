@@ -1067,17 +1067,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "brisket-with-vegetables-and-dried-fruit",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat lunch"
-              }
-            ]
+            "note": ""
           },
           "dinner": {
             "recipe": null,
