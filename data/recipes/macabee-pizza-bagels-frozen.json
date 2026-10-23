@@ -43,7 +43,7 @@
   "pdf": "pdfs/macabee-pizza-bagels-frozen.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "history": [
     {
@@ -67,6 +67,15 @@
         }
       ],
       "reasoning": "Yidi edit request (inbox-mvl6vgle-cn7o): regenerated banner image — all half bagels sliced lengthwise (two circles, not moon shapes), sauce and cheese on the open face, no pepperoni; kept kosher in generated image."
+    },
+    {
+      "ts": "2026-10-23T16:46:48.045Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
