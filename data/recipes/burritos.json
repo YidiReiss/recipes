@@ -103,6 +103,13 @@
           "qty": "",
           "unit": "",
           "item": "black pepper"
+        },
+        {
+          "qty": "1/2",
+          "unit": "",
+          "item": "Avocado",
+          "prep": "Sliced",
+          "optional": true
         }
       ]
     },
@@ -210,7 +217,7 @@
   "pdf": "pdfs/burritos.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "variants": [
     {
@@ -220,7 +227,8 @@
     },
     {
       "key": "chicken",
-      "label": "Chicken"
+      "label": "Chicken",
+      "default": false
     }
   ],
   "history": [
@@ -232,6 +240,29 @@
         "Created recipe"
       ],
       "reasoning": "Intake from text submission (Yidi's own recipe, dictated 2026-10-22). Servings stated: 4 (Makes 4 burritos). Prep estimated 45 = 5 base + slice onion 3 + dice jalapeno 2 + garlic 1 + dice 2 tomatoes 3.5 + slice romaine 3 + lemon squeezes 2 + measure/pour/open x13 (cumin, red pepper, beans can, vinegar, water, salt, sugar, mayo, hot sauce, paprika, honey, oil, taco seasoning) 13 + assemble 4 burritos 10 = 42.5 -> 45. Cook estimated 30 = brine boil 2 + beans (8-10 -> 10) + beef sear/cook ~10 (chic"
+    },
+    {
+      "ts": "2026-10-23T15:14:28.413Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "6 items ([section: 3 items]; [section: 5 items]; [section: 4 items]; …)",
+          "to": "6 items ([section: 3 items]; [section: 5 items]; [section: 5 items]; …)"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "variants",
+          "from": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\"})",
+          "to": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\",\"defa)"
+        }
+      ],
+      "reasoning": null
     }
   ]
 }
