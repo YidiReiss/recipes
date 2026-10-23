@@ -946,17 +946,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "4-year-chicken-tenders-fallow",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Chicken night · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -965,17 +955,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "4-year-chicken-tenders-fallow",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1037,7 +1017,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "4-year-chicken-tenders-fallow",
+                "recipe": "baked-feta-pasta",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1070,17 +1050,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "baked-feta-pasta",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1138,6 +1108,18 @@
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 2,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [],
