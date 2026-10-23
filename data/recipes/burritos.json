@@ -1,0 +1,237 @@
+{
+  "id": "burritos",
+  "title": "Burritos",
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "burritos",
+    "mexican",
+    "dinner"
+  ],
+  "prep_minutes": 45,
+  "cook_minutes": 30,
+  "servings": "4",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "banner_image": "assets/images/burritos.jpg",
+  "ingredients": [
+    {
+      "section": "Protein (choose one)",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "lb",
+          "item": "ground beef",
+          "prep": "seared as one clump, then crumbled",
+          "variant": "beef"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "Ortega taco seasoning",
+          "prep": "stirred in off the heat",
+          "variant": "beef"
+        },
+        {
+          "qty": "1",
+          "unit": "lb",
+          "item": "boneless chicken breast",
+          "prep": "cut into bite-size pieces",
+          "variant": "chicken"
+        }
+      ]
+    },
+    {
+      "section": "Beans (always)",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "can",
+          "item": "black or pinto beans (15 oz)",
+          "prep": "drained and rinsed"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "cumin seeds"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "crushed red pepper",
+          "prep": "a pinch"
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "jalapeno",
+          "prep": "diced",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "lemon juice",
+          "prep": "a squeeze"
+        }
+      ]
+    },
+    {
+      "section": "Fresh",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "heart of romaine lettuce",
+          "prep": "sliced thin"
+        },
+        {
+          "qty": "2",
+          "unit": "",
+          "item": "tomatoes",
+          "prep": "diced"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "salt"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "black pepper"
+        }
+      ]
+    },
+    {
+      "section": "Pickled purple onions (make ahead)",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "purple onion",
+          "prep": "thinly sliced"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "vinegar"
+        },
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "water"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "salt",
+          "prep": "a pinch"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "sugar",
+          "prep": "a pinch"
+        }
+      ]
+    },
+    {
+      "section": "Sauce",
+      "items": [
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "mayonnaise"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "hot sauce"
+        },
+        {
+          "qty": "1",
+          "unit": "clove",
+          "item": "garlic",
+          "prep": "crushed"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "honey"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "lemon juice",
+          "prep": "a squeeze"
+        }
+      ]
+    },
+    {
+      "section": "To assemble",
+      "items": [
+        {
+          "qty": "4",
+          "unit": "",
+          "item": "large flour tortillas"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "oil",
+          "prep": "a little, for the pan"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Pickled onions (make ahead if you can): put the sliced onion in a heatproof jar or bowl. Bring the vinegar, water, salt, and sugar to a boil; boil 2 minutes; pour over the onions and let cool.",
+    "Beans: heat a little oil in a pan over medium heat. Add the cumin seeds, crushed red pepper, and jalapeno if using; heat until fragrant, about a minute. Add the beans and cook, mashing as they heat, until thick but not pasty, about 8-10 minutes. Take off the heat and stir in a squeeze of lemon juice.",
+    "Beef version: heat a pan over medium-high heat. Add the ground beef as one big clump and sear/brown the outside before breaking it up; then cook through, breaking it into crumbles. Turn OFF the heat and stir in the taco seasoning.",
+    "Chicken version (instead of step 3): season the chicken pieces with salt and pepper; cook in a hot oiled pan until cooked through and lightly browned, about 8-10 minutes. (A marinade is fine sometimes, but plain salt and pepper is the norm.)",
+    "Salad: toss the sliced romaine and diced tomatoes with salt and pepper.",
+    "Sauce: stir all the sauce ingredients together.",
+    "Warm each tortilla in a dry pan until soft and pliable.",
+    "Build each burrito: sauce down the middle, then beans, protein, lettuce-tomato salad, and pickled onions. Fold in the sides and roll up tight."
+  ],
+  "pairings": [],
+  "notes": "Yidi's own recipe, dictated in chat on 2026-10-22. Versions: Beef (the usual, default) or Chicken; jalapeno is optional anytime. Makes 4 burritos. No rice — ever (Yidi was explicit). Sauce proportions and bean spices are reasonable estimates; the taco seasoning amount (about 1 tbsp) is Yidi's own estimate.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/burritos.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "variants": [
+    {
+      "key": "beef",
+      "label": "Beef",
+      "default": true
+    },
+    {
+      "key": "chicken",
+      "label": "Chicken"
+    }
+  ],
+  "history": [
+    {
+      "ts": "2026-10-23T05:20:16.984Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission (Yidi's own recipe, dictated 2026-10-22). Servings stated: 4 (Makes 4 burritos). Prep estimated 45 = 5 base + slice onion 3 + dice jalapeno 2 + garlic 1 + dice 2 tomatoes 3.5 + slice romaine 3 + lemon squeezes 2 + measure/pour/open x13 (cumin, red pepper, beans can, vinegar, water, salt, sugar, mayo, hot sauce, paprika, honey, oil, taco seasoning) 13 + assemble 4 burritos 10 = 42.5 -> 45. Cook estimated 30 = brine boil 2 + beans (8-10 -> 10) + beef sear/cook ~10 (chic"
+    }
+  ]
+}
