@@ -43,7 +43,7 @@
   "pdf": "pdfs/macabee-pizza-bagels-frozen.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "history": [
     {
@@ -54,6 +54,19 @@
         "Created recipe"
       ],
       "reasoning": "Intake from text submission. Servings stated: 1 (1 pizza bagel). Cook: '11-13 minutes' -> upper bound 13. Prep: frozen pre-prepped -> floor 15. Directions are the printed package directions (verified via Directions For Me + ShopRite)."
+    },
+    {
+      "ts": "2026-10-23T16:46:02.715Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Yidi edit request (inbox-mvl6vgle-cn7o): regenerated banner image — all half bagels sliced lengthwise (two circles, not moon shapes), sauce and cheese on the open face, no pepperoni; kept kosher in generated image."
     }
   ]
 }
