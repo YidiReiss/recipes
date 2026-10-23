@@ -1,0 +1,90 @@
+{
+  "id": "scrambled-eggs",
+  "title": "Scrambled Eggs",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "eggs",
+    "breakfast",
+    "lunch",
+    "quick",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 4,
+  "servings": 1,
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/scrambled-eggs.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "egg"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "olive oil",
+          "prep": "or cooking spray"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "salt"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "black pepper"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "milk",
+          "optional": true
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "shredded cheese",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Crack the eggs into a bowl, add a pinch of salt (and the milk if using), and whisk until the yolks and whites are fully combined.",
+    "Heat the oil in a nonstick skillet over medium-low heat.",
+    "Pour in the eggs. Let them sit for a few seconds, then gently push them around the pan with a spatula, forming soft curds.",
+    "Cook 3-4 minutes, stirring gently, until just set but still soft and glossy. Add the cheese in the last minute if using.",
+    "Season with black pepper and serve right away."
+  ],
+  "pairings": [],
+  "notes": "Everyday staple. Pareve as written (oil, no cheese) — adding cheese makes it dairy.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/scrambled-eggs.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "tips": [],
+  "history": [
+    {
+      "ts": "2026-10-23T04:47:30.289Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake of Yidi's 'Scrambled Eggs' text submission. prep = 5 base + 1 (measure oil) + 1 (measure milk) + 1 (whisk eggs) = 8 -> round up 10 -> 15 min floor = 15. cook = upper bound of stated 3-4 = 4. servings = 1 stated (2 eggs). Pareve as written (oil, no cheese); milk and shredded cheese optional. Banner AI-generated."
+    }
+  ]
+}
