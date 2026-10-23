@@ -210,7 +210,7 @@
   "pdf": "pdfs/burritos.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "variants": [
     {
@@ -283,6 +283,15 @@
         }
       ],
       "reasoning": "Yidi's edit request (inbox-mvl3r9se-7o88): cumin seeds reduced from 1 tsp to 1/4 tsp; cook_minutes 30 -> 15 (his stated time); prep_minutes 45 -> 40 (removed the 3-min purple-onion slicing from the original prep estimate per his instruction to not count onion prep). pdf_stale set true."
+    },
+    {
+      "ts": "2026-10-23T15:19:49.977Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
