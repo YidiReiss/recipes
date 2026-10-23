@@ -1,0 +1,94 @@
+{
+  "id": "toast",
+  "title": "Toast",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "breakfast",
+    "lunch",
+    "quick",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 3,
+  "servings": "1",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/toast.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "2",
+          "unit": "slices",
+          "item": "bread"
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "Butter",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "Jam or jelly",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "Cream cheese",
+          "optional": true
+        },
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "Avocado",
+          "prep": "sliced or mashed",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "Peanut butter",
+          "optional": true
+        },
+        {
+          "qty": "",
+          "unit": "",
+          "item": "Honey",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Toast the bread in the toaster until golden, about 2-3 minutes.",
+    "Add your toppings and serve."
+  ],
+  "pairings": [],
+  "notes": "Yidi specifically asked how toast gets recorded: as a tiny recipe like this, so it can be planned and shopped. The toppings are optional ingredients — use any. Kosher: pareve (the bread itself).",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/toast.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-23T05:17:25.106Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission. Servings stated: 1. Cook: '2-3 minutes' -> upper bound 3. Prep: nothing active beyond handling - 5 base + measure/pour/open charges ~7, floored to 15 per Yidi's rule. Toppings marked optional per note."
+    }
+  ]
+}
