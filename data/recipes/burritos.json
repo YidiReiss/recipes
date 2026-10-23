@@ -11,8 +11,8 @@
     "mexican",
     "dinner"
   ],
-  "prep_minutes": 45,
-  "cook_minutes": 30,
+  "prep_minutes": 40,
+  "cook_minutes": 15,
   "servings": "4",
   "leftover_friendly": true,
   "leftover_note": "",
@@ -54,7 +54,7 @@
           "prep": "drained and rinsed"
         },
         {
-          "qty": "1",
+          "qty": "1/4",
           "unit": "tsp",
           "item": "cumin seeds"
         },
@@ -103,13 +103,6 @@
           "qty": "",
           "unit": "",
           "item": "black pepper"
-        },
-        {
-          "qty": "1/2",
-          "unit": "",
-          "item": "Avocado",
-          "prep": "Sliced",
-          "optional": true
         }
       ]
     },
@@ -227,8 +220,7 @@
     },
     {
       "key": "chicken",
-      "label": "Chicken",
-      "default": false
+      "label": "Chicken"
     }
   ],
   "history": [
@@ -263,6 +255,34 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-10-23T15:14:56.269Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 45,
+          "to": 40
+        },
+        {
+          "field": "cook_minutes",
+          "from": 30,
+          "to": 15
+        },
+        {
+          "field": "ingredients",
+          "from": "6 items ([section: 3 items]; [section: 5 items]; [section: 5 items]; …)",
+          "to": "6 items ([section: 3 items]; [section: 5 items]; [section: 4 items]; …)"
+        },
+        {
+          "field": "variants",
+          "from": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\",\"defa)",
+          "to": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\"})"
+        }
+      ],
+      "reasoning": "Yidi's edit request (inbox-mvl3r9se-7o88): cumin seeds reduced from 1 tsp to 1/4 tsp; cook_minutes 30 -> 15 (his stated time); prep_minutes 45 -> 40 (removed the 3-min purple-onion slicing from the original prep estimate per his instruction to not count onion prep). pdf_stale set true."
     }
   ]
 }
