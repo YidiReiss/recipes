@@ -831,92 +831,145 @@
       "days": [
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Vacation — eating out / away"
+            "note": "Vacation — eating out / away",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "meat-lasagna",
+                "leftovers": true,
+                "cookDate": null,
+                "scale": 0.5,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
       "haveGenerated": [],
       "manualItems": [],
-      "optionalPromoted": []
+      "optionalPromoted": [],
+      "carryInPool": {},
+      "lunchWarnings": [
+        {
+          "day": 4,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
+        }
+      ]
     },
     "2026-11-01": {
       "days": [
