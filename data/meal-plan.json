@@ -931,17 +931,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "baked-ziti",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -950,17 +940,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "baked-ziti",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1022,7 +1002,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-ziti",
+                "recipe": "broiled-salmon-with-pesto",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1092,7 +1072,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1152,7 +1132,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
