@@ -1153,6 +1153,11 @@
       "rating": "skip",
       "updatedAt": 1792739826867,
       "updatedBy": "Anonymous"
+    },
+    "burritos": {
+      "rating": "favorite",
+      "updatedAt": 1792768145646,
+      "updatedBy": "Yidi"
     }
   },
   "draftSnapshots": {
