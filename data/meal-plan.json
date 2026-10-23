@@ -991,17 +991,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "custom": "Pizza",
-                "leftovers": false,
-                "cookDate": null,
-                "locked": true,
-                "drafted": true,
-                "reason": "Standing — Thursday pizza night"
-              }
-            ]
+            "note": ""
           }
         },
         {
