@@ -1029,17 +1029,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "gochujang-korean-tofu",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Fish / veg night · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1048,17 +1038,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "gochujang-korean-tofu",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1150,6 +1130,12 @@
         },
         {
           "day": 3,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 4,
           "kind": "uncovered",
           "have": 0,
           "need": 2
