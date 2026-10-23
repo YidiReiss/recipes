@@ -1,0 +1,96 @@
+{
+  "id": "rice",
+  "title": "Rice (Rice Cooker)",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side"
+  ],
+  "tags": [
+    "staple",
+    "rice cooker",
+    "side"
+  ],
+  "prep_minutes": 5,
+  "cook_minutes": 45,
+  "servings": 1,
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "banner_image": "assets/images/rice.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "1/4",
+          "unit": "tsp",
+          "item": "salt",
+          "optional": true
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "long-grain white rice",
+          "variant": "white"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "water",
+          "variant": "white"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "brown rice",
+          "variant": "brown"
+        },
+        {
+          "qty": "1 1/4",
+          "unit": "cup",
+          "item": "water",
+          "variant": "brown"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Rinse the rice in a fine-mesh strainer under cold water until the water runs mostly clear. Drain well.",
+    "Put the rice in the rice cooker pot. Add the water for your version (white: 1 cup; brown: 1 1/4 cups) and the salt if using.",
+    "Close the lid and start the cooker (use the brown-rice setting for brown rice if your cooker has one). White rice takes about 20 minutes; brown rice about 45 minutes.",
+    "When the cooker finishes, let the rice rest, lid closed, for 10 minutes.",
+    "Fluff with a fork or rice paddle and serve."
+  ],
+  "pairings": [],
+  "notes": "Everyday staple Yidi asked to add for planning purposes. Choose a version before cooking: White (default) or Brown. Both times are in the steps — brown is the long version.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/rice.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "tips": [],
+  "variants": [
+    {
+      "key": "white",
+      "label": "White Rice",
+      "default": true
+    },
+    {
+      "key": "brown",
+      "label": "Brown Rice"
+    }
+  ],
+  "history": [
+    {
+      "ts": "2026-10-23T04:47:28.802Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake of Yidi's 'Rice (Rice Cooker)' text submission. prep = 5 min stated (rinse). cook = 45 stated (brown version, the long one; white takes 20). servings = 1 stated (one batch = 1 cup dry, about 3 cups cooked). Variants: White (default) = 1 cup long-grain white rice + 1 cup water; Brown = 1 cup brown rice + 1 1/4 cups water; salt shared + optional. Kosher pareve, side category. Banner photo AI-generated (no submitted photo)."
+    }
+  ]
+}
