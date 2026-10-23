@@ -3363,15 +3363,21 @@ function inferPlanningMeta(meta) {
   else if (cats.includes('pasta') || PLAN_RE.pastaWord.test(hay)) slotClass = 'pasta';
   else if (PLAN_RE.vegWord.test(hay)) slotClass = 'veg';
 
-  // effort: 'special' is manual-override only, never inferred.
+  // effort (time bands, Yidi 2026-10-22): a recipe's tier is the
+  // EASIEST context its total time qualifies for — 'weeknight'
+  // (Mon–Wed), 'sunday' (Sunday only), or 'shabbat'. Caps by
+  // class: standard classes weeknight <= 60 / sunday <= 75;
+  // ground beef 75 / 90 (its long tail is mostly hands-off
+  // simmering). 'special' is manual-override only, never inferred.
   let effort;
   if (tags.includes('shabbat')) effort = 'shabbat';
   else if (slotClass === 'beef-roast') effort = 'shabbat';
   else if (!total) effort = (kosher === 'meat') ? 'shabbat' : 'weeknight';
-  else if (total <= 45) effort = 'weeknight';
-  else if (total >= 90) effort = 'shabbat';
-  else effort = (slotClass === 'pasta' || slotClass === 'chicken' || slotClass === 'fish')
-    ? 'weeknight' : 'shabbat';
+  else {
+    const wkCap = slotClass === 'ground-beef' ? 75 : 60;
+    const sunCap = slotClass === 'ground-beef' ? 90 : 75;
+    effort = total <= wkCap ? 'weeknight' : (total <= sunCap ? 'sunday' : 'shabbat');
+  }
 
   // shabbatFit: strong make-ahead/room-temp signals -> lunch; a
   // leftover-friendly hot main reheats for either meal -> both;
@@ -3984,7 +3990,9 @@ async function draftWeek(weekKey, chips) {
   // draft against itself (Argon trap 3A). Only main-eligible dishes
   // (or leftovers dishes) count — a manual side dish in a slot must
   // not eat a framework target (Argon trap 3B). A night stays empty
-  // only when NO framework class has any candidate. Weeknight only.
+  // only when NO framework class has any candidate. Effort filter
+  // is day-aware (time bands, Yidi 2026-10-22): Sunday accepts the
+  // weeknight + sunday tiers; Mon–Wed are weeknight only.
   {
     const FRAMEWORK_TARGETS = { 'ground-beef': 1, 'pasta': 2, 'chicken': 2, 'fishveg': 1 };
     const FRAMEWORK_PRIORITY = ['ground-beef', 'pasta', 'chicken', 'fishveg'];
@@ -4028,7 +4036,7 @@ async function draftWeek(weekKey, chips) {
       const s = clearDrafted(di, 'dinner');
       const cands = planningCandidates({
         classes: new Set(['ground-beef', 'chicken', 'pasta', 'fish', 'veg']),
-        efforts: new Set(['weeknight']), fits: null,
+        efforts: di === 0 ? new Set(['weeknight', 'sunday']) : new Set(['weeknight']), fits: null,
         kosher: slotKosherAllowed(s), hosting: false, cookDay: di,
         useUp, lastCooked: last.byRecipe, untriedUsed, weekKey
       }).filter(c => !used.has(c.id))
@@ -4125,7 +4133,10 @@ function swapCandidates(weekKey, dayIdx, meal, dishIdx) {
     opts.fits = new Set([dayIdx === 5 ? 'friday' : 'lunch', 'both']);
     opts.kosher = new Set(['meat', 'pareve']);
   } else {
-    opts.efforts = new Set(['weeknight']);
+    // Day context mirrors draftWeek rule 5 (time bands, Yidi
+    // 2026-10-22): a Sunday slot may swap in sunday-tier dishes;
+    // other days are weeknight only.
+    opts.efforts = dayIdx === 0 ? new Set(['weeknight', 'sunday']) : new Set(['weeknight']);
   }
   const lockSet = slotKosherAllowed({ dishes: s.dishes.filter((d, i) => i !== dishIdx) });
   if (lockSet) opts.kosher = lockSet;
@@ -4486,7 +4497,7 @@ function renderQuickSort(app) {
           (row.variant ? ' <span class="badge neutral">variant · ' + esc(row.variant.label) + '</span>' : '') +
           '<span class="qs-pills"><span class="qs-kind">Effort</span>' +
             pillGroup('effort', row.meta.id, row.pm.effort, pref.effort || null,
-              [['weeknight', 'Weeknight'], ['shabbat', 'Shabbat'], ['special', 'Special']]) + '</span>' +
+              [['weeknight', 'Weeknight'], ['sunday', 'Sunday'], ['shabbat', 'Shabbat'], ['special', 'Special']]) + '</span>' +
           '<span class="qs-pills"><span class="qs-kind">Rating</span>' +
             pillGroup('rating', row.meta.id, row.pm.rating, pref.rating || null,
               [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']]) + '</span>' +
