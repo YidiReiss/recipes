@@ -1,0 +1,59 @@
+{
+  "id": "macabee-pizza-bagels-frozen",
+  "title": "Macabee Pizza Bagels (Frozen)",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "frozen",
+    "store-bought",
+    "lunch",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 13,
+  "servings": "1",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/macabee-pizza-bagels-frozen.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "1",
+          "unit": "",
+          "item": "frozen Macabee pizza bagel"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Keep frozen until ready to use. Cook thoroughly.",
+    "Oven (preferred): preheat to 450°F. Place frozen pizza bagels on a baking sheet and bake 11-13 minutes (time is for 4 bagels). Let stand 1 minute before eating.",
+    "Toaster oven: preheat to 400°F. Bake 15 minutes (for 4 bagels). Let stand 1 minute.",
+    "Microwave (1100 watts): 1 bagel, 1 to 1 1/2 minutes; 4 bagels, 2 1/2 to 3 minutes. Let stand 1 minute."
+  ],
+  "pairings": [],
+  "notes": "Store-bought frozen staple. 1 serving = 1 pizza bagel. Serving size 1 piece (64 g); 6 pieces in the 13.5 oz package. The directions above are the printed package directions.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/macabee-pizza-bagels-frozen.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-23T05:19:59.122Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission. Servings stated: 1 (1 pizza bagel). Cook: '11-13 minutes' -> upper bound 13. Prep: frozen pre-prepped -> floor 15. Directions are the printed package directions (verified via Directions For Me + ShopRite)."
+    }
+  ]
+}
