@@ -3923,45 +3923,95 @@ async function draftWeek(weekKey, chips) {
     }
   }
 
-  // Rule 5: the framework fills the remaining Sun–Wed dinners:
-  // ground-beef x1, pasta x1, chicken x1, fish/veg x1 — four classes
-  // for the four Sun–Wed nights. When the leftovers night was
-  // placed, its source satisfies its own framework slot (rule 4's
-  // leftoversSlot), so that class leaves the fresh queue and the
-  // three remaining classes fill the three fresh nights — no class
-  // is silently dropped. A leftovers source whose class maps to no
-  // framework slot replaces nothing: the full queue runs over the
-  // three fresh nights and the chicken/fish-veg tail alternates by
-  // week parity, so neither class is starved two weeks running.
-  // Weeknight effort only. A class with no candidate is dropped,
-  // never invented.
+  // Rule 5 (v3, Yidi 2026-10-22 — soft targets): the framework is a
+  // POOL of categories, not a fixed queue. Weekly targets —
+  // ground-beef 1, pasta 2, chicken 2, fish/veg 1 — are SOFT: they
+  // deprioritize, never forbid. Each fresh Sun–Wed night, every
+  // framework class's candidates compete on their normal score minus
+  // bucket penalties (tuning constants — Yidi expects to adjust):
+  //   REPEAT_PENALTY (25) per pick the bucket already has this week,
+  //   OVER_TARGET_PENALTY (60) more per pick beyond the target,
+  //   ADJACENT_PENALTY (15) when the bucket matches last night's.
+  // Counts start from the dishes already standing in Sun–Wed dinner
+  // slots — manual/locked dishes and the rule-4 leftovers dish (its
+  // class counts toward its own target: Q4 "leftovers replace their
+  // own kind" falls out of the counting). Unprotected slots are
+  // cleared BEFORE counting, so a re-draft never counts the previous
+  // draft against itself (Argon trap 3A). Only main-eligible dishes
+  // (or leftovers dishes) count — a manual side dish in a slot must
+  // not eat a framework target (Argon trap 3B). A night stays empty
+  // only when NO framework class has any candidate. Weeknight only.
   {
-    let classQueue = ['ground-beef', 'pasta', 'chicken', 'fishveg'];
-    if (leftoversDay >= 0) {
-      if (leftoversSlot) {
-        classQueue = classQueue.filter(c => c !== leftoversSlot);
-      } else if (Math.floor(daysBetweenKeys('1970-01-04', weekKey) / 7) % 2 === 1) {
-        classQueue = ['ground-beef', 'pasta', 'fishveg', 'chicken'];
-      }
-    }
+    const FRAMEWORK_TARGETS = { 'ground-beef': 1, 'pasta': 2, 'chicken': 2, 'fishveg': 1 };
+    const FRAMEWORK_PRIORITY = ['ground-beef', 'pasta', 'chicken', 'fishveg'];
+    const REPEAT_PENALTY = 25, OVER_TARGET_PENALTY = 60, ADJACENT_PENALTY = 15;
     const labels = {
       'ground-beef': 'Ground-beef night', 'pasta': 'Pasta night',
       'chicken': 'Chicken night', 'fishveg': 'Fish / veg night'
     };
-    let qi = 0;
+    const bucketOfDish = (dish) => {
+      if (!dish || !dish.recipe) return null;
+      const pm = effectivePlanningMeta(dish.recipe);
+      if (!pm) return null;
+      if (!dish.leftovers && !pm.mainEligible) return null;
+      let cls = pm.slotClass;
+      if (dish.variant && Array.isArray(pm.variants)) {
+        const v = pm.variants.find(v => v.key === dish.variant);
+        if (v && v.slotClass) cls = v.slotClass;
+      }
+      return LEFTOVER_SLOT_BY_CLASS[cls] || null;
+    };
+    // Clear first (trap 3A), then count what genuinely stands.
     for (const di of [0, 1, 2, 3]) {
-      if (qi >= classQueue.length) break;
-      if (di === leftoversDay) continue;
-      if (slotIsProtected(week.days[di].dinner)) continue;
-      const cls = classQueue[qi];
+      if (di !== leftoversDay && !slotIsProtected(week.days[di].dinner)) clearDrafted(di, 'dinner');
+    }
+    const counts = { 'ground-beef': 0, 'pasta': 0, 'chicken': 0, 'fishveg': 0 };
+    const standingBucket = {};
+    for (const di of [0, 1, 2, 3]) {
+      if (di !== leftoversDay && !slotIsProtected(week.days[di].dinner)) continue;
+      const dishes = normalizeSlot(week.days[di].dinner).dishes;
+      for (const dish of dishes) {
+        const b = bucketOfDish(dish);
+        if (b) { counts[b]++; if (!standingBucket[di]) standingBucket[di] = b; }
+      }
+    }
+    let prevBucket = null;
+    for (const di of [0, 1, 2, 3]) {
+      if (di === leftoversDay || slotIsProtected(week.days[di].dinner)) {
+        prevBucket = standingBucket[di] || null;
+        continue;
+      }
       const s = clearDrafted(di, 'dinner');
-      const classes = cls === 'fishveg' ? new Set(['fish', 'veg']) : new Set([cls]);
-      const pick = pickFor({
-        classes, efforts: new Set(['weeknight']), fits: null,
-        kosher: slotKosherAllowed(s), hosting: false, cookDay: di
-      });
-      if (pick) s.dishes.push(dishFromPick(pick, labels[cls]));
-      qi++;   // a class with no candidate is dropped, not retried on later days
+      const cands = planningCandidates({
+        classes: new Set(['ground-beef', 'chicken', 'pasta', 'fish', 'veg']),
+        efforts: new Set(['weeknight']), fits: null,
+        kosher: slotKosherAllowed(s), hosting: false, cookDay: di,
+        useUp, lastCooked: last.byRecipe, untriedUsed, weekKey
+      }).filter(c => !used.has(c.id))
+        .map(c => {
+          const bucket = LEFTOVER_SLOT_BY_CLASS[c.slotClass];
+          let eff = c.score - REPEAT_PENALTY * counts[bucket]
+            - OVER_TARGET_PENALTY * Math.max(0, counts[bucket] - FRAMEWORK_TARGETS[bucket] + 1);
+          if (bucket === prevBucket) eff -= ADJACENT_PENALTY;
+          return { ...c, bucket, eff };
+        })
+        .sort((a, b) => (b.eff - a.eff)
+          || (FRAMEWORK_PRIORITY.indexOf(a.bucket) - FRAMEWORK_PRIORITY.indexOf(b.bucket))
+          || String(a.title).localeCompare(String(b.title)));
+      const best = cands[0] || null;
+      if (best) {
+        used.add(best.id);
+        if (!last.byRecipe[best.id]) untriedUsed++;
+        const n = counts[best.bucket];
+        const phrase = labels[best.bucket]
+          + (n === 0 ? '' : (n < FRAMEWORK_TARGETS[best.bucket]
+              ? ' · #' + (n + 1) + ' this week' : ' · extra this week'));
+        s.dishes.push(dishFromPick(best, phrase));
+        counts[best.bucket]++;
+        prevBucket = best.bucket;
+      } else {
+        prevBucket = null;
+      }
     }
   }
 
@@ -3998,7 +4048,10 @@ function swapCandidates(weekKey, dayIdx, meal, dishIdx) {
     });
   });
   const opts = {
-    classes: new Set([cls]), useUp: [], lastCooked: computeLastCooked().byRecipe,
+    // Fish and veg form ONE framework bucket (rule 5), so a fish dish
+    // swaps against veg alternatives too, and vice versa.
+    classes: (cls === 'fish' || cls === 'veg') ? new Set(['fish', 'veg']) : new Set([cls]),
+    useUp: [], lastCooked: computeLastCooked().byRecipe,
     untriedUsed: 1, weekKey, cookDay: dayIdx
   };
   const isShabbatSlot = (dayIdx === 5 && meal === 'dinner') || (dayIdx === 6 && meal === 'lunch');
