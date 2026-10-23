@@ -976,17 +976,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "penne-alla-vodka",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · #2 this week · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -995,17 +985,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "penne-alla-vodka",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1097,6 +1077,12 @@
         },
         {
           "day": 3,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 4,
           "kind": "uncovered",
           "have": 0,
           "need": 2
