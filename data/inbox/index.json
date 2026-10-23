@@ -1576,11 +1576,12 @@
   },
   {
     "id": "inbox-mvl3r9se-7o88",
-    "status": "pending",
+    "status": "done",
     "type": "edit",
     "edit_target": "burritos",
     "created_at": "2026-10-23T15:06:03.470Z",
-    "text": "Reduce the cumin to 1/4 tsp. Also the cook time is like 15 minutes. Don't count count the purple onion prep time in there"
+    "text": "Reduce the cumin to 1/4 tsp. Also the cook time is like 15 minutes. Don't count count the purple onion prep time in there",
+    "recipe_id": "burritos"
   },
   {
     "id": "edit-mvl424hb-12zg",
