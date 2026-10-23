@@ -981,18 +981,20 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Ground-beef night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1003,7 +1005,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1014,18 +1016,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Pasta night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1036,7 +1040,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1047,18 +1051,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "chicken-mushroom-marsala",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1069,7 +1075,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1080,18 +1086,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1102,7 +1110,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1113,6 +1121,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1122,9 +1134,7 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1135,7 +1145,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1146,34 +1156,38 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "ash-e-jow-persian-barley-soup",
+                "recipe": "borscht",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Shabbat dinner · Never made — worth a try"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "bachash",
+                "recipe": "brisket-with-vegetables-and-dried-fruit",
                 "leftovers": false,
-                "cookDate": "2026-11-05",
+                "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch · Cook Thursday"
+                "reason": "Shabbat lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -1207,9 +1221,9 @@
   },
   "draftSnapshots": {
     "2026-11-01": {
-      "draftedAt": "2026-10-23T05:25:42.992Z",
+      "draftedAt": "2026-10-23T05:25:52.732Z",
       "firstDraftedAt": "2026-10-23T03:31:02.287Z",
-      "draftCount": 3,
+      "draftCount": 4,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -1225,18 +1239,20 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Ground-beef night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1247,7 +1263,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1258,18 +1274,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Pasta night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1280,7 +1298,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1291,18 +1309,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "chicken-mushroom-marsala",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1313,7 +1333,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1324,18 +1344,20 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1346,7 +1368,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "coca-cola-meatballs",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1357,6 +1379,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1366,9 +1392,7 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1379,7 +1403,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "baked-feta-pasta",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1390,34 +1414,38 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "ash-e-jow-persian-barley-soup",
+                "recipe": "borscht",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Shabbat dinner · Never made — worth a try"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "bachash",
+                "recipe": "brisket-with-vegetables-and-dried-fruit",
                 "leftovers": false,
-                "cookDate": "2026-11-05",
+                "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch · Cook Thursday"
+                "reason": "Shabbat lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
