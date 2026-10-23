@@ -1059,17 +1059,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "ash-e-jow-persian-barley-soup",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat dinner · Never made — worth a try"
-              }
-            ]
+            "note": ""
           }
         },
         {
