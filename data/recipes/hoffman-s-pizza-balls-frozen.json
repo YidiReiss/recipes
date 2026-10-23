@@ -1,0 +1,59 @@
+{
+  "id": "hoffman-s-pizza-balls-frozen",
+  "title": "Hoffman's Pizza Balls (Frozen)",
+  "kosher_status": "dairy",
+  "kosher_for_passover": false,
+  "categories": [
+    "main"
+  ],
+  "tags": [
+    "frozen",
+    "store-bought",
+    "lunch",
+    "staple"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 15,
+  "servings": "1",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/hoffman-s-pizza-balls-frozen.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "6",
+          "unit": "",
+          "item": "frozen Hoffman's pizza balls"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 425°F.",
+    "Arrange the frozen pizza balls in a single layer on a baking sheet.",
+    "Bake 12-15 minutes, until golden and the cheese is melted.",
+    "Rest 2 minutes before eating — the cheese inside is very hot."
+  ],
+  "pairings": [],
+  "notes": "Store-bought frozen staple. 1 serving = about 6 balls. No package information for this product could be found online at all — the directions here are standard bake-from-frozen placeholders. Confirm exact directions from the package; Yidi's package photo is required to finalize this recipe.",
+  "source": "",
+  "tags_need_review": false,
+  "pdf": "pdfs/hoffman-s-pizza-balls-frozen.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "history": [
+    {
+      "ts": "2026-10-23T05:17:41.894Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from text submission. Servings stated: 1 (about 6 balls). Cook: '12-15 minutes' -> upper bound 15. Prep: frozen pre-prepped -> floor 15. Directions are standard bake-from-frozen placeholders; note requires package confirmation."
+    }
+  ]
+}
