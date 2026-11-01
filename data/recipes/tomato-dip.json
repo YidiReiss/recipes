@@ -1,6 +1,8 @@
 {
   "banner_image": "assets/images/tomato-dip.jpg",
-  "categories": [],
+  "categories": [
+    "dips"
+  ],
   "id": "tomato-dip",
   "ingredients": [
     {
@@ -72,5 +74,20 @@
   "needs_kosher_review": false,
   "kosher_review_notes": "",
   "leftover_note": "",
-  "pdf_stale": false
+  "pdf_stale": false,
+  "history": [
+    {
+      "ts": "2026-11-01T04:57:40.924Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "[]",
+          "to": "1 items (dips)"
+        }
+      ],
+      "reasoning": "Yidi approved 2026-11-01: restore categories to [dips]. Live categories were [] (verified), causing the classifier to count Tomato Dip main-eligible (72 vs 71) and 2 test failures in the AI Studio suite run (246/248)."
+    }
+  ]
 }
