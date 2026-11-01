@@ -43,7 +43,7 @@
         {
           "qty": "1",
           "unit": "tsp",
-          "item": "salt (does not need salt)"
+          "item": "salt"
         },
         {
           "qty": "⅓",
@@ -96,6 +96,16 @@
         }
       ],
       "reasoning": "Backfill: estimated missing prep_minutes=15 (5 base + halved garlic, chopped basil, assembling dish; rounded up) and servings=6 (16 oz dry pasta / ~3 oz per person main, rounded to even) via Sous Chef estimation logic."
+    },
+    {
+      "ts": "2026-11-01T20:38:56.570Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "ingredients: 'salt (does not need salt)' -> 'salt'"
+      ],
+      "reasoning": "Remove editor-note cruft from ingredient: 'salt (does not need salt)' -> 'salt' (approved staples bundle); set pdf_stale so the PDF re-presses."
     }
-  ]
+  ],
+  "pdf_stale": true
 }
