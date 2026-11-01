@@ -54,7 +54,7 @@
         {
           "qty": "⅛",
           "unit": "tsp",
-          "item": "pepper (plus ¼ tsp more for the fish)"
+          "item": "black pepper (plus ¼ tsp more for the fish)"
         },
         {
           "qty": "6",
@@ -97,6 +97,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 15 min (base 5 + crush 6 garlic cloves + pick thyme + assemble) and servings 6 (main fish, 6x6 oz filets) per Sous Chef estimation rules."
+    },
+    {
+      "ts": "2026-11-01T21:01:38.303Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 9 items])",
+          "to": "1 items ([section: 9 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
