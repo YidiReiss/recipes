@@ -80,7 +80,7 @@
   "notes": "Honey: card says 1/4 C, amended in blue ink to 2 1/2 tbsp — used the amended amount (flagged for review). Mustard's 'grey poupon-mild or coarse…' is cut off in the photo.",
   "pairings": [],
   "pdf": "pdfs/makie-fray-grilled-chicken.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "prep_minutes": 20,
   "servings": "4",
   "source": "Handwritten recipe card (Makie/Fray), submitted via inbox photo 2026-10-21",
@@ -124,6 +124,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-01T22:16:57.934Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
