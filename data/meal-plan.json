@@ -1341,17 +1341,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "simple-sesame-noodles",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · Favorite · Not made in 4 wks · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1360,17 +1350,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "simple-sesame-noodles",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1432,7 +1412,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1465,17 +1445,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "simple-sesame-noodles",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1533,6 +1503,18 @@
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 2,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [],
