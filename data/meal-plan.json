@@ -1409,9 +1409,14 @@
         {
           "id": "mmvy2a6kj",
           "text": "Lemons",
-          "have": false,
-          "updatedAt": 1793551546819,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793563042386,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563042386,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy2age0",
