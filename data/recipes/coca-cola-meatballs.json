@@ -50,7 +50,7 @@
           "qty": "2",
           "unit": "tsp",
           "item": "fresh garlic",
-          "prep": "crushed"
+          "prep": "minced"
         },
         {
           "qty": "1",
@@ -98,6 +98,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 25 (onion in chopper w/ cleanup, chop pepper+garlic, roll meatballs) per Sous Chef pacing rules. cook/servings already set."
+    },
+    {
+      "ts": "2026-11-01T21:01:49.246Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 10 items])",
+          "to": "1 items ([section: 10 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
