@@ -1823,5 +1823,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:01:27.501Z"
+  },
+  {
+    "id": "edit-mvybf2ix-r60h",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "sheet-pan-garlic-butter-mushrooms",
+    "recipe_id": "sheet-pan-garlic-butter-mushrooms",
+    "title": "Sheet Pan Garlic Mushrooms",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:01:30.194Z"
   }
 ]
