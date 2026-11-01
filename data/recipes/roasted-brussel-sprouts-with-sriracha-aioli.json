@@ -74,7 +74,7 @@
   "notes": null,
   "source": null,
   "tags_need_review": false,
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-01T21:00:53.412Z",
@@ -93,6 +93,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-01T21:17:03.751Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "PDF re-press after pepper/garlic sweep edit; pdf_stale was true."
     }
   ]
 }
