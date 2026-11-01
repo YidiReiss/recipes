@@ -119,12 +119,15 @@ async function bridgeSave(path, content, message, encoding) {
 
 /* Save a recipe through the worker-side history endpoint.
    The worker fetches the live file, diffs, appends history, and commits.
-   Throws with code 409 if base_sha doesn't match (someone else saved first). */
-async function bridgeSaveRecipe(path, recipe, actor, reasoning, baseSha, action) {
+   Throws with code 409 if base_sha doesn't match (someone else saved first).
+   skipLog (7th arg, default false) asks the worker to skip the Recent
+   submissions auto-log — for quiet single-field saves such as the
+   Tune-the-rotation needs-a-side toggle, which must not flood the log. */
+async function bridgeSaveRecipe(path, recipe, actor, reasoning, baseSha, action, skipLog) {
   const res = await fetch(BRIDGE + '/save-recipe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path, recipe, actor, reasoning, base_sha: baseSha, action })
+    body: JSON.stringify({ path, recipe, actor, reasoning, base_sha: baseSha, action, skip_log: !!skipLog })
   });
   const data = await res.json().catch(() => ({}));
   if (res.status === 409) {
@@ -1782,7 +1785,7 @@ function blankRecipe() {
     categories: [], prep_minutes: 0, cook_minutes: 0, servings: '',
     ingredients: [{ section: '', items: [{ qty: '', unit: '', item: '' }] }],
     instructions: [''], pairings: [], tags: [], tags_need_review: false,
-    leftover_friendly: false, leftover_note: '', banner_image: '', pdf: null,
+    leftover_friendly: false, needs_side: false, leftover_note: '', banner_image: '', pdf: null,
     notes: '', source: ''
   };
 }
@@ -1796,6 +1799,7 @@ function normalizeDraft(d) {
   d.variants = Array.isArray(d.variants) ? d.variants : [];
   d.pdf = d.pdf || null;
   d.banner_image = d.banner_image || '';
+  d.needs_side = !!d.needs_side;
   return d;
 }
 
@@ -1826,6 +1830,9 @@ function recipeFormHTML(r, cancelHref) {
       '<div class="field" id="e-kosher-notes-wrap" style="margin-top:.5rem;' + (r.needs_kosher_review ? '' : 'display:none') + '">' +
         '<label for="e-kosher-notes">Kosher review notes</label>' +
         '<input type="text" id="e-kosher-notes" value="' + esc(r.kosher_review_notes || '') + '" placeholder="What needs checking?">' +
+      '</div></div>' +
+      '<div class="field"><label>Planning</label><div class="checks">' +
+        '<label><input type="checkbox" id="e-needs-side"' + (r.needs_side ? ' checked' : '') + '> Needs a side</label>' +
       '</div></div>' +
       '<div class="field"><label>Categories</label><div class="checks">' +
         KNOWN_CATEGORIES.map(c =>
@@ -2122,6 +2129,7 @@ function collectRecipeForm(d) {
   d.servings = $('#e-serv').value.trim();
   d.kosher_for_passover = $('#e-kfp').checked;
   d.leftover_friendly = $('#e-left').checked;
+  d.needs_side = $('#e-needs-side') ? $('#e-needs-side').checked : !!d.needs_side;
   d.needs_kosher_review = $('#e-kosher-review') ? $('#e-kosher-review').checked : false;
   d.kosher_review_notes = $('#e-kosher-notes') ? $('#e-kosher-notes').value.trim() : '';
   d.categories = [...document.querySelectorAll('.e-cat')].filter(c => c.checked).map(c => c.value);
@@ -2503,7 +2511,7 @@ async function saveRecipe(id) {
       kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
       categories: d.categories || [], tags: d.tags || [],
       prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
-      leftover_friendly: !!d.leftover_friendly, tags_need_review: !!d.tags_need_review,
+      leftover_friendly: !!d.leftover_friendly, needs_side: !!d.needs_side, tags_need_review: !!d.tags_need_review,
       photo_generated: !!d.photo_generated,
       search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
     };
@@ -2580,7 +2588,7 @@ async function saveNewRecipe() {
       kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
       categories: d.categories || [], tags: d.tags || [],
       prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
-      leftover_friendly: !!d.leftover_friendly, tags_need_review: !!d.tags_need_review,
+      leftover_friendly: !!d.leftover_friendly, needs_side: !!d.needs_side, tags_need_review: !!d.tags_need_review,
       photo_generated: !!d.photo_generated,
       search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
     };
@@ -2676,6 +2684,11 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
       }
       if (dish.scale && dish.scale !== 1) {
         dishBody += ' <span class="badge neutral">' + esc(dish.scale) + '×</span>';
+      }
+      // Flag-only: show while the flagged main stands alone; adding a
+      // second dish clears it. Leftovers dishes never carry the flag.
+      if (meta && meta.needs_side && !dish.leftovers && s.dishes.length === 1) {
+        dishBody += ' <span class="badge warn">Needs a side</span>';
       }
       if (dish.cookDate) dishBody += ' <span class="slot-note">(cook ' + esc(dish.cookDate) + ')</span>';
       if (dish.locked) dishBody += ' <span class="dish-lock" title="Locked — Draft Week won\u2019t change it">🔒</span>';
@@ -2848,11 +2861,11 @@ function renderPlanner(app) {
           (chips.hostingSat ? ' checked' : '') + '> Saturday</label>' +
       '</div>' +
       '<div class="chip-row">' +
-        '<span class="chip-group-label">Eating out / skip dinner:</span>' +
+        '<span class="chip-group-label">Eating out / skip main meal:</span>' +
         dayLetters.map((L, i) =>
           '<button type="button" class="day-chip' + (chips.eatOut.includes(i) ? ' active' : '') +
-          '" data-eatout="' + i + '" title="' + PLAN_DAY_NAMES[i] + '"' +
-          (i === 4 ? ' aria-label="Thursday — pizza night, always kept"' : '') + '>' + L + '</button>'
+          '" data-eatout="' + i + '" title="' + (i === 6 ? 'Saturday — skips Shabbat lunch' : (i === 4 ? 'Thursday' : PLAN_DAY_NAMES[i] + ' — skips dinner')) + '"' +
+          (i === 4 ? ' aria-label="Thursday — pizza night, always kept"' : (i === 6 ? ' aria-label="Saturday — skips Shabbat lunch"' : '')) + '>' + L + '</button>'
         ).join('') +
       '</div>' +
       '<div class="chip-row">' +
@@ -3848,9 +3861,12 @@ async function draftWeek(weekKey, chips) {
     return dish;
   };
 
-  // Eat-out chips are TWO-WAY — reconcile dinner slots with the chip
-  // state before anything fills them (Thu dinner is never touched —
-  // rule 1 — even when chipped):
+  // Eat-out chips are TWO-WAY — reconcile each day's main-meal slot
+  // with the chip state before anything fills it (Thu dinner is never
+  // touched — rule 1 — even when chipped). The main meal is dinner
+  // every day EXCEPT Saturday, whose Shabbat main is lunch (the
+  // Saturday dinner slot is never drafted, so the chip must not
+  // govern it):
   // (a) a chipped day whose slot is not protected by manual/locked
   //     dishes loses its drafted dishes and becomes skipped with the
   //     auto-mark note 'Eat out' — even when a previous draft already
@@ -3859,11 +3875,21 @@ async function draftWeek(weekKey, chips) {
   //     (skipped, note exactly 'Eat out') is un-skipped so it can be
   //     drafted again. Manual skips (any other note) are never
   //     touched in either direction.
+  // A Saturday dinner slot carrying the auto-mark from before this
+  // fix (when the Sa chip wrongly governed dinner) is released:
+  // that mark was chip-owned by the old convention, and the chip no
+  // longer governs dinner.
   {
     const eatOut = new Set(Array.isArray(chips.eatOut) ? chips.eatOut : []);
     for (let di = 0; di < 7; di++) {
       if (di === 4 || !week.days[di]) continue;
-      const s = planSlot(week, di, 'dinner');
+      if (di === 6) {
+        const dinner = planSlot(week, di, 'dinner');
+        if (dinner.skipped && dinner.note === 'Eat out' && !dinner.dishes.length) {
+          dinner.skipped = false; dinner.note = '';
+        }
+      }
+      const s = planSlot(week, di, di === 6 ? 'lunch' : 'dinner');
       if (eatOut.has(di)) {
         const protectedDish = s.dishes.some(d => d.locked || !d.drafted);
         const manualSkip = s.skipped && s.note !== 'Eat out';
@@ -4282,6 +4308,70 @@ async function setRecipePref(id, patch) {
   }, 'Recipe prefs: ' + id);
 }
 
+/* Needs-a-side flag — single source of truth is the recipe JSON.
+   The Tune-the-rotation toggle and the recipe-editor checkbox both
+   write this same field; there is no recipePrefs copy that could
+   disagree. The flag is planner-only: it never appears on the PDF,
+   so a toggle save must preserve pdf_stale exactly (no re-press)
+   and skip the Recent submissions auto-log. The fast list
+   (meta.json) is patched in place from the same save, so its
+   variants and every other card field survive. */
+function withNeedsSide(recipe, value) {
+  const out = { ...(recipe || {}) };
+  out.needs_side = !!value;
+  return out;
+}
+function patchMetaNeedsSide(entry, value) {
+  const out = { ...(entry || {}) };
+  out.needs_side = !!value;
+  return out;
+}
+const _needsSideSaving = new Set();
+async function setNeedsSide(id, value, byName) {
+  if (_needsSideSaving.has(id)) return;
+  _needsSideSaving.add(id);
+  try {
+    // Resolve the editor name synchronously, before the first await:
+    // callers pass the name resolved in the tap handler (a prompt
+    // after an await is swallowed on mobile browsers).
+    const name = byName || getEditorName();
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const fresh = await ghGet('data/recipes/' + id + '.json');
+      const current = JSON.parse(fresh.text);
+      if (!current || current.id !== id) throw new Error('Recipe not found');
+      try {
+        await bridgeSaveRecipe('data/recipes/' + id + '.json',
+          withNeedsSide(current, value), 'site-editor (' + name + ')',
+          'Needs-a-side flag ' + (value ? 'on' : 'off'), fresh.sha, 'edit', true);
+        break;
+      } catch (e) {
+        if (e.code === 409 && attempt === 0) continue;
+        throw e;
+      }
+    }
+    // Patch the fast list in place, with one retry like saveRecipe.
+    let metaSaved = false;
+    for (let attempt = 0; attempt < 2 && !metaSaved; attempt++) {
+      try {
+        const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
+        const mi = meta.findIndex(x => x.id === id);
+        if (mi >= 0) meta[mi] = patchMetaNeedsSide(meta[mi], value);
+        await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Needs-a-side flag: ' + id);
+        metaSaved = true;
+      } catch (e) {
+        if (attempt === 0) await new Promise(r => setTimeout(r, 800));
+        else throw e;
+      }
+    }
+    if (metaById[id]) metaById[id] = patchMetaNeedsSide(metaById[id], value);
+    const ri = recipes.findIndex(x => x.id === id);
+    if (ri >= 0) recipes[ri] = patchMetaNeedsSide(recipes[ri], value);
+    if (byId[id]) byId[id] = withNeedsSide(byId[id], value);
+  } finally {
+    _needsSideSaving.delete(id);
+  }
+}
+
 /* The yieldLog entry a feedback "Left:" tap records. `idStr` is passed
    in so the entry shape stays a pure function of its inputs. */
 function buildYieldEntry(dish, dateStr, left, byName, idStr) {
@@ -4450,7 +4540,9 @@ function feedbackRowHTML(key, di, meal, idx, dish, week) {
    Every recipe grouped by its effective class; variant recipes get a
    row under EACH version's class (prefs stay recipe-level). Pill
    groups write recipePrefs overrides through saveMealPlan; the Auto
-   pill clears the override for that field. */
+   pill clears the override for that field. The Needs-a-side toggle
+   is different: it writes the recipe JSON itself (the same field
+   the editor checkbox edits), with no PDF change. */
 const QS_CLASS_ORDER = [
   ['ground-beef', 'Ground beef'], ['beef-roast', 'Beef & roasts'],
   ['chicken', 'Chicken'], ['fish', 'Fish'], ['pasta', 'Pasta'],
@@ -4501,6 +4593,9 @@ function renderQuickSort(app) {
           '<span class="qs-pills"><span class="qs-kind">Rating</span>' +
             pillGroup('rating', row.meta.id, row.pm.rating, pref.rating || null,
               [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']]) + '</span>' +
+          '<span class="qs-pills"><span class="qs-kind">Side</span>' +
+            '<button type="button" class="pill' + (row.meta.needs_side ? ' active' : '') +
+            '" data-needsside="' + esc(row.meta.id) + '" title="Saves to the recipe itself — no PDF change">Needs a side</button></span>' +
         '</div>';
       }).join('') + '</section>';
   });
@@ -4509,7 +4604,8 @@ function renderQuickSort(app) {
     '<h1 class="recipe-title">Tune the rotation</h1>' +
     '<p class="muted">Every recipe joins the rotation automatically, grouped by the ' +
     'planner\u2019s best guess. Tap a pill only to correct it — Auto means the guess ' +
-    'stands. Ratings are shared: one family opinion per recipe.</p>' + body;
+    'stands. Ratings are shared: one family opinion per recipe. The Needs a side ' +
+    'toggle saves to the recipe itself, like the editor checkbox — no PDF change.</p>' + body;
   app.querySelectorAll('[data-qs]').forEach(b => b.addEventListener('click', async () => {
     const [kind, id, val] = b.dataset.qs.split('|');
     try {
@@ -4517,6 +4613,19 @@ function renderQuickSort(app) {
       renderQuickSort(app);
     } catch (e) {
       toast('Couldn\u2019t save: ' + e.message);
+    }
+  }));
+  app.querySelectorAll('[data-needsside]').forEach(b => b.addEventListener('click', async () => {
+    const id = b.dataset.needsside;
+    const name = getEditorName();
+    const next = !(metaById[id] && metaById[id].needs_side);
+    b.disabled = true;
+    try {
+      await setNeedsSide(id, next, name);
+      renderQuickSort(app);
+    } catch (e) {
+      toast('Couldn\u2019t save: ' + e.message);
+      renderQuickSort(app);
     }
   }));
 }
