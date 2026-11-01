@@ -1519,9 +1519,14 @@
         {
           "id": "mmvy74unh",
           "text": "Cream cheese",
-          "have": false,
-          "updatedAt": 1793559696173,
-          "updatedBy": "smvy748l09ld21q"
+          "have": true,
+          "updatedAt": 1793564093046,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564093046,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy83wd5",
