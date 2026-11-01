@@ -2380,116 +2380,6 @@ function speakTimerAlarm(timer, env) {
   return true;
 }
 
-/* Voice clarity test panel (2026-11-01): one button per treatment, all
-   judged on the same demo step (Step 5, 30 to 40 minutes) with music
-   playing. Phrases/params are frozen per variant so a winner is
-   attributable to exactly one change. Nothing is saved. */
-const VOICE_TEST_DEMO = { stepNum: 5, lowSeconds: 1800, highSeconds: 2400 };
-const VOICE_TEST_FROZEN_PHRASE = 'Timer done! Step 5, 30 to 40 minutes is finished.';
-const VOICE_TEST_JUDGE = 'Judge it: did you hear the step number? The time range? How clear was it over the music?';
-
-function voiceTestDemoRange() {
-  return formatAlarmTimeRange(VOICE_TEST_DEMO.lowSeconds, VOICE_TEST_DEMO.highSeconds);
-}
-
-function voiceTestVariant(key) {
-  const range = voiceTestDemoRange();
-  const v1Phrase = 'Kitchen timer! Kitchen timer! Step 5, ' + range + ' is done.';
-  switch (key) {
-    case 'v0': return { opts: { rate: 0.98 }, phrase: VOICE_TEST_FROZEN_PHRASE };
-    case 'v1': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase };
-    case 'v1a': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: VOICE_TEST_FROZEN_PHRASE };
-    case 'v2': return { opts: { volume: 1.0, pitch: 1.0, rate: 0.85 }, phrase: 'Kitchen timer. Kitchen timer. Step 5. ' + range + ' is done.' };
-    case 'v3': return { opts: { volume: 1.0, pitch: 1.3, rate: 0.95 }, phrase: v1Phrase };
-    case 'v3b': return { opts: { volume: 1.0, pitch: 0.85, rate: 0.92 }, phrase: v1Phrase };
-    case 'v4': return { opts: { volume: 1.0, pitch: 1.0, rate: 0.92 }, phrase: v1Phrase, needsVoice: true };
-    case 'v5': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase, repeat: 3 };
-    case 'v6': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase + ' Kitchen timer! Step 5, ' + range + ' is done.' };
-    case 'v7': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Step 5, ' + range + ' is done. Kitchen timer! Kitchen timer! Step 5 is done.' };
-    case 'v8': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS, { lang: 'en-US' }), phrase: 'Kitchen timer! Kitchen timer! Step five, thirty to forty minutes is done.' };
-    case 'v9': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Attention! Attention! Step 5, ' + range + ' is done.' };
-    case 'v10': return { opts: { volume: 1.0, pitch: 1.6, rate: 0.92 }, phrase: v1Phrase };
-    default: return null;
-  }
-}
-
-function setVoiceTestPrompt(text) {
-  if (typeof document === 'undefined') return;
-  const el = document.querySelector('[data-cm-voice-prompt]');
-  if (el) el.textContent = text;
-}
-
-function runVoiceTest(key, voiceURI) {
-  invalidateAlarmChain();
-  const variant = voiceTestVariant(key);
-  if (!variant) return;
-  const opts = Object.assign({}, variant.opts);
-  if (key === 'v4' && voiceURI) opts.voice = voiceURI;
-  if (variant.repeat && variant.repeat > 1) {
-    runVoiceRepeatDemo(variant, opts);
-    return;
-  }
-  const said = speakTextWithOpts(variant.phrase, opts, () => {});
-  setVoiceTestPrompt(said ? VOICE_TEST_JUDGE : 'Speech is not supported on this device.');
-}
-
-/* V5: the same utterance 3 times, 1,000 ms apart, chained via onend with
-   the shared generation token. Any tap cancels the chain (no spoken gap
-   labels; the prompt shows the repeat count). */
-function runVoiceRepeatDemo(variant, opts) {
-  const gen = _alarmSpeechState.generation;
-  const total = variant.repeat;
-  const step = (i) => {
-    if (_alarmSpeechState.generation !== gen) return; // invalidated
-    setVoiceTestPrompt('Repeat ' + i + ' of ' + total + '. ' + VOICE_TEST_JUDGE);
-    const said = speakTextWithOpts(variant.phrase, Object.assign({}, opts, { cancelFirst: i === 1 }), () => {
-      if (i < total && _alarmSpeechState.generation === gen) {
-        setTimeout(() => step(i + 1), 1000);
-      }
-    });
-    if (!said) setVoiceTestPrompt('Speech is not supported on this device.');
-  };
-  step(1);
-}
-
-/* Fill the voice-choice (V4) slot only — never the panel, never the
-   prompt, never the delegation listeners. Called after every panel render
-   (the panel re-renders wholesale) and again on voiceschanged. */
-let _voiceFillToken = 0;
-function fillVoiceTestButtons() {
-  if (typeof document === 'undefined') return;
-  const slot = document.querySelector('[data-cm-voice-list]');
-  if (!slot) return;
-  const render = (voices) => {
-    const fresh = document.querySelector('[data-cm-voice-list]');
-    if (!fresh) return;
-    if (!voices.length) {
-      fresh.innerHTML = '<span class="muted">Only the default voice is available on this device.</span>';
-      return;
-    }
-    const shown = voices.slice(0, 8);
-    fresh.innerHTML = shown.map(v =>
-      '<button type="button" class="pill" data-cm-act="voice-test" data-voice-test="v4" data-voice-uri="' + esc(v.voiceURI || '') + '">Voice: ' + esc(v.name || 'default') + ' (' + esc(v.lang || '') + ')</button>'
-    ).join('') + (voices.length > shown.length ? ' <span class="muted">+' + (voices.length - shown.length) + ' more</span>' : '');
-  };
-  let voices = [];
-  try { voices = filterAlarmVoices(getSpeechVoices()); } catch (e) { voices = []; }
-  if (voices.length) { render(voices); return; }
-  slot.innerHTML = '<span class="muted">Checking for voices…</span>';
-  // Late-loading voices: a voiceschanged re-fill covers arrival; this
-  // fallback converts the placeholder if voices never arrive.
-  const token = ++_voiceFillToken;
-  setTimeout(() => {
-    if (token !== _voiceFillToken) return;
-    const fresh = document.querySelector('[data-cm-voice-list]');
-    if (!fresh) return;
-    if (fresh.textContent && fresh.textContent.indexOf('Checking for voices') !== 0) return;
-    let late = [];
-    try { late = filterAlarmVoices(getSpeechVoices()); } catch (e) { late = []; }
-    render(late);
-  }, 1500);
-}
-
 function timerDockHTML(timers, voiceOn) {
   const list = Array.isArray(timers) ? timers : [];
   if (!list.length) return '';
@@ -2803,20 +2693,6 @@ function checkCookCapabilities(winObj, navObj) {
   };
 }
 
-/* Winner + challenger panel (2026-11-01): only V1, the settled production treatment,
-   and V10, the squeaky pitch-1.6 challenger, are shown. The other variant definitions
-   stay in voiceTestVariant, unreachable from the UI. */
-function voiceTestButtonsHTML() {
-  const btn = (key, label) =>
-    '<button type="button" class="pill" data-cm-act="voice-test" data-voice-test="' + key + '">' + label + '</button>';
-  return '<div class="cm-voice-tests"><strong>Voice clarity test</strong> <span class="muted">(with music playing at your normal volume — nothing is saved)</span><br>' +
-    '<span class="muted">Tap each one with music playing at your normal volume, and compare them. Judge each: step number? Time range? Clarity?</span><br>' +
-    btn('v1', 'V1 · Pitch 1.15, rate 0.92 — doubled prefix') + ' ' +
-    btn('v10', 'V10 · Squeaky pitch 1.6') +
-    '<p class="cm-voice-prompt muted" data-cm-voice-prompt>Tap a test above, then judge it: step number? Time range? Clarity over the music?</p>' +
-  '</div>';
-}
-
 function formatCapabilitiesReportHTML(caps) {
   const c = caps || checkCookCapabilities();
   const badge = ok => ok
@@ -2826,17 +2702,13 @@ function formatCapabilitiesReportHTML(caps) {
     '<div class="cm-probe-head"><strong>Device Capabilities Report</strong>' +
       '<button type="button" class="link-btn" data-cm-act="close-probe">Close</button></div>' +
     '<ul class="cm-probe-list">' +
-      '<li><span>Voice alarm (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
-        ' <span class="muted">(presence only — clarity over music is judged by the tests below)</span></li>' +
+      '<li><span>Voice alarm (speechSynthesis):</span> ' + badge(c.speechSynthesis) + '</li>' +
       '<li><span>Step Read-Aloud (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
         ' <span class="muted">(' + Number(c.voiceCount || 0) + ' voice' + (c.voiceCount === 1 ? '' : 's') + ')</span></li>' +
       '<li><span>Keep Screen Awake (navigator.wakeLock):</span> ' + badge(c.wakeLock) +
         (c.wakeLock ? (' <span class="muted">(' + (c.wakeLockActive ? 'currently locked' : 'unlocked') + ')</span>') : '') + '</li>' +
       '<li><span>Voice Recognition API (Phase 2 probe only — mic NOT opened):</span> ' + badge(c.speechRecognition) + '</li>' +
     '</ul>' +
-    (c.speechSynthesis
-      ? voiceTestButtonsHTML()
-      : '<div class="cm-voice-tests"><strong>Voice clarity tests</strong><p class="muted">Speech synthesis is not available in this browser, so the voice alarm and these tests cannot run here.</p></div>') +
   '</div>';
 }
 
@@ -3156,9 +3028,6 @@ function renderCookModeOverlay() {
         '</div>' +
       '</section>' +
     '</div>';
-  // Voice-choice test buttons fill asynchronously (voices may load late);
-  // the fill touches only the voice-list slot, never the prompt or listeners.
-  if (st.probeOpen) fillVoiceTestButtons();
 }
 
 function speakCurrentCookModeStep() {
@@ -3288,8 +3157,6 @@ function openCookMode(recipe, hooks) {
       } else if (act === 'close-probe') {
         cookModeState.probeOpen = false;
         renderCookModeOverlay();
-      } else if (act === 'voice-test') {
-        runVoiceTest(actBtn.dataset.voiceTest, actBtn.dataset.voiceUri);
       }
     });
     overlay.addEventListener('change', e => {
@@ -3337,14 +3204,6 @@ function openCookMode(recipe, hooks) {
     });
   }
 
-  // Late-loading voices: re-fill only the voice-choice slot when voices
-  // arrive (getVoices() often returns [] until voiceschanged fires).
-  if (!window._voiceListWired && window.speechSynthesis && typeof window.speechSynthesis.addEventListener === 'function') {
-    window._voiceListWired = true;
-    window.speechSynthesis.addEventListener('voiceschanged', () => {
-      if (cookModeState && cookModeState.probeOpen) fillVoiceTestButtons();
-    });
-  }
 }
 
 function closeCookMode(fromRoute) {

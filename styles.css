@@ -1599,7 +1599,7 @@ body.has-timer-dock {
   font-weight: 700;
   color: var(--ink);
 }
-.timer-sound-toggle {
+.timer-voice-toggle {
   padding: 0.22rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -1609,7 +1609,7 @@ body.has-timer-dock {
   font-weight: 600;
   cursor: pointer;
 }
-.timer-sound-toggle.is-on {
+.timer-voice-toggle.is-on {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
