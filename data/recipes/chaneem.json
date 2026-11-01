@@ -56,7 +56,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         }
       ]
     },
@@ -138,6 +138,25 @@
         }
       ],
       "reasoning": "Backfill: estimated missing prep_minutes=60 (5 base + sauce veg, julienning 8 potatoes thin, dough kneading, rolling 4 dough balls, cutting squares and filling; 30-min dough rest is passive, excluded; rounded up) and servings=8 (4 cups flour dumpling dough + potato filling, hearty main) via Sous Chef estimation logic."
+    },
+    {
+      "ts": "2026-11-01T21:01:01.702Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "3 items ([section: 7 items]; [section: 3 items]; [section: 4 items])",
+          "to": "3 items ([section: 7 items]; [section: 3 items]; [section: 4 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
