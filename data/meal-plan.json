@@ -1384,6 +1384,13 @@
           "updatedAt": 1793559669206,
           "updatedBy": "smvy748l09ld21q",
           "deleted": true
+        },
+        {
+          "id": "mmvy74jch",
+          "text": "String Cheese",
+          "have": false,
+          "updatedAt": 1793559681521,
+          "updatedBy": "smvy748l09ld21q"
         }
       ],
       "optionalPromoted": [],
