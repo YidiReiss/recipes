@@ -1320,7 +1320,15 @@
           "unit": "g"
         }
       ],
-      "manualItems": [],
+      "manualItems": [
+        {
+          "id": "mmvy29lyi",
+          "text": "Potatoes",
+          "have": false,
+          "updatedAt": 1793551520106,
+          "updatedBy": "smvy24fnxqn3wqn"
+        }
+      ],
       "optionalPromoted": [],
       "shoppingDay": null
     },
