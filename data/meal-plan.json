@@ -1259,6 +1259,27 @@
           "at": 1793551312428,
           "qty": 16,
           "unit": "oz"
+        },
+        {
+          "key": "fresh dill or frozen dill cube|tbsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551321279,
+          "qty": 2,
+          "unit": "tbsp"
+        },
+        {
+          "key": "lemon juice|tbsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551322751,
+          "qty": 2,
+          "unit": "tbsp"
+        },
+        {
+          "key": "unsalted butter|tbsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551323963,
+          "qty": 2,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
