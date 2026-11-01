@@ -35,7 +35,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "2",
@@ -98,6 +98,25 @@
         }
       ],
       "reasoning": "Backfill: estimated missing prep_minutes=20 (5 base + finely diced meat, chopped onion, cilantro and dill bunches, washed rice, mixing; rounded up) and servings=6 (2 cups dry rice / ~1/3 cup per person, rounded to even) via Sous Chef estimation logic."
+    },
+    {
+      "ts": "2026-11-01T21:01:12.008Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 9 items])",
+          "to": "1 items ([section: 9 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
