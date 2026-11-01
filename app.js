@@ -2024,6 +2024,13 @@ function renderStepWithTimersHTML(stepText, stepNum) {
 }
 
 /* Pure timer state reducer functions (unit-tested in commit2-ui-test.cjs). */
+
+/* Repeating done-chime (2026-11-01, Yidi-approved): a done timer re-chimes
+   every 15s until dismissed / silenced, capped at 5 minutes of overtime.
+   The Done banner + overtime readout keep showing after the cap. */
+const TIMER_CHIME_REPEAT_MS = 15 * 1000;
+const TIMER_CHIME_MAX_OVERTIME_MS = 5 * 60 * 1000;
+const TIMER_CHIME_PEAK_GAIN = 0.38; // DING-note peak; fallback if harsh on the Show: 0.35.
 function createTimer(opts, nowMs) {
   const now = typeof nowMs === 'number' ? nowMs : Date.now();
   const lowSec = Math.max(1, Math.round(Number(opts && (opts.lowSeconds || opts.seconds)) || 60));
@@ -2042,8 +2049,8 @@ function createTimer(opts, nowMs) {
     endTimeMs: now + durMs,
     remainingMs: durMs,
     overtimeMs: 0,
-    maxAdded: false,
-    chimeFired: false
+    chimeFired: false,
+    lastChimeAtMs: null
   };
 }
 
@@ -2066,6 +2073,23 @@ function tickTimer(timer, nowMs) {
     remainingMs: diff,
     overtimeMs: 0
   });
+}
+
+/* Pure chime-schedule decision (unit-tested in commit2-ui-test.cjs): true at
+   the 00:00 transition (chimeFired false) and every TIMER_CHIME_REPEAT_MS of
+   overtime thereafter, up to TIMER_CHIME_MAX_OVERTIME_MS. Sound on/off is NOT
+   consulted here — playTimerChime no-ops when sound is off, so the schedule
+   keeps advancing silently and flipping sound on mid-done does not replay
+   a stale chime. */
+function shouldFireTimerChime(timer, nowMs) {
+  if (!timer || typeof timer !== 'object' || timer.status !== 'done') return false;
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  const overtime = Math.max(0, Number(timer.overtimeMs) || 0);
+  if (overtime > TIMER_CHIME_MAX_OVERTIME_MS) return false;
+  if (!timer.chimeFired) return true;
+  const last = Number(timer.lastChimeAtMs);
+  if (!last) return true; // Older saved state without lastChimeAtMs: fire once, then track.
+  return (now - last) >= TIMER_CHIME_REPEAT_MS;
 }
 
 function pauseTimer(timer, nowMs) {
@@ -2102,12 +2126,12 @@ function resetTimer(timer) {
     endTimeMs: null,
     remainingMs: baseSec * 1000,
     overtimeMs: 0,
-    maxAdded: false,
-    chimeFired: false
+    chimeFired: false,
+    lastChimeAtMs: null
   });
 }
 
-function addTimerSeconds(timer, addSec, nowMs, markMaxAdded) {
+function addTimerSeconds(timer, addSec, nowMs) {
   if (!timer) return timer;
   const now = typeof nowMs === 'number' ? nowMs : Date.now();
   const deltaMs = Math.round((Number(addSec) || 0) * 1000);
@@ -2118,8 +2142,7 @@ function addTimerSeconds(timer, addSec, nowMs, markMaxAdded) {
     return Object.assign({}, timer, {
       durationSec: nextDur,
       remainingMs: rem,
-      overtimeMs: 0,
-      maxAdded: !!(timer.maxAdded || markMaxAdded)
+      overtimeMs: 0
     });
   }
   const baseEnd = (timer.status === 'running' && timer.endTimeMs && timer.endTimeMs > now)
@@ -2132,20 +2155,13 @@ function addTimerSeconds(timer, addSec, nowMs, markMaxAdded) {
     endTimeMs: newEnd,
     remainingMs: Math.max(0, newEnd - now),
     overtimeMs: 0,
-    maxAdded: !!(timer.maxAdded || markMaxAdded),
-    chimeFired: false
+    chimeFired: false,
+    lastChimeAtMs: null
   });
 }
 
 function addTimerMinute(timer, nowMs) {
-  return addTimerSeconds(timer, 60, nowMs, false);
-}
-
-function addTimerToMax(timer, nowMs) {
-  if (!timer || timer.maxAdded) return timer;
-  const extraSec = Math.max(0, (Number(timer.highSeconds) || 0) - (Number(timer.lowSeconds) || 0));
-  if (extraSec <= 0) return timer;
-  return addTimerSeconds(timer, extraSec, nowMs, true);
+  return addTimerSeconds(timer, 60, nowMs);
 }
 
 /* Session-only timer store + sessionStorage reload recovery (Binding Decision #2 & #6a). */
@@ -2170,8 +2186,8 @@ function serializeTimersForSession(timers, soundOn) {
       endTimeMs: t.endTimeMs,
       remainingMs: t.remainingMs,
       overtimeMs: t.overtimeMs || 0,
-      maxAdded: !!t.maxAdded,
-      chimeFired: !!t.chimeFired
+      chimeFired: !!t.chimeFired,
+      lastChimeAtMs: (typeof t.lastChimeAtMs === 'number' ? t.lastChimeAtMs : null)
     }))
   });
 }
@@ -2187,7 +2203,24 @@ function restoreTimersFromSessionJSON(rawJson, nowMs) {
     const list = (parsed && Array.isArray(parsed.timers)) ? parsed.timers : [];
     const restored = list
       .filter(t => t && typeof t === 'object' && t.id)
-      .map(t => tickTimer(t, now));
+      // Restore builds each timer from an explicit field list, so fields
+      // from older saves are ignored rather than spread into the timer.
+      .map(t => tickTimer({
+        id: t.id,
+        recipeId: t.recipeId,
+        recipeTitle: t.recipeTitle,
+        stepNum: t.stepNum,
+        label: t.label,
+        durationSec: t.durationSec,
+        lowSeconds: t.lowSeconds,
+        highSeconds: t.highSeconds,
+        status: t.status,
+        endTimeMs: t.endTimeMs,
+        remainingMs: t.remainingMs,
+        overtimeMs: t.overtimeMs || 0,
+        chimeFired: !!t.chimeFired,
+        lastChimeAtMs: (typeof t.lastChimeAtMs === 'number' ? t.lastChimeAtMs : null)
+      }, now));
     return { soundOn, timers: restored };
   } catch (e) {
     return { soundOn: true, timers: [] };
@@ -2216,8 +2249,9 @@ function loadTimersFromSession() {
   } catch (e) {}
 }
 
-/* Short Web Audio API sine blip (Binding Decision #2: never an <audio> element). */
+/* Kitchen-timer chime via Web Audio API (Binding Decision #2: never an <audio> element). */
 let _sharedAudioCtx = null;
+let _chimeBurstEndCtxTime = -Infinity; // AudioContext-time end of the in-flight burst (re-entrancy guard).
 function playTimerChime() {
   if (!timerSoundEnabled) return false;
   try {
@@ -2229,21 +2263,46 @@ function playTimerChime() {
     if (_sharedAudioCtx.state === 'suspended' && typeof _sharedAudioCtx.resume === 'function') {
       _sharedAudioCtx.resume().catch(() => {});
     }
-    const now = _sharedAudioCtx.currentTime;
-    // Two gentle, clear kitchen sine blips (880Hz A5 -> 1174.66Hz D6), 0.16s each.
-    [0, 0.22].forEach((offset, i) => {
-      const osc = _sharedAudioCtx.createOscillator();
-      const gain = _sharedAudioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(i === 0 ? 880 : 1174.66, now + offset);
-      gain.gain.setValueAtTime(0.001, now + offset);
-      gain.gain.exponentialRampToValueAtTime(0.22, now + offset + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.17);
+    const ctx = _sharedAudioCtx;
+    const now = ctx.currentTime;
+    // Re-entrancy guard: a Test-chime tap during an in-flight burst must not
+    // truncate it — return without playing. Checked AFTER the sound-off check
+    // above, so an off-state call never arms the guard.
+    if (now < _chimeBurstEndCtxTime) return false;
+    // Double triad, triangle wave, 1.28s burst (Argon plan, 2026-11-01,
+    // audio-informed): two ascending triads (880 -> 1108.73 -> 1318.51 Hz).
+    // "Da" notes peak at 0.30; DING notes peak at TIMER_CHIME_PEAK_GAIN.
+    // The final DING has a two-stage bell decay; every oscillator is stopped
+    // and disconnected on end so bursts cannot accumulate nodes.
+    const notes = [
+      [880.00, 0.00, 0.30, 0.17, false],
+      [1108.73, 0.19, 0.30, 0.17, false],
+      [1318.51, 0.38, TIMER_CHIME_PEAK_GAIN, 0.22, false],
+      [880.00, 0.55, 0.30, 0.17, false],
+      [1108.73, 0.74, 0.30, 0.17, false],
+      [1318.51, 0.93, TIMER_CHIME_PEAK_GAIN, 0.35, true]
+    ];
+    notes.forEach(([freq, onset, peak, dur, isFinalBell]) => {
+      const t0 = now + onset;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.linearRampToValueAtTime(peak, t0 + 0.008);
+      if (isFinalBell) {
+        gain.gain.exponentialRampToValueAtTime(0.10, t0 + 0.20);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
+      } else {
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      }
       osc.connect(gain);
-      gain.connect(_sharedAudioCtx.destination);
-      osc.start(now + offset);
-      osc.stop(now + offset + 0.18);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur);
+      osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) {} };
     });
+    _chimeBurstEndCtxTime = now + 1.28;
     return true;
   } catch (e) {
     return false;
@@ -2259,15 +2318,14 @@ function timerDockHTML(timers, soundOn) {
     const readout = isDone
       ? ('00:00 · Done! +' + formatTimerReadout(t.overtimeMs || 0))
       : formatTimerReadout(t.remainingMs);
-    const extraMaxSec = (!t.maxAdded && t.highSeconds > t.lowSeconds)
-      ? (t.highSeconds - t.lowSeconds)
-      : 0;
-    const toMaxBtn = extraMaxSec > 0
-      ? '<button type="button" class="timer-btn timer-tomax" data-timer-act="tomax" data-tid="' + esc(t.id) + '" title="Extend to upper bound">+' + esc(formatTimerPillDuration(extraMaxSec)) + ' to max</button>'
-      : '';
     const toggleBtn = isDone
       ? ''
       : ('<button type="button" class="timer-btn" data-timer-act="' + (isPaused ? 'resume' : 'pause') + '" data-tid="' + esc(t.id) + '">' + (isPaused ? '▶ Resume' : '⏸ Pause') + '</button>');
+    // Done cards get a big labeled Dismiss target (wet/floury knuckles, 2026-11-01);
+    // running/paused cards keep the compact ✕.
+    const dismissBtn = isDone
+      ? '<button type="button" class="timer-btn timer-dismiss timer-dismiss-done" data-timer-act="dismiss" data-tid="' + esc(t.id) + '" aria-label="Dismiss timer">✓ Dismiss</button>'
+      : '<button type="button" class="timer-btn timer-dismiss" data-timer-act="dismiss" data-tid="' + esc(t.id) + '" aria-label="Dismiss timer">✕</button>';
     return '<div class="timer-card' + (isDone ? ' is-done' : (isPaused ? ' is-paused' : '')) + '" data-timer-card="' + esc(t.id) + '">' +
       '<div class="timer-card-info">' +
         '<span class="timer-card-title">' + esc(t.recipeTitle) + ' · Step ' + Number(t.stepNum || 1) + ' (' + esc(t.label) + ')</span>' +
@@ -2276,9 +2334,10 @@ function timerDockHTML(timers, soundOn) {
       '<div class="timer-card-actions">' +
         toggleBtn +
         '<button type="button" class="timer-btn" data-timer-act="plus1m" data-tid="' + esc(t.id) + '">+1m</button>' +
-        toMaxBtn +
+        '<button type="button" class="timer-btn" data-timer-act="plus5m" data-tid="' + esc(t.id) + '" aria-label="Add 5 minutes">+5m</button>' +
+        '<button type="button" class="timer-btn" data-timer-act="plus10m" data-tid="' + esc(t.id) + '" aria-label="Add 10 minutes">+10m</button>' +
         '<button type="button" class="timer-btn" data-timer-act="reset" data-tid="' + esc(t.id) + '">Reset</button>' +
-        '<button type="button" class="timer-btn timer-dismiss" data-timer-act="dismiss" data-tid="' + esc(t.id) + '" aria-label="Dismiss timer">✕</button>' +
+        dismissBtn +
       '</div>' +
     '</div>';
   }).join('');
@@ -2330,7 +2389,8 @@ function ensureTimerDockMounted() {
         if (act === 'resume') return resumeTimer(t, now);
         if (act === 'reset') return resetTimer(t);
         if (act === 'plus1m') return addTimerMinute(t, now);
-        if (act === 'tomax') return addTimerToMax(t, now);
+        if (act === 'plus5m') return addTimerSeconds(t, 300, now);
+        if (act === 'plus10m') return addTimerSeconds(t, 600, now);
         return t;
       });
       ensureTimerTicker();
@@ -2362,21 +2422,22 @@ function tickAllTimers() {
     return;
   }
   const now = Date.now();
-  let newlyDone = false;
+  let shouldChime = false;
   let statusChanged = false;
   activeTimers = activeTimers.map(t => {
     const prevStatus = t.status;
     const next = tickTimer(t, now);
-    if (next.status === 'done' && !next.chimeFired) {
+    if (next.status !== prevStatus) statusChanged = true;
+    // Repeating chime (2026-11-01): at most ONE chime burst per tick even if
+    // several timers are done — no out-of-phase stacking.
+    if (shouldFireTimerChime(next, now)) {
       next.chimeFired = true;
-      newlyDone = true;
-      statusChanged = true;
-    } else if (next.status !== prevStatus) {
-      statusChanged = true;
+      next.lastChimeAtMs = now;
+      shouldChime = true;
     }
     return next;
   });
-  if (newlyDone) {
+  if (shouldChime) {
     playTimerChime();
     saveTimersToSession();
   }
