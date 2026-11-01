@@ -42,7 +42,7 @@
           "unit": "tsp"
         },
         {
-          "item": "pepper",
+          "item": "black pepper",
           "qty": "1/4",
           "unit": "tsp"
         },
@@ -80,7 +80,7 @@
   "notes": "Honey: card says 1/4 C, amended in blue ink to 2 1/2 tbsp — used the amended amount (flagged for review). Mustard's 'grey poupon-mild or coarse…' is cut off in the photo.",
   "pairings": [],
   "pdf": "pdfs/makie-fray-grilled-chicken.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "prep_minutes": 20,
   "servings": "4",
   "source": "Handwritten recipe card (Makie/Fray), submitted via inbox photo 2026-10-21",
@@ -106,6 +106,24 @@
         "Created recipe"
       ],
       "reasoning": "Intake from inbox-mvijlz2q-10x (handwritten Makie/Fray card photo, 2026-10-21). Per Yidi's note: complete dish, not standalone marinade — 1.5 lb pargiot is an ingredient; pan-sear (family's usual method) instead of the card's 'grill'. Estimates — servings: main, boneless chicken anchor 6 oz raw/person; 1.5 lb = 24 oz; 24/6 = 4. prep: 5 base + 9 marinade ingredients needing measuring/pouring (oil, honey, mustard, garlic powder, salt, pepper, onion powder, parsley, jerusalem mix) = 9 + protein tri"
+    },
+    {
+      "ts": "2026-11-01T21:01:27.501Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 10 items])",
+          "to": "1 items ([section: 10 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
   ]
 }
