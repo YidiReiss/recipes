@@ -1680,5 +1680,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:00:53.412Z"
+  },
+  {
+    "id": "edit-mvybecb4-oezh",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-sweet-potatoes-and-brussels-sprouts",
+    "recipe_id": "roasted-sweet-potatoes-and-brussels-sprouts",
+    "title": "Roasted Sweet Potatoes and Brussels Sprouts",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:00:56.039Z"
   }
 ]
