@@ -2026,9 +2026,9 @@ function renderStepWithTimersHTML(stepText, stepNum) {
 /* Pure timer state reducer functions (unit-tested in commit2-ui-test.cjs). */
 
 /* Repeating done-chime (2026-11-01, Yidi-approved): a done timer re-chimes
-   every 15s until dismissed / silenced, capped at 5 minutes of overtime.
+   every 7s until dismissed / silenced, capped at 5 minutes of overtime.
    The Done banner + overtime readout keep showing after the cap. */
-const TIMER_CHIME_REPEAT_MS = 15 * 1000;
+const TIMER_CHIME_REPEAT_MS = 7 * 1000;
 const TIMER_CHIME_MAX_OVERTIME_MS = 5 * 60 * 1000;
 const TIMER_CHIME_PEAK_GAIN = 0.38; // DING-note peak; fallback if harsh on the Show: 0.35.
 function createTimer(opts, nowMs) {
@@ -2252,13 +2252,19 @@ function loadTimersFromSession() {
 /* Kitchen-timer chime via Web Audio API (Binding Decision #2: never an <audio> element). */
 let _sharedAudioCtx = null;
 let _chimeBurstEndCtxTime = -Infinity; // AudioContext-time end of the in-flight burst (re-entrancy guard).
-function playTimerChime() {
+/* onBurstEnd (optional, probe-only): invoked from the final oscillator's
+   onended, i.e. at the real end of the burst. Production callers pass
+   nothing and behavior is unchanged. */
+function playTimerChime(onBurstEnd) {
   if (!timerSoundEnabled) return false;
   try {
     const Ctx = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
     if (!Ctx) return false;
     if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
       _sharedAudioCtx = new Ctx();
+      // A new context clock starts near 0: a stale guard measured on the old
+      // clock would suppress the first chime(s) on the recreated context.
+      _chimeBurstEndCtxTime = -Infinity;
     }
     if (_sharedAudioCtx.state === 'suspended' && typeof _sharedAudioCtx.resume === 'function') {
       _sharedAudioCtx.resume().catch(() => {});
@@ -2300,13 +2306,191 @@ function playTimerChime() {
       gain.connect(ctx.destination);
       osc.start(t0);
       osc.stop(t0 + dur);
-      osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) {} };
+      osc.onended = () => {
+        try { osc.disconnect(); gain.disconnect(); } catch (e) {}
+        // Probe-only hook: fires at the real end of the burst (final note).
+        if (isFinalBell && typeof onBurstEnd === 'function') {
+          try { onBurstEnd(); } catch (e) {}
+        }
+      };
     });
     _chimeBurstEndCtxTime = now + 1.28;
     return true;
   } catch (e) {
     return false;
   }
+}
+
+/* ---------------- Audio-focus probes (2026-11-01, probe-only) ----------------
+   One-tap tests in the Device Capabilities panel that isolate why browser
+   audio behaves differently from Alexa music on the Echo Show. Probe-only:
+   they never change timer behavior, sound defaults, or any setting, and they
+   store nothing — each writes a text prompt asking the user to observe and
+   report what the music did. Production chime/read-aloud paths are untouched
+   except the guard reset in playTimerChime above (probe safety). */
+function setProbePrompt(text) {
+  if (typeof document === 'undefined') return;
+  const el = document.querySelector('[data-cm-probe-prompt]');
+  if (el) el.textContent = text;
+}
+
+let _probeCloseInFlight = false;
+/* Button A: play the production chime, then close the shared AudioContext at
+   the real end of the burst — testing whether closing lets Alexa music
+   resume. Sound is force-enabled for the probe exactly like the existing
+   "Test chime" button (saved + restored, never persisted). */
+function runProbeChimeClose(btn) {
+  if (_probeCloseInFlight) return;
+  const prev = timerSoundEnabled;
+  timerSoundEnabled = true;
+  let capturedCtx = null;
+  let capturedGuard = -Infinity;
+  let closeDone = false;
+  const doClose = () => {
+    if (closeDone) return;
+    closeDone = true;
+    _probeCloseInFlight = false;
+    if (btn) btn.disabled = false;
+    const ctx = _sharedAudioCtx;
+    // Identity + guard check: close only the context this probe burst used,
+    // and only if no newer burst re-armed the guard since (a newer burst
+    // would have a strictly larger guard value on the same clock).
+    if (!ctx || ctx !== capturedCtx || _chimeBurstEndCtxTime !== capturedGuard) return;
+    try {
+      const p = ctx.close();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => setProbePrompt('The chime played, but the sound engine could not be closed. Report that.'));
+      }
+    } catch (e) {
+      setProbePrompt('The chime played, but the sound engine could not be closed. Report that.');
+    }
+  };
+  const played = playTimerChime(doClose);
+  timerSoundEnabled = prev;
+  if (!played) {
+    setProbePrompt('No chime played — another chime is still sounding. Wait a moment and tap again.');
+    return;
+  }
+  capturedCtx = _sharedAudioCtx;
+  capturedGuard = _chimeBurstEndCtxTime;
+  _probeCloseInFlight = true;
+  if (btn) btn.disabled = true;
+  // Safety net only: the onended hook above is the real trigger. Same
+  // identity check applies, so a late timeout can never close a new burst.
+  setTimeout(doClose, 2000);
+  setProbePrompt('Did the music pause when the chime played? Did it come back on its own after the chime? If no music was playing, report that — the result is inconclusive for resume, not a pass.');
+}
+
+/* Button B: synthesize a short tone as a WAV data URI (pure JS, no asset,
+   no network) and play it through a single reused <audio> element — testing
+   whether a sub-5s media clip ducks or auto-resumes music. */
+function buildProbeToneWavBytes() {
+  const sampleRate = 22050;
+  const numSamples = 26460; // 1.2 seconds.
+  const freq = 880;
+  const peak = 0.5;
+  const dataBytes = numSamples * 2;
+  const buf = new Uint8Array(44 + dataBytes);
+  const view = new DataView(buf.buffer);
+  const writeStr = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
+  writeStr(0, 'RIFF');
+  view.setUint32(4, 36 + dataBytes, true);
+  writeStr(8, 'WAVE');
+  writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, 1, true); // mono
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); // byte rate
+  view.setUint16(32, 2, true); // block align
+  view.setUint16(34, 16, true); // bits per sample
+  writeStr(36, 'data');
+  view.setUint32(40, dataBytes, true);
+  const fade = Math.round(sampleRate * 0.01); // 10 ms fade in/out, no clicks.
+  for (let i = 0; i < numSamples; i++) {
+    let env = 1;
+    if (i < fade) env = i / fade;
+    else if (i >= numSamples - fade) env = (numSamples - 1 - i) / fade;
+    const s = Math.sin(2 * Math.PI * freq * i / sampleRate) * peak * env;
+    view.setInt16(44 + i * 2, Math.round(s * 32767), true);
+  }
+  return buf;
+}
+
+function buildProbeToneDataUri() {
+  const bytes = buildProbeToneWavBytes();
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  const b64 = (typeof btoa === 'function')
+    ? btoa(bin)
+    : Buffer.from(bin, 'binary').toString('base64');
+  return 'data:audio/wav;base64,' + b64;
+}
+
+/* Exact cleanup order (unit-tested): pause, drop src, reload. Never call
+   load() before pause(), never leave src set. */
+function cleanupProbeAudioElement(el) {
+  el.pause();
+  el.removeAttribute('src');
+  el.load();
+}
+
+let _probeAudioEl = null;
+let _probeAudioInFlight = false;
+function runProbeAudioClip(btn) {
+  if (_probeAudioInFlight) return;
+  if (typeof document === 'undefined') return;
+  try {
+    if (!_probeAudioEl) {
+      _probeAudioEl = document.createElement('audio');
+      _probeAudioEl.setAttribute('playsinline', '');
+      _probeAudioEl.style.display = 'none';
+      document.body.appendChild(_probeAudioEl);
+    }
+    const el = _probeAudioEl;
+    const onEnded = () => finish();
+    const onError = () => {
+      finish();
+      setProbePrompt('The short clip could not be played. Report that.');
+    };
+    const finish = () => {
+      cleanupProbeAudioElement(el);
+      el.removeEventListener('ended', onEnded);
+      el.removeEventListener('error', onError);
+      _probeAudioInFlight = false;
+      if (btn) btn.disabled = false;
+    };
+    _probeAudioInFlight = true;
+    if (btn) btn.disabled = true;
+    el.addEventListener('ended', onEnded, { once: true });
+    el.addEventListener('error', onError, { once: true });
+    el.src = buildProbeToneDataUri();
+    const p = el.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {
+        finish();
+        setProbePrompt('The short clip could not be played. Report that.');
+      });
+    }
+    setProbePrompt('Did the music duck (get quieter, then restore), pause and resume on its own, or pause and stay paused? If no music was playing, report that.');
+  } catch (e) {
+    _probeAudioInFlight = false;
+    if (btn) btn.disabled = false;
+    setProbePrompt('The short clip could not be played. Report that.');
+  }
+}
+
+/* Button C: speak one frozen timer-done phrase through the production
+   read-aloud path — testing intelligibility over music. Tapping it stops
+   any current read-aloud, like the production Repeat control. */
+function runProbeSpokenAlarm() {
+  stopStepSpeech();
+  const said = speakRecipeStepText('Timer done! Step 5, 30 to 40 minutes is finished.', () => {});
+  if (!said) {
+    setProbePrompt('Speech is not supported on this device.');
+    return;
+  }
+  setProbePrompt('Was the spoken phrase clear over music at your normal cooking volume, or did the music drown it out?');
 }
 
 function timerDockHTML(timers, soundOn) {
@@ -2623,6 +2807,12 @@ function formatCapabilitiesReportHTML(caps) {
         (c.wakeLock ? (' <span class="muted">(' + (c.wakeLockActive ? 'currently locked' : 'unlocked') + ')</span>') : '') + '</li>' +
       '<li><span>Voice Recognition API (Phase 2 probe only — mic NOT opened):</span> ' + badge(c.speechRecognition) + '</li>' +
     '</ul>' +
+    '<div class="cm-probe-tests"><strong>Audio-focus probes</strong> <span class="muted">(with music playing — probe-only, nothing is saved)</span><br>' +
+      '<button type="button" class="pill" data-cm-act="probe-close-ctx">Test chime + close engine</button> ' +
+      '<button type="button" class="pill" data-cm-act="probe-audio-clip">Test short audio clip</button> ' +
+      '<button type="button" class="pill" data-cm-act="probe-spoken-alarm">Test spoken alarm</button>' +
+      '<p class="cm-probe-prompt muted" data-cm-probe-prompt>Tap a test above, then report what the music did in chat.</p>' +
+    '</div>' +
   '</div>';
 }
 
@@ -2963,6 +3153,12 @@ function openCookMode(recipe, hooks) {
         timerSoundEnabled = true;
         playTimerChime();
         timerSoundEnabled = prev;
+      } else if (act === 'probe-close-ctx') {
+        runProbeChimeClose(actBtn);
+      } else if (act === 'probe-audio-clip') {
+        runProbeAudioClip(actBtn);
+      } else if (act === 'probe-spoken-alarm') {
+        runProbeSpokenAlarm();
       }
     });
     overlay.addEventListener('change', e => {
