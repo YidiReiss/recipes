@@ -120,7 +120,16 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-01T21:16:48.357Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "PDF re-press after pepper/garlic sweep edit; pdf_stale was true."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
