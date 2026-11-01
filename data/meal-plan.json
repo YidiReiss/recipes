@@ -1459,9 +1459,14 @@
         {
           "id": "mmvy2avnn",
           "text": "Smoothies on sale",
-          "have": false,
-          "updatedAt": 1793551579331,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793563786217,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563786217,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy2bvgt",
@@ -1526,9 +1531,14 @@
         {
           "id": "mmvy9iad9",
           "text": "5 Cucumbers",
-          "have": false,
-          "updatedAt": 1793563682301,
-          "updatedBy": "smvy8ym7uiqd3dj"
+          "have": true,
+          "updatedAt": 1793563783924,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563783924,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         }
       ],
       "optionalPromoted": [],
