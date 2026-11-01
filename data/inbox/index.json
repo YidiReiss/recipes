@@ -1911,5 +1911,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:01:49.246Z"
+  },
+  {
+    "id": "edit-mvygofy0-iylt",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "split-pea-soup",
+    "recipe_id": "split-pea-soup",
+    "title": "Split Pea Soup",
+    "actor": "Muse",
+    "note": "Yidi-approved substitution: Yidi said usually we use diced California steak, and optionally beef neck bones. Replacing ham bone with optional beef neck bones and diced ham with diced California steak.",
+    "created_at": "2026-11-01T23:28:45.620Z"
   }
 ]
