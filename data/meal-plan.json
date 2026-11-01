@@ -1268,8 +1268,9 @@
     },
     "chicken-mushroom-marsala": {
       "effort": "shabbat",
-      "updatedAt": 1793499621011,
-      "updatedBy": "Yidi"
+      "updatedAt": 1793499624027,
+      "updatedBy": "Yidi",
+      "rating": "favorite"
     }
   },
   "draftSnapshots": {
