@@ -51,7 +51,7 @@
         {
           "qty": "⅓",
           "unit": "tsp",
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "½",
@@ -131,6 +131,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 30 min (base 5 + chop onion + drain/flake salmon + wrap loaf in pastry + dice cucumber + sauce) and servings 6 (main fish, 16 oz salmon loaf en croute) per Sous Chef estimation rules."
+    },
+    {
+      "ts": "2026-11-01T21:01:19.747Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 8 items]; [section: 5 items])",
+          "to": "2 items ([section: 8 items]; [section: 5 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
