@@ -67,7 +67,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "freshly ground pepper"
+          "item": "freshly ground black pepper"
         },
         {
           "qty": "8",
@@ -93,5 +93,25 @@
   "tags_need_review": false,
   "needs_kosher_review": true,
   "kosher_review_notes": "Contains kani (mock crab) — typically pareve, but check the package for dairy additives and kosher certification.",
-  "pdf_stale": false
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-11-01T21:01:32.903Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 11 items])",
+          "to": "1 items ([section: 11 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
+    }
+  ]
 }
