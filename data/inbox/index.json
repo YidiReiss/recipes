@@ -1834,5 +1834,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:01:30.194Z"
+  },
+  {
+    "id": "edit-mvybf4mf-7cxi",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "avocado-and-crab-bruschetta",
+    "recipe_id": "avocado-and-crab-bruschetta",
+    "title": "Avocado and Kani Bruschetta",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:01:32.903Z"
   }
 ]
