@@ -1376,6 +1376,14 @@
           "have": false,
           "updatedAt": 1793551664104,
           "updatedBy": "smvy24fnxqn3wqn"
+        },
+        {
+          "id": "mmvy748l0",
+          "text": "String Cheese l",
+          "have": false,
+          "updatedAt": 1793559669206,
+          "updatedBy": "smvy748l09ld21q",
+          "deleted": true
         }
       ],
       "optionalPromoted": [],
