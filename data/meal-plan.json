@@ -981,6 +981,10 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "burritos",
@@ -990,9 +994,7 @@
                 "locked": false,
                 "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1014,6 +1016,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "baked-feta-pasta",
@@ -1023,9 +1029,7 @@
                 "locked": false,
                 "reason": "Pasta night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1047,6 +1051,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "chicken-mushroom-marsala",
@@ -1056,9 +1064,7 @@
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1080,6 +1086,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "broiled-salmon-with-pesto",
@@ -1089,9 +1099,7 @@
                 "locked": false,
                 "reason": "Fish / veg night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1113,6 +1121,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1122,9 +1134,7 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1146,22 +1156,18 @@
             ]
           },
           "dinner": {
-            "dishes": [
-              {
-                "recipe": "ash-e-jow-persian-barley-soup",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat dinner · Never made — worth a try"
-              }
-            ],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "bachash",
@@ -1171,9 +1177,7 @@
                 "locked": false,
                 "reason": "Shabbat lunch · Cook Thursday"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
