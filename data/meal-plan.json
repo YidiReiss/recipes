@@ -1323,8 +1323,17 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "variant": "beef",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1335,7 +1344,17 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -1428,12 +1447,6 @@
       },
       "carryInPool": {},
       "lunchWarnings": [
-        {
-          "day": 1,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
         {
           "day": 2,
           "kind": "uncovered",
