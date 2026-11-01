@@ -1297,6 +1297,14 @@
           "at": 1793551331893,
           "qty": 0.33,
           "unit": "tsp"
+        },
+        {
+          "key": "coca-cola|cup",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551457802,
+          "qty": 1,
+          "unit": "cup",
+          "removed": true
         }
       ],
       "manualItems": [],
