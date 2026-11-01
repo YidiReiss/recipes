@@ -48,7 +48,7 @@
         {
           "qty": "⅓",
           "unit": "tsp",
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "16",
@@ -114,7 +114,25 @@
         "PDF regenerated"
       ],
       "reasoning": "PDF regenerated after salt ingredient fix (1 tsp salt); pdf_stale was true."
+    },
+    {
+      "ts": "2026-11-01T21:01:14.708Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
   ],
-  "pdf_stale": false
+  "pdf_stale": true
 }
