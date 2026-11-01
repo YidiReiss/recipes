@@ -45,7 +45,7 @@
           "qty": "1",
           "unit": "tsp",
           "item": "garlic",
-          "prep": "crushed fresh"
+          "prep": "minced"
         },
         {
           "qty": "1",
@@ -76,7 +76,7 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "history": [
     {
       "ts": "2026-10-20T01:58:33Z",
@@ -108,6 +108,24 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true; PDF regenerated via Recipe Press and re-uploaded."
+    },
+    {
+      "ts": "2026-11-01T21:01:46.476Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 7 items])",
+          "to": "1 items ([section: 7 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
   ]
 }
