@@ -1181,6 +1181,10 @@
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1190,9 +1194,7 @@
                 "reason": null,
                 "locked": true
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
