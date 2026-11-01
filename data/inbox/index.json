@@ -1856,5 +1856,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:01:35.659Z"
+  },
+  {
+    "id": "edit-mvybf8rv-cs7f",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-flounder-with-cherry-tomatoes-and-capers",
+    "recipe_id": "roasted-flounder-with-cherry-tomatoes-and-capers",
+    "title": "Roasted Flounder with Cherry Tomatoes and Capers",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:01:38.303Z"
   }
 ]
