@@ -1636,5 +1636,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:00:42.225Z"
+  },
+  {
+    "id": "edit-mvybe3k6-qvbl",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "hearty-meat-and-vegetable-soup",
+    "recipe_id": "hearty-meat-and-vegetable-soup",
+    "title": "Hearty Meat and Vegetable Soup",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:00:44.909Z"
   }
 ]
