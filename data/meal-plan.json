@@ -1108,12 +1108,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "broiled-salmon-with-pesto",
-                "leftovers": false,
+                "recipe": "dill-dip-salmon",
+                "leftovers": true,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Fish / veg night · Leftovers cover a lunch"
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
@@ -1159,17 +1159,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "broiled-salmon-with-pesto",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1202,7 +1192,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
+        }
+      ],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
