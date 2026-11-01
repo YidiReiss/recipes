@@ -1311,6 +1311,13 @@
           "at": 1793551467363,
           "qty": 1,
           "unit": "cup"
+        },
+        {
+          "key": "lean ground beef (just over 1 pound)|g",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551491740,
+          "qty": 500,
+          "unit": "g"
         }
       ],
       "manualItems": [],
