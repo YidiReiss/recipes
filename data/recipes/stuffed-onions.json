@@ -47,7 +47,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "1",
@@ -102,6 +102,25 @@
         }
       ],
       "reasoning": "Backfill: prep 30 min estimated (5 base + peel 7 onions 7 + hollow+stuff 12 + cilantro 3 + mix 3), servings 6 estimated (veal 16 oz/6 oz + rice 1.5 cup dry, summed multi-anchor). Cook 180 kept as stated."
+    },
+    {
+      "ts": "2026-11-01T21:00:58.852Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 9 items])",
+          "to": "1 items ([section: 9 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
