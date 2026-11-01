@@ -46,7 +46,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": null,
@@ -87,6 +87,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 35 (chop 2 lb steak, chop 2 onions, fill+seal ~100 dumpling wrappers) and servings 12 (100 wrappers at ~8 manti/person)"
+    },
+    {
+      "ts": "2026-11-01T21:00:42.225Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 6 items])",
+          "to": "1 items ([section: 6 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
