@@ -248,6 +248,7 @@ async function boot() {
   } catch (e) { mealPlan = { weeks: {} }; }
   // Merge any local shopping-list state (offline taps) over the server copy
   loadShopLocal();
+  initTimerVoiceSetting();
   loadTimersFromSession();
   ensureTimerDockMounted();
   renderTimerDock();
@@ -1863,7 +1864,7 @@ async function renderRecipe(app, id) {
    Phase 1 Cooking Enhancements:
    1. Tap-to-Start Visual Timers (parseStepTimers, renderStepWithTimersHTML,
       pure timer state reducer, sessionStorage same-tab reload recovery,
-      Web Audio API sine chime ON by default with Sound On/Off toggle)
+      spoken voice alarm ON by default with a persistent Voice On/Off toggle)
    2. Big-Screen Cook Mode (cookModeStepHTML, cookModeIngredientsHTML,
       two-pane wide / collapsible phone drawer, knuckle-sized Next pad)
    3. One-Step Read-Aloud (browser speechSynthesis, one step then wait)
@@ -2025,12 +2026,20 @@ function renderStepWithTimersHTML(stepText, stepNum) {
 
 /* Pure timer state reducer functions (unit-tested in commit2-ui-test.cjs). */
 
-/* Repeating done-chime (2026-11-01, Yidi-approved): a done timer re-chimes
-   every 7s until dismissed / silenced, capped at 5 minutes of overtime.
-   The Done banner + overtime readout keep showing after the cap. */
-const TIMER_CHIME_REPEAT_MS = 7 * 1000;
-const TIMER_CHIME_MAX_OVERTIME_MS = 5 * 60 * 1000;
-const TIMER_CHIME_PEAK_GAIN = 0.38; // DING-note peak; fallback if harsh on the Show: 0.35.
+/* Spoken timer alarm (2026-11-01, Yidi-approved; tone alarms retired
+   2026-11-01): a done timer speaks its alarm every 7s until dismissed /
+   silenced, capped at 5 minutes of overtime. The Done banner + overtime
+   readout keep showing after the cap. WHY SPOKEN: on the Echo Show, every
+   tone/media sound stopped background music with no auto-resume, and
+   resuming via Alexa exited the browser and dropped Cook Mode; the spoken
+   alarm plays alongside the music. Never reintroduce a tone/media alarm
+   path — see ARCHITECTURE.md. */
+const TIMER_ALARM_REPEAT_MS = 7 * 1000;
+const TIMER_ALARM_MAX_OVERTIME_MS = 5 * 60 * 1000;
+/* Provisional production voice treatment (Argon, 2026-11-01): the V1 test
+   variant. If Yidi's one-session voice test picks a different winner, swap
+   this ONE constant — production, V1, and the V5 demo all read it. */
+const TIMER_ALARM_VOICE_OPTS = { volume: 1.0, pitch: 1.15, rate: 0.92 };
 function createTimer(opts, nowMs) {
   const now = typeof nowMs === 'number' ? nowMs : Date.now();
   const lowSec = Math.max(1, Math.round(Number(opts && (opts.lowSeconds || opts.seconds)) || 60));
@@ -2049,8 +2058,8 @@ function createTimer(opts, nowMs) {
     endTimeMs: now + durMs,
     remainingMs: durMs,
     overtimeMs: 0,
-    chimeFired: false,
-    lastChimeAtMs: null
+    alarmFired: false,
+    lastAlarmAtMs: null
   };
 }
 
@@ -2075,21 +2084,21 @@ function tickTimer(timer, nowMs) {
   });
 }
 
-/* Pure chime-schedule decision (unit-tested in commit2-ui-test.cjs): true at
-   the 00:00 transition (chimeFired false) and every TIMER_CHIME_REPEAT_MS of
-   overtime thereafter, up to TIMER_CHIME_MAX_OVERTIME_MS. Sound on/off is NOT
-   consulted here — playTimerChime no-ops when sound is off, so the schedule
-   keeps advancing silently and flipping sound on mid-done does not replay
-   a stale chime. */
-function shouldFireTimerChime(timer, nowMs) {
+/* Pure alarm-schedule decision (unit-tested in commit2-ui-test.cjs): true at
+   the 00:00 transition (alarmFired false) and every TIMER_ALARM_REPEAT_MS of
+   overtime thereafter, up to TIMER_ALARM_MAX_OVERTIME_MS. Voice on/off is NOT
+   consulted here — speakTimerAlarm skips when voice is off, so the schedule
+   keeps advancing silently and flipping voice on mid-done does not replay
+   a stale alarm. */
+function shouldFireTimerAlarm(timer, nowMs) {
   if (!timer || typeof timer !== 'object' || timer.status !== 'done') return false;
   const now = typeof nowMs === 'number' ? nowMs : Date.now();
   const overtime = Math.max(0, Number(timer.overtimeMs) || 0);
-  if (overtime > TIMER_CHIME_MAX_OVERTIME_MS) return false;
-  if (!timer.chimeFired) return true;
-  const last = Number(timer.lastChimeAtMs);
-  if (!last) return true; // Older saved state without lastChimeAtMs: fire once, then track.
-  return (now - last) >= TIMER_CHIME_REPEAT_MS;
+  if (overtime > TIMER_ALARM_MAX_OVERTIME_MS) return false;
+  if (!timer.alarmFired) return true;
+  const last = Number(timer.lastAlarmAtMs);
+  if (!last) return true; // Older saved state without lastAlarmAtMs: fire once, then track.
+  return (now - last) >= TIMER_ALARM_REPEAT_MS;
 }
 
 function pauseTimer(timer, nowMs) {
@@ -2126,8 +2135,8 @@ function resetTimer(timer) {
     endTimeMs: null,
     remainingMs: baseSec * 1000,
     overtimeMs: 0,
-    chimeFired: false,
-    lastChimeAtMs: null
+    alarmFired: false,
+    lastAlarmAtMs: null
   });
 }
 
@@ -2142,7 +2151,9 @@ function addTimerSeconds(timer, addSec, nowMs) {
     return Object.assign({}, timer, {
       durationSec: nextDur,
       remainingMs: rem,
-      overtimeMs: 0
+      overtimeMs: 0,
+      alarmFired: false,
+      lastAlarmAtMs: null
     });
   }
   const baseEnd = (timer.status === 'running' && timer.endTimeMs && timer.endTimeMs > now)
@@ -2155,8 +2166,8 @@ function addTimerSeconds(timer, addSec, nowMs) {
     endTimeMs: newEnd,
     remainingMs: Math.max(0, newEnd - now),
     overtimeMs: 0,
-    chimeFired: false,
-    lastChimeAtMs: null
+    alarmFired: false,
+    lastAlarmAtMs: null
   });
 }
 
@@ -2164,15 +2175,65 @@ function addTimerMinute(timer, nowMs) {
   return addTimerSeconds(timer, 60, nowMs);
 }
 
-/* Session-only timer store + sessionStorage reload recovery (Binding Decision #2 & #6a). */
+/* Session-only timer store + sessionStorage reload recovery (Binding Decision #2 & #6a).
+   The voice on/off setting is NOT session state: it persists in localStorage
+   (see TIMER_VOICE_SETTING_KEY below) and is deliberately not written here. */
 const TIMER_SESSION_KEY = 'reiss-active-timers-v1';
 let activeTimers = [];
-let timerSoundEnabled = true; // Binding Decision #2: SOUND IS ON BY DEFAULT
 let timerIntervalId = null;
 
-function serializeTimersForSession(timers, soundOn) {
+/* Timer voice on/off: PERSISTENT remembered setting (localStorage), default
+   ON. Migration (Q5): a legacy sessionStorage soundOn is adopted ONCE when
+   no localStorage value exists yet; afterwards sessionStorage is ignored
+   for the setting. Encoding '1'/'0' matches the localStorage family
+   (recipe-hide-staples). */
+const TIMER_VOICE_SETTING_KEY = 'recipe-timer-voice';
+let timerVoiceEnabled = true;
+let _timerVoiceStorageFailed = false; // in-memory fallback when storage throws
+
+/* Pure precedence rule (unit-tested): a stored localStorage value wins once
+   its key exists (including an explicit Off); otherwise a legacy
+   sessionStorage soundOn is adopted; otherwise the default is ON. Any other
+   stored spelling counts as unset. */
+function resolveTimerVoiceSetting(localValue, sessionSoundOn) {
+  if (localValue === '1' || localValue === 'on') return true;
+  if (localValue === '0' || localValue === 'off') return false;
+  if (typeof sessionSoundOn === 'boolean') return sessionSoundOn;
+  return true;
+}
+
+function setTimerVoiceSetting(v) {
+  timerVoiceEnabled = !!v;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(TIMER_VOICE_SETTING_KEY, timerVoiceEnabled ? '1' : '0');
+    }
+  } catch (e) { _timerVoiceStorageFailed = true; }
+}
+
+function initTimerVoiceSetting() {
+  let localRaw = null;
+  try {
+    if (typeof localStorage !== 'undefined') localRaw = localStorage.getItem(TIMER_VOICE_SETTING_KEY);
+  } catch (e) { localRaw = null; }
+  let sessionSoundOn;
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(TIMER_SESSION_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && typeof parsed.soundOn === 'boolean') sessionSoundOn = parsed.soundOn;
+    }
+  } catch (e) { sessionSoundOn = undefined; }
+  timerVoiceEnabled = resolveTimerVoiceSetting(localRaw, sessionSoundOn);
+  // Normalize / establish the key when it held no valid value. When storage
+  // is unavailable the value simply lives in memory for this session.
+  if (localRaw !== '1' && localRaw !== '0' && localRaw !== 'on' && localRaw !== 'off') {
+    setTimerVoiceSetting(timerVoiceEnabled);
+  }
+}
+
+function serializeTimersForSession(timers) {
   return JSON.stringify({
-    soundOn: soundOn !== undefined ? !!soundOn : true,
     timers: (Array.isArray(timers) ? timers : []).map(t => ({
       id: t.id,
       recipeId: t.recipeId,
@@ -2186,8 +2247,8 @@ function serializeTimersForSession(timers, soundOn) {
       endTimeMs: t.endTimeMs,
       remainingMs: t.remainingMs,
       overtimeMs: t.overtimeMs || 0,
-      chimeFired: !!t.chimeFired,
-      lastChimeAtMs: (typeof t.lastChimeAtMs === 'number' ? t.lastChimeAtMs : null)
+      alarmFired: !!t.alarmFired,
+      lastAlarmAtMs: (typeof t.lastAlarmAtMs === 'number' ? t.lastAlarmAtMs : null)
     }))
   });
 }
@@ -2195,16 +2256,18 @@ function serializeTimersForSession(timers, soundOn) {
 function restoreTimersFromSessionJSON(rawJson, nowMs) {
   const now = typeof nowMs === 'number' ? nowMs : Date.now();
   if (!rawJson || typeof rawJson !== 'string') {
-    return { soundOn: true, timers: [] };
+    return { timers: [] };
   }
   try {
     const parsed = JSON.parse(rawJson);
-    const soundOn = (parsed && typeof parsed.soundOn === 'boolean') ? parsed.soundOn : true;
     const list = (parsed && Array.isArray(parsed.timers)) ? parsed.timers : [];
     const restored = list
       .filter(t => t && typeof t === 'object' && t.id)
       // Restore builds each timer from an explicit field list, so fields
       // from older saves are ignored rather than spread into the timer.
+      // Legacy chimeFired/lastChimeAtMs fields map onto the alarm fields so
+      // an in-flight repeat survives the upgrade; legacy soundOn is read
+      // only by initTimerVoiceSetting, never here.
       .map(t => tickTimer({
         id: t.id,
         recipeId: t.recipeId,
@@ -2218,19 +2281,20 @@ function restoreTimersFromSessionJSON(rawJson, nowMs) {
         endTimeMs: t.endTimeMs,
         remainingMs: t.remainingMs,
         overtimeMs: t.overtimeMs || 0,
-        chimeFired: !!t.chimeFired,
-        lastChimeAtMs: (typeof t.lastChimeAtMs === 'number' ? t.lastChimeAtMs : null)
+        alarmFired: !!(t.alarmFired || t.chimeFired),
+        lastAlarmAtMs: (typeof t.lastAlarmAtMs === 'number' ? t.lastAlarmAtMs
+          : (typeof t.lastChimeAtMs === 'number' ? t.lastChimeAtMs : null))
       }, now));
-    return { soundOn, timers: restored };
+    return { timers: restored };
   } catch (e) {
-    return { soundOn: true, timers: [] };
+    return { timers: [] };
   }
 }
 
 function saveTimersToSession() {
   try {
     if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem(TIMER_SESSION_KEY, serializeTimersForSession(activeTimers, timerSoundEnabled));
+      sessionStorage.setItem(TIMER_SESSION_KEY, serializeTimersForSession(activeTimers));
     }
   } catch (e) {}
 }
@@ -2241,7 +2305,6 @@ function loadTimersFromSession() {
       const raw = sessionStorage.getItem(TIMER_SESSION_KEY);
       if (raw) {
         const res = restoreTimersFromSessionJSON(raw, Date.now());
-        timerSoundEnabled = res.soundOn;
         activeTimers = res.timers;
         ensureTimerTicker();
       }
@@ -2249,251 +2312,184 @@ function loadTimersFromSession() {
   } catch (e) {}
 }
 
-/* Kitchen-timer chime via Web Audio API (Binding Decision #2: never an <audio> element). */
-let _sharedAudioCtx = null;
-let _chimeBurstEndCtxTime = -Infinity; // AudioContext-time end of the in-flight burst (re-entrancy guard).
-/* onBurstEnd (optional, probe-only): invoked from the final oscillator's
-   onended, i.e. at the real end of the burst. Production callers pass
-   nothing and behavior is unchanged. */
-function playTimerChime(onBurstEnd) {
-  if (!timerSoundEnabled) return false;
+/* Timer voice alarm: ownership + skip-if-speaking repeat (2026-11-01).
+   speechSynthesis.cancel() is global, so the alarm owns its utterances with
+   a generation token: any Voice-Off / test-panel tap / dismiss bumps the
+   generation, and stale onend/watchdog callbacks check it before clearing
+   the in-flight flag. A repeat tick NEVER cancels a speaking alarm (that
+   would truncate the tail, where the step number and time sit); it skips
+   and retries on the next tick. */
+let _alarmSpeechState = { inFlight: false, generation: 0, timerId: null };
+let _alarmWatchdogId = null;
+
+function invalidateAlarmChain(winObj) {
+  _alarmSpeechState.generation++;
+  _alarmSpeechState.inFlight = false;
+  _alarmSpeechState.timerId = null;
+  if (_alarmWatchdogId) {
+    try { clearTimeout(_alarmWatchdogId); } catch (e) {}
+    _alarmWatchdogId = null;
+  }
+  stopStepSpeech(winObj);
+}
+
+/* Speak one timer alarm. Returns true only when an utterance actually
+   started. env: { winObj, state, voiceOn, firstFire }. firstFire preempts
+   step read-aloud (cancel-first); repeats never cancel the alarm itself. */
+function speakTimerAlarm(timer, env) {
+  const e = env || {};
+  const voiceOn = (typeof e.voiceOn === 'boolean') ? e.voiceOn
+    : (typeof timerVoiceEnabled !== 'undefined' ? timerVoiceEnabled : true);
+  if (!voiceOn) return false;
+  const st = (e.state && typeof e.state === 'object') ? e.state
+    : (typeof _alarmSpeechState !== 'undefined' ? _alarmSpeechState : { inFlight: false, generation: 0, timerId: null });
+  if (st.inFlight) return false; // skip-if-speaking: retry on the next tick
+  const w = e.winObj || (typeof window !== 'undefined' ? window : null);
+  if (!w || !w.speechSynthesis || typeof w.speechSynthesis.speak !== 'function') return false;
   try {
-    const Ctx = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
-    if (!Ctx) return false;
-    if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
-      _sharedAudioCtx = new Ctx();
-      // A new context clock starts near 0: a stale guard measured on the old
-      // clock would suppress the first chime(s) on the recreated context.
-      _chimeBurstEndCtxTime = -Infinity;
-    }
-    if (_sharedAudioCtx.state === 'suspended' && typeof _sharedAudioCtx.resume === 'function') {
-      _sharedAudioCtx.resume().catch(() => {});
-    }
-    const ctx = _sharedAudioCtx;
-    const now = ctx.currentTime;
-    // Re-entrancy guard: a Test-chime tap during an in-flight burst must not
-    // truncate it — return without playing. Checked AFTER the sound-off check
-    // above, so an off-state call never arms the guard.
-    if (now < _chimeBurstEndCtxTime) return false;
-    // Double triad, triangle wave, 1.28s burst (Argon plan, 2026-11-01,
-    // audio-informed): two ascending triads (880 -> 1108.73 -> 1318.51 Hz).
-    // "Da" notes peak at 0.30; DING notes peak at TIMER_CHIME_PEAK_GAIN.
-    // The final DING has a two-stage bell decay; every oscillator is stopped
-    // and disconnected on end so bursts cannot accumulate nodes.
-    const notes = [
-      [880.00, 0.00, 0.30, 0.17, false],
-      [1108.73, 0.19, 0.30, 0.17, false],
-      [1318.51, 0.38, TIMER_CHIME_PEAK_GAIN, 0.22, false],
-      [880.00, 0.55, 0.30, 0.17, false],
-      [1108.73, 0.74, 0.30, 0.17, false],
-      [1318.51, 0.93, TIMER_CHIME_PEAK_GAIN, 0.35, true]
-    ];
-    notes.forEach(([freq, onset, peak, dur, isFinalBell]) => {
-      const t0 = now + onset;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.linearRampToValueAtTime(peak, t0 + 0.008);
-      if (isFinalBell) {
-        gain.gain.exponentialRampToValueAtTime(0.10, t0 + 0.20);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
-      } else {
-        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    if (!e.firstFire && (w.speechSynthesis.speaking || w.speechSynthesis.pending)) return false;
+  } catch (err) {}
+  const phrase = buildTimerAlarmPhrase(timer);
+  const gen = ++st.generation;
+  st.inFlight = true;
+  st.timerId = (timer && timer.id) || null;
+  const clearIfCurrent = () => {
+    if (st.generation === gen) {
+      st.inFlight = false;
+      st.timerId = null;
+      if (_alarmWatchdogId) {
+        try { clearTimeout(_alarmWatchdogId); } catch (err) {}
+        _alarmWatchdogId = null;
       }
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + dur);
-      osc.onended = () => {
-        try { osc.disconnect(); gain.disconnect(); } catch (e) {}
-        // Probe-only hook: fires at the real end of the burst (final note).
-        if (isFinalBell && typeof onBurstEnd === 'function') {
-          try { onBurstEnd(); } catch (e) {}
-        }
-      };
-    });
-    _chimeBurstEndCtxTime = now + 1.28;
-    return true;
-  } catch (e) {
-    return false;
+    }
+  };
+  const said = speakTextWithOpts(phrase, Object.assign({}, TIMER_ALARM_VOICE_OPTS, { cancelFirst: !!e.firstFire }), () => { clearIfCurrent(); }, w);
+  if (!said) { st.inFlight = false; st.timerId = null; return false; }
+  // Stuck-utterance watchdog (~15s, or e.watchdogMs in tests): cancel once if
+  // onend/onerror never fired. Unref'd so it never holds the Node test process open.
+  const watchdogMs = (typeof e.watchdogMs === 'number' && e.watchdogMs > 0) ? e.watchdogMs : 15000;
+  try {
+    if (_alarmWatchdogId) clearTimeout(_alarmWatchdogId);
+    _alarmWatchdogId = setTimeout(() => {
+      if (st.generation === gen && st.inFlight) {
+        stopStepSpeech(w); st.inFlight = false; st.timerId = null;
+      }
+    }, watchdogMs);
+    if (_alarmWatchdogId && typeof _alarmWatchdogId.unref === 'function') _alarmWatchdogId.unref();
+  } catch (err) {}
+  return true;
+}
+
+/* Voice clarity test panel (2026-11-01): one button per treatment, all
+   judged on the same demo step (Step 5, 30 to 40 minutes) with music
+   playing. Phrases/params are frozen per variant so a winner is
+   attributable to exactly one change. Nothing is saved. */
+const VOICE_TEST_DEMO = { stepNum: 5, lowSeconds: 1800, highSeconds: 2400 };
+const VOICE_TEST_FROZEN_PHRASE = 'Timer done! Step 5, 30 to 40 minutes is finished.';
+const VOICE_TEST_JUDGE = 'Judge it: did you hear the step number? The time range? How clear was it over the music?';
+
+function voiceTestDemoRange() {
+  return formatAlarmTimeRange(VOICE_TEST_DEMO.lowSeconds, VOICE_TEST_DEMO.highSeconds);
+}
+
+function voiceTestVariant(key) {
+  const range = voiceTestDemoRange();
+  const v1Phrase = 'Kitchen timer! Kitchen timer! Step 5, ' + range + ' is done.';
+  switch (key) {
+    case 'v0': return { opts: { rate: 0.98 }, phrase: VOICE_TEST_FROZEN_PHRASE };
+    case 'v1': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase };
+    case 'v1a': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: VOICE_TEST_FROZEN_PHRASE };
+    case 'v2': return { opts: { volume: 1.0, pitch: 1.0, rate: 0.85 }, phrase: 'Kitchen timer. Kitchen timer. Step 5. ' + range + ' is done.' };
+    case 'v3': return { opts: { volume: 1.0, pitch: 1.3, rate: 0.95 }, phrase: v1Phrase };
+    case 'v3b': return { opts: { volume: 1.0, pitch: 0.85, rate: 0.92 }, phrase: v1Phrase };
+    case 'v4': return { opts: { volume: 1.0, pitch: 1.0, rate: 0.92 }, phrase: v1Phrase, needsVoice: true };
+    case 'v5': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase, repeat: 3 };
+    case 'v6': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: v1Phrase + ' Kitchen timer! Step 5, ' + range + ' is done.' };
+    case 'v7': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Step 5, ' + range + ' is done. Kitchen timer! Kitchen timer! Step 5 is done.' };
+    case 'v8': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS, { lang: 'en-US' }), phrase: 'Kitchen timer! Kitchen timer! Step five, thirty to forty minutes is done.' };
+    case 'v9': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Attention! Attention! Step 5, ' + range + ' is done.' };
+    default: return null;
   }
 }
 
-/* ---------------- Audio-focus probes (2026-11-01, probe-only) ----------------
-   One-tap tests in the Device Capabilities panel that isolate why browser
-   audio behaves differently from Alexa music on the Echo Show. Probe-only:
-   they never change timer behavior, sound defaults, or any setting, and they
-   store nothing — each writes a text prompt asking the user to observe and
-   report what the music did. Production chime/read-aloud paths are untouched
-   except the guard reset in playTimerChime above (probe safety). */
-function setProbePrompt(text) {
+function setVoiceTestPrompt(text) {
   if (typeof document === 'undefined') return;
-  const el = document.querySelector('[data-cm-probe-prompt]');
+  const el = document.querySelector('[data-cm-voice-prompt]');
   if (el) el.textContent = text;
 }
 
-let _probeCloseInFlight = false;
-/* Button A: play the production chime, then close the shared AudioContext at
-   the real end of the burst — testing whether closing lets Alexa music
-   resume. Sound is force-enabled for the probe exactly like the existing
-   "Test chime" button (saved + restored, never persisted). */
-function runProbeChimeClose(btn) {
-  if (_probeCloseInFlight) return;
-  const prev = timerSoundEnabled;
-  timerSoundEnabled = true;
-  let capturedCtx = null;
-  let capturedGuard = -Infinity;
-  let closeDone = false;
-  const doClose = () => {
-    if (closeDone) return;
-    closeDone = true;
-    _probeCloseInFlight = false;
-    if (btn) btn.disabled = false;
-    const ctx = _sharedAudioCtx;
-    // Identity + guard check: close only the context this probe burst used,
-    // and only if no newer burst re-armed the guard since (a newer burst
-    // would have a strictly larger guard value on the same clock).
-    if (!ctx || ctx !== capturedCtx || _chimeBurstEndCtxTime !== capturedGuard) return;
-    try {
-      const p = ctx.close();
-      if (p && typeof p.catch === 'function') {
-        p.catch(() => setProbePrompt('The chime played, but the sound engine could not be closed. Report that.'));
+function runVoiceTest(key, voiceURI) {
+  invalidateAlarmChain();
+  const variant = voiceTestVariant(key);
+  if (!variant) return;
+  const opts = Object.assign({}, variant.opts);
+  if (key === 'v4' && voiceURI) opts.voice = voiceURI;
+  if (variant.repeat && variant.repeat > 1) {
+    runVoiceRepeatDemo(variant, opts);
+    return;
+  }
+  const said = speakTextWithOpts(variant.phrase, opts, () => {});
+  setVoiceTestPrompt(said ? VOICE_TEST_JUDGE : 'Speech is not supported on this device.');
+}
+
+/* V5: the same utterance 3 times, 1,000 ms apart, chained via onend with
+   the shared generation token. Any tap cancels the chain (no spoken gap
+   labels; the prompt shows the repeat count). */
+function runVoiceRepeatDemo(variant, opts) {
+  const gen = _alarmSpeechState.generation;
+  const total = variant.repeat;
+  const step = (i) => {
+    if (_alarmSpeechState.generation !== gen) return; // invalidated
+    setVoiceTestPrompt('Repeat ' + i + ' of ' + total + '. ' + VOICE_TEST_JUDGE);
+    const said = speakTextWithOpts(variant.phrase, Object.assign({}, opts, { cancelFirst: i === 1 }), () => {
+      if (i < total && _alarmSpeechState.generation === gen) {
+        setTimeout(() => step(i + 1), 1000);
       }
-    } catch (e) {
-      setProbePrompt('The chime played, but the sound engine could not be closed. Report that.');
-    }
+    });
+    if (!said) setVoiceTestPrompt('Speech is not supported on this device.');
   };
-  const played = playTimerChime(doClose);
-  timerSoundEnabled = prev;
-  if (!played) {
-    setProbePrompt('No chime played — another chime is still sounding. Wait a moment and tap again.');
-    return;
-  }
-  capturedCtx = _sharedAudioCtx;
-  capturedGuard = _chimeBurstEndCtxTime;
-  _probeCloseInFlight = true;
-  if (btn) btn.disabled = true;
-  // Safety net only: the onended hook above is the real trigger. Same
-  // identity check applies, so a late timeout can never close a new burst.
-  setTimeout(doClose, 2000);
-  setProbePrompt('Did the music pause when the chime played? Did it come back on its own after the chime? If no music was playing, report that — the result is inconclusive for resume, not a pass.');
+  step(1);
 }
 
-/* Button B: synthesize a short tone as a WAV data URI (pure JS, no asset,
-   no network) and play it through a single reused <audio> element — testing
-   whether a sub-5s media clip ducks or auto-resumes music. */
-function buildProbeToneWavBytes() {
-  const sampleRate = 22050;
-  const numSamples = 26460; // 1.2 seconds.
-  const freq = 880;
-  const peak = 0.5;
-  const dataBytes = numSamples * 2;
-  const buf = new Uint8Array(44 + dataBytes);
-  const view = new DataView(buf.buffer);
-  const writeStr = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
-  writeStr(0, 'RIFF');
-  view.setUint32(4, 36 + dataBytes, true);
-  writeStr(8, 'WAVE');
-  writeStr(12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM
-  view.setUint16(22, 1, true); // mono
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true); // byte rate
-  view.setUint16(32, 2, true); // block align
-  view.setUint16(34, 16, true); // bits per sample
-  writeStr(36, 'data');
-  view.setUint32(40, dataBytes, true);
-  const fade = Math.round(sampleRate * 0.01); // 10 ms fade in/out, no clicks.
-  for (let i = 0; i < numSamples; i++) {
-    let env = 1;
-    if (i < fade) env = i / fade;
-    else if (i >= numSamples - fade) env = (numSamples - 1 - i) / fade;
-    const s = Math.sin(2 * Math.PI * freq * i / sampleRate) * peak * env;
-    view.setInt16(44 + i * 2, Math.round(s * 32767), true);
-  }
-  return buf;
-}
-
-function buildProbeToneDataUri() {
-  const bytes = buildProbeToneWavBytes();
-  let bin = '';
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-  const b64 = (typeof btoa === 'function')
-    ? btoa(bin)
-    : Buffer.from(bin, 'binary').toString('base64');
-  return 'data:audio/wav;base64,' + b64;
-}
-
-/* Exact cleanup order (unit-tested): pause, drop src, reload. Never call
-   load() before pause(), never leave src set. */
-function cleanupProbeAudioElement(el) {
-  el.pause();
-  el.removeAttribute('src');
-  el.load();
-}
-
-let _probeAudioEl = null;
-let _probeAudioInFlight = false;
-function runProbeAudioClip(btn) {
-  if (_probeAudioInFlight) return;
+/* Fill the voice-choice (V4) slot only — never the panel, never the
+   prompt, never the delegation listeners. Called after every panel render
+   (the panel re-renders wholesale) and again on voiceschanged. */
+let _voiceFillToken = 0;
+function fillVoiceTestButtons() {
   if (typeof document === 'undefined') return;
-  try {
-    if (!_probeAudioEl) {
-      _probeAudioEl = document.createElement('audio');
-      _probeAudioEl.setAttribute('playsinline', '');
-      _probeAudioEl.style.display = 'none';
-      document.body.appendChild(_probeAudioEl);
+  const slot = document.querySelector('[data-cm-voice-list]');
+  if (!slot) return;
+  const render = (voices) => {
+    const fresh = document.querySelector('[data-cm-voice-list]');
+    if (!fresh) return;
+    if (!voices.length) {
+      fresh.innerHTML = '<span class="muted">Only the default voice is available on this device.</span>';
+      return;
     }
-    const el = _probeAudioEl;
-    const onEnded = () => finish();
-    const onError = () => {
-      finish();
-      setProbePrompt('The short clip could not be played. Report that.');
-    };
-    const finish = () => {
-      cleanupProbeAudioElement(el);
-      el.removeEventListener('ended', onEnded);
-      el.removeEventListener('error', onError);
-      _probeAudioInFlight = false;
-      if (btn) btn.disabled = false;
-    };
-    _probeAudioInFlight = true;
-    if (btn) btn.disabled = true;
-    el.addEventListener('ended', onEnded, { once: true });
-    el.addEventListener('error', onError, { once: true });
-    el.src = buildProbeToneDataUri();
-    const p = el.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {
-        finish();
-        setProbePrompt('The short clip could not be played. Report that.');
-      });
-    }
-    setProbePrompt('Did the music duck (get quieter, then restore), pause and resume on its own, or pause and stay paused? If no music was playing, report that.');
-  } catch (e) {
-    _probeAudioInFlight = false;
-    if (btn) btn.disabled = false;
-    setProbePrompt('The short clip could not be played. Report that.');
-  }
+    const shown = voices.slice(0, 8);
+    fresh.innerHTML = shown.map(v =>
+      '<button type="button" class="pill" data-cm-act="voice-test" data-voice-test="v4" data-voice-uri="' + esc(v.voiceURI || '') + '">Voice: ' + esc(v.name || 'default') + ' (' + esc(v.lang || '') + ')</button>'
+    ).join('') + (voices.length > shown.length ? ' <span class="muted">+' + (voices.length - shown.length) + ' more</span>' : '');
+  };
+  let voices = [];
+  try { voices = filterAlarmVoices(getSpeechVoices()); } catch (e) { voices = []; }
+  if (voices.length) { render(voices); return; }
+  slot.innerHTML = '<span class="muted">Checking for voices…</span>';
+  // Late-loading voices: a voiceschanged re-fill covers arrival; this
+  // fallback converts the placeholder if voices never arrive.
+  const token = ++_voiceFillToken;
+  setTimeout(() => {
+    if (token !== _voiceFillToken) return;
+    const fresh = document.querySelector('[data-cm-voice-list]');
+    if (!fresh) return;
+    if (fresh.textContent && fresh.textContent.indexOf('Checking for voices') !== 0) return;
+    let late = [];
+    try { late = filterAlarmVoices(getSpeechVoices()); } catch (e) { late = []; }
+    render(late);
+  }, 1500);
 }
 
-/* Button C: speak one frozen timer-done phrase through the production
-   read-aloud path — testing intelligibility over music. Tapping it stops
-   any current read-aloud, like the production Repeat control. */
-function runProbeSpokenAlarm() {
-  stopStepSpeech();
-  const said = speakRecipeStepText('Timer done! Step 5, 30 to 40 minutes is finished.', () => {});
-  if (!said) {
-    setProbePrompt('Speech is not supported on this device.');
-    return;
-  }
-  setProbePrompt('Was the spoken phrase clear over music at your normal cooking volume, or did the music drown it out?');
-}
-
-function timerDockHTML(timers, soundOn) {
+function timerDockHTML(timers, voiceOn) {
   const list = Array.isArray(timers) ? timers : [];
   if (!list.length) return '';
   const cards = list.map(t => {
@@ -2528,8 +2524,8 @@ function timerDockHTML(timers, soundOn) {
   return '<div class="timer-dock-inner">' +
     '<div class="timer-dock-head">' +
       '<span class="timer-dock-label">⏱ Active Timers (' + list.length + ')</span>' +
-      '<button type="button" class="timer-sound-toggle' + (soundOn ? ' is-on' : '') + '" data-timer-act="toggle-sound" aria-pressed="' + (soundOn ? 'true' : 'false') + '">' +
-        (soundOn ? '🔔 Sound: On' : '🔕 Sound: Off') +
+      '<button type="button" class="timer-voice-toggle' + (voiceOn ? ' is-on' : '') + '" data-timer-act="toggle-voice" aria-pressed="' + (voiceOn ? 'true' : 'false') + '">' +
+        (voiceOn ? '🗣 Voice: On' : '🔕 Voice: Off') +
       '</button>' +
     '</div>' +
     '<div class="timer-dock-list">' + cards + '</div>' +
@@ -2554,18 +2550,32 @@ function ensureTimerDockMounted() {
       const act = btn.dataset.timerAct;
       const tid = btn.dataset.tid;
       const now = Date.now();
-      if (act === 'toggle-sound') {
-        timerSoundEnabled = !timerSoundEnabled;
-        if (timerSoundEnabled) playTimerChime();
+      if (act === 'toggle-voice') {
+        setTimerVoiceSetting(!timerVoiceEnabled);
+        if (timerVoiceEnabled) {
+          // Preview the integrated alarm phrase once (no repeat-clock reset).
+          speakTimerAlarm({ id: 'preview', stepNum: 5, lowSeconds: 1800, highSeconds: 2400, status: 'done' }, { firstFire: true });
+        } else {
+          invalidateAlarmChain();
+        }
         saveTimersToSession();
         renderTimerDock();
         return;
       }
       if (act === 'dismiss') {
+        const dismissed = activeTimers.find(t => t.id === tid);
+        if (dismissed && dismissed.status === 'done') invalidateAlarmChain();
         activeTimers = activeTimers.filter(t => t.id !== tid);
         saveTimersToSession();
         renderTimerDock();
         return;
+      }
+      // Reset/+time on a DONE timer invalidates the alarm chain (a
+      // dismissed/silenced alarm's in-flight utterance stops); actions on
+      // running/paused timers leave speech alone.
+      const acted = activeTimers.find(t => t.id === tid);
+      if (acted && acted.status === 'done' && (act === 'reset' || act === 'plus1m' || act === 'plus5m' || act === 'plus10m')) {
+        invalidateAlarmChain();
       }
       activeTimers = activeTimers.map(t => {
         if (t.id !== tid) return t;
@@ -2597,7 +2607,7 @@ function renderTimerDock() {
   }
   dock.hidden = false;
   document.body.classList.add('has-timer-dock');
-  dock.innerHTML = timerDockHTML(activeTimers, timerSoundEnabled);
+  dock.innerHTML = timerDockHTML(activeTimers, timerVoiceEnabled);
 }
 
 function tickAllTimers() {
@@ -2606,23 +2616,27 @@ function tickAllTimers() {
     return;
   }
   const now = Date.now();
-  let shouldChime = false;
+  let alarmSpoke = false;
   let statusChanged = false;
   activeTimers = activeTimers.map(t => {
     const prevStatus = t.status;
     const next = tickTimer(t, now);
     if (next.status !== prevStatus) statusChanged = true;
-    // Repeating chime (2026-11-01): at most ONE chime burst per tick even if
-    // several timers are done — no out-of-phase stacking.
-    if (shouldFireTimerChime(next, now)) {
-      next.chimeFired = true;
-      next.lastChimeAtMs = now;
-      shouldChime = true;
+    // Spoken alarm (2026-11-01): state advances ONLY when an utterance
+    // actually started — skip-if-speaking never consumes a repeat, and a
+    // second done timer waits behind the global in-flight gate instead of
+    // queueing a second phrase.
+    if (shouldFireTimerAlarm(next, now)) {
+      const spoke = speakTimerAlarm(next, { firstFire: !next.alarmFired });
+      if (spoke || !timerVoiceEnabled) {
+        next.alarmFired = true;
+        next.lastAlarmAtMs = now;
+        alarmSpoke = true;
+      }
     }
     return next;
   });
-  if (shouldChime) {
-    playTimerChime();
+  if (alarmSpoke) {
     saveTimersToSession();
   }
   if (statusChanged) {
@@ -2779,15 +2793,34 @@ function checkCookCapabilities(winObj, navObj) {
   }
   const speechRecSupported = !!('SpeechRecognition' in w || 'webkitSpeechRecognition' in w);
   const wakeSupported = wakeLockSupported(n);
-  const webAudioSupported = !!('AudioContext' in w || 'webkitAudioContext' in w);
   return {
     speechSynthesis: ttsSupported,
     voiceCount,
     speechRecognition: speechRecSupported,
     wakeLock: wakeSupported,
-    webAudio: webAudioSupported,
     wakeLockActive: !!(wakeLockSentinel && !wakeLockSentinel.released)
   };
+}
+
+function voiceTestButtonsHTML() {
+  const btn = (key, label) =>
+    '<button type="button" class="pill" data-cm-act="voice-test" data-voice-test="' + key + '">' + label + '</button>';
+  return '<div class="cm-voice-tests"><strong>Voice clarity tests</strong> <span class="muted">(with music playing at your normal volume — nothing is saved)</span><br>' +
+    '<span class="muted">Same song and volume for every tap. Tap in order. Judge each: step number? Time range? Clarity?</span><br>' +
+    btn('v0', 'V0 · Baseline (rate 0.98)') + ' ' +
+    btn('v1', 'V1 · Pitch 1.15, rate 0.92 — doubled prefix') + ' ' +
+    btn('v1a', 'V1a · Same params, old wording') + ' ' +
+    btn('v2', 'V2 · Slow 0.85 + pauses') + ' ' +
+    btn('v3', 'V3 · Pitch 1.3') + ' ' +
+    btn('v3b', 'V3b · Pitch 0.85') + ' ' +
+    '<span data-cm-voice-list></span>' +
+    btn('v5', 'V5 · Repeat ×3') + ' ' +
+    btn('v6', 'V6 · Said twice in one breath') + ' ' +
+    btn('v7', 'V7 · Facts first') + ' ' +
+    btn('v8', 'V8 · Spelled-out numbers') + ' ' +
+    btn('v9', 'V9 · “Attention!”') +
+    '<p class="cm-voice-prompt muted" data-cm-voice-prompt>Tap a test above, then judge it: step number? Time range? Clarity over the music?</p>' +
+  '</div>';
 }
 
 function formatCapabilitiesReportHTML(caps) {
@@ -2799,20 +2832,17 @@ function formatCapabilitiesReportHTML(caps) {
     '<div class="cm-probe-head"><strong>Device Capabilities Report</strong>' +
       '<button type="button" class="link-btn" data-cm-act="close-probe">Close</button></div>' +
     '<ul class="cm-probe-list">' +
-      '<li><span>Timer Chime (Web Audio API):</span> ' + badge(c.webAudio) +
-        ' <button type="button" class="pill" data-cm-act="test-chime">Test chime</button></li>' +
+      '<li><span>Voice alarm (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
+        ' <span class="muted">(presence only — clarity over music is judged by the tests below)</span></li>' +
       '<li><span>Step Read-Aloud (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
         ' <span class="muted">(' + Number(c.voiceCount || 0) + ' voice' + (c.voiceCount === 1 ? '' : 's') + ')</span></li>' +
       '<li><span>Keep Screen Awake (navigator.wakeLock):</span> ' + badge(c.wakeLock) +
         (c.wakeLock ? (' <span class="muted">(' + (c.wakeLockActive ? 'currently locked' : 'unlocked') + ')</span>') : '') + '</li>' +
       '<li><span>Voice Recognition API (Phase 2 probe only — mic NOT opened):</span> ' + badge(c.speechRecognition) + '</li>' +
     '</ul>' +
-    '<div class="cm-probe-tests"><strong>Audio-focus probes</strong> <span class="muted">(with music playing — probe-only, nothing is saved)</span><br>' +
-      '<button type="button" class="pill" data-cm-act="probe-close-ctx">Test chime + close engine</button> ' +
-      '<button type="button" class="pill" data-cm-act="probe-audio-clip">Test short audio clip</button> ' +
-      '<button type="button" class="pill" data-cm-act="probe-spoken-alarm">Test spoken alarm</button>' +
-      '<p class="cm-probe-prompt muted" data-cm-probe-prompt>Tap a test above, then report what the music did in chat.</p>' +
-    '</div>' +
+    (c.speechSynthesis
+      ? voiceTestButtonsHTML()
+      : '<div class="cm-voice-tests"><strong>Voice clarity tests</strong><p class="muted">Speech synthesis is not available in this browser, so the voice alarm and these tests cannot run here.</p></div>') +
   '</div>';
 }
 
@@ -2824,7 +2854,62 @@ function stopStepSpeech(winObj) {
   }
 }
 
-function speakRecipeStepText(text, onEnd, winObj) {
+/* ---------------- Spoken durations, alarm phrases, and speech helpers ---------------- */
+
+/* Spoken English for a duration in seconds: "30 seconds", "1 minute 30
+   seconds", "1 hour 5 minutes". */
+function formatSpokenDuration(totalSec) {
+  const s = Math.max(0, Math.round(Number(totalSec) || 0));
+  if (s < 60) return s + (s === 1 ? ' second' : ' seconds');
+  if (s < 3600) {
+    const m = Math.floor(s / 60), r = s % 60;
+    return m + (m === 1 ? ' minute' : ' minutes') + (r ? ' ' + r + (r === 1 ? ' second' : ' seconds') : '');
+  }
+  const h = Math.floor(s / 3600), m = Math.round((s % 3600) / 60);
+  return h + (h === 1 ? ' hour' : ' hours') + (m ? ' ' + m + (m === 1 ? ' minute' : ' minutes') : '');
+}
+
+/* Spoken English for a timer range. When both ends share one unit, the
+   first unit elides ("30 to 40 minutes", "1 to 2 hours"); mixed units
+   stay explicit ("55 minutes to 1 hour"). */
+function formatAlarmTimeRange(lowSeconds, highSeconds) {
+  const low = Math.max(1, Math.round(Number(lowSeconds) || 0));
+  const high = Math.max(low, Math.round(Number(highSeconds) || low));
+  if (high === low) return formatSpokenDuration(low);
+  const lowStr = formatSpokenDuration(low), highStr = formatSpokenDuration(high);
+  const lowParts = lowStr.match(/^(.*)\s+(seconds?|minutes?|hours?)$/);
+  const highParts = highStr.match(/^(.*)\s+(seconds?|minutes?|hours?)$/);
+  if (lowParts && highParts && lowParts[1].indexOf(' ') === -1 && highParts[1].indexOf(' ') === -1
+      && lowParts[2].replace(/s$/, '') === highParts[2].replace(/s$/, '')) {
+    return lowParts[1] + ' to ' + highStr;
+  }
+  return lowStr + ' to ' + highStr;
+}
+
+/* Production alarm phrase (Q4). The stored time range is spoken verbatim
+   in spoken-English form; the recipe name and step label are never
+   included by default. */
+function buildTimerAlarmPhrase(timer) {
+  const t = timer || {};
+  const step = Number(t.stepNum) || 0;
+  const low = Number(t.lowSeconds), high = Number(t.highSeconds);
+  const dur = Number(t.durationSec);
+  let range = '';
+  if (Number.isFinite(low) && low > 0) {
+    range = formatAlarmTimeRange(low, Number.isFinite(high) ? high : low);
+  } else if (Number.isFinite(dur) && dur > 0) {
+    range = formatSpokenDuration(dur);
+  }
+  if (step > 0 && range) return 'Kitchen timer! Kitchen timer! Step ' + step + ', ' + range + ' is done.';
+  if (step > 0) return 'Kitchen timer! Kitchen timer! Step ' + step + ' is done.';
+  return 'Kitchen timer! Kitchen timer! Your timer is done.';
+}
+
+/* Low-level speech helper (R2): set ONLY the properties the caller
+   provides. opts: { rate, pitch, volume, lang, voice (voiceURI/name or a
+   SpeechSynthesisVoice), cancelFirst (default true) }. Returns true only
+   when an utterance was queued. */
+function speakTextWithOpts(text, opts, onEnd, winObj) {
   const w = winObj || (typeof window !== 'undefined' ? window : null);
   if (!w || !w.speechSynthesis || typeof w.SpeechSynthesisUtterance !== 'function') {
     if (typeof onEnd === 'function') onEnd(false);
@@ -2835,10 +2920,22 @@ function speakRecipeStepText(text, onEnd, winObj) {
     if (typeof onEnd === 'function') onEnd(false);
     return false;
   }
+  const o = opts || {};
   try {
-    w.speechSynthesis.cancel();
+    if (o.cancelFirst !== false && typeof w.speechSynthesis.cancel === 'function') {
+      try { w.speechSynthesis.cancel(); } catch (e) {}
+    }
     const u = new w.SpeechSynthesisUtterance(clean);
-    u.rate = 0.98;
+    // Unset properties stay the browser default — the V0 baseline control
+    // depends on pitch/volume/voice NOT being set.
+    if (typeof o.rate === 'number') u.rate = o.rate;
+    if (typeof o.pitch === 'number') u.pitch = o.pitch;
+    if (typeof o.volume === 'number') u.volume = o.volume;
+    if (typeof o.lang === 'string' && o.lang) u.lang = o.lang;
+    if (o.voice) {
+      const v = resolveSpeechVoice(w, o.voice);
+      if (v) u.voice = v;
+    }
     u.onend = () => { if (typeof onEnd === 'function') onEnd(true); };
     u.onerror = () => { if (typeof onEnd === 'function') onEnd(false); };
     w.speechSynthesis.speak(u);
@@ -2847,6 +2944,52 @@ function speakRecipeStepText(text, onEnd, winObj) {
     if (typeof onEnd === 'function') onEnd(false);
     return false;
   }
+}
+
+function resolveSpeechVoice(w, voiceRef) {
+  try {
+    if (!w || !w.speechSynthesis || typeof w.speechSynthesis.getVoices !== 'function') return null;
+    if (voiceRef && typeof voiceRef === 'object') return voiceRef;
+    const list = w.speechSynthesis.getVoices() || [];
+    const key = String(voiceRef || '');
+    if (!key) return null;
+    return list.find(v => v && (v.voiceURI === key || v.name === key)) || null;
+  } catch (e) { return null; }
+}
+
+function speakRecipeStepText(text, onEnd, winObj) {
+  // Step read-aloud keeps its exact production defaults (rate 0.98 only).
+  return speakTextWithOpts(text, { rate: 0.98 }, onEnd, winObj);
+}
+
+/* Voice enumeration (Q2): safe fetch; callers re-fetch at speak time and
+   never cache SpeechSynthesisVoice objects. */
+function getSpeechVoices(winObj) {
+  const w = winObj || (typeof window !== 'undefined' ? window : null);
+  try {
+    if (w && w.speechSynthesis && typeof w.speechSynthesis.getVoices === 'function') {
+      return w.speechSynthesis.getVoices() || [];
+    }
+  } catch (e) {}
+  return [];
+}
+
+/* English voices only, default first, deduped by name+lang+voiceURI. */
+function filterAlarmVoices(voices) {
+  const list = Array.isArray(voices) ? voices : [];
+  const seen = new Set();
+  const out = [];
+  const sorted = list.slice().sort((a, b) => ((b && b.default) ? 1 : 0) - ((a && a.default) ? 1 : 0));
+  sorted.forEach(v => {
+    if (!v || typeof v.name !== 'string') return;
+    const lang = String(v.lang || '');
+    if (!/^en/i.test(lang)) return;
+    const key = v.name + '|' + lang + '|' + String(v.voiceURI || '');
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(v);
+  });
+  return out;
 }
 
 /* ---------------- Big-Screen Cook Mode Pure Helpers ---------------- */
@@ -3019,6 +3162,9 @@ function renderCookModeOverlay() {
         '</div>' +
       '</section>' +
     '</div>';
+  // Voice-choice test buttons fill asynchronously (voices may load late);
+  // the fill touches only the voice-list slot, never the prompt or listeners.
+  if (st.probeOpen) fillVoiceTestButtons();
 }
 
 function speakCurrentCookModeStep() {
@@ -3148,17 +3294,8 @@ function openCookMode(recipe, hooks) {
       } else if (act === 'close-probe') {
         cookModeState.probeOpen = false;
         renderCookModeOverlay();
-      } else if (act === 'test-chime') {
-        const prev = timerSoundEnabled;
-        timerSoundEnabled = true;
-        playTimerChime();
-        timerSoundEnabled = prev;
-      } else if (act === 'probe-close-ctx') {
-        runProbeChimeClose(actBtn);
-      } else if (act === 'probe-audio-clip') {
-        runProbeAudioClip(actBtn);
-      } else if (act === 'probe-spoken-alarm') {
-        runProbeSpokenAlarm();
+      } else if (act === 'voice-test') {
+        runVoiceTest(actBtn.dataset.voiceTest, actBtn.dataset.voiceUri);
       }
     });
     overlay.addEventListener('change', e => {
@@ -3203,6 +3340,15 @@ function openCookMode(recipe, hooks) {
         e.preventDefault();
         advanceCookModeStep(-1);
       }
+    });
+  }
+
+  // Late-loading voices: re-fill only the voice-choice slot when voices
+  // arrive (getVoices() often returns [] until voiceschanged fires).
+  if (!window._voiceListWired && window.speechSynthesis && typeof window.speechSynthesis.addEventListener === 'function') {
+    window._voiceListWired = true;
+    window.speechSynthesis.addEventListener('voiceschanged', () => {
+      if (cookModeState && cookModeState.probeOpen) fillVoiceTestButtons();
     });
   }
 }
@@ -7614,3 +7760,4 @@ async function sendSubmission() {
 
 /* ---------------- Go ---------------- */
 document.addEventListener('DOMContentLoaded', boot);
+
