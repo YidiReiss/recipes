@@ -314,7 +314,20 @@
         "No field changes detected"
       ],
       "reasoning": "Needs-a-side flag on"
+    },
+    {
+      "ts": "2026-11-01T03:24:56.649Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_side",
+          "from": true,
+          "to": false
+        }
+      ],
+      "reasoning": "Needs-a-side flag off"
     }
   ],
-  "needs_side": true
+  "needs_side": false
 }
