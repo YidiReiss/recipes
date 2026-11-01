@@ -95,9 +95,14 @@
           "item": "water"
         },
         {
-          "qty": null,
-          "unit": null,
-          "item": "1 tsp salt and 1/2 tsp pepper"
+          "qty": "1",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "black pepper"
         },
         {
           "qty": "1/3-1/2",
@@ -137,6 +142,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 35 (slice 2 onions/carrots, dice celery/pepper/potatoes, mince 5 garlic cloves, dice 1 lb steak) and servings 8 (hearty-stew main 1.75 cups/person on ~15 cups yield)"
+    },
+    {
+      "ts": "2026-11-01T21:01:43.680Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 15 items])",
+          "to": "1 items ([section: 16 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
