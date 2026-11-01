@@ -90,7 +90,7 @@
   "pdf": "pdfs/roasted-sweet-potatoes-and-brussels-sprouts.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-01T21:00:56.039Z",
@@ -109,6 +109,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-01T21:17:15.519Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "PDF re-press after pepper/garlic sweep edit; pdf_stale was true."
     }
   ]
 }
