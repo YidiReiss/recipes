@@ -315,26 +315,6 @@ function route() {
 /* ---------------- Home ---------------- */
 
 /* Aggregate this week's planned recipes into a shopping list. */
-const UNICODE_FRACS = { '½': 1/2, '⅓': 1/3, '⅔': 2/3, '¼': 1/4, '¾': 3/4, '⅕': 1/5, '⅖': 2/5, '⅗': 3/5, '⅘': 4/5, '⅙': 1/6, '⅚': 5/6, '⅛': 1/8, '⅜': 3/8, '⅝': 5/8, '⅞': 7/8 };
-function parseQty(q) {
-  if (q == null) return null;
-  let s = String(q).trim();
-  if (!s) return null;
-  // unicode fractions -> ascii ("1½" -> "1 1/2", "¾" -> "3/4")
-  s = s.replace(/[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, m => {
-    const v = UNICODE_FRACS[m];
-    const num = Math.round(v * 8), den = 8; // normalize to eighths then reduce below
-    return ' ' + num + '/' + den;
-  }).trim().replace(/\s+/g, ' ');
-  // mixed number "1 3/4", fraction "3/4", decimal "1.5", integer "2"
-  let total = 0, found = false;
-  const mixed = s.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
-  if (mixed && +mixed[3]) return (+mixed[1]) + (+mixed[2]) / (+mixed[3]);
-  const frac = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
-  if (frac && +frac[2]) return (+frac[1]) / (+frac[2]);
-  if (/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
-  return null;
-}
 function fmtQty(n) {
   // 1.5 -> "1½", 0.75 -> "¾", 2 -> "2". Reduces to eighths.
   if (n == null) return '';
@@ -910,9 +890,11 @@ function renderRecipes(app) {
   app.innerHTML =
     '<section class="hero">' +
       '<h1>What are we cooking?</h1>' +
-      '<div class="search-row hero-search no-print">' +
+      '<div class="search-row hero-search combo-wrap no-print">' +
         '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
-        'value="' + esc(filters.q) + '" aria-label="Search recipes"></div>' +
+        'value="' + esc(filters.q) + '" aria-label="Search recipes" autocomplete="off" ' +
+        'role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="q-suggest" aria-activedescendant="">' +
+        '<div class="combo-list" id="q-suggest" role="listbox" hidden></div></div>' +
     '</section>' +
 
     '<section class="home-section">' +
@@ -956,15 +938,13 @@ function renderRecipes(app) {
     '<div class="card-grid" id="grid"></div></section>';
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
-
-  $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
-  $('#f-kosher').addEventListener('change', e => { filters.kosher = e.target.value; drawGrid(); });
-  $('#f-cat').addEventListener('change', e => { filters.category = e.target.value; drawGrid(); });
-  $('#f-tag').addEventListener('change', e => { filters.tag = e.target.value; drawGrid(); });
-  $('#f-time').addEventListener('change', e => { filters.maxTime = Number(e.target.value); drawGrid(); });
-  $('#f-sort').addEventListener('change', e => { filters.sort = e.target.value; drawGrid(); });
-  $('#f-kfp').addEventListener('change', e => { filters.kfp = e.target.checked; drawGrid(); });
-  $('#f-left').addEventListener('change', e => { filters.leftovers = e.target.checked; drawGrid(); });
+  $('#f-kosher').addEventListener('change', e => { filters.kosher = e.target.value; hideHomeSuggest(); drawGrid(); });
+  $('#f-cat').addEventListener('change', e => { filters.category = e.target.value; hideHomeSuggest(); drawGrid(); });
+  $('#f-tag').addEventListener('change', e => { filters.tag = e.target.value; hideHomeSuggest(); drawGrid(); });
+  $('#f-time').addEventListener('change', e => { filters.maxTime = Number(e.target.value); hideHomeSuggest(); drawGrid(); });
+  $('#f-sort').addEventListener('change', e => { filters.sort = e.target.value; hideHomeSuggest(); drawGrid(); });
+  $('#f-kfp').addEventListener('change', e => { filters.kfp = e.target.checked; hideHomeSuggest(); drawGrid(); });
+  $('#f-left').addEventListener('change', e => { filters.leftovers = e.target.checked; hideHomeSuggest(); drawGrid(); });
   $('#f-clear').addEventListener('click', () => {
     Object.assign(filters, { q: '', kosher: 'all', kfp: false, category: 'all', tag: 'all', maxTime: 0, leftovers: false, sort: 'asc' });
     $('#q').value = '';
@@ -975,6 +955,7 @@ function renderRecipes(app) {
     $('#f-sort').value = 'asc';
     $('#f-kfp').checked = false;
     $('#f-left').checked = false;
+    hideHomeSuggest();
     drawGrid();
   });
   const fz = $('#filters'), ft = $('#filter-toggle');
@@ -1007,11 +988,13 @@ function renderRecipes(app) {
       }
       if (sel) sel.value = val;
     }
+    hideHomeSuggest();
     drawGrid();
     const browse = $('#browse');
     if (browse) browse.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
+  wireHomeSuggest($('#q'));
   drawGrid();
 }
 
@@ -1261,8 +1244,8 @@ function planCarouselHTML() {
   }).join('');
 }
 
-function filteredRecipes() {
-  const q = filters.q.trim().toLowerCase();
+function filteredRecipes(qOverride) {
+  const q = (qOverride === undefined ? filters.q : String(qOverride)).trim().toLowerCase();
   const list = recipes.filter(r => {
     if (filters.kosher !== 'all' && String(r.kosher_status || '') !== filters.kosher) return false;
     if (filters.kfp && !r.kosher_for_passover) return false;
@@ -1290,6 +1273,94 @@ function filteredRecipes() {
     ? totalTime(b) - totalTime(a)
     : totalTime(a) - totalTime(b));
   return list;
+}
+
+/* ---------------- Home search suggestions ---------------- */
+// Pure helpers, kept top-level so the offline UI suite can extract and
+// test them without a DOM. Suggestions reuse filteredRecipes() so the
+// dropdown never disagrees with the grid below it.
+function homeSuggestMatches(query) {
+  const q = String(query || '').trim();
+  if (!q) return [];
+  const list = filteredRecipes(q);
+  const needle = q.toLowerCase();
+  const title = list.filter(r => String(r.title || '').toLowerCase().includes(needle));
+  const rest = list.filter(r => !String(r.title || '').toLowerCase().includes(needle));
+  return title.concat(rest).slice(0, 8);
+}
+function homeSuggestHTML(query, matches, activeIdx) {
+  const q = String(query || '').trim();
+  if (!q) return '';
+  if (!matches.length) {
+    return '<div class="combo-empty" role="status">No recipes match &ldquo;' + esc(q) + '&rdquo;</div>';
+  }
+  return matches.map((r, i) =>
+    '<button type="button" class="combo-item' + (i === activeIdx ? ' active' : '') + '" role="option" id="q-opt-' + i + '" data-rid="' + esc(r.id) + '" aria-selected="' + (i === activeIdx ? 'true' : 'false') + '">' +
+      esc(r.title) +
+      '<span class="combo-hint">' + esc(fmtTime(totalTime(r))) + '</span></button>'
+  ).join('');
+}
+function hideHomeSuggest() {
+  const list = $('#q-suggest'), input = $('#q');
+  if (list) list.hidden = true;
+  if (input) {
+    input.setAttribute('aria-expanded', 'false');
+    input.setAttribute('aria-activedescendant', '');
+  }
+}
+function wireHomeSuggest(input) {
+  const list = $('#q-suggest');
+  if (!list) return;
+  let activeIdx = -1;
+  const draw = () => {
+    const m = homeSuggestMatches(input.value);
+    if (activeIdx >= m.length) activeIdx = -1;
+    list.innerHTML = homeSuggestHTML(input.value, m, activeIdx);
+    list.hidden = !String(input.value || '').trim();
+    input.setAttribute('aria-expanded', String(!list.hidden && m.length > 0));
+    input.setAttribute('aria-activedescendant', activeIdx >= 0 ? 'q-opt-' + activeIdx : '');
+  };
+  input.addEventListener('input', () => { activeIdx = -1; draw(); });
+  input.addEventListener('focus', draw);
+  input.addEventListener('blur', () => setTimeout(() => {
+    if (document.activeElement !== input) hideHomeSuggest();
+  }, 200));
+  // Desktop slow click-and-hold: mousedown preventDefault keeps focus
+  // so the blur timer never races the click (Argon fix, 2026-11-01).
+  list.addEventListener('mousedown', e => {
+    if (e.target.closest('[data-rid]')) e.preventDefault();
+  });
+  input.addEventListener('keydown', e => {
+    const m = homeSuggestMatches(input.value);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!m.length) return;
+      e.preventDefault();
+      if (e.key === 'ArrowDown') activeIdx = activeIdx < 0 ? 0 : Math.min(activeIdx + 1, m.length - 1);
+      else activeIdx = activeIdx < 0 ? m.length - 1 : (activeIdx === 0 ? -1 : activeIdx - 1);
+      draw();
+      const el = document.getElementById('q-opt-' + activeIdx);
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      if (activeIdx >= 0 && m[activeIdx]) {
+        e.preventDefault();
+        location.hash = '#/recipe/' + encodeURIComponent(m[activeIdx].id);
+      } else {
+        hideHomeSuggest();
+        input.blur();
+      }
+    } else if (e.key === 'Escape') {
+      activeIdx = -1;
+      hideHomeSuggest();
+    }
+  });
+  // Click (not pointerdown): a touch drag to scroll the list fires no
+  // click, so scrolling can never open a recipe by accident. The 200ms
+  // blur timeout above leaves the click time to land first.
+  list.addEventListener('click', e => {
+    const b = e.target.closest('[data-rid]');
+    if (!b) return;
+    location.hash = '#/recipe/' + encodeURIComponent(b.dataset.rid);
+  });
 }
 
 function drawGrid() {
@@ -2795,18 +2866,27 @@ function wireCombo(input) {
   };
   input.addEventListener('input', () => { input.dataset.rid = ''; draw(); });
   input.addEventListener('focus', draw);
-  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
-  list.addEventListener('pointerdown', e => {
-    const b = e.target.closest('[data-rid]');
-    if (!b) return;
-    e.preventDefault();
+  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 200));
+  // Click-only selection (Argon fix, 2026-11-01): the old pointerdown
+  // select fired on the touch that starts a scroll drag, and pick()'s
+  // input.focus() re-triggered the focus->draw() listener and re-opened
+  // the list. A scroll gesture fires no click, so it can never select;
+  // mousedown preventDefault keeps desktop focus so the blur timer
+  // never races a slow click-and-hold.
+  const pick = b => {
     // The button may carry a "last made" hint span — use the recipe's
     // own title, not the button's full text.
     const rec = recipeMeta(b.dataset.rid);
     input.value = rec ? rec.title : b.textContent;
     input.dataset.rid = b.dataset.rid;
     list.hidden = true;
-    input.focus();
+  };
+  list.addEventListener('mousedown', e => {
+    if (e.target.closest('[data-rid]')) e.preventDefault();
+  });
+  list.addEventListener('click', e => {
+    const b = e.target.closest('[data-rid]');
+    if (b) pick(b);
   });
 }
 

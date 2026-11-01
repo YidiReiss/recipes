@@ -923,7 +923,9 @@ footer.site-footer {
   border-bottom: 1px solid var(--cream-dark);
 }
 .combo-item:last-child { border-bottom: none; }
-.combo-item:hover, .combo-item:focus { background: var(--cream-dark); }
+.combo-item:hover, .combo-item:focus, .combo-item.active { background: var(--cream-dark); }
+.combo-empty { padding: 0.6rem 0.8rem; font-size: 0.95rem; color: var(--ink-soft); }
+.hero-search .combo-list { text-align: left; }
 .slot-custom { font-weight: 600; }
 
 /* Shopping day picker (planner) */
