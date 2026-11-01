@@ -56,7 +56,7 @@
         {
           "qty": "1/4",
           "unit": "tsp",
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "1",
@@ -105,6 +105,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 20 (chop onion, mince 2 garlic cloves, layer noodles) and servings 12 (standard 9x13 pan)"
+    },
+    {
+      "ts": "2026-11-01T21:01:04.296Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 10 items])",
+          "to": "1 items ([section: 10 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
