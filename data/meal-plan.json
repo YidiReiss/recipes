@@ -1416,9 +1416,14 @@
         {
           "id": "mmvy29lyi",
           "text": "Potatoes",
-          "have": false,
-          "updatedAt": 1793551520106,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793563414257,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563414257,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy29xxj",
