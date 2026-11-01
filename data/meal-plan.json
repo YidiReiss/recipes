@@ -1089,6 +1089,15 @@
                 "locked": false,
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
+              },
+              {
+                "recipe": "rice",
+                "leftovers": true,
+                "cookDate": null,
+                "variant": "white",
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           },
