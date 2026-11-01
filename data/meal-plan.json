@@ -1385,8 +1385,9 @@
     },
     "french-onion-soup": {
       "effort": "sunday",
-      "updatedAt": 1793499909311,
-      "updatedBy": "Yidi"
+      "updatedAt": 1793499912721,
+      "updatedBy": "Yidi",
+      "rating": "favorite"
     }
   },
   "draftSnapshots": {
