@@ -1867,5 +1867,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:01:38.303Z"
+  },
+  {
+    "id": "edit-mvybfax9-xemk",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-garlic-green-beans",
+    "recipe_id": "roasted-garlic-green-beans",
+    "title": "Roasted Garlic Green Beans",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:01:40.999Z"
   }
 ]
