@@ -292,6 +292,20 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-01T03:20:01.798Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Needs-a-side flag on"
     }
-  ]
+  ],
+  "needs_side": true
 }
