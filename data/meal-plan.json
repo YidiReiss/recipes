@@ -1318,6 +1318,20 @@
           "at": 1793551491740,
           "qty": 500,
           "unit": "g"
+        },
+        {
+          "key": "onion|cup",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793562764538,
+          "qty": 0.5,
+          "unit": "cup"
+        },
+        {
+          "key": "seasoned breadcrumb|cup",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793562766151,
+          "qty": 0.5,
+          "unit": "cup"
         }
       ],
       "manualItems": [
