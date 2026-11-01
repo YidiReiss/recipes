@@ -1647,5 +1647,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:00:44.909Z"
+  },
+  {
+    "id": "edit-mvybe5ql-rrkz",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "mushroom-kugel-for-passover-and-all-year-round",
+    "recipe_id": "mushroom-kugel-for-passover-and-all-year-round",
+    "title": "Mushroom Kugel: For Passover and All Year Round",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:00:47.726Z"
   }
 ]
