@@ -43,7 +43,7 @@
         {
           "qty": "½",
           "unit": "tsp",
-          "item": "pepper",
+          "item": "black pepper",
           "prep": "divided"
         },
         {
@@ -73,5 +73,26 @@
   "pairings": [],
   "notes": null,
   "source": null,
-  "tags_need_review": false
+  "tags_need_review": false,
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-11-01T21:00:53.412Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
+    }
+  ]
 }
