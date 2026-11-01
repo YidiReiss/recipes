@@ -70,7 +70,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "1 1/2",
@@ -93,5 +93,25 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-11-01T21:01:09.376Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 11 items])",
+          "to": "1 items ([section: 11 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
+    }
+  ]
 }
