@@ -2408,6 +2408,7 @@ function voiceTestVariant(key) {
     case 'v7': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Step 5, ' + range + ' is done. Kitchen timer! Kitchen timer! Step 5 is done.' };
     case 'v8': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS, { lang: 'en-US' }), phrase: 'Kitchen timer! Kitchen timer! Step five, thirty to forty minutes is done.' };
     case 'v9': return { opts: Object.assign({}, TIMER_ALARM_VOICE_OPTS), phrase: 'Attention! Attention! Step 5, ' + range + ' is done.' };
+    case 'v10': return { opts: { volume: 1.0, pitch: 1.6, rate: 0.92 }, phrase: v1Phrase };
     default: return null;
   }
 }
@@ -2802,23 +2803,16 @@ function checkCookCapabilities(winObj, navObj) {
   };
 }
 
+/* Winner + challenger panel (2026-11-01): only V1, the settled production treatment,
+   and V10, the squeaky pitch-1.6 challenger, are shown. The other variant definitions
+   stay in voiceTestVariant, unreachable from the UI. */
 function voiceTestButtonsHTML() {
   const btn = (key, label) =>
     '<button type="button" class="pill" data-cm-act="voice-test" data-voice-test="' + key + '">' + label + '</button>';
-  return '<div class="cm-voice-tests"><strong>Voice clarity tests</strong> <span class="muted">(with music playing at your normal volume — nothing is saved)</span><br>' +
-    '<span class="muted">Same song and volume for every tap. Tap in order. Judge each: step number? Time range? Clarity?</span><br>' +
-    btn('v0', 'V0 · Baseline (rate 0.98)') + ' ' +
+  return '<div class="cm-voice-tests"><strong>Voice clarity test</strong> <span class="muted">(with music playing at your normal volume — nothing is saved)</span><br>' +
+    '<span class="muted">Tap each one with music playing at your normal volume, and compare them. Judge each: step number? Time range? Clarity?</span><br>' +
     btn('v1', 'V1 · Pitch 1.15, rate 0.92 — doubled prefix') + ' ' +
-    btn('v1a', 'V1a · Same params, old wording') + ' ' +
-    btn('v2', 'V2 · Slow 0.85 + pauses') + ' ' +
-    btn('v3', 'V3 · Pitch 1.3') + ' ' +
-    btn('v3b', 'V3b · Pitch 0.85') + ' ' +
-    '<span data-cm-voice-list></span>' +
-    btn('v5', 'V5 · Repeat ×3') + ' ' +
-    btn('v6', 'V6 · Said twice in one breath') + ' ' +
-    btn('v7', 'V7 · Facts first') + ' ' +
-    btn('v8', 'V8 · Spelled-out numbers') + ' ' +
-    btn('v9', 'V9 · “Attention!”') +
+    btn('v10', 'V10 · Squeaky pitch 1.6') +
     '<p class="cm-voice-prompt muted" data-cm-voice-prompt>Tap a test above, then judge it: step number? Time range? Clarity over the music?</p>' +
   '</div>';
 }
