@@ -93,7 +93,7 @@
   "tags_need_review": false,
   "needs_kosher_review": true,
   "kosher_review_notes": "Contains kani (mock crab) — typically pareve, but check the package for dairy additives and kosher certification.",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-01T21:01:32.903Z",
@@ -112,6 +112,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-01T21:17:07.630Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "PDF re-press after pepper/garlic sweep edit; pdf_stale was true."
     }
   ]
 }
