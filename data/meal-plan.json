@@ -1061,6 +1061,15 @@
                 "drafted": true,
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
+              },
+              {
+                "recipe": "rice",
+                "leftovers": false,
+                "cookDate": null,
+                "variant": "white",
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
