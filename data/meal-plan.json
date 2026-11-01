@@ -1271,6 +1271,11 @@
       "updatedAt": 1793499624027,
       "updatedBy": "Yidi",
       "rating": "favorite"
+    },
+    "chicken-soup": {
+      "rating": "favorite",
+      "updatedAt": 1793499661479,
+      "updatedBy": "Yidi"
     }
   },
   "draftSnapshots": {
