@@ -1346,6 +1346,27 @@
           "at": 1793562781903,
           "qty": 2,
           "unit": "tbsp"
+        },
+        {
+          "key": "chopped flat-leaf parsley or chives, plus more for garnish|cup",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793562959582,
+          "qty": 0.25,
+          "unit": "cup"
+        },
+        {
+          "key": "chicken breast tender|lb",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793562961345,
+          "qty": 1,
+          "unit": "lb"
+        },
+        {
+          "key": "egg|",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793562962590,
+          "qty": 1,
+          "unit": ""
         }
       ],
       "manualItems": [
