@@ -1252,8 +1252,9 @@
     },
     "meat-lasagna": {
       "effort": "sunday",
-      "updatedAt": 1793499548115,
-      "updatedBy": "Yidi"
+      "updatedAt": 1793499554598,
+      "updatedBy": "Yidi",
+      "rating": "favorite"
     }
   },
   "draftSnapshots": {
