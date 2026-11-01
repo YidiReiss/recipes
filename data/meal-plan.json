@@ -1410,6 +1410,13 @@
           "at": 1793563395127,
           "qty": 3,
           "unit": ""
+        },
+        {
+          "key": "feta|oz",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793564014817,
+          "qty": 8,
+          "unit": "oz"
         }
       ],
       "manualItems": [
