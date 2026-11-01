@@ -1156,9 +1156,11 @@
             ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "YPM Dinner"
+            "note": "YPM Dinner",
+            "dishes": []
           }
         },
         {
@@ -1166,17 +1168,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "bachash",
-                "leftovers": false,
-                "cookDate": "2026-11-05",
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat lunch · Cook Thursday"
-              }
-            ]
+            "note": ""
           },
           "dinner": {
             "recipe": null,
