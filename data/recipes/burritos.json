@@ -340,7 +340,20 @@
         }
       ],
       "reasoning": "Needs-a-side flag on"
+    },
+    {
+      "ts": "2026-11-01T03:29:25.911Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_side",
+          "from": true,
+          "to": false
+        }
+      ],
+      "reasoning": "Needs-a-side flag off"
     }
   ],
-  "needs_side": true
+  "needs_side": false
 }
