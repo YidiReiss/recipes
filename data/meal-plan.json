@@ -1207,6 +1207,314 @@
       "manualItems": [],
       "optionalPromoted": [],
       "shoppingDay": null
+    },
+    "2026-11-08": {
+      "days": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ]
+    },
+    "2026-11-15": {
+      "days": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "sweet-and-sour-meatballs",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ],
+      "draftChips": {
+        "hostingFri": false,
+        "hostingSat": false,
+        "eatOut": [
+          6
+        ],
+        "useUp": []
+      },
+      "carryInPool": {},
+      "lunchWarnings": [],
+      "haveGenerated": [],
+      "manualItems": [],
+      "optionalPromoted": []
     }
   },
   "recipePrefs": {
@@ -1878,6 +2186,402 @@
             "skipped": false,
             "note": "",
             "dishes": []
+          }
+        }
+      ],
+      "lunchWarnings": []
+    },
+    "2026-11-15": {
+      "draftedAt": "2026-11-01T03:18:30.605Z",
+      "firstDraftedAt": "2026-11-01T03:18:30.605Z",
+      "draftCount": 1,
+      "chips": {
+        "hostingFri": false,
+        "hostingSat": false,
+        "eatOut": [
+          6
+        ],
+        "useUp": []
+      },
+      "days": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "sweet-and-sour-meatballs",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ],
+      "firstDays": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "cornflake-chicken",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "sweet-and-sour-meatballs",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
           }
         }
       ],
