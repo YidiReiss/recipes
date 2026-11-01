@@ -1181,8 +1181,16 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": false,
+                "cookDate": "2026-11-05",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ],
             "skipped": false,
             "note": ""
           },
