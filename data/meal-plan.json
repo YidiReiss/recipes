@@ -1459,9 +1459,14 @@
         {
           "id": "mmvy2age0",
           "text": "Pizza balls",
-          "have": false,
-          "updatedAt": 1793551559544,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793564336769,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564336769,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy2avnn",
@@ -1478,9 +1483,14 @@
         {
           "id": "mmvy2bvgt",
           "text": "Puff pastry sheets",
-          "have": false,
-          "updatedAt": 1793551625741,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793564338286,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564338286,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy2c4r8",
