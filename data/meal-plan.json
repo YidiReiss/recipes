@@ -1389,6 +1389,27 @@
           "key": "salmon|",
           "session": "smvy8ym7uiqd3dj",
           "at": 1793563162224
+        },
+        {
+          "key": "fresh garlic|tsp",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793563393643,
+          "qty": 2,
+          "unit": "tsp"
+        },
+        {
+          "key": "garlic|tbsp",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793563394375,
+          "qty": 2.67,
+          "unit": "tbsp"
+        },
+        {
+          "key": "garlic cloves (we mince it)|",
+          "session": "smvy8ym7uiqd3dj",
+          "at": 1793563395127,
+          "qty": 3,
+          "unit": ""
         }
       ],
       "manualItems": [
