@@ -1480,9 +1480,14 @@
         {
           "id": "mmvy2cp2g",
           "text": "Pickles",
-          "have": false,
-          "updatedAt": 1793551664104,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793563729937,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563729937,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy748l0",
