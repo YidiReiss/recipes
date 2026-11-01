@@ -1301,10 +1301,16 @@
         {
           "key": "coca-cola|cup",
           "session": "smvy24fnxqn3wqn",
-          "at": 1793551457802,
+          "at": 1793551465250,
           "qty": 1,
-          "unit": "cup",
-          "removed": true
+          "unit": "cup"
+        },
+        {
+          "key": "tomato sauce (thick ketchup)|cup",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551467363,
+          "qty": 1,
+          "unit": "cup"
         }
       ],
       "manualItems": [],
