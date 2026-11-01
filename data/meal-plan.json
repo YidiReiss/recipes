@@ -1326,17 +1326,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "macarone-paflotski",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1345,17 +1335,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "macarone-paflotski",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1417,7 +1397,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "dairy-free-chicken-fettuccine-alfredo",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1547,7 +1527,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": []
