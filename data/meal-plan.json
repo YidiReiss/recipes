@@ -994,7 +994,16 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "meat-lasagna",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -1167,14 +1176,7 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [
-        {
-          "day": 1,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        }
-      ],
+      "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
