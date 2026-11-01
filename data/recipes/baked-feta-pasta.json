@@ -105,7 +105,16 @@
         "ingredients: 'salt (does not need salt)' -> 'salt'"
       ],
       "reasoning": "Remove editor-note cruft from ingredient: 'salt (does not need salt)' -> 'salt' (approved staples bundle); set pdf_stale so the PDF re-presses."
+    },
+    {
+      "ts": "2026-11-01T20:45:57.457Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "PDF regenerated after salt ingredient fix (1 tsp salt); pdf_stale was true."
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
