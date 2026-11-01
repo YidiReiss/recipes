@@ -1509,9 +1509,14 @@
         {
           "id": "mmvy83wd5",
           "text": "Bananas or clementines",
-          "have": false,
-          "updatedAt": 1793561331353,
-          "updatedBy": "smvy748l09ld21q"
+          "have": true,
+          "updatedAt": 1793563668843,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563668843,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         }
       ],
       "optionalPromoted": [],
