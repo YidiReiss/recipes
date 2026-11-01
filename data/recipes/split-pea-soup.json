@@ -29,7 +29,7 @@
         {
           "qty": "1",
           "unit": null,
-          "item": "ham bone (optional but preferred)"
+          "item": "beef neck bones (optional)"
         },
         {
           "qty": "2",
@@ -61,7 +61,7 @@
         {
           "qty": "2",
           "unit": "cup",
-          "item": "diced ham"
+          "item": "diced California steak"
         },
         {
           "qty": "2",
@@ -99,16 +99,15 @@
     }
   ],
   "instructions": [
-    "Put the consommé, onions, carrots, and ham bone in a large soup pot and bring to a boil.",
+    "Put the consommé, onions, carrots, and beef neck bones (if using) in a large soup pot and bring to a boil.",
     "Add all the remaining ingredients except the potato. Reduce the heat and let the soup simmer for approximately 2 hours, stirring occasionally.",
     "Add the potato about 40 minutes before eating. When the potato pieces are done, you're ready to eat! It's as easy as that."
   ],
   "pairings": [],
-  "notes": "Doc updated quantities: 8 cups water → chicken consommé, 2 cups split peas → 1 cup, 1½ tbsp onion powder → 1 tsp. Contains ham bone and diced ham — not kosher as written; substitute beef or omit for a kosher version.",
+  "notes": "Doc updated quantities: 8 cups water → chicken consommé, 2 cups split peas → 1 cup, 1½ tbsp onion powder → 1 tsp.",
   "source": null,
   "tags_need_review": true,
-  "needs_kosher_review": true,
-  "kosher_review_notes": "Contains ham and ham bone — not kosher as written. Requires substitution or removal.",
+  "needs_kosher_review": false,
   "history": [
     {
       "ts": "2026-10-18T07:44:04.657Z",
@@ -127,6 +126,21 @@
         }
       ],
       "reasoning": "Backfill: prep 25 min estimated (5 base + onion/carrot/celery chop 8.5 + potato peel+chop 4 + garlic 1.5, scaled), servings 8 estimated (hearty soup as main: 12.3 cup yield via liquid+(0.5*solids)*0.9 formula / 1.75 cups per person). Cook 120 kept as stated."
+    },
+    {
+      "ts": "2026-11-01T23:28:45.620Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        "ingredients[0].items[1].item: ham bone (optional but preferred) -> beef neck bones (optional)",
+        "ingredients[0].items[7].item: diced ham -> diced California steak",
+        "instructions[0]: ham bone -> beef neck bones (if using)",
+        "notes: removed sentence Contains ham bone and diced ham — not kosher as written; substitute beef or omit for a kosher version.",
+        "needs_kosher_review: true -> false and removed kosher_review_notes",
+        "pdf_stale: set to true"
+      ],
+      "reasoning": "Yidi-approved substitution: Yidi said usually we use diced California steak, and optionally beef neck bones. Replacing ham bone with optional beef neck bones and diced ham with diced California steak."
     }
-  ]
+  ],
+  "pdf_stale": true
 }
