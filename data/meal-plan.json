@@ -1224,6 +1224,20 @@
           "at": 1793551281912,
           "qty": 1,
           "unit": "cup"
+        },
+        {
+          "key": "honey|tbsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551290402,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "salt (does not need salt)|tsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551291132,
+          "qty": 1,
+          "unit": "tsp"
         }
       ],
       "manualItems": [],
