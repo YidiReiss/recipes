@@ -1359,9 +1359,14 @@
         {
           "id": "mmvy29xxj",
           "text": "Sweet potato",
-          "have": false,
-          "updatedAt": 1793551535623,
-          "updatedBy": "smvy24fnxqn3wqn"
+          "have": true,
+          "updatedAt": 1793562801036,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793562801036,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
         },
         {
           "id": "mmvy2a6kj",
