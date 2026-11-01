@@ -1245,6 +1245,13 @@
           "at": 1793551297754,
           "qty": 0.5,
           "unit": "cup"
+        },
+        {
+          "key": "coarse salt|tsp",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551308523,
+          "qty": 1.5,
+          "unit": "tsp"
         }
       ],
       "manualItems": [],
