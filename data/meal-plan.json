@@ -1323,6 +1323,10 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "burritos",
@@ -1332,10 +1336,16 @@
                 "drafted": false,
                 "reason": null,
                 "locked": true
+              },
+              {
+                "recipe": "roasted-potatoes",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -1369,7 +1379,17 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "roasted-potatoes",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -1384,7 +1404,17 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "roasted-potatoes",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -1447,18 +1477,6 @@
       },
       "carryInPool": {},
       "lunchWarnings": [
-        {
-          "day": 2,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 3,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
         {
           "day": 4,
           "kind": "uncovered",
