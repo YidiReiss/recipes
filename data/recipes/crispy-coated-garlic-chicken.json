@@ -55,7 +55,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": null,
@@ -93,6 +93,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 25 (mince 8 garlic cloves, dredge 16 pieces, crumb mix; 8-hr marinade is passive, excluded) and servings 10 (two 3.5-4 lb chickens bone-in). cook 90 kept."
+    },
+    {
+      "ts": "2026-11-01T21:01:22.343Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
