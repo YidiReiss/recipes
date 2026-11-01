@@ -65,7 +65,7 @@
         {
           "qty": null,
           "unit": null,
-          "item": "pepper",
+          "item": "black pepper",
           "prep": "to taste"
         }
       ]
@@ -102,6 +102,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 20 min (base 5 + slice 2 onions + peel/slice 3 lb mushrooms) and servings 10 (side, 9-inch round pan) per Sous Chef estimation rules."
+    },
+    {
+      "ts": "2026-11-01T21:00:47.726Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 9 items])",
+          "to": "1 items ([section: 9 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
