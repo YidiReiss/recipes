@@ -436,10 +436,11 @@ function fromTsp(total) {
   return { qty: total, unit: 'tsp' };
 }
 /* Count-to-volume for common produce, so "1 onion" + "½ cup chopped onion"
-   merge. Conservative: only these three, widely-agreed conversions. */
+   merge. Conservative: only these two, widely-agreed conversions.
+   (Garlic was removed 2026-11-01: cloves must display as cloves, not as
+   tsp/tbsp/cup of garlic.) */
 const COUNT_TO_TSP = {
   'onion': 24,   // 1 medium onion ≈ ½ cup chopped
-  'garlic': 1,   // 1 clove ≈ 1 tsp minced
   'lemon': 9,    // 1 lemon ≈ 3 tbsp juice
 };
 /* Canonical grouping key: lowercase, no size words, singular-ish. */
@@ -479,14 +480,14 @@ function normalizeSlot(slot) {
    on the groupKey-normalized base name: "flour" hides, "flour tortillas"
    doesn't; "water" hides, "coconut water" doesn't. Set curated by Yidi
    (2026-10-21): hide only what he'd bet is already in the kitchen — niche
-   items (nutmeg, dried herbs, vanilla, honey, specialty oils/flours) stay
+   items (nutmeg, dried herbs, vanilla, specialty oils/flours) stay
    visible. */
 const PANTRY_STAPLES = new Set([
   // water
   'water', 'cold water', 'warm water', 'hot water', 'ice water', 'boiling water',
   'lukewarm water', 'room temperature water', 'tap water',
   // salt & pepper
-  'salt', 'kosher salt', 'coarse kosher salt', 'sea salt', 'fine sea salt', 'table salt',
+  'salt', 'kosher salt', 'coarse kosher salt', 'coarse salt', 'himalayan salt', 'sea salt', 'fine sea salt', 'table salt',
   'black pepper', 'ground black pepper', 'freshly ground black pepper',
   'freshly cracked black pepper', 'white pepper', 'ground white pepper',
   'salt and pepper', 'salt & pepper',
@@ -499,13 +500,15 @@ const PANTRY_STAPLES = new Set([
   'turmeric', 'ground turmeric', 'chili powder', 'cayenne', 'cayenne pepper', 'ground cayenne',
   'red pepper flake', 'crushed red pepper', 'crushed red pepper flake', 'taco seasoning',
   'bay leaf', 'bay leave',
+  // honey (Yidi stocks it — added 2026-11-01)
+  'honey',
   // flour, sugar, baking
   'flour', 'all purpose flour', 'unbleached all purpose flour',
   'sugar', 'granulated sugar', 'brown sugar', 'light brown sugar',
   'powdered sugar', 'confectioners sugar', 'cornstarch', 'baking powder', 'baking soda'
 ]);
 function isPantryStaple(base) {
-  const norm = String(base || '').toLowerCase().replace(/-/g, ' ').replace(/['\u2019]/g, '').replace(/\s+/g, ' ').trim();
+  const norm = String(base || '').toLowerCase().replace(/-/g, ' ').replace(/['\u2019]/g, '').replace(/\s+/g, ' ').trim().replace(/\s*\([^)]*\)\s*$/g, '').trim();
   return PANTRY_STAPLES.has(norm);
 }
 function getHideStaples() {
