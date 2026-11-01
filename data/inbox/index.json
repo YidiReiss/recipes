@@ -1669,5 +1669,16 @@
     "actor": "Muse",
     "note": "Changed ingredients",
     "created_at": "2026-11-01T21:00:50.358Z"
+  },
+  {
+    "id": "edit-mvybea3q-zpof",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-brussel-sprouts-with-sriracha-aioli",
+    "recipe_id": "roasted-brussel-sprouts-with-sriracha-aioli",
+    "title": "Roasted Brussel Sprouts with Sriracha Aioli",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:00:53.412Z"
   }
 ]
