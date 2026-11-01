@@ -983,18 +983,9 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
-              }
-            ]
+            "skipped": true,
+            "note": "Moscowitz barbecue",
+            "dishes": []
           }
         },
         {
@@ -1003,17 +994,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1186,7 +1167,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
