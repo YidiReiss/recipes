@@ -1203,7 +1203,29 @@
       },
       "carryInPool": {},
       "lunchWarnings": [],
-      "haveGenerated": [],
+      "haveGenerated": [
+        {
+          "key": "chicken stock|cup",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551278669,
+          "qty": 1,
+          "unit": "cup"
+        },
+        {
+          "key": "long-grain white rice|cup",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551280282,
+          "qty": 1,
+          "unit": "cup"
+        },
+        {
+          "key": "mayo|cup",
+          "session": "smvy24fnxqn3wqn",
+          "at": 1793551281912,
+          "qty": 1,
+          "unit": "cup"
+        }
+      ],
       "manualItems": [],
       "optionalPromoted": [],
       "shoppingDay": null
