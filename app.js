@@ -248,6 +248,9 @@ async function boot() {
   } catch (e) { mealPlan = { weeks: {} }; }
   // Merge any local shopping-list state (offline taps) over the server copy
   loadShopLocal();
+  loadTimersFromSession();
+  ensureTimerDockMounted();
+  renderTimerDock();
 
   window.addEventListener('hashchange', route);
   route();
@@ -282,8 +285,12 @@ async function refreshMealPlan() {
 /* ---------------- Router ---------------- */
 function route() {
   closeModal();
-  editingSlot = null;
+  if (typeof closeCookMode === 'function' && cookModeState) closeCookMode(true);
   const h = location.hash || '#/';
+  if (!h.startsWith('#/recipe/') && typeof releaseWakeLock === 'function') {
+    releaseWakeLock();
+  }
+  editingSlot = null;
   const app = $('#app');
   $('#nav-recipes').classList.toggle('active', h.startsWith('#/recipes') || h.startsWith('#/recipe/'));
   $('#nav-planner').classList.toggle('active', h.startsWith('#/planner'));
@@ -1652,6 +1659,15 @@ async function renderRecipe(app, id) {
   const leftoverNote = r.leftover_note ||
     (r.leftover_friendly ? 'Good for leftovers.' : 'Best eaten fresh.');
 
+  const wlSupported = wakeLockSupported();
+  const cookBarHTML =
+    '<div class="cook-entry-bar no-print">' +
+      '<button type="button" class="btn cook-launch-btn" id="open-cook-mode-btn">🍳 Cook Mode</button>' +
+      (wlSupported
+        ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="detail-wake-btn" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '">☀ ' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake') + '</button>'
+        : '<span class="wake-unsupported" id="detail-wake-unsupported">Screen wake lock not supported on this browser</span>') +
+    '</div>';
+
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
     '<article class="recipe-print">' +
@@ -1659,6 +1675,7 @@ async function renderRecipe(app, id) {
       '<h1 class="recipe-title">' + esc(r.title) + '</h1>' +
       badgesHTML(r) +
       ratingRowHTML +
+      cookBarHTML +
       (r.needs_kosher_review
         ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
           (r.kosher_review_notes ? '<br>' + esc(r.kosher_review_notes) : '') + '</div>'
@@ -1671,8 +1688,8 @@ async function renderRecipe(app, id) {
       '</div>' +
       '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + variantPillsHTML +
       '<div id="ing-wrap">' + ingHTML + '</div></section>' +
-      '<section class="recipe-section"><h2>Instructions</h2><ol class="steps">' +
-        (r.instructions || []).map(s => '<li>' + esc(s) + '</li>').join('') +
+      '<section class="recipe-section"><h2>Instructions</h2><ol class="steps" id="detail-steps">' +
+        (r.instructions || []).map((s, idx) => '<li>' + renderStepWithTimersHTML(s, idx + 1) + '</li>').join('') +
       '</ol></section>' +
       pairHTML +
       '<section class="recipe-section"><h2>Leftovers</h2>' +
@@ -1795,8 +1812,1154 @@ async function renderRecipe(app, id) {
       }
     });
   });
+  // Tap-to-start timer pills inside the detail page instructions.
+  const detailSteps = app.querySelector('#detail-steps');
+  if (detailSteps) {
+    detailSteps.addEventListener('click', e => {
+      const pill = e.target.closest('.timer-pill');
+      if (!pill) return;
+      startStepTimerFromPill(r, pill);
+    });
+  }
+  // Keep screen awake toggle on the detail page header.
+  const detailWakeBtn = app.querySelector('#detail-wake-btn');
+  if (detailWakeBtn) {
+    detailWakeBtn.addEventListener('click', async () => {
+      if (wakeLockWanted) {
+        await releaseWakeLock();
+      } else {
+        const res = await acquireWakeLock();
+        if (!res.ok) toast('Screen wake lock could not be enabled (' + (res.reason || 'blocked') + ').');
+      }
+      updateWakeLockButtons();
+    });
+  }
+  // Launch Big-Screen Cook Mode, passing the current scale factor + variant
+  // and a sync callback so scale/variant edits inside Cook Mode update the
+  // detail page too.
+  const openCookBtn = app.querySelector('#open-cook-mode-btn');
+  if (openCookBtn) {
+    openCookBtn.addEventListener('click', () => {
+      openCookMode(r, {
+        getScale: () => scaleState.factor,
+        setScale: f => { scaleState.factor = f; applyScale(); },
+        getVariant: () => selectedVariant,
+        setVariant: v => {
+          selectedVariant = v;
+          app.querySelectorAll('[data-variant]').forEach(b =>
+            b.classList.toggle('active', b.dataset.variant === v));
+          const wrap = app.querySelector('#ing-wrap');
+          if (wrap) wrap.innerHTML = ingListHTML(filterIngredientsForVariant(r.ingredients, selectedVariant));
+          applyScale();
+        }
+      });
+    });
+  }
   // Normalize initial render (e.g. "1 cups" in stored data → "1 cup").
   applyScale();
+}
+
+/* ============================================================
+   Phase 1 Cooking Enhancements:
+   1. Tap-to-Start Visual Timers (parseStepTimers, renderStepWithTimersHTML,
+      pure timer state reducer, sessionStorage same-tab reload recovery,
+      Web Audio API sine chime ON by default with Sound On/Off toggle)
+   2. Big-Screen Cook Mode (cookModeStepHTML, cookModeIngredientsHTML,
+      two-pane wide / collapsible phone drawer, knuckle-sized Next pad)
+   3. One-Step Read-Aloud (browser speechSynthesis, one step then wait)
+   4. Device Capability Probe (checkCookCapabilities + 1-tap test UI)
+   5. Keep Screen Awake (acquireWakeLock / releaseWakeLock, auto on Cook Mode,
+      visibilitychange re-acquire, 2-hour safety cap, honest fallback)
+   ============================================================ */
+
+const TIMER_WORD_NUMS = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+  nine: 9, ten: 10, eleven: 11, twelve: 12, fifteen: 15, twenty: 20,
+  'twenty-five': 25, thirty: 30, 'thirty-five': 35, forty: 40,
+  'forty-five': 45, fifty: 50, sixty: 60, ninety: 90,
+  a: 1, an: 1, half: 0.5
+};
+
+function parseTimerNumberToken(raw) {
+  if (raw === null || raw === undefined) return null;
+  const s = String(raw).trim().toLowerCase();
+  if (!s) return null;
+  if (Object.prototype.hasOwnProperty.call(TIMER_WORD_NUMS, s)) return TIMER_WORD_NUMS[s];
+  return parseSingleValue(s);
+}
+
+function timerUnitSeconds(unitStr) {
+  const u = String(unitStr || '').trim().toLowerCase();
+  if (u.startsWith('h')) return 3600;
+  if (u.startsWith('m')) return 60;
+  if (u.startsWith('s')) return 1;
+  return 0;
+}
+
+function formatTimerPillDuration(sec) {
+  const r = Math.max(0, Math.round(Number(sec) || 0));
+  if (r < 60) return r + 's';
+  if (r % 3600 === 0) return (r / 3600) + 'h';
+  if (r > 3600) {
+    const h = Math.floor(r / 3600);
+    const m = Math.round((r % 3600) / 60);
+    return m ? (h + 'h ' + m + 'm') : (h + 'h');
+  }
+  const m = Math.floor(r / 60);
+  const s = r % 60;
+  return s ? (m + 'm ' + s + 's') : (m + 'm');
+}
+
+function formatTimerReadout(ms) {
+  const totalSec = Math.max(0, Math.ceil((Number(ms) || 0) / 1000));
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  const pad = n => String(n).padStart(2, '0');
+  return h > 0 ? (h + ':' + pad(m) + ':' + pad(s)) : (pad(m) + ':' + pad(s));
+}
+
+function parseStepTimers(stepText) {
+  if (typeof stepText !== 'string' || !stepText) return [];
+  const N = '(?:\\d+\\s+\\d+\\s*\\/\\s*\\d+|\\d+\\s*\\/\\s*\\d+|\\d+\\s*[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]|[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]|\\d+(?:\\.\\d+)?|\\b(?:forty-five|thirty-five|twenty-five|fifteen|twelve|eleven|twenty|thirty|forty|fifty|sixty|ninety|seven|eight|three|four|five|nine|one|two|six|ten|half|an|a)\\b)';
+  const U = '(hours?|hrs?|minutes?|mins?|seconds?|secs?)\\b';
+  const SEP = '(?:\\s*(?:to|[-\u2013\u2014])\\s*)';
+  const pat = new RegExp(
+    '(?:\\b(an?|one)\\s+hour\\s+and\\s+a\\s+half\\b)|' +
+    '(?:\\bhalf\\s+an\\s+hour\\b)|' +
+    '(?:(' + N + ')\\s*(hours?|hrs?)\\s+(?:and\\s+)?(' + N + ')\\s*(minutes?|mins?)(?:' + SEP + '(' + N + ')\\s*' + U + ')?)|' +
+    '(?:(' + N + ')' + SEP + '(' + N + ')\\s*' + U + ')|' +
+    '(?:(' + N + ')\\s*' + U + ')',
+    'gi'
+  );
+  const out = [];
+  let m;
+  while ((m = pat.exec(stepText))) {
+    const rawText = m[0];
+    const start = m.index;
+    const end = start + rawText.length;
+    let lowSec = 0;
+    let highSec = 0;
+    if (m[1]) {
+      lowSec = highSec = 5400;
+    } else if (/^half\s+an\s+hour$/i.test(rawText)) {
+      lowSec = highSec = 1800;
+    } else if (m[2] !== undefined) {
+      const h = parseTimerNumberToken(m[2]);
+      const mins = parseTimerNumberToken(m[4]);
+      if (h === null || mins === null) continue;
+      lowSec = Math.round(h * 3600 + mins * 60);
+      if (m[6] !== undefined) {
+        const hiVal = parseTimerNumberToken(m[6]);
+        const hiMult = timerUnitSeconds(m[7]);
+        const hi = (hiVal !== null && hiMult) ? Math.round(hiVal * hiMult) : lowSec;
+        highSec = hi > lowSec ? hi : lowSec;
+      } else {
+        highSec = lowSec;
+      }
+    } else if (m[8] !== undefined) {
+      const aRaw = m[8].trim().toLowerCase();
+      const bRaw = m[9].trim().toLowerCase();
+      if (aRaw === 'a' || aRaw === 'an' || bRaw === 'a' || bRaw === 'an') continue;
+      const a = parseTimerNumberToken(aRaw);
+      const b = parseTimerNumberToken(bRaw);
+      const mult = timerUnitSeconds(m[10]);
+      if (a === null || b === null || !mult) continue;
+      if (mult === 1 && Math.min(a, b) < 5) continue;
+      lowSec = Math.round(Math.min(a, b) * mult);
+      highSec = Math.round(Math.max(a, b) * mult);
+    } else if (m[11] !== undefined) {
+      const numRaw = m[11].trim().toLowerCase();
+      const unitRaw = m[12].trim().toLowerCase();
+      const val = parseTimerNumberToken(numRaw);
+      const mult = timerUnitSeconds(unitRaw);
+      if (val === null || !mult) continue;
+      // False-positive guard: "a second" / "one second" / "<5 seconds" in prose
+      // ("transfer to a second bowl", "repeat with a second layer", "for a few seconds").
+      if (mult === 1 && (val < 5 || numRaw === 'a' || numRaw === 'an' || numRaw === 'one')) continue;
+      if ((numRaw === 'a' || numRaw === 'an') && /s$/i.test(unitRaw)) continue;
+      lowSec = highSec = Math.round(val * mult);
+    }
+    if (lowSec <= 0) continue;
+    const isRange = highSec > lowSec;
+    const pillLabel = isRange
+      ? (formatTimerPillDuration(lowSec) + '\u2013' + formatTimerPillDuration(highSec) + ' (' + formatTimerPillDuration(lowSec) + ')')
+      : formatTimerPillDuration(lowSec);
+    out.push({
+      start,
+      end,
+      rawText,
+      seconds: lowSec,
+      lowSeconds: lowSec,
+      highSeconds: highSec,
+      label: pillLabel
+    });
+  }
+  return out;
+}
+
+function renderStepWithTimersHTML(stepText, stepNum) {
+  const s = String(stepText ?? '');
+  const timers = parseStepTimers(s);
+  if (!timers.length) return esc(s);
+  let html = '';
+  let cursor = 0;
+  const sn = Number(stepNum) || 1;
+  timers.forEach((t, idx) => {
+    if (t.start > cursor) html += esc(s.slice(cursor, t.start));
+    html += '<button type="button" class="timer-pill no-print" ' +
+      'data-seconds="' + t.seconds + '" ' +
+      'data-low-seconds="' + t.lowSeconds + '" ' +
+      'data-high-seconds="' + t.highSeconds + '" ' +
+      'data-step-num="' + sn + '" ' +
+      'data-timer-idx="' + idx + '" ' +
+      'data-label="' + esc(t.label) + '" ' +
+      'title="Start ' + esc(t.label) + ' timer">' +
+      '⏱ ' + esc(t.label) + '</button>' +
+      '<span class="print-only">' + esc(t.rawText) + '</span>';
+    cursor = t.end;
+  });
+  if (cursor < s.length) html += esc(s.slice(cursor));
+  return html;
+}
+
+/* Pure timer state reducer functions (unit-tested in commit2-ui-test.cjs). */
+function createTimer(opts, nowMs) {
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  const lowSec = Math.max(1, Math.round(Number(opts && (opts.lowSeconds || opts.seconds)) || 60));
+  const highSec = Math.max(lowSec, Math.round(Number(opts && opts.highSeconds) || lowSec));
+  const durMs = lowSec * 1000;
+  return {
+    id: (opts && opts.id) || ('tmr-' + now.toString(36) + '-' + Math.floor(Math.random() * 1e4).toString(36)),
+    recipeId: (opts && opts.recipeId) || '',
+    recipeTitle: (opts && opts.recipeTitle) || 'Timer',
+    stepNum: Number(opts && opts.stepNum) || 1,
+    label: (opts && opts.label) || formatTimerPillDuration(lowSec),
+    durationSec: lowSec,
+    lowSeconds: lowSec,
+    highSeconds: highSec,
+    status: 'running',
+    endTimeMs: now + durMs,
+    remainingMs: durMs,
+    overtimeMs: 0,
+    maxAdded: false,
+    chimeFired: false
+  };
+}
+
+function tickTimer(timer, nowMs) {
+  if (!timer || typeof timer !== 'object') return timer;
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  if (timer.status === 'paused') {
+    return Object.assign({}, timer, { overtimeMs: 0 });
+  }
+  const diff = timer.endTimeMs - now;
+  if (diff <= 0) {
+    return Object.assign({}, timer, {
+      status: 'done',
+      remainingMs: 0,
+      overtimeMs: Math.max(0, -diff)
+    });
+  }
+  return Object.assign({}, timer, {
+    status: 'running',
+    remainingMs: diff,
+    overtimeMs: 0
+  });
+}
+
+function pauseTimer(timer, nowMs) {
+  if (!timer || timer.status !== 'running') return timer;
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  const rem = Math.max(0, timer.endTimeMs - now);
+  if (rem <= 0) return tickTimer(timer, now);
+  return Object.assign({}, timer, {
+    status: 'paused',
+    remainingMs: rem,
+    endTimeMs: null,
+    overtimeMs: 0
+  });
+}
+
+function resumeTimer(timer, nowMs) {
+  if (!timer || timer.status !== 'paused') return timer;
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  const rem = Math.max(1000, Number(timer.remainingMs) || (timer.durationSec * 1000));
+  return Object.assign({}, timer, {
+    status: 'running',
+    endTimeMs: now + rem,
+    remainingMs: rem,
+    overtimeMs: 0
+  });
+}
+
+function resetTimer(timer) {
+  if (!timer) return timer;
+  const baseSec = Math.max(1, Number(timer.lowSeconds || timer.durationSec) || 60);
+  return Object.assign({}, timer, {
+    durationSec: baseSec,
+    status: 'paused',
+    endTimeMs: null,
+    remainingMs: baseSec * 1000,
+    overtimeMs: 0,
+    maxAdded: false,
+    chimeFired: false
+  });
+}
+
+function addTimerSeconds(timer, addSec, nowMs, markMaxAdded) {
+  if (!timer) return timer;
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  const deltaMs = Math.round((Number(addSec) || 0) * 1000);
+  if (deltaMs <= 0) return timer;
+  const nextDur = Math.max(1, (Number(timer.durationSec) || 0) + Math.round(deltaMs / 1000));
+  if (timer.status === 'paused') {
+    const rem = Math.max(0, (Number(timer.remainingMs) || 0) + deltaMs);
+    return Object.assign({}, timer, {
+      durationSec: nextDur,
+      remainingMs: rem,
+      overtimeMs: 0,
+      maxAdded: !!(timer.maxAdded || markMaxAdded)
+    });
+  }
+  const baseEnd = (timer.status === 'running' && timer.endTimeMs && timer.endTimeMs > now)
+    ? timer.endTimeMs
+    : now;
+  const newEnd = baseEnd + deltaMs;
+  return Object.assign({}, timer, {
+    durationSec: nextDur,
+    status: 'running',
+    endTimeMs: newEnd,
+    remainingMs: Math.max(0, newEnd - now),
+    overtimeMs: 0,
+    maxAdded: !!(timer.maxAdded || markMaxAdded),
+    chimeFired: false
+  });
+}
+
+function addTimerMinute(timer, nowMs) {
+  return addTimerSeconds(timer, 60, nowMs, false);
+}
+
+function addTimerToMax(timer, nowMs) {
+  if (!timer || timer.maxAdded) return timer;
+  const extraSec = Math.max(0, (Number(timer.highSeconds) || 0) - (Number(timer.lowSeconds) || 0));
+  if (extraSec <= 0) return timer;
+  return addTimerSeconds(timer, extraSec, nowMs, true);
+}
+
+/* Session-only timer store + sessionStorage reload recovery (Binding Decision #2 & #6a). */
+const TIMER_SESSION_KEY = 'reiss-active-timers-v1';
+let activeTimers = [];
+let timerSoundEnabled = true; // Binding Decision #2: SOUND IS ON BY DEFAULT
+let timerIntervalId = null;
+
+function serializeTimersForSession(timers, soundOn) {
+  return JSON.stringify({
+    soundOn: soundOn !== undefined ? !!soundOn : true,
+    timers: (Array.isArray(timers) ? timers : []).map(t => ({
+      id: t.id,
+      recipeId: t.recipeId,
+      recipeTitle: t.recipeTitle,
+      stepNum: t.stepNum,
+      label: t.label,
+      durationSec: t.durationSec,
+      lowSeconds: t.lowSeconds,
+      highSeconds: t.highSeconds,
+      status: t.status,
+      endTimeMs: t.endTimeMs,
+      remainingMs: t.remainingMs,
+      overtimeMs: t.overtimeMs || 0,
+      maxAdded: !!t.maxAdded,
+      chimeFired: !!t.chimeFired
+    }))
+  });
+}
+
+function restoreTimersFromSessionJSON(rawJson, nowMs) {
+  const now = typeof nowMs === 'number' ? nowMs : Date.now();
+  if (!rawJson || typeof rawJson !== 'string') {
+    return { soundOn: true, timers: [] };
+  }
+  try {
+    const parsed = JSON.parse(rawJson);
+    const soundOn = (parsed && typeof parsed.soundOn === 'boolean') ? parsed.soundOn : true;
+    const list = (parsed && Array.isArray(parsed.timers)) ? parsed.timers : [];
+    const restored = list
+      .filter(t => t && typeof t === 'object' && t.id)
+      .map(t => tickTimer(t, now));
+    return { soundOn, timers: restored };
+  } catch (e) {
+    return { soundOn: true, timers: [] };
+  }
+}
+
+function saveTimersToSession() {
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(TIMER_SESSION_KEY, serializeTimersForSession(activeTimers, timerSoundEnabled));
+    }
+  } catch (e) {}
+}
+
+function loadTimersFromSession() {
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(TIMER_SESSION_KEY);
+      if (raw) {
+        const res = restoreTimersFromSessionJSON(raw, Date.now());
+        timerSoundEnabled = res.soundOn;
+        activeTimers = res.timers;
+        ensureTimerTicker();
+      }
+    }
+  } catch (e) {}
+}
+
+/* Short Web Audio API sine blip (Binding Decision #2: never an <audio> element). */
+let _sharedAudioCtx = null;
+function playTimerChime() {
+  if (!timerSoundEnabled) return false;
+  try {
+    const Ctx = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
+    if (!Ctx) return false;
+    if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
+      _sharedAudioCtx = new Ctx();
+    }
+    if (_sharedAudioCtx.state === 'suspended' && typeof _sharedAudioCtx.resume === 'function') {
+      _sharedAudioCtx.resume().catch(() => {});
+    }
+    const now = _sharedAudioCtx.currentTime;
+    // Two gentle, clear kitchen sine blips (880Hz A5 -> 1174.66Hz D6), 0.16s each.
+    [0, 0.22].forEach((offset, i) => {
+      const osc = _sharedAudioCtx.createOscillator();
+      const gain = _sharedAudioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(i === 0 ? 880 : 1174.66, now + offset);
+      gain.gain.setValueAtTime(0.001, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.22, now + offset + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.17);
+      osc.connect(gain);
+      gain.connect(_sharedAudioCtx.destination);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.18);
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function timerDockHTML(timers, soundOn) {
+  const list = Array.isArray(timers) ? timers : [];
+  if (!list.length) return '';
+  const cards = list.map(t => {
+    const isDone = t.status === 'done';
+    const isPaused = t.status === 'paused';
+    const readout = isDone
+      ? ('00:00 · Done! +' + formatTimerReadout(t.overtimeMs || 0))
+      : formatTimerReadout(t.remainingMs);
+    const extraMaxSec = (!t.maxAdded && t.highSeconds > t.lowSeconds)
+      ? (t.highSeconds - t.lowSeconds)
+      : 0;
+    const toMaxBtn = extraMaxSec > 0
+      ? '<button type="button" class="timer-btn timer-tomax" data-timer-act="tomax" data-tid="' + esc(t.id) + '" title="Extend to upper bound">+' + esc(formatTimerPillDuration(extraMaxSec)) + ' to max</button>'
+      : '';
+    const toggleBtn = isDone
+      ? ''
+      : ('<button type="button" class="timer-btn" data-timer-act="' + (isPaused ? 'resume' : 'pause') + '" data-tid="' + esc(t.id) + '">' + (isPaused ? '▶ Resume' : '⏸ Pause') + '</button>');
+    return '<div class="timer-card' + (isDone ? ' is-done' : (isPaused ? ' is-paused' : '')) + '" data-timer-card="' + esc(t.id) + '">' +
+      '<div class="timer-card-info">' +
+        '<span class="timer-card-title">' + esc(t.recipeTitle) + ' · Step ' + Number(t.stepNum || 1) + ' (' + esc(t.label) + ')</span>' +
+        '<span class="timer-readout" data-timer-readout="' + esc(t.id) + '">' + esc(readout) + '</span>' +
+      '</div>' +
+      '<div class="timer-card-actions">' +
+        toggleBtn +
+        '<button type="button" class="timer-btn" data-timer-act="plus1m" data-tid="' + esc(t.id) + '">+1m</button>' +
+        toMaxBtn +
+        '<button type="button" class="timer-btn" data-timer-act="reset" data-tid="' + esc(t.id) + '">Reset</button>' +
+        '<button type="button" class="timer-btn timer-dismiss" data-timer-act="dismiss" data-tid="' + esc(t.id) + '" aria-label="Dismiss timer">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="timer-dock-inner">' +
+    '<div class="timer-dock-head">' +
+      '<span class="timer-dock-label">⏱ Active Timers (' + list.length + ')</span>' +
+      '<button type="button" class="timer-sound-toggle' + (soundOn ? ' is-on' : '') + '" data-timer-act="toggle-sound" aria-pressed="' + (soundOn ? 'true' : 'false') + '">' +
+        (soundOn ? '🔔 Sound: On' : '🔕 Sound: Off') +
+      '</button>' +
+    '</div>' +
+    '<div class="timer-dock-list">' + cards + '</div>' +
+  '</div>';
+}
+
+function ensureTimerDockMounted() {
+  if (typeof document === 'undefined') return null;
+  let dock = document.getElementById('timer-dock');
+  if (!dock) {
+    dock = document.createElement('div');
+    dock.id = 'timer-dock';
+    dock.className = 'timer-dock no-print';
+    dock.hidden = true;
+    document.body.appendChild(dock);
+  }
+  if (!dock._wired) {
+    dock._wired = true;
+    dock.addEventListener('click', e => {
+      const btn = e.target.closest('[data-timer-act]');
+      if (!btn) return;
+      const act = btn.dataset.timerAct;
+      const tid = btn.dataset.tid;
+      const now = Date.now();
+      if (act === 'toggle-sound') {
+        timerSoundEnabled = !timerSoundEnabled;
+        if (timerSoundEnabled) playTimerChime();
+        saveTimersToSession();
+        renderTimerDock();
+        return;
+      }
+      if (act === 'dismiss') {
+        activeTimers = activeTimers.filter(t => t.id !== tid);
+        saveTimersToSession();
+        renderTimerDock();
+        return;
+      }
+      activeTimers = activeTimers.map(t => {
+        if (t.id !== tid) return t;
+        if (act === 'pause') return pauseTimer(t, now);
+        if (act === 'resume') return resumeTimer(t, now);
+        if (act === 'reset') return resetTimer(t);
+        if (act === 'plus1m') return addTimerMinute(t, now);
+        if (act === 'tomax') return addTimerToMax(t, now);
+        return t;
+      });
+      ensureTimerTicker();
+      saveTimersToSession();
+      renderTimerDock();
+    });
+  }
+  return dock;
+}
+
+function renderTimerDock() {
+  if (typeof document === 'undefined') return;
+  const dock = ensureTimerDockMounted();
+  if (!dock) return;
+  if (!activeTimers.length) {
+    dock.hidden = true;
+    dock.innerHTML = '';
+    document.body.classList.remove('has-timer-dock');
+    return;
+  }
+  dock.hidden = false;
+  document.body.classList.add('has-timer-dock');
+  dock.innerHTML = timerDockHTML(activeTimers, timerSoundEnabled);
+}
+
+function tickAllTimers() {
+  if (!activeTimers.length) {
+    if (timerIntervalId) { clearInterval(timerIntervalId); timerIntervalId = null; }
+    return;
+  }
+  const now = Date.now();
+  let newlyDone = false;
+  let statusChanged = false;
+  activeTimers = activeTimers.map(t => {
+    const prevStatus = t.status;
+    const next = tickTimer(t, now);
+    if (next.status === 'done' && !next.chimeFired) {
+      next.chimeFired = true;
+      newlyDone = true;
+      statusChanged = true;
+    } else if (next.status !== prevStatus) {
+      statusChanged = true;
+    }
+    return next;
+  });
+  if (newlyDone) {
+    playTimerChime();
+    saveTimersToSession();
+  }
+  if (statusChanged) {
+    renderTimerDock();
+    return;
+  }
+  if (typeof document !== 'undefined') {
+    activeTimers.forEach(t => {
+      const el = document.querySelector('[data-timer-readout="' + t.id + '"]');
+      if (el) {
+        el.textContent = t.status === 'done'
+          ? ('00:00 · Done! +' + formatTimerReadout(t.overtimeMs || 0))
+          : formatTimerReadout(t.remainingMs);
+      }
+    });
+  }
+}
+
+function ensureTimerTicker() {
+  if (typeof window === 'undefined') return;
+  if (!timerIntervalId && activeTimers.length) {
+    timerIntervalId = setInterval(tickAllTimers, 250);
+  }
+}
+
+function startStepTimerFromPill(recipe, pillEl) {
+  if (!pillEl) return null;
+  const lowSeconds = Number(pillEl.dataset.lowSeconds || pillEl.dataset.seconds) || 60;
+  const highSeconds = Number(pillEl.dataset.highSeconds || lowSeconds) || lowSeconds;
+  const stepNum = Number(pillEl.dataset.stepNum) || 1;
+  const label = pillEl.dataset.label || formatTimerPillDuration(lowSeconds);
+  const t = createTimer({
+    recipeId: recipe && recipe.id ? recipe.id : '',
+    recipeTitle: recipe && recipe.title ? recipe.title : 'Recipe',
+    stepNum,
+    label,
+    seconds: lowSeconds,
+    lowSeconds,
+    highSeconds
+  }, Date.now());
+  activeTimers.push(t);
+  saveTimersToSession();
+  ensureTimerTicker();
+  renderTimerDock();
+  return t;
+}
+
+/* ---------------- Keep Screen Awake (navigator.wakeLock) ---------------- */
+const WAKE_LOCK_MAX_MS = 2 * 60 * 60 * 1000; // 2-hour safety cap
+let wakeLockSentinel = null;
+let wakeLockWanted = false;
+let wakeLockTimeoutId = null;
+
+function wakeLockSupported(navObj) {
+  const nav = navObj || (typeof navigator !== 'undefined' ? navigator : null);
+  return !!(nav && nav.wakeLock && typeof nav.wakeLock.request === 'function');
+}
+
+async function acquireWakeLock(navObj) {
+  const nav = navObj || (typeof navigator !== 'undefined' ? navigator : null);
+  if (!wakeLockSupported(nav)) {
+    wakeLockWanted = false;
+    return { ok: false, supported: false, reason: 'unsupported' };
+  }
+  try {
+    if (wakeLockSentinel && !wakeLockSentinel.released) {
+      wakeLockWanted = true;
+      return { ok: true, supported: true };
+    }
+    const sentinel = await nav.wakeLock.request('screen');
+    wakeLockSentinel = sentinel;
+    wakeLockWanted = true;
+    if (sentinel && typeof sentinel.addEventListener === 'function') {
+      sentinel.addEventListener('release', () => {
+        if (wakeLockSentinel === sentinel) wakeLockSentinel = null;
+        updateWakeLockButtons();
+      });
+    }
+    if (wakeLockTimeoutId) clearTimeout(wakeLockTimeoutId);
+    if (typeof setTimeout === 'function') {
+      wakeLockTimeoutId = setTimeout(() => { releaseWakeLock(); }, WAKE_LOCK_MAX_MS);
+    }
+    updateWakeLockButtons();
+    return { ok: true, supported: true };
+  } catch (e) {
+    wakeLockSentinel = null;
+    return { ok: false, supported: true, reason: (e && e.message) ? e.message : 'rejected' };
+  }
+}
+
+async function releaseWakeLock() {
+  wakeLockWanted = false;
+  if (wakeLockTimeoutId) {
+    clearTimeout(wakeLockTimeoutId);
+    wakeLockTimeoutId = null;
+  }
+  const s = wakeLockSentinel;
+  wakeLockSentinel = null;
+  if (s && typeof s.release === 'function') {
+    try { await s.release(); } catch (e) {}
+  }
+  updateWakeLockButtons();
+  return { ok: true };
+}
+
+async function handleWakeLockVisibility(docObj, navObj) {
+  const doc = docObj || (typeof document !== 'undefined' ? document : null);
+  if (!doc) return false;
+  if (!doc.hidden) {
+    tickAllTimers();
+    if (wakeLockWanted) {
+      const res = await acquireWakeLock(navObj);
+      return res.ok;
+    }
+  }
+  return false;
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    handleWakeLockVisibility(document, typeof navigator !== 'undefined' ? navigator : null);
+  });
+}
+
+function updateWakeLockButtons() {
+  if (typeof document === 'undefined') return;
+  const active = !!(wakeLockWanted && wakeLockSentinel && !wakeLockSentinel.released);
+  const detailBtn = document.getElementById('detail-wake-btn');
+  if (detailBtn) {
+    detailBtn.classList.toggle('active', wakeLockWanted);
+    detailBtn.setAttribute('aria-pressed', wakeLockWanted ? 'true' : 'false');
+    detailBtn.textContent = wakeLockWanted
+      ? (active ? '☀ Screen awake: On' : '☀ Screen awake: Armed')
+      : '☀ Keep screen awake';
+  }
+  const cmBtn = document.getElementById('cm-wake-btn');
+  if (cmBtn) {
+    cmBtn.classList.toggle('active', wakeLockWanted);
+    cmBtn.setAttribute('aria-pressed', wakeLockWanted ? 'true' : 'false');
+    cmBtn.textContent = wakeLockWanted
+      ? (active ? '☀ Screen awake: On' : '☀ Screen awake: Armed')
+      : '☀ Keep screen awake: Off';
+  }
+}
+
+/* ---------------- Device Capability Probe (Phase 1 detection & reporting) ---------------- */
+function checkCookCapabilities(winObj, navObj) {
+  const w = winObj || (typeof window !== 'undefined' ? window : {});
+  const n = navObj || (typeof navigator !== 'undefined' ? navigator : {});
+  const ttsSupported = !!('speechSynthesis' in w && typeof w.speechSynthesis && typeof w.speechSynthesis.speak === 'function');
+  let voiceCount = 0;
+  if (ttsSupported && typeof w.speechSynthesis.getVoices === 'function') {
+    try { voiceCount = (w.speechSynthesis.getVoices() || []).length; } catch (e) { voiceCount = 0; }
+  }
+  const speechRecSupported = !!('SpeechRecognition' in w || 'webkitSpeechRecognition' in w);
+  const wakeSupported = wakeLockSupported(n);
+  const webAudioSupported = !!('AudioContext' in w || 'webkitAudioContext' in w);
+  return {
+    speechSynthesis: ttsSupported,
+    voiceCount,
+    speechRecognition: speechRecSupported,
+    wakeLock: wakeSupported,
+    webAudio: webAudioSupported,
+    wakeLockActive: !!(wakeLockSentinel && !wakeLockSentinel.released)
+  };
+}
+
+function formatCapabilitiesReportHTML(caps) {
+  const c = caps || checkCookCapabilities();
+  const badge = ok => ok
+    ? '<span class="cap-badge ok">Supported</span>'
+    : '<span class="cap-badge no">Not supported</span>';
+  return '<div class="cm-probe-card" role="region" aria-label="Device capability probe">' +
+    '<div class="cm-probe-head"><strong>Device Capabilities Report</strong>' +
+      '<button type="button" class="link-btn" data-cm-act="close-probe">Close</button></div>' +
+    '<ul class="cm-probe-list">' +
+      '<li><span>Timer Chime (Web Audio API):</span> ' + badge(c.webAudio) +
+        ' <button type="button" class="pill" data-cm-act="test-chime">Test chime</button></li>' +
+      '<li><span>Step Read-Aloud (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
+        ' <span class="muted">(' + Number(c.voiceCount || 0) + ' voice' + (c.voiceCount === 1 ? '' : 's') + ')</span></li>' +
+      '<li><span>Keep Screen Awake (navigator.wakeLock):</span> ' + badge(c.wakeLock) +
+        (c.wakeLock ? (' <span class="muted">(' + (c.wakeLockActive ? 'currently locked' : 'unlocked') + ')</span>') : '') + '</li>' +
+      '<li><span>Voice Recognition API (Phase 2 probe only — mic NOT opened):</span> ' + badge(c.speechRecognition) + '</li>' +
+    '</ul>' +
+  '</div>';
+}
+
+/* ---------------- One-Step Read-Aloud (browser speechSynthesis) ---------------- */
+function stopStepSpeech(winObj) {
+  const w = winObj || (typeof window !== 'undefined' ? window : null);
+  if (w && w.speechSynthesis && typeof w.speechSynthesis.cancel === 'function') {
+    try { w.speechSynthesis.cancel(); } catch (e) {}
+  }
+}
+
+function speakRecipeStepText(text, onEnd, winObj) {
+  const w = winObj || (typeof window !== 'undefined' ? window : null);
+  if (!w || !w.speechSynthesis || typeof w.SpeechSynthesisUtterance !== 'function') {
+    if (typeof onEnd === 'function') onEnd(false);
+    return false;
+  }
+  const clean = String(text || '').trim();
+  if (!clean) {
+    if (typeof onEnd === 'function') onEnd(false);
+    return false;
+  }
+  try {
+    w.speechSynthesis.cancel();
+    const u = new w.SpeechSynthesisUtterance(clean);
+    u.rate = 0.98;
+    u.onend = () => { if (typeof onEnd === 'function') onEnd(true); };
+    u.onerror = () => { if (typeof onEnd === 'function') onEnd(false); };
+    w.speechSynthesis.speak(u);
+    return true;
+  } catch (e) {
+    if (typeof onEnd === 'function') onEnd(false);
+    return false;
+  }
+}
+
+/* ---------------- Big-Screen Cook Mode Pure Helpers ---------------- */
+function clampCookStepIndex(idx, totalSteps) {
+  const total = Math.max(1, Number(totalSteps) || 1);
+  const n = Number(idx);
+  if (!Number.isFinite(n) || n < 0) return 0;
+  if (n >= total) return total - 1;
+  return Math.floor(n);
+}
+
+function formatScaledIngredientLine(itemObj, factor) {
+  if (!itemObj || typeof itemObj !== 'object') return { qtyText: '', itemText: '', optional: false, prep: '' };
+  const f = (typeof factor === 'number' && Number.isFinite(factor) && factor > 0) ? factor : 1;
+  const baseQty = String(itemObj.qty || '');
+  const unit = String(itemObj.unit || '');
+  const baseItem = String(itemObj.item || '');
+  let qtyText = '';
+  if (!baseQty) {
+    qtyText = unit;
+  } else {
+    const scaled = scaleQty(baseQty, unit, f);
+    if (!scaled) {
+      qtyText = [baseQty, unit].filter(Boolean).join(' ');
+    } else if (!/\d/.test(scaled)) {
+      qtyText = scaled;
+    } else {
+      const dispUnit = pluralizeScaledUnit(unit, scaled);
+      qtyText = dispUnit ? (scaled + ' ' + dispUnit) : scaled;
+    }
+  }
+  let itemText = baseItem;
+  if (baseItem && !unit) {
+    const parsed = parseQty(baseQty);
+    let scaledNum = null;
+    if (typeof parsed === 'number') scaledNum = parsed * f;
+    else if (Array.isArray(parsed)) scaledNum = parsed[1] * f;
+    if (scaledNum !== null) itemText = pluralize(baseItem, scaledNum);
+  }
+  return {
+    qtyText,
+    itemText,
+    prep: String(itemObj.prep || ''),
+    optional: !!itemObj.optional
+  };
+}
+
+function cookModeIngredientsHTML(recipe, factor, variantKey, checkedSet) {
+  const r = recipe || {};
+  const f = (typeof factor === 'number' && Number.isFinite(factor) && factor > 0) ? factor : 1;
+  const vKey = variantKey !== undefined ? variantKey : variantDefaultKey(r.variants);
+  const sections = filterIngredientsForVariant(r.ingredients || [], vKey);
+  const checked = checkedSet instanceof Set ? checkedSet : new Set(Array.isArray(checkedSet) ? checkedSet : []);
+  let flatIdx = 0;
+  return (sections || []).map(sec => {
+    const itemsHTML = (sec.items || []).map(it => {
+      const key = 'ing-' + (flatIdx++);
+      const isChecked = checked.has(key);
+      const fmt = formatScaledIngredientLine(it, f);
+      return '<li class="cm-ing-item' + (isChecked ? ' is-checked' : '') + '" data-cm-ing="' + esc(key) + '">' +
+        '<button type="button" class="cm-ing-check" data-cm-ing-toggle="' + esc(key) + '" aria-pressed="' + (isChecked ? 'true' : 'false') + '">' +
+          '<span class="cm-check-box">' + (isChecked ? '✓' : '') + '</span>' +
+          '<span class="cm-ing-text">' +
+            (fmt.qtyText ? '<strong class="cm-ing-qty">' + esc(fmt.qtyText) + '</strong> ' : '') +
+            '<span class="cm-ing-name">' + esc(fmt.itemText) + '</span>' +
+            (fmt.prep ? '<span class="cm-ing-prep">, ' + esc(fmt.prep) + '</span>' : '') +
+            (fmt.optional ? ' <em class="opt-tag">optional</em>' : '') +
+          '</span>' +
+        '</button>' +
+      '</li>';
+    }).join('');
+    return (sec.section ? '<h4 class="cm-ing-sec">' + esc(sec.section) + '</h4>' : '') +
+      '<ul class="cm-ing-list">' + itemsHTML + '</ul>';
+  }).join('');
+}
+
+function cookModeStepHTML(recipe, stepIdx) {
+  const steps = (recipe && Array.isArray(recipe.instructions) && recipe.instructions.length)
+    ? recipe.instructions
+    : ['No instructions listed for this recipe.'];
+  const clamped = clampCookStepIndex(stepIdx, steps.length);
+  const stepText = steps[clamped];
+  return '<div class="cm-step-card" data-cm-step-idx="' + clamped + '">' +
+    '<div class="cm-step-badge">Step ' + (clamped + 1) + ' of ' + steps.length + '</div>' +
+    '<div class="cm-step-body">' + renderStepWithTimersHTML(stepText, clamped + 1) + '</div>' +
+  '</div>';
+}
+
+/* ---------------- Big-Screen Cook Mode Controller ---------------- */
+let cookModeState = null;
+
+function renderCookModeOverlay() {
+  if (!cookModeState || typeof document === 'undefined') return;
+  const st = cookModeState;
+  const r = st.recipe;
+  const steps = (Array.isArray(r.instructions) && r.instructions.length)
+    ? r.instructions
+    : ['No instructions listed for this recipe.'];
+  st.stepIdx = clampCookStepIndex(st.stepIdx, steps.length);
+  const f = st.getScale();
+  const vKey = st.getVariant();
+  const wlSupported = wakeLockSupported();
+
+  let overlay = document.getElementById('cook-mode-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'cook-mode-overlay';
+    overlay.className = 'cook-mode-overlay no-print';
+    document.body.appendChild(overlay);
+  }
+
+  const presets = [0.5, 1, 2, 3];
+  const scalePills = presets.map(p =>
+    '<button type="button" class="scale-btn' + (f === p ? ' active' : '') + '" data-cm-scale="' + p + '">' + p + 'x</button>'
+  ).join('');
+  const variantPills = (Array.isArray(r.variants) && r.variants.length)
+    ? '<div class="cm-variants">' + r.variants.map(v =>
+        '<button type="button" class="variant-pill' + (v.key === vKey ? ' active' : '') + '" data-cm-variant="' + esc(v.key) + '">' + esc(v.label) + '</button>'
+      ).join('') + '</div>'
+    : '';
+
+  const isFirst = st.stepIdx === 0;
+  const isLast = st.stepIdx >= steps.length - 1;
+
+  overlay.innerHTML =
+    '<div class="cm-topbar">' +
+      '<div class="cm-title-wrap">' +
+        '<h2 class="cm-title">' + esc(r.title) + '</h2>' +
+        '<span class="cm-progress-pill">Step ' + (st.stepIdx + 1) + ' of ' + steps.length + '</span>' +
+      '</div>' +
+      '<div class="cm-top-actions">' +
+        '<button type="button" class="btn secondary cm-drawer-toggle" data-cm-act="toggle-ing">' +
+          (st.ingDrawerOpen ? 'Hide Ingredients' : '📋 Ingredients') +
+        '</button>' +
+        (wlSupported
+          ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="cm-wake-btn" data-cm-act="toggle-wake" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '">☀ ' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake: Off') + '</button>'
+          : '<span class="wake-unsupported" id="cm-wake-unsupported">Screen wake lock not supported on this browser</span>') +
+        '<button type="button" class="pill" data-cm-act="probe" title="Test Device Capabilities">🔍 Test Device Capabilities</button>' +
+        '<button type="button" class="btn secondary cm-exit-btn" data-cm-act="exit">✕ Exit Cook Mode</button>' +
+      '</div>' +
+    '</div>' +
+    (st.probeOpen ? formatCapabilitiesReportHTML(checkCookCapabilities()) : '') +
+    '<div class="cm-workspace">' +
+      '<aside class="cm-ing-pane' + (st.ingDrawerOpen ? ' is-open' : '') + '">' +
+        '<div class="cm-ing-head">' +
+          '<h3>Ingredients</h3>' +
+          '<div class="cm-scale-bar"><span class="scale-label">Scale:</span> ' + scalePills + '</div>' +
+          variantPills +
+        '</div>' +
+        '<div class="cm-ing-scroll" id="cm-ing-scroll">' +
+          cookModeIngredientsHTML(r, f, vKey, st.checkedIngredients) +
+        '</div>' +
+      '</aside>' +
+      '<section class="cm-stage" id="cm-stage">' +
+        cookModeStepHTML(r, st.stepIdx) +
+        '<div class="cm-speech-bar">' +
+          '<button type="button" class="btn secondary cm-read-btn" data-cm-act="read-step">' +
+            (st.isSpeaking ? '⏹ Stop speaking' : '🔊 Read step') +
+          '</button>' +
+          '<button type="button" class="btn secondary cm-repeat-btn" data-cm-act="repeat-step" title="Read this step again">🔁 Repeat</button>' +
+          '<label class="cm-autoread-label">' +
+            '<input type="checkbox" id="cm-autoread"' + (st.autoRead ? ' checked' : '') + '> Auto-read on Next' +
+          '</label>' +
+        '</div>' +
+        '<div class="cm-nav-deck">' +
+          '<button type="button" class="btn secondary cm-prev-pad" data-cm-act="prev"' + (isFirst ? ' disabled' : '') + '>← Prev</button>' +
+          '<button type="button" class="btn cm-next-pad" data-cm-act="next">' +
+            (isLast ? '✓ Done cooking' : 'Next Step →') +
+          '</button>' +
+        '</div>' +
+      '</section>' +
+    '</div>';
+}
+
+function speakCurrentCookModeStep() {
+  if (!cookModeState) return;
+  const r = cookModeState.recipe;
+  const steps = (Array.isArray(r.instructions) && r.instructions.length) ? r.instructions : [];
+  if (!steps.length) return;
+  const idx = clampCookStepIndex(cookModeState.stepIdx, steps.length);
+  const text = 'Step ' + (idx + 1) + ' of ' + steps.length + '. ' + steps[idx];
+  cookModeState.isSpeaking = true;
+  renderCookModeOverlay();
+  const started = speakRecipeStepText(text, () => {
+    if (cookModeState) {
+      cookModeState.isSpeaking = false;
+      renderCookModeOverlay();
+    }
+  });
+  if (!started && cookModeState) {
+    cookModeState.isSpeaking = false;
+    renderCookModeOverlay();
+    toast('Speech synthesis is not available on this browser.');
+  }
+}
+
+function advanceCookModeStep(delta) {
+  if (!cookModeState) return;
+  const steps = (cookModeState.recipe && Array.isArray(cookModeState.recipe.instructions) && cookModeState.recipe.instructions.length)
+    ? cookModeState.recipe.instructions
+    : [''];
+  stopStepSpeech();
+  cookModeState.isSpeaking = false;
+  if (delta > 0 && cookModeState.stepIdx >= steps.length - 1) {
+    closeCookMode();
+    return;
+  }
+  cookModeState.stepIdx = clampCookStepIndex(cookModeState.stepIdx + delta, steps.length);
+  renderCookModeOverlay();
+  if (delta > 0 && cookModeState.autoRead) {
+    speakCurrentCookModeStep();
+  }
+}
+
+function openCookMode(recipe, hooks) {
+  if (!recipe || typeof document === 'undefined') return;
+  cookModeState = {
+    recipe,
+    stepIdx: 0,
+    checkedIngredients: new Set(),
+    ingDrawerOpen: false,
+    autoRead: false,
+    isSpeaking: false,
+    probeOpen: false,
+    getScale: (hooks && hooks.getScale) ? hooks.getScale : () => 1,
+    setScale: (hooks && hooks.setScale) ? hooks.setScale : () => {},
+    getVariant: (hooks && hooks.getVariant) ? hooks.getVariant : () => variantDefaultKey(recipe.variants),
+    setVariant: (hooks && hooks.setVariant) ? hooks.setVariant : () => {}
+  };
+  document.body.classList.add('cook-mode-open');
+  // Binding Decision #6b: Wake lock auto-requests when entering Cook Mode.
+  acquireWakeLock().then(() => {
+    if (cookModeState) updateWakeLockButtons();
+  });
+  renderCookModeOverlay();
+
+  const overlay = document.getElementById('cook-mode-overlay');
+  if (overlay && !overlay._wired) {
+    overlay._wired = true;
+    overlay.addEventListener('click', async e => {
+      if (!cookModeState) return;
+      const pill = e.target.closest('.timer-pill');
+      if (pill) {
+        startStepTimerFromPill(cookModeState.recipe, pill);
+        return;
+      }
+      const ingBtn = e.target.closest('[data-cm-ing-toggle]');
+      if (ingBtn) {
+        const key = ingBtn.dataset.cmIngToggle;
+        if (cookModeState.checkedIngredients.has(key)) cookModeState.checkedIngredients.delete(key);
+        else cookModeState.checkedIngredients.add(key);
+        renderCookModeOverlay();
+        return;
+      }
+      const scaleBtn = e.target.closest('[data-cm-scale]');
+      if (scaleBtn) {
+        const f = parseFloat(scaleBtn.dataset.cmScale);
+        if (Number.isFinite(f) && f > 0) {
+          cookModeState.setScale(f);
+          renderCookModeOverlay();
+        }
+        return;
+      }
+      const varBtn = e.target.closest('[data-cm-variant]');
+      if (varBtn) {
+        cookModeState.setVariant(varBtn.dataset.cmVariant);
+        renderCookModeOverlay();
+        return;
+      }
+      const actBtn = e.target.closest('[data-cm-act]');
+      if (!actBtn) return;
+      const act = actBtn.dataset.cmAct;
+      if (act === 'exit') {
+        closeCookMode();
+      } else if (act === 'prev') {
+        advanceCookModeStep(-1);
+      } else if (act === 'next') {
+        advanceCookModeStep(1);
+      } else if (act === 'toggle-ing') {
+        cookModeState.ingDrawerOpen = !cookModeState.ingDrawerOpen;
+        renderCookModeOverlay();
+      } else if (act === 'read-step') {
+        if (cookModeState.isSpeaking) {
+          stopStepSpeech();
+          cookModeState.isSpeaking = false;
+          renderCookModeOverlay();
+        } else {
+          speakCurrentCookModeStep();
+        }
+      } else if (act === 'repeat-step') {
+        speakCurrentCookModeStep();
+      } else if (act === 'toggle-wake') {
+        if (wakeLockWanted) await releaseWakeLock();
+        else await acquireWakeLock();
+        renderCookModeOverlay();
+      } else if (act === 'probe') {
+        cookModeState.probeOpen = !cookModeState.probeOpen;
+        renderCookModeOverlay();
+      } else if (act === 'close-probe') {
+        cookModeState.probeOpen = false;
+        renderCookModeOverlay();
+      } else if (act === 'test-chime') {
+        const prev = timerSoundEnabled;
+        timerSoundEnabled = true;
+        playTimerChime();
+        timerSoundEnabled = prev;
+      }
+    });
+    overlay.addEventListener('change', e => {
+      if (!cookModeState) return;
+      if (e.target && e.target.id === 'cm-autoread') {
+        cookModeState.autoRead = !!e.target.checked;
+      }
+    });
+    // Horizontal swipe on the step card for Prev / Next.
+    let touchStartX = null;
+    let touchStartY = null;
+    overlay.addEventListener('touchstart', e => {
+      if (!e.touches || e.touches.length !== 1) return;
+      if (!e.target.closest('.cm-step-card')) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    overlay.addEventListener('touchend', e => {
+      if (touchStartX === null || !e.changedTouches || !e.changedTouches.length) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      touchStartX = null;
+      touchStartY = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) advanceCookModeStep(1);
+        else advanceCookModeStep(-1);
+      }
+    }, { passive: true });
+  }
+
+  if (!window._cookModeKeyWired) {
+    window._cookModeKeyWired = true;
+    window.addEventListener('keydown', e => {
+      if (!cookModeState) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeCookMode();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        advanceCookModeStep(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        advanceCookModeStep(-1);
+      }
+    });
+  }
+}
+
+function closeCookMode(fromRoute) {
+  stopStepSpeech();
+  cookModeState = null;
+  if (typeof document !== 'undefined') {
+    document.body.classList.remove('cook-mode-open');
+    const overlay = document.getElementById('cook-mode-overlay');
+    if (overlay) overlay.remove();
+  }
+  releaseWakeLock();
+  if (!fromRoute) updateWakeLockButtons();
 }
 
 /* PDF URL for a recipe: explicit r.pdf wins; otherwise every complete recipe

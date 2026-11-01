@@ -1512,3 +1512,482 @@ footer.site-footer {
 /* Slot picker last-made hint */
 .combo-item { display: flex; align-items: baseline; gap: 0.5rem; width: 100%; text-align: left; }
 .combo-hint { margin-left: auto; font-size: 0.8rem; color: var(--ink-soft); font-style: italic; white-space: nowrap; }
+
+/* ---------------- Phase 1: Timers, Cook Mode, Wake Lock & Probe ---------------- */
+.print-only { display: none; }
+@media print {
+  .print-only { display: inline; }
+}
+
+.cook-entry-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.65rem 0 0.35rem;
+}
+.cook-launch-btn {
+  font-size: 1rem;
+  padding: 0.5rem 1.05rem;
+  font-weight: 700;
+}
+.wake-pill {
+  padding: 0.38rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.wake-unsupported {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* Inline step timer pills */
+.timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 0.15rem;
+  padding: 0.12rem 0.55rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  background: #fff6ec;
+  color: var(--accent-dark);
+  font-weight: 700;
+  font-size: 0.92em;
+  line-height: 1.35;
+  cursor: pointer;
+  vertical-align: baseline;
+  transition: background 0.15s, transform 0.1s;
+}
+.timer-pill:hover, .timer-pill:focus {
+  background: var(--accent);
+  color: #fff;
+}
+.timer-pill:active {
+  transform: scale(0.97);
+}
+
+/* Fixed bottom timer dock (#timer-dock) */
+body.has-timer-dock {
+  padding-bottom: 120px;
+}
+.timer-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 140;
+  background: var(--card);
+  border-top: 2px solid var(--accent);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.15);
+  padding: 0.55rem 0.9rem 0.65rem;
+}
+.timer-dock-inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+.timer-dock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.88rem;
+}
+.timer-dock-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+.timer-sound-toggle {
+  padding: 0.22rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.timer-sound-toggle.is-on {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.timer-dock-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 185px;
+  overflow-y: auto;
+}
+.timer-card {
+  flex: 1 1 280px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--cream);
+}
+.timer-card.is-paused {
+  opacity: 0.88;
+  border-style: dashed;
+}
+.timer-card.is-done {
+  background: #fde8e4;
+  border-color: var(--meat);
+  animation: timer-pulse 1.1s infinite alternate;
+}
+@keyframes timer-pulse {
+  from { background: #fde8e4; box-shadow: 0 0 0 0 rgba(160, 61, 26, 0.35); }
+  to { background: #fbd0c8; box-shadow: 0 0 0 4px rgba(160, 61, 26, 0.2); }
+}
+.timer-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 140px;
+}
+.timer-card-title {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.timer-readout {
+  font-size: 1.45rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.timer-card.is-done .timer-readout {
+  color: var(--meat);
+}
+.timer-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.timer-btn {
+  padding: 0.32rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 36px;
+}
+.timer-btn:hover {
+  border-color: var(--accent);
+}
+.timer-btn.timer-tomax {
+  background: #fff6ec;
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+.timer-btn.timer-dismiss {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+/* Big-Screen Cook Mode overlay */
+body.cook-mode-open {
+  overflow: hidden;
+}
+.cook-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: var(--cream);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.has-timer-dock .cook-mode-overlay {
+  bottom: 108px;
+}
+.cm-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.7rem 1.1rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.cm-title-wrap {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.cm-title {
+  margin: 0;
+  font-size: 1.35rem;
+}
+.cm-progress-pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.cm-top-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.cm-drawer-toggle {
+  display: none;
+}
+
+/* Capability probe card inside Cook Mode */
+.cm-probe-card {
+  background: var(--card);
+  border-bottom: 2px solid var(--accent);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.92rem;
+}
+.cm-probe-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+.cm-probe-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.3rem 1.2rem;
+}
+.cap-badge {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.cap-badge.ok {
+  background: #def7ec;
+  color: #03543f;
+}
+.cap-badge.no {
+  background: #fde8e8;
+  color: #9b1c1c;
+}
+
+/* Two-pane workspace */
+.cm-workspace {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+.cm-ing-pane {
+  background: var(--card);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.cm-ing-head {
+  padding: 0.75rem 1rem 0.55rem;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.cm-ing-head h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+.cm-scale-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.35rem;
+}
+.cm-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+}
+.cm-ing-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0.6rem 0.9rem 1.2rem;
+}
+.cm-ing-sec {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.95rem;
+  color: var(--accent-dark);
+}
+.cm-ing-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cm-ing-item {
+  border-bottom: 1px solid var(--cream-dark);
+}
+.cm-ing-check {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.25rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 1.12rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+.cm-check-box {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent);
+  background: #fff;
+}
+.cm-ing-item.is-checked .cm-check-box {
+  background: var(--accent);
+  color: #fff;
+}
+.cm-ing-item.is-checked .cm-ing-text {
+  text-decoration: line-through;
+  color: var(--ink-soft);
+}
+
+/* Main stage */
+.cm-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem 1.6rem;
+  min-height: 0;
+  overflow-y: auto;
+}
+.cm-step-card {
+  flex: 1 1 auto;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.cm-step-badge {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-dark);
+  margin-bottom: 0.65rem;
+}
+.cm-step-body {
+  font-size: clamp(1.45rem, 2.6vw, 2.15rem);
+  line-height: 1.48;
+  font-weight: 500;
+}
+.cm-step-body .timer-pill {
+  font-size: 0.95em;
+  padding: 0.2rem 0.75rem;
+  border-width: 2px;
+}
+
+.cm-speech-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+.cm-read-btn, .cm-repeat-btn {
+  min-height: 48px;
+  font-size: 1.02rem;
+  padding: 0.5rem 1rem;
+}
+.cm-autoread-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cm-autoread-label input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+}
+
+/* Giant knuckle-tap navigation deck */
+.cm-nav-deck {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.85rem;
+}
+.cm-prev-pad, .cm-next-pad {
+  min-height: 88px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  border-radius: 14px;
+}
+
+@media (max-width: 768px) {
+  .cm-drawer-toggle {
+    display: inline-flex;
+  }
+  .cm-workspace {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+  .cm-ing-pane {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+  .cm-ing-pane.is-open {
+    display: flex;
+  }
+  .cm-stage {
+    padding: 0.9rem 1rem;
+  }
+  .cm-step-card {
+    padding: 1.1rem 1.15rem;
+  }
+  .cm-nav-deck {
+    grid-template-columns: 1fr;
+  }
+  .cm-next-pad {
+    width: 100%;
+    min-height: 88px;
+  }
+}
+
