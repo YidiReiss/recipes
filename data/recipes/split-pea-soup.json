@@ -140,7 +140,16 @@
         "pdf_stale: set to true"
       ],
       "reasoning": "Yidi-approved substitution: Yidi said usually we use diced California steak, and optionally beef neck bones. Replacing ham bone with optional beef neck bones and diced ham with diced California steak."
+    },
+    {
+      "ts": "2026-11-01T23:45:58.594Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
