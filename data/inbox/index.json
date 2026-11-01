@@ -1625,5 +1625,16 @@
     "actor": "Muse",
     "note": "Remove editor-note cruft from ingredient: 'salt (does not need salt)' -> 'salt' (approved staples bundle); set pdf_stale so the PDF re-presses.",
     "created_at": "2026-11-01T20:38:56.570Z"
+  },
+  {
+    "id": "edit-mvybe1l9-gcrk",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "manti",
+    "recipe_id": "manti",
+    "title": "Manti",
+    "actor": "Muse",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-01T21:00:42.225Z"
   }
 ]
