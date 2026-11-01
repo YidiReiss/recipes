@@ -50,7 +50,7 @@
         {
           "qty": "⅛",
           "unit": "tsp",
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "½",
@@ -91,6 +91,25 @@
         }
       ],
       "reasoning": "Backfill: prep 30 min estimated (5 base + hollow 3 zucchini 6 + stuffing mix/assembly 12 + bread cube 2 + egg/margarine 1 + honey glaze 1, rounded). Cook 50 and servings 4 kept as stated."
+    },
+    {
+      "ts": "2026-11-01T21:00:50.358Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
