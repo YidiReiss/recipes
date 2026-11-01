@@ -57,7 +57,7 @@
         {
           "qty": "¼",
           "unit": "tsp",
-          "item": "pepper"
+          "item": "black pepper"
         },
         {
           "qty": "⅓",
@@ -152,6 +152,25 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 35 (dice onion/potato, slice 2 carrots, dice celery, chop string beans/parsley, mince garlic, cube 1 lb stew meat) and servings 8 (hearty-soup main 1.75 cups/person on ~14 cups yield); was '8 to 10'"
+    },
+    {
+      "ts": "2026-11-01T21:00:44.909Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 18 items])",
+          "to": "1 items ([section: 18 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "pdf_stale": true
 }
