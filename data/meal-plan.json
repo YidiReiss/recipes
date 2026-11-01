@@ -1356,17 +1356,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "dairy-free-chicken-fettuccine-alfredo",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1375,17 +1365,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "dairy-free-chicken-fettuccine-alfredo",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1506,6 +1486,12 @@
         },
         {
           "day": 2,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        },
+        {
+          "day": 3,
           "kind": "uncovered",
           "have": 0,
           "need": 2
