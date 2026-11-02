@@ -1,0 +1,3045 @@
+{
+  "version": 1,
+  "store": "Aron's Kissena Farms",
+  "updated": "2026-11-01",
+  "departments": [
+    "Bread & Bakery",
+    "Fresh Produce",
+    "Cereal & Breakfast",
+    "Dairy & Eggs",
+    "Grocery",
+    "Deli & Sushi",
+    "Frozen",
+    "Prepared Foods",
+    "Meat, Poultry & Fish",
+    "Health & Specialty Diets",
+    "Beverages",
+    "Snacks & Sweets",
+    "Paper, Laundry & Cleaning",
+    "Health & Beauty",
+    "Baby",
+    "Houseware & Leisure",
+    "Wine & Spirits"
+  ],
+  "fallbackDepartment": "Unsorted",
+  "items": {
+    "(5-oz.) skin-on chicken drumsticks and thigh": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "(8-oz.) bone-in, skin-on chicken thigh": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "all purpose flour": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "all-purpose flour": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "almond": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "almond milk": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Milk",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "anchovie": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "arugula": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "avocado": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "avocado oil": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "baby spinach": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "baguette or rustic crusty loaf": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "baguette slice": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "baking powder": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "baking soda": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "balsamic vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "barley": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "basil": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "basil (added)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "basil (optional)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "bay leaf": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "bay leave": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "beef brisket": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "beef neck bones (optional)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "beet": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "bell pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "bell pepper of another color (yellow, orange, purple)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "black or pinto beans (15 oz)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "black pepper (plus ¼ tsp more for the fish)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "black pepper, or to taste": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "bone-in beef short ribs (1.5–2 kg total)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "boneless chicken breast": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "boneless skinless chicken breast": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "boneless, skinless chicken thigh": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "borscht": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "bread": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "brisket or top of rib": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "broccoli (about 6 cups broccoli florets)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "broccoli florets, uncooked": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "brown rice": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "brussels sprout": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "brussels sprouts (about 8 cups)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "butter": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "buttermilk": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "butternut squash": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "cabbage": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cabbage (frozen, then defrosted)": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "cabbage head": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "candied pecan": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "canned cream-style corn": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "canola oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "canola oil (to top line of cup)": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "canola or grapeseed oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "capers (rinsed and drained)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "caramel chip": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "carolina extra long grain white rice": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "carrot": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "carrot, julienned 3\" long (about 1 cup)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cashew": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "cauliflower": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cayenne": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cayenne pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cayenne pepper / crushed red pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "celery": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "celery rib": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "celery stalk": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cherry or grape tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "cherry tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chick peas (1-pound can)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken (without skin)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken bones (in a food mesh saver bag, tied twice)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken bottom": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken breast": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken breast tender": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken broth": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken broth (tabatchnick wholesome chicken broth, or organic imagine vegetarian no-chicken broth)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chicken broth/stock": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken consommé": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken leg": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken neck": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken piece": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken stock": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken stock or bouillon": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chicken stock or vegetable stock": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chicken thigh": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chicken wing": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chickens (3 ½-4 lb each)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chickpea": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chickpeas (or 1 can)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chili flake": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chili pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chili powder": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chili sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chocolate cake mix": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "chocolate chips (or chunks, or chopped chocolate)": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chopped flat-leaf parsley or chives, plus more for garnish": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chopped fresh dill or 1 tsp dried dill": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "chopped meat": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cider vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cilantro": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cilantro (about 8 stems)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cinnamon": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cinnamon (for sprinkling)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coarse kosher salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coarse salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coarsely cracked black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coarsely ground black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coca-cola": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cocoa powder": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coconut amino": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coconut milk": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "concentrated cream of mushroom soup": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "confectioners' sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "coriander": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "coriander (sprinkle)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "corn and beans (optional)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "corn flake crumb": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "corn syrup": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cornflakes cereal": {
+      "department": "Cereal & Breakfast",
+      "subcategory": "Cold Cereal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cornflakes, crushed slightly (for coating)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "cornstarch": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cottage cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "craisins or dried cranberrie": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "cranberry sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cream cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cremini mushroom": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "crescent roll dough sheet (not regular crescent rolls)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "crushed red pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "crushed red pepper flake": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "crushed tomatoes (or tomato sauce — mom)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cucumber": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cucumber, julienned 3\" long (about 1½ cups)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cumin": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cumin (sprinkle)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cumin seed": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "curry powder": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dark brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dark meat chicken cutlet": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "day-old bread": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "deli or dijon mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "diced california steak": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "diced carrots (4-5 carrots)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "diced tomatoes with basil, garlic, and oregano": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dijon honey mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dill": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dried apricot": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dried basil": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "dried oregano": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "dried pitted prune": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dry bread crumbs (plain or seasoned)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "dry marsala wine": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "dry onion soup mix": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dry split pea": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "dry white wine": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "dumpling wrapper": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "egg": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Eggs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "elbow-shaped pasta": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "extra firm tofu": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Tofu & Meat Alternatives",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "extra virgin olive oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "extra-virgin olive oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fennel seed": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "feta": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fettuccine pasta": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fine sea salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "finely chopped walnut": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "firmly packed dark brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "flaky dough": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "low",
+      "source": "seed-v1"
+    },
+    "flaky sea salt, for finishing": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "flat-leaf parsley": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "flounder": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "flour": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "flour tortilla": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frank's wings hot sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "french-style baguette": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh basil leave": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh breadcrumbs (pulse 1½ slices of bread in the food processor)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh brussel sprout": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh chopped basil, plus more for garnish if desired": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh dill": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh garlic": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh ginger": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh green bean": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh lemon juice": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "fresh lime juice": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "fresh mozzarella": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh mushroom": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh parsley": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh strawberries, hulled and thinly sliced (several whole strawberries reserved for garnish)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh thyme leave": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "freshly ground black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "freshly squeezed lemon juice": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "fried onion": {
+      "department": "Grocery",
+      "subcategory": "Pantry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen amnon's pizza (whole pie, 8 slices)": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen broccoli piece": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen brussels sprout": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen hoffman's pizza ball": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen macabee pizza bagel": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen manischewitz potato knish": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen puff pastry": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frozen ta'amti potato boureka": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "frying oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "full-fat mayonnaise": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "garbanzo beans (optional)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "garlic": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "garlic cloves (we mince it)": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "garlic cloves, unpeeled (optional)": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "garlic powder": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "garlic with skin on": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "gluten free breadcrumbs (or regular breadcrumbs)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "gochujang (korean red chili paste); check label if gluten free matter": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "good olive oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "good-quality beef stock (homemade or store-bought)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "graham pie crust": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "grainy mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "granulated garlic": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "granulated sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "grape tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "grated parmesan": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "grated parmesan cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "green bean": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "green bell pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "green onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "green pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground basil": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ground beef": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground chuck": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground cinnamon": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground coriander": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ground cumin": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground meat": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground nutmeg": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground oregano": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ground veal": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ground veal (or lamb, turkey, or chicken)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "heart of romaine lettuce": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "heavy cream": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "heavy whipping cream": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "high-smoke-point neutral oil (avocado or canola)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "himalayan salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "honey": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "honey (add to sauce)": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "honey (use maple syrup to make it fully vegan)": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "honey dijon mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "hot chili oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "hot or sweet paprika": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "hot pickled pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "hot sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "hot sauce (such as frank's)": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "idaho potatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "imitation crab sticks, shredded into thin strips (250 g)": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "instant chocolate pudding": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "italian sausage (sweet, hot, or a couple of both)": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "italian-style baguette": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "jalapeno": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "jam or jelly": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "jellied cranberry sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "jerusalem mix": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "kani (mock crab)": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ketchup": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "kosher brick roast, french roast, or underblade chuck roast": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "kosher salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "kosher salt (scant)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "kosher salt and freshly ground black pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lamb": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lean ground beef (just over 1 pound)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "leaves fresh basil": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "leek": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lemon": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lemon juice": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "lemon juice or white vinegar": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "lemon juice, fresh": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "lemon peel": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lemon slice": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lemon wedge": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lemon zest": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "light brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "light brown sugar, packed": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lima bean": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lime": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "lime juice": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "lime wedge": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "liquid smoke": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "long-grain white rice": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "low sodium tamari or soy sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "low-fat milk": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "manicotti, uncooked (8 oz box)": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "maple syrup": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "margarine": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "marinara sauce": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "marinara sauce (sometimes omitted)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "marrow bone": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "marsala or red wine (optional)": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "mayo": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mayonnaise": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "meat (round steak or strip steak)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "meat (strip steak or round steak)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "milk": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "milk (1 ½ tbsp)": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "milk or soy milk": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "minced scallions, white and green parts (4 scallions)": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mini chocolate chip": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mint leave": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "minute steak (1 package)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mozzarella cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "msg (kosher-certified)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "muenster cheese (can mix mozzarella)": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mushroom": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mushrooms (or 1 box + 1 can)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mustard (grey poupon dijon)": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "nutmeg": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "olive oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "olive oil (not extra virgin)": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "olive oil (plus 2 tbsp more for drizzling)": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "olive or canola oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "onion powder": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "onion soup mix": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "onion soup mix (a good amount, sprinkled)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "oregano": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ortega taco mix": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ortega taco seasoning": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "oven-ready lasagna noodle": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "packed brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "packed light brown sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "panko": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "panko breadcrumb": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "panko or cornflake crumb": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "paprika": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pargiot (dark chicken cutlets)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "parmesan": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "parsley": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "parsnip": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "part-skim ricotta cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pasta": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pastrami": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "peanut butter": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pearl barley": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "penne noodle": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "penne pasta": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "persian cucumber": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pie crust": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pie crusts, frozen": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pie filling": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pizza dough (trader joe's preferred)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "plain tofutti cream cheese": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Cheese",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "plof spice": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "plum or grape tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "potato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "potato starch": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "potatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "potatoes (quantity not specified)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "powdered sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "prebaked graham cracker crust (homemade or store bought)": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "puff pastry": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pure sesame oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "pure vanilla extract": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "purple onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "purple onion (added; amount not specified)": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "raisin": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "raisin bran cereal": {
+      "department": "Cereal & Breakfast",
+      "subcategory": "Cold Cereal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "raw spinach": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ready-made graham cracker pie crust": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ready-to-bake pie crust": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red or pink salmon": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "red pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red pepper flake": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red pepper flakes (optional)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "red pepper powder": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red wine": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "red wine (something you'd drink, not cooking wine)": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "red wine vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "red wine vinegar or sherry vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "remaining usable cabbage": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "rice": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "rice vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ricotta cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "rigatoni or other short pasta": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "ripe avocado": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ripe mango": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ripe tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "romaine lettuce": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "russet potato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salmon": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salmon fillet": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salsa": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt (for soaking the rice)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt (for the garlic sauce)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt (plus ½ tsp more for the fish)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt and pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "salt, or to taste": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "salted butter": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sauerkraut (32 oz)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "scallion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sea salt": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "seasoned breadcrumb": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "semi-sweet chocolate chip": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sesame oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sesame seed": {
+      "department": "Grocery",
+      "subcategory": "Baking Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "sesame seeds (optional)": {
+      "department": "Grocery",
+      "subcategory": "Baking Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "shallot": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "shredded cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "shredded mozzarella": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "shredded mozzarella cheese": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "shredded provolone or mozzarella": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "sichuan peppercorn": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "skinless boneless chicken breast": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "skinless salmon filet": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sliced almond": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "sliced black olive": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sliced green olives with pimento": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "slices lemon (thinly sliced rounds)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "smoked paprika": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "soft taco tortilla": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sour cream": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sourdough bread": {
+      "department": "Bread & Bakery",
+      "subcategory": "Bread & Bakery",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "soy milk": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Milk",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "soy sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "soymilk or almond milk": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Milk",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "spicy brown mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "spicy mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "spinach": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "split pea": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sprig thyme": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "spring mix": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sriracha": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sriracha chili sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sriracha or hot sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "stew meat": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "strawberrie": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "strawberries, slightly under-ripe, diced into quarter-inch piece": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "string bean": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sugar (slightly less than 1 1/2 cups)": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sweet and sour sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sweet chili sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sweet or yellow onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "sweet potato (1 pound)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "sweet potatoes, or 1 cup mashed from a larger can": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "taco seasoning (or more)": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tamari or soy sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "teriyaki sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "terra stix": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Chips & Pretzels",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "thin noodle": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "to cherry tomatoes, stemmed (about 4 cups)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "toasted sesame oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tofutti cream cheese": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Cheese",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato paste": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato puree": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce (15 oz)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce (28 oz cans)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce (depends on how much you're making)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce (marinara)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce (thick ketchup)": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tomato sauce or marinara": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "tuna": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "turkey roll": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Poultry",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "turmeric": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "turnip": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "uncooked pearl barley": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "unsalted butter": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "unsalted butter (½ tbsp)": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "unsweetened cranberry juice": {
+      "department": "Beverages",
+      "subcategory": "Juice",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "unsweetened soy milk (or almond or oat milk)": {
+      "department": "Health & Specialty Diets",
+      "subcategory": "Non-Dairy Milk",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "v8 hot and spicy (or 2 cans)": {
+      "department": "Beverages",
+      "subcategory": "Juice",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vanilla": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vanilla extract": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vanilla extract (¾ tsp)": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "veal steak": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vegetable cooking spray": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vegetable oil": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vegetable or avocado oil": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "vine ripe tomatoe": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "vodka": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "whiskey (bourbon, rye, or scotch)": {
+      "department": "Wine & Spirits",
+      "subcategory": null,
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "white (granulated) sugar": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "white button mushrooms (12 oz)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "white fish (such as cod, snapper, tilapia)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "white pepper": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "whole branzino fish (or other mild white fish)": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "whole garlic clove": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "wholegrain mustard": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "worcestershire sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "yeast": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "yellow cake mix (18.25 oz)": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "yellow onion": {
+      "department": "Fresh Produce",
+      "subcategory": "Onions, Garlic & Roots",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "yellow pepper": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "zeera": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "zera": {
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ziti": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "zucchini": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "zucchini (2-3 medium)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    }
+  }
+}
