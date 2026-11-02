@@ -107,7 +107,7 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-01T21:01:06.855Z",
@@ -126,6 +126,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-02T20:45:30.875Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "Pagination fix re-press: PDF regenerated with fixed Recipe Press engine (tail-block measured/reserved); footer-only page 2 eliminated."
     }
   ]
 }
