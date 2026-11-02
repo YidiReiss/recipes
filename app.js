@@ -26,6 +26,7 @@ const KNOWN_CATEGORIES = ['main', 'side', 'soup', 'salad', 'fish', 'chicken',
 let recipes = [];          // recipe metadata, in manifest order (list/search/filter)
 let byId = {};             // id -> FULL recipe (on-demand cache via ensureRecipe)
 let metaById = {};         // id -> lightweight metadata (loaded at boot)
+let shoppingSections = null; // shopping sections taxonomy loaded at boot
 // Fetch a full recipe JSON on demand; cached in byId after first load.
 async function ensureRecipe(id) {
   if (byId[id]) return byId[id];
@@ -228,16 +229,24 @@ async function boot() {
   // Full recipe JSONs load on demand via ensureRecipe() and are cached in byId.
   try {
     const cb = '?v=' + Date.now();
-    const metaRes = await fetch('data/recipes/meta.json' + cb);
-    // Missing metadata (e.g. a fresh install before seeding) means an empty
-    // collection, not a fatal error.
-    const meta = metaRes.ok ? await metaRes.json() : [];
+    const [metaResSettled, secResSettled] = await Promise.allSettled([
+      fetch('data/recipes/meta.json' + cb),
+      fetch('data/shopping-sections.json' + cb)
+    ]);
+    const meta = (metaResSettled.status === 'fulfilled' && metaResSettled.value.ok)
+      ? await metaResSettled.value.json()
+      : [];
     metaById = {};
     recipes = [];
     (Array.isArray(meta) ? meta : []).forEach(m => {
       metaById[m.id] = m;
       recipes.push(m);  // list view works off metadata
     });
+    if (secResSettled.status === 'fulfilled' && secResSettled.value.ok) {
+      shoppingSections = await secResSettled.value.json();
+    } else {
+      shoppingSections = null;
+    }
   } catch (e) { loadError(); return; }
 
   byId = {};  // full recipe cache, populated on demand
@@ -452,6 +461,31 @@ function groupKey(item) {
     return w;
   });
   return s;
+}
+/* Look up department and subcategory for a normalized groupKey in shoppingSections.
+   Gracefully falls back to { department: 'Unsorted', subcategory: null, deptIndex: 17 }
+   if shoppingSections is missing or the key is not mapped. */
+function lookupShoppingSection(baseKey) {
+  if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
+    return { department: 'Unsorted', subcategory: null, deptIndex: 17 };
+  }
+  const fallback = shoppingSections.fallbackDepartment || 'Unsorted';
+  const fallbackIdx = shoppingSections.departments.length;
+  if (!baseKey || !shoppingSections.items) {
+    return { department: fallback, subcategory: null, deptIndex: fallbackIdx };
+  }
+  const k = String(baseKey).trim().toLowerCase();
+  const entry = shoppingSections.items[k];
+  if (!entry || !entry.department) {
+    return { department: fallback, subcategory: null, deptIndex: fallbackIdx };
+  }
+  let dIdx = shoppingSections.departments.indexOf(entry.department);
+  if (dIdx === -1) dIdx = fallbackIdx;
+  return {
+    department: entry.department,
+    subcategory: entry.subcategory || null,
+    deptIndex: dIdx
+  };
 }
 /* Pluralize units for display: "2 cups", but "2 tbsp" stays. */
 function pluralizeUnit(unit, qty) {
@@ -677,14 +711,21 @@ function buildShoppingList() {
     const du = dispUnit === '__tspbase__' ? '' : pluralizeUnit(dispUnit, e.hasNum ? qnum : 0);
     // Stable key: raw (non-pluralized) unit so the key never changes with quantity.
     const rawDu = dispUnit === '__tspbase__' ? '' : dispUnit;
+    const sec = typeof lookupShoppingSection === 'function'
+      ? lookupShoppingSection(e.base)
+      : { department: 'Unsorted', subcategory: null, deptIndex: 17 };
     return {
       key: e.base.toLowerCase() + '|' + rawDu.toLowerCase(),
+      base: e.base.toLowerCase(),
       label: [q, du, name].filter(Boolean).join(' ').trim(),
       qty: e.hasNum ? qnum : null,
       unit: du,
-      optional: !!e.optional
+      optional: !!e.optional,
+      department: sec.department,
+      subcategory: sec.subcategory,
+      deptIndex: sec.deptIndex
     };
-  }).sort((a, b) => a.label.localeCompare(b.label));
+  }).sort((a, b) => (a.deptIndex - b.deptIndex) || a.label.localeCompare(b.label));
 }
 /* Manual (synced) shopping-list items live on the week object. */
 function manualItems() {
@@ -826,64 +867,95 @@ function shoppingListHTML() {
       ? '<span class="shop-conflict">⚠️ Both grabbed this — check for duplicates ' +
         '<button class="link-btn" data-confack="' + esc(k) + '" type="button">dismiss</button></span>'
       : '';
-  const genToBuyLis = activeToBuy.map(it =>
+  const renderGenToBuy = it =>
     '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
-      '<span>' + esc(it.label) + '</span></div>'
-  ).join('');
-  const genHaveLis = haveIts.map(it =>
+      '<span>' + esc(it.label) + '</span></div>';
+  const renderGenHave = it =>
     '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
-      '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>'
-  ).join('');
+      '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>';
   // Staple rows reuse the exact To Buy row template (same keys, same split
   // attribute) so the delegated have-toggle handlers work unchanged.
-  const stapleLis = stapleIts.map(it =>
-    '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
-      '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
-      '<span>' + esc(it.label) + '</span></div>'
-  ).join('');
-  const manToBuyLis = manToBuy.map(m =>
+  const stapleLis = stapleIts.map(renderGenToBuy).join('');
+  const renderManToBuy = m =>
     '<div class="shop-item manual" data-manual="' + esc(m.id) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
       '<span>' + esc(m.text) + '</span>' +
-      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
-  ).join('');
-  const manHaveLis = manHave.map(m =>
+      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>';
+  const renderManHave = m =>
     '<div class="shop-item manual have' + (conflictKeys.has('m:' + m.id) ? ' conflict' : '') + '" data-manual="' + esc(m.id) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
       '<span>' + esc(m.text) + '</span>' + conflictBadge('m:' + m.id) +
-      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>'
-  ).join('');
+      '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>';
   // Optional items: two tap targets — "+" promotes to To Buy, "✓" marks Already Have.
-  const optLis = optionalIts.map(it =>
+  const renderOpt = it =>
     '<div class="shop-item optional" data-shop-opt="' + esc(it.key) + '">' +
       '<span>' + esc(it.label) + ' <em class="opt-tag">optional</em></span>' +
       '<button class="shop-opt-btn" data-opt-add="' + esc(it.key) + '" type="button" aria-label="Add to buy list" title="Add to buy list">+</button>' +
-      '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button></div>'
-  ).join('');
+      '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button></div>';
+
+  // Helper to render items grouped by department (or flat if shoppingSections is null)
+  const renderShopSections = (genItems, manItems, renderGen, renderMan, containerAttr) => {
+    if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
+      const lis = (genItems || []).map(renderGen).join('') + (manItems || []).map(renderMan).join('');
+      return lis ? '<div class="shop-list"' + (containerAttr ? ' ' + containerAttr : '') + '>' + lis + '</div>' : '';
+    }
+    const depts = shoppingSections.departments;
+    const fallback = shoppingSections.fallbackDepartment || 'Unsorted';
+    const totalDepts = depts.length + 1;
+    const groups = [];
+    for (let dIdx = 0; dIdx < totalDepts; dIdx++) {
+      const deptName = (dIdx < depts.length) ? depts[dIdx] : fallback;
+      const gIts = (genItems || []).filter(it => it.deptIndex === dIdx);
+      const mIts = (manItems || []).filter(m => {
+        const sec = lookupShoppingSection(groupKey(m.text));
+        return sec.deptIndex === dIdx;
+      });
+      const count = gIts.length + mIts.length;
+      if (!count) continue;
+      const itemsHTML = gIts.map(renderGen).join('') + mIts.map(renderMan).join('');
+      groups.push(
+        '<div class="shop-dept-group">' +
+          '<div class="shop-dept-header">' +
+            '<span>' + esc(deptName) + '</span>' +
+            '<span class="shop-dept-count">' + count + '</span>' +
+          '</div>' +
+          '<div class="shop-list">' + itemsHTML + '</div>' +
+        '</div>'
+      );
+    }
+    return groups.join('');
+  };
 
   let html = '<div class="week-strip no-print">' + weekStripHTML() + '</div>';
   if (!items.length && !week.manualItems.some(m => !m.deleted)) {
     html += '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
-    if (genToBuyLis || manToBuyLis) {
-      html += '<h3 class="shop-sub">To buy</h3><div class="shop-list" data-gen="1">' + genToBuyLis + manToBuyLis + '</div>';
+    const toBuyHTML = renderShopSections(activeToBuy, manToBuy, renderGenToBuy, renderManToBuy, 'data-gen="1"');
+    if (toBuyHTML) {
+      html += '<h3 class="shop-sub">To buy</h3>' + toBuyHTML;
     } else if (stapleLis) {
       html += '<h3 class="shop-sub">To buy</h3><p class="muted">Nothing left to buy.</p>';
     }
-    if (optLis) {
-      html += '<details class="shop-opt-section"><summary>Optional (' + optionalIts.length + ')</summary>' +
-        '<div class="shop-list" data-opt="1">' + optLis + '</div></details>';
+    if (optionalIts.length) {
+      const optHTML = renderShopSections(optionalIts, [], renderOpt, null, 'data-opt="1"');
+      if (optHTML) {
+        html += '<details class="shop-opt-section"><summary>Optional (' + optionalIts.length + ')</summary>' +
+          optHTML + '</details>';
+      }
     }
     if (stapleLis) {
       html += '<details class="shop-staples-section"><summary>Pantry staples (' + stapleIts.length + ')</summary>' +
         '<div class="shop-list" data-staples="1">' + stapleLis + '</div></details>';
     }
-    if (genHaveLis || manHaveLis) {
-      html += '<details class="shop-have-section"><summary>Already have (' + (haveIts.length + manHave.length) + ')</summary>' +
-        '<div class="shop-list" data-have="1">' + genHaveLis + manHaveLis + '</div></details>';
+    if (haveIts.length || manHave.length) {
+      const haveHTML = renderShopSections(haveIts, manHave, renderGenHave, renderManHave, 'data-have="1"');
+      if (haveHTML) {
+        html += '<details class="shop-have-section"><summary>Already have (' + (haveIts.length + manHave.length) + ')</summary>' +
+          haveHTML + '</details>';
+      }
     }
   }
   html += '<div class="shop-add no-print"><input type="text" id="shop-new" placeholder="Add your own item…" aria-label="Add your own item">' +
@@ -1180,10 +1252,66 @@ async function renderShopping(app) {
     const week = getWeek(thisWeekKey());
     // Copy exactly what the To buy section shows: full lines + quantity-split
     // remainders, minus undecided optionals and (toggle on) pantry staples.
-    const { active } = partitionStaples(splitShopItems(buildShoppingList(), week).toBuy, week);
+    const shopSplit = splitShopItems(buildShoppingList(), week);
+    const { active } = partitionStaples(shopSplit.toBuy, week);
     const manToBuy = (week.manualItems || []).filter(m => !m.deleted && !m.have);
-    const lines = active.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
-    const text = 'Shopping list — week of ' + thisWeekKey() + '\n' + lines.join('\n');
+    const optionalIts = shopSplit.optionalIts || [];
+
+    let text = 'Shopping list — week of ' + thisWeekKey();
+
+    if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
+      const lines = active.map(it => '• ' + it.label).concat(manToBuy.map(m => '• ' + m.text));
+      if (optionalIts.length) {
+        lines.push('');
+        lines.push('[Optional]');
+        optionalIts.forEach(it => lines.push('• ' + it.label));
+      }
+      text += '\n' + lines.join('\n');
+    } else {
+      const depts = shoppingSections.departments;
+      const fallback = shoppingSections.fallbackDepartment || 'Unsorted';
+      const totalDepts = depts.length + 1;
+      const sectionsOut = [];
+
+      for (let dIdx = 0; dIdx < totalDepts; dIdx++) {
+        const deptName = (dIdx < depts.length) ? depts[dIdx] : fallback;
+        const gIts = active.filter(it => it.deptIndex === dIdx);
+        const mIts = manToBuy.filter(m => {
+          const sec = lookupShoppingSection(groupKey(m.text));
+          return sec.deptIndex === dIdx;
+        });
+        const combined = [];
+        gIts.forEach(it => combined.push(it.label));
+        mIts.forEach(m => combined.push(m.text));
+        if (!combined.length) continue;
+
+        // Sort items alphabetically within department
+        combined.sort((a, b) => a.localeCompare(b));
+
+        sectionsOut.push('[' + deptName + ']');
+        combined.forEach(itemStr => sectionsOut.push('• ' + itemStr));
+        sectionsOut.push('');
+      }
+
+      // Optional block at the end
+      if (optionalIts.length) {
+        sectionsOut.push('[Optional]');
+        optionalIts
+          .map(it => it.label)
+          .sort((a, b) => a.localeCompare(b))
+          .forEach(label => sectionsOut.push('• ' + label));
+        sectionsOut.push('');
+      }
+
+      while (sectionsOut.length && sectionsOut[sectionsOut.length - 1] === '') {
+        sectionsOut.pop();
+      }
+
+      if (sectionsOut.length) {
+        text += '\n\n' + sectionsOut.join('\n');
+      }
+    }
+
     const done = () => toast('Shopping list copied');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, () => toast('Copy failed'));
