@@ -4842,12 +4842,15 @@ async function attemptSaveMealPlan(mutator, message) {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const fresh = await bridgeReadMealPlan();   // never the Pages CDN
+      const savedGen = _shopDirtyGen;
       const merged = mergeMealPlan(fresh, mealPlan);
       if (mutator) mutator(merged);               // caller's change, applied last
       await ghPut('data/meal-plan.json', JSON.stringify(merged, null, 2),
         message || 'Update meal plan');
-      mealPlan = merged;
+      mealPlan = mergeMealPlan(merged, mealPlan);
       saveShopLocal();
+      if (_shopDirtyGen === savedGen) _shopDirty = false;
+      else { _shopDirty = true; syncShopSoon(); }
       return merged;
     } catch (e) {
       lastErr = e;
@@ -6423,8 +6426,10 @@ function loadShopLocal() {
 // Tracks unsynced changes; the 'online' event flushes them the moment connectivity returns.
 let _shopSyncTimer = null;
 let _shopDirty = false;
+let _shopDirtyGen = 0;
 function markShopDirty() {
   _shopDirty = true;
+  _shopDirtyGen++;
   saveShopLocal();
   syncShopSoon();
 }
@@ -6444,7 +6449,6 @@ async function syncShop() {
   // would just double the /read calls).
   try {
     await saveMealPlan(null, 'Shopping list sync');
-    _shopDirty = false;
     if ((location.hash || '#/') === '#/shopping') renderShopWrap();
   } catch (e) {
     _shopDirty = true;  // push failed — retry on next poll / online event
