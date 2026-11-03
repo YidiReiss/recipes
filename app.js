@@ -305,6 +305,11 @@ function route() {
   $('#nav-recipes').classList.toggle('active', h.startsWith('#/recipes') || h.startsWith('#/recipe/'));
   $('#nav-planner').classList.toggle('active', h.startsWith('#/planner'));
   $('#nav-shopping').classList.toggle('active', h.startsWith('#/shopping'));
+  const navRcpt = $('#nav-receipts');
+  if (navRcpt) navRcpt.classList.toggle('active', h.startsWith('#/receipts'));
+  if (!h.startsWith('#/receipts') && typeof stopReceiptExtractPoll === 'function') {
+    stopReceiptExtractPoll();
+  }
   window.scrollTo(0, 0);
   document.title = 'Reiss Family Recipes';
   if (h.startsWith('#/recipe/')) return renderRecipe(app, decodeURIComponent(h.slice(9)));
@@ -325,6 +330,9 @@ function route() {
   if (h === '#/shopping') {
     refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/shopping') renderShopping(app); });
     return renderShopping(app);
+  }
+  if (h === '#/receipts' || h.startsWith('#/receipts/')) {
+    return renderReceiptsRoute(app, h);
   }
   return renderLanding(app);
 }
@@ -7745,6 +7753,1066 @@ async function sendSubmission() {
       : 'Submit failed: ' + e.message;
   }
 }
+
+/* ============================================================================
+   BEGIN DELIMITED RECEIPTS MODULE (#/receipts — Private, Gated, D1-Backed)
+   Anchor: Insert immediately after sendSubmission() and before `document.addEventListener('DOMContentLoaded', boot);`
+   ============================================================================ */
+
+const RECEIPTS_TOKEN_KEY = 'reiss_receipt_token';
+const RECEIPTS_GOOGLE_CLIENT_ID = '23951380866-bkvvgbhvvtaad5l4uh4hqe4vltsk28jg.apps.googleusercontent.com';
+const RECEIPTS_MAX_EDGE_PX = 1800;
+const RECEIPTS_TARGET_MAX_BYTES = 300 * 1024;
+const RECEIPTS_HARD_MAX_BYTES = 500 * 1024;
+const RECEIPTS_START_QUALITY = 0.85;
+const RECEIPTS_MIN_QUALITY = 0.60;
+const RECEIPTS_QUALITY_STEP = 0.05;
+const RECEIPTS_POLL_INTERVAL_MS = 15 * 1000;
+const RECEIPTS_POLL_MAX_ATTEMPTS = 10;
+const RECEIPTS_IDB_NAME = 'reiss_receipts_offline';
+const RECEIPTS_IDB_STORE = 'pending_receipt_uploads';
+
+let _receiptExtractPollTimer = null;
+let _receiptActiveObjectUrl = null;
+let _gisScriptPromise = null;
+
+/* --- Pure helpers (exercised directly by browser-less Node test harness) --- */
+
+function formatReceiptCents(cents) {
+  if (cents === null || cents === undefined || cents === '' || !Number.isFinite(Number(cents))) {
+    return '$0.00';
+  }
+  const n = Math.round(Number(cents));
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  const dollars = Math.floor(abs / 100);
+  const rem = String(abs % 100).padStart(2, '0');
+  return sign + '$' + dollars + '.' + rem;
+}
+
+function centsToInputDollars(cents) {
+  if (cents === null || cents === undefined || cents === '' || !Number.isFinite(Number(cents))) {
+    return '';
+  }
+  const n = Math.round(Number(cents));
+  if (n < 0) return '';
+  return (n / 100).toFixed(2);
+}
+
+function parseReceiptDollarsToCents(raw) {
+  if (raw === null || raw === undefined) return null;
+  const s = String(raw).trim().replace(/^\$/, '');
+  if (!s) return null;
+  const m = s.match(/^(\d+)(?:\.(\d{0,2}))?$/);
+  if (!m) return null;
+  const whole = parseInt(m[1], 10);
+  const fracStr = (m[2] || '').padEnd(2, '0');
+  const frac = parseInt(fracStr, 10);
+  return whole * 100 + frac;
+}
+
+function computeReceiptScaleDims(width, height, maxEdge = RECEIPTS_MAX_EDGE_PX) {
+  const w = Math.max(1, Number(width) || 1);
+  const h = Math.max(1, Number(height) || 1);
+  const longest = Math.max(w, h);
+  const scale = longest > maxEdge ? (maxEdge / longest) : 1;
+  return {
+    width: Math.max(1, Math.round(w * scale)),
+    height: Math.max(1, Math.round(h * scale)),
+    scale
+  };
+}
+
+async function stepDownJpegQuality(
+  encodeAtQualityFn,
+  targetBytes = RECEIPTS_TARGET_MAX_BYTES,
+  startQ = RECEIPTS_START_QUALITY,
+  minQ = RECEIPTS_MIN_QUALITY,
+  step = RECEIPTS_QUALITY_STEP
+) {
+  let lastResult = null;
+  let q = startQ;
+  const qualities = [];
+  while (q >= minQ - 1e-9) {
+    qualities.push(Math.round(q * 100) / 100);
+    q -= step;
+  }
+  for (let i = 0; i < qualities.length; i++) {
+    const curQ = qualities[i];
+    const res = await encodeAtQualityFn(curQ);
+    const bytes = typeof res === 'number' ? res : (res && typeof res.bytes === 'number' ? res.bytes : 0);
+    lastResult = { quality: curQ, bytes, data: res };
+    if (bytes > 0 && bytes <= targetBytes) {
+      return {
+        ok: true,
+        quality: curQ,
+        bytes,
+        attemptCount: i + 1,
+        result: res
+      };
+    }
+  }
+  return {
+    ok: false,
+    quality: lastResult ? lastResult.quality : minQ,
+    bytes: lastResult ? lastResult.bytes : 0,
+    attemptCount: qualities.length,
+    error: 'That receipt photo is still over 300 KB after compression. Please crop closer to the receipt or take a lower-resolution photo.'
+  };
+}
+
+function computeReceiptChecksum(items, totalCents) {
+  const list = Array.isArray(items) ? items : [];
+  const hasValidTotal = Number.isInteger(totalCents) && totalCents >= 0;
+  let sumCents = 0;
+  let allItemsValid = true;
+  for (let i = 0; i < list.length; i++) {
+    const p = list[i] && list[i].paid_price_cents;
+    if (!Number.isInteger(p) || p < 0) {
+      allItemsValid = false;
+    } else {
+      sumCents += p;
+    }
+  }
+  const valid = hasValidTotal && allItemsValid && sumCents === totalCents;
+  const displayTotal = hasValidTotal ? formatReceiptCents(totalCents) : '—';
+  return {
+    valid,
+    sumCents,
+    totalCents: hasValidTotal ? totalCents : null,
+    diffCents: hasValidTotal ? (sumCents - totalCents) : null,
+    label: 'Items sum to ' + formatReceiptCents(sumCents) + ' of ' + displayTotal + ' total'
+  };
+}
+
+function isReceiptTokenValid(rawSession, nowSec = Math.floor(Date.now() / 1000)) {
+  if (!rawSession) return { valid: false, reason: 'missing' };
+  let parsed = rawSession;
+  if (typeof rawSession === 'string') {
+    const trimmed = rawSession.trim();
+    if (!trimmed) return { valid: false, reason: 'empty' };
+    if (trimmed.startsWith('{')) {
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch (e) {
+        return { valid: false, reason: 'malformed_json' };
+      }
+    } else {
+      parsed = { token: trimmed };
+    }
+  }
+  const token = parsed && typeof parsed.token === 'string' ? parsed.token.trim() : '';
+  if (!token) return { valid: false, reason: 'missing_token' };
+  const parts = token.split('.');
+  if (parts.length !== 3) return { valid: false, reason: 'malformed_token' };
+  const [emailB64, expStr, sig] = parts;
+  if (!emailB64 || !/^\d+$/.test(expStr) || !sig) {
+    return { valid: false, reason: 'invalid_segments' };
+  }
+  const expSec = Number(expStr);
+  if (!Number.isSafeInteger(expSec) || expSec <= nowSec) {
+    return { valid: false, reason: 'expired' };
+  }
+  let email = parsed.email || '';
+  if (!email) {
+    try {
+      const b64 = emailB64.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
+      email = atob(b64 + pad);
+    } catch (e) {
+      return { valid: false, reason: 'invalid_email_b64' };
+    }
+  }
+  return {
+    valid: true,
+    token,
+    email: String(email).trim().toLowerCase(),
+    expires_at: expSec
+  };
+}
+
+function getValidReceiptSession(storageObj, nowSec = Math.floor(Date.now() / 1000)) {
+  const store = storageObj || (typeof localStorage !== 'undefined' ? localStorage : null);
+  if (!store) return null;
+  let raw = null;
+  try {
+    raw = store.getItem(RECEIPTS_TOKEN_KEY);
+  } catch (e) {
+    return null;
+  }
+  if (!raw) return null;
+  const check = isReceiptTokenValid(raw, nowSec);
+  if (!check.valid) {
+    try { store.removeItem(RECEIPTS_TOKEN_KEY); } catch (e) {}
+    return null;
+  }
+  return check;
+}
+
+function saveReceiptSession(sessionData, storageObj) {
+  const store = storageObj || (typeof localStorage !== 'undefined' ? localStorage : null);
+  if (!store || !sessionData || !sessionData.token) return;
+  try {
+    store.setItem(RECEIPTS_TOKEN_KEY, JSON.stringify({
+      token: sessionData.token,
+      email: sessionData.email || '',
+      expires_at: sessionData.expires_at || 0
+    }));
+  } catch (e) {}
+}
+
+function clearReceiptSession(storageObj) {
+  const store = storageObj || (typeof localStorage !== 'undefined' ? localStorage : null);
+  if (store) {
+    try { store.removeItem(RECEIPTS_TOKEN_KEY); } catch (e) {}
+  }
+  stopReceiptExtractPoll();
+  revokeReceiptObjectUrl();
+}
+
+function stopReceiptExtractPoll() {
+  if (_receiptExtractPollTimer) {
+    clearTimeout(_receiptExtractPollTimer);
+    _receiptExtractPollTimer = null;
+  }
+}
+
+function revokeReceiptObjectUrl() {
+  if (_receiptActiveObjectUrl && typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') {
+    try { URL.revokeObjectURL(_receiptActiveObjectUrl); } catch (e) {}
+    _receiptActiveObjectUrl = null;
+  }
+}
+
+/* --- Authenticated fetch wrapper for /receipts/* (clears token & shows unlock on 401) --- */
+
+async function receiptsApiFetch(path, opts = {}) {
+  const session = getValidReceiptSession();
+  if (!session) {
+    const app = $('#app');
+    if (app && (location.hash || '').startsWith('#/receipts')) {
+      renderReceiptsUnlockPanel(app);
+    }
+    const err = new Error('Not signed in');
+    err.status = 401;
+    throw err;
+  }
+  const headers = Object.assign({}, opts.headers || {}, {
+    'Authorization': 'Bearer ' + session.token
+  });
+  if (opts.body && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+  const res = await fetch(BRIDGE + path, Object.assign({}, opts, { headers }));
+  if (res.status === 401) {
+    clearReceiptSession();
+    const app = $('#app');
+    if (app && (location.hash || '').startsWith('#/receipts')) {
+      renderReceiptsUnlockPanel(app);
+    }
+    const err = new Error('Session expired');
+    err.status = 401;
+    throw err;
+  }
+  return res;
+}
+
+/* --- Offline IndexedDB queue (`pending_receipt_uploads`) --- */
+
+function openReceiptsIdb() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') {
+      return reject(new Error('IndexedDB unavailable'));
+    }
+    const req = indexedDB.open(RECEIPTS_IDB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(RECEIPTS_IDB_STORE)) {
+        db.createObjectStore(RECEIPTS_IDB_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('IndexedDB open failed'));
+  });
+}
+
+async function stashPendingReceiptUpload(imageB64, mime = 'image/jpeg') {
+  try {
+    const db = await openReceiptsIdb();
+    const item = {
+      id: 'pending-rcpt-' + Date.now().toString(36),
+      image_b64: imageB64,
+      mime,
+      created_at: new Date().toISOString()
+    };
+    await new Promise((res, rej) => {
+      const tx = db.transaction(RECEIPTS_IDB_STORE, 'readwrite');
+      const store = tx.objectStore(RECEIPTS_IDB_STORE);
+      store.clear();
+      store.put(item);
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+    db.close();
+    return item;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function listPendingReceiptUploads() {
+  try {
+    const db = await openReceiptsIdb();
+    const items = await new Promise((res, rej) => {
+      const tx = db.transaction(RECEIPTS_IDB_STORE, 'readonly');
+      const req = tx.objectStore(RECEIPTS_IDB_STORE).getAll();
+      req.onsuccess = () => res(req.result || []);
+      req.onerror = () => rej(req.error);
+    });
+    db.close();
+    return items;
+  } catch (e) {
+    return [];
+  }
+}
+
+async function clearPendingReceiptUploads() {
+  try {
+    const db = await openReceiptsIdb();
+    await new Promise((res, rej) => {
+      const tx = db.transaction(RECEIPTS_IDB_STORE, 'readwrite');
+      tx.objectStore(RECEIPTS_IDB_STORE).clear();
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+    db.close();
+  } catch (e) {}
+}
+
+/* --- Client-side EXIF-aware compression before upload --- */
+
+async function compressReceiptPhotoFile(file) {
+  if (!file) throw new Error('Please choose a receipt photo first.');
+  let drawable = null;
+  let srcW = 0;
+  let srcH = 0;
+
+  if (typeof createImageBitmap === 'function') {
+    try {
+      drawable = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      srcW = drawable.width;
+      srcH = drawable.height;
+    } catch (e) {
+      drawable = null;
+    }
+  }
+  if (!drawable) {
+    const dataUrl = await readAsDataURL(file);
+    drawable = await loadImage(dataUrl);
+    srcW = drawable.width;
+    srcH = drawable.height;
+  }
+
+  const dims = computeReceiptScaleDims(srcW, srcH, RECEIPTS_MAX_EDGE_PX);
+  const canvas = document.createElement('canvas');
+  canvas.width = dims.width;
+  canvas.height = dims.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(drawable, 0, 0, dims.width, dims.height);
+  if (drawable && typeof drawable.close === 'function') {
+    try { drawable.close(); } catch (e) {}
+  }
+
+  const stepRes = await stepDownJpegQuality(async (quality) => {
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
+    if (!blob) return { bytes: 0, blob: null };
+    return { bytes: blob.size, blob };
+  }, RECEIPTS_TARGET_MAX_BYTES, RECEIPTS_START_QUALITY, RECEIPTS_MIN_QUALITY, RECEIPTS_QUALITY_STEP);
+
+  if (!stepRes.ok || !stepRes.result || !stepRes.result.blob) {
+    throw new Error(stepRes.error || 'Could not compress that receipt photo under 300 KB.');
+  }
+
+  const dataUrl = String(await readAsDataURL(stepRes.result.blob));
+  const b64 = dataUrl.split(',')[1] || '';
+  return {
+    b64,
+    mime: 'image/jpeg',
+    bytes: stepRes.bytes,
+    quality: stepRes.quality,
+    width: dims.width,
+    height: dims.height
+  };
+}
+
+/* --- Unlock Panel & Route-Scoped GIS Loader --- */
+
+function receiptsUnlockHTML() {
+  return (
+    '<section class="rcpt-wrap rcpt-unlock-card card">' +
+      '<div class="card-body">' +
+        '<h1 class="rcpt-title">Receipts</h1>' +
+        '<p class="rcpt-sub">Receipts are private to Yidi &amp; Nava &mdash; the rest of the recipe site needs no sign-in.</p>' +
+        '<div id="rcpt-gis-btn" class="rcpt-gis-slot"></div>' +
+        '<p id="rcpt-unlock-status" class="rcpt-status" role="status"></p>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function loadGisScriptOnce() {
+  if (typeof window !== 'undefined' && window.google && window.google.accounts && window.google.accounts.id) {
+    return Promise.resolve();
+  }
+  if (_gisScriptPromise) return _gisScriptPromise;
+  _gisScriptPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => {
+      _gisScriptPromise = null;
+      reject(new Error('Could not load Google Sign-In script.'));
+    };
+    document.head.appendChild(s);
+  });
+  return _gisScriptPromise;
+}
+
+async function handleGisCredentialResponse(resp) {
+  const st = $('#rcpt-unlock-status');
+  if (!resp || !resp.credential) {
+    if (st) st.textContent = 'Sign-in did not return a credential.';
+    return;
+  }
+  if (st) st.textContent = 'Verifying sign-in…';
+  try {
+    const res = await fetch(BRIDGE + '/receipts/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_token: resp.credential })
+    });
+    if (!res.ok) {
+      if (st) st.textContent = 'Sign-in was not authorized for this account.';
+      return;
+    }
+    const data = await res.json();
+    if (!data || !data.token) {
+      if (st) st.textContent = 'Could not start receipts session.';
+      return;
+    }
+    saveReceiptSession(data);
+    const app = $('#app');
+    if (app) renderReceiptsRoute(app, location.hash || '#/receipts');
+  } catch (e) {
+    if (st) st.textContent = 'Sign-in failed — check your connection and try again.';
+  }
+}
+
+function renderReceiptsUnlockPanel(app) {
+  if (!app) return;
+  app.innerHTML = receiptsUnlockHTML();
+  if (typeof document === 'undefined' || !document.head) return;
+  loadGisScriptOnce()
+    .then(() => {
+      const slot = $('#rcpt-gis-btn');
+      if (!slot || !window.google || !window.google.accounts || !window.google.accounts.id) return;
+      window.google.accounts.id.initialize({
+        client_id: RECEIPTS_GOOGLE_CLIENT_ID,
+        callback: handleGisCredentialResponse
+      });
+      window.google.accounts.id.renderButton(slot, {
+        theme: 'outline',
+        size: 'large',
+        text: 'signin_with',
+        shape: 'pill'
+      });
+    })
+    .catch(() => {
+      const st = $('#rcpt-unlock-status');
+      if (st) st.textContent = 'Sign in with Google could not load right now.';
+    });
+}
+
+/* --- Main #/receipts Route Entry --- */
+
+function renderReceiptsRoute(app, hash = '#/receipts', options = {}) {
+  stopReceiptExtractPoll();
+  revokeReceiptObjectUrl();
+  const session = getValidReceiptSession(options.storage, options.nowSec);
+  if (!session) {
+    if (options.skipGisLoad) {
+      app.innerHTML = receiptsUnlockHTML();
+      return { state: 'locked' };
+    }
+    renderReceiptsUnlockPanel(app);
+    return { state: 'locked' };
+  }
+
+  const subId = hash.startsWith('#/receipts/') ? decodeURIComponent(hash.slice('#/receipts/'.length)).trim() : '';
+  if (subId) {
+    renderReceiptDetailShell(app, session, subId);
+    return { state: 'detail', receiptId: subId };
+  }
+  renderReceiptsDashboard(app, session);
+  return { state: 'unlocked' };
+}
+
+function renderReceiptsDashboard(app, session) {
+  app.innerHTML = (
+    '<section class="rcpt-wrap">' +
+      '<div class="rcpt-header-row">' +
+        '<div>' +
+          '<h1 class="rcpt-title">Receipts</h1>' +
+          '<p class="rcpt-sub">Signed in as <strong>' + esc(session.email) + '</strong></p>' +
+        '</div>' +
+        '<div class="rcpt-header-actions">' +
+          '<label class="btn primary rcpt-upload-btn" for="rcpt-camera-input">+ Scan / Upload Receipt</label>' +
+          '<input type="file" id="rcpt-camera-input" accept="image/*" capture="environment" hidden>' +
+          '<label class="btn rcpt-gallery-btn" for="rcpt-gallery-input">Choose Photo</label>' +
+          '<input type="file" id="rcpt-gallery-input" accept="image/*" hidden>' +
+          '<button type="button" class="btn rcpt-signout-btn" id="rcpt-signout-btn">Sign out</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="rcpt-retry-banner" class="rcpt-retry-banner" hidden></div>' +
+      '<div id="rcpt-upload-status" class="rcpt-status" role="status"></div>' +
+      '<div class="rcpt-search-box card">' +
+        '<div class="card-body">' +
+          '<label class="rcpt-label" for="rcpt-search-input">Price History Lookup</label>' +
+          '<div class="rcpt-search-row">' +
+            '<input type="search" id="rcpt-search-input" placeholder="Search item, brand, or ingredient (e.g. feta, olive oil)…" autocomplete="off">' +
+            '<button type="button" class="btn" id="rcpt-search-btn">Search</button>' +
+          '</div>' +
+          '<div id="rcpt-search-results" class="rcpt-search-results"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rcpt-list-section">' +
+        '<h2 class="rcpt-sec-title">Recent Receipts</h2>' +
+        '<div id="rcpt-list-wrap" class="rcpt-list-wrap"><p class="rcpt-muted">Loading receipts…</p></div>' +
+      '</div>' +
+    '</section>'
+  );
+
+  const signOutBtn = $('#rcpt-signout-btn');
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', () => {
+      clearReceiptSession();
+      renderReceiptsUnlockPanel(app);
+    });
+  }
+
+  const onFilePicked = (e) => {
+    const f = e.target && e.target.files && e.target.files[0];
+    if (f) {
+      handleReceiptFileUpload(f);
+      e.target.value = '';
+    }
+  };
+  const camIn = $('#rcpt-camera-input');
+  const galIn = $('#rcpt-gallery-input');
+  if (camIn) camIn.addEventListener('change', onFilePicked);
+  if (galIn) galIn.addEventListener('change', onFilePicked);
+
+  const searchIn = $('#rcpt-search-input');
+  const searchBtn = $('#rcpt-search-btn');
+  const runSearch = () => {
+    const q = (searchIn && searchIn.value || '').trim();
+    runReceiptPriceSearch(q);
+  };
+  if (searchBtn) searchBtn.addEventListener('click', runSearch);
+  if (searchIn) {
+    searchIn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+  }
+
+  refreshPendingReceiptBanner();
+  loadRecentReceiptsList();
+}
+
+async function refreshPendingReceiptBanner() {
+  const banner = $('#rcpt-retry-banner');
+  if (!banner) return;
+  const pending = await listPendingReceiptUploads();
+  if (!pending.length) {
+    banner.hidden = true;
+    banner.innerHTML = '';
+    return;
+  }
+  const latest = pending[pending.length - 1];
+  banner.hidden = false;
+  banner.innerHTML = (
+    '<span>Unuploaded receipt photo saved offline on this device.</span>' +
+    '<div class="rcpt-retry-actions">' +
+      '<button type="button" class="btn primary" id="rcpt-retry-upload-btn">Retry Upload</button>' +
+      '<button type="button" class="btn" id="rcpt-discard-upload-btn">Discard</button>' +
+    '</div>'
+  );
+  const retryBtn = $('#rcpt-retry-upload-btn');
+  const discardBtn = $('#rcpt-discard-upload-btn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      uploadCompressedReceiptPayload(latest.image_b64, latest.mime || 'image/jpeg', true);
+    });
+  }
+  if (discardBtn) {
+    discardBtn.addEventListener('click', async () => {
+      await clearPendingReceiptUploads();
+      refreshPendingReceiptBanner();
+    });
+  }
+}
+
+async function handleReceiptFileUpload(file) {
+  const st = $('#rcpt-upload-status');
+  if (st) {
+    st.className = 'rcpt-status';
+    st.textContent = 'Compressing receipt photo…';
+  }
+  let compressed;
+  try {
+    compressed = await compressReceiptPhotoFile(file);
+  } catch (e) {
+    if (st) {
+      st.className = 'rcpt-status rcpt-status-err';
+      st.textContent = e.message || 'Could not compress that photo.';
+    }
+    return;
+  }
+  await uploadCompressedReceiptPayload(compressed.b64, compressed.mime, false);
+}
+
+async function uploadCompressedReceiptPayload(imageB64, mime, isRetry) {
+  const st = $('#rcpt-upload-status');
+  if (st) {
+    st.className = 'rcpt-status';
+    st.textContent = isRetry ? 'Retrying receipt upload…' : 'Uploading receipt…';
+  }
+  try {
+    const res = await receiptsApiFetch('/receipts/upload', {
+      method: 'POST',
+      body: JSON.stringify({ image_b64: imageB64, mime: mime || 'image/jpeg' })
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      if (st) {
+        st.className = 'rcpt-status rcpt-status-err';
+        st.textContent = res.status === 413
+          ? 'Receipt photo exceeds the 500 KB limit.'
+          : res.status === 429
+            ? 'Daily receipt upload limit (20/day) reached.'
+            : 'Upload failed (' + res.status + ' ' + (errData.error || '') + ').';
+      }
+      return;
+    }
+    const data = await res.json();
+    await clearPendingReceiptUploads();
+    refreshPendingReceiptBanner();
+    if (st) {
+      st.className = 'rcpt-status rcpt-status-ok';
+      st.textContent = 'Uploaded — extraction in progress…';
+    }
+    if (data && data.receipt_id) {
+      startReceiptExtractPoll(data.receipt_id);
+      loadRecentReceiptsList();
+    }
+  } catch (e) {
+    if (e && e.status === 401) return;
+    await stashPendingReceiptUpload(imageB64, mime || 'image/jpeg');
+    await refreshPendingReceiptBanner();
+    if (st) {
+      st.className = 'rcpt-status rcpt-status-err';
+      st.textContent = 'Network error — your receipt photo was saved on this device. Tap Retry Upload above when back online.';
+    }
+  }
+}
+
+function startReceiptExtractPoll(receiptId) {
+  stopReceiptExtractPoll();
+  let attempts = 0;
+  const pollOnce = async () => {
+    attempts++;
+    try {
+      const res = await receiptsApiFetch('/receipts/' + encodeURIComponent(receiptId));
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.status && data.status !== 'pending_extraction') {
+          stopReceiptExtractPoll();
+          location.hash = '#/receipts/' + encodeURIComponent(receiptId);
+          return;
+        }
+      }
+    } catch (e) {
+      if (e && e.status === 401) return;
+    }
+    if (attempts < RECEIPTS_POLL_MAX_ATTEMPTS && (location.hash || '').startsWith('#/receipts')) {
+      _receiptExtractPollTimer = setTimeout(pollOnce, RECEIPTS_POLL_INTERVAL_MS);
+    } else {
+      const st = $('#rcpt-upload-status');
+      if (st && attempts >= RECEIPTS_POLL_MAX_ATTEMPTS) {
+        st.textContent = 'Uploaded — queued for Muse intake check (runs every 30 minutes). You can open it from Recent Receipts once extracted.';
+      }
+    }
+  };
+  _receiptExtractPollTimer = setTimeout(pollOnce, RECEIPTS_POLL_INTERVAL_MS);
+}
+
+async function loadRecentReceiptsList() {
+  const wrap = $('#rcpt-list-wrap');
+  if (!wrap) return;
+  try {
+    const res = await receiptsApiFetch('/receipts/list');
+    if (!res.ok) {
+      wrap.innerHTML = '<p class="rcpt-muted">Could not load receipts right now.</p>';
+      return;
+    }
+    const data = await res.json();
+    const list = (data && Array.isArray(data.receipts)) ? data.receipts : [];
+    if (!list.length) {
+      wrap.innerHTML = '<p class="rcpt-muted">No receipts uploaded yet.</p>';
+      return;
+    }
+    wrap.innerHTML = '<div class="rcpt-cards">' + list.map(r => {
+      const statusLabel = r.status === 'verified'
+        ? '<span class="badge pareve">Verified</span>'
+        : r.status === 'needs_review'
+          ? '<span class="badge meat">Needs Review</span>'
+          : '<span class="badge neutral">Pending Extraction</span>';
+      const storeName = r.store || 'Receipt (extracting…)';
+      const dateStr = r.receipt_date || (r.created_at ? r.created_at.slice(0, 10) : '—');
+      const totalStr = r.total_cents != null ? formatReceiptCents(r.total_cents) : '—';
+      const savedStr = r.total_saved_cents ? ' (saved ' + formatReceiptCents(r.total_saved_cents) + ')' : '';
+      const countStr = r.item_count != null ? (r.item_count + ' items') : '';
+      return (
+        '<a class="card rcpt-list-card" href="#/receipts/' + encodeURIComponent(r.id) + '">' +
+          '<div class="card-body rcpt-list-card-body">' +
+            '<div>' +
+              '<h3>' + esc(storeName) + '</h3>' +
+              '<div class="card-meta">' + esc(dateStr) + (countStr ? ' &middot; ' + esc(countStr) : '') + '</div>' +
+            '</div>' +
+            '<div class="rcpt-list-right">' +
+              '<div class="rcpt-list-total">' + esc(totalStr) + '<span class="rcpt-saved-note">' + esc(savedStr) + '</span></div>' +
+              statusLabel +
+            '</div>' +
+          '</div>' +
+        '</a>'
+      );
+    }).join('') + '</div>';
+  } catch (e) {
+    if (e && e.status === 401) return;
+    wrap.innerHTML = '<p class="rcpt-muted">Could not load receipts — check your connection.</p>';
+  }
+}
+
+async function runReceiptPriceSearch(q) {
+  const out = $('#rcpt-search-results');
+  if (!out) return;
+  if (!q) {
+    out.innerHTML = '';
+    return;
+  }
+  out.innerHTML = '<p class="rcpt-muted">Searching…</p>';
+  try {
+    const res = await receiptsApiFetch('/receipts/search?q=' + encodeURIComponent(q));
+    if (!res.ok) {
+      out.innerHTML = '<p class="rcpt-muted">Search failed.</p>';
+      return;
+    }
+    const data = await res.json();
+    const items = (data && Array.isArray(data.items)) ? data.items : [];
+    if (!items.length) {
+      out.innerHTML = '<p class="rcpt-muted">No matching receipt items found for &ldquo;' + esc(q) + '&rdquo;.</p>';
+      return;
+    }
+    out.innerHTML = (
+      '<table class="rcpt-search-table">' +
+        '<thead><tr><th>Date</th><th>Store</th><th>Brand / Item</th><th>Pack / Qty</th><th>Reg / Sale</th><th>Paid</th><th>Group Key</th></tr></thead>' +
+        '<tbody>' +
+          items.map(it => {
+            const title = [it.brand, it.product_name || it.raw_line].filter(Boolean).join(' — ');
+            const packQty = [
+              it.pack_size,
+              it.qty_or_weight != null ? (it.qty_or_weight + (it.unit ? ' ' + it.unit : '')) : null
+            ].filter(Boolean).join(' · ');
+            const regSale = [
+              it.reg_price_cents != null ? ('Reg ' + formatReceiptCents(it.reg_price_cents)) : null,
+              it.sale_price_cents != null ? ('Sale ' + formatReceiptCents(it.sale_price_cents)) : null
+            ].filter(Boolean).join(' / ') || '—';
+            return (
+              '<tr>' +
+                '<td><a href="#/receipts/' + encodeURIComponent(it.receipt_id) + '">' + esc(it.receipt_date || '—') + '</a></td>' +
+                '<td>' + esc(it.store || '—') + '</td>' +
+                '<td>' + esc(title) + '</td>' +
+                '<td>' + esc(packQty || '—') + '</td>' +
+                '<td>' + esc(regSale) + '</td>' +
+                '<td><strong>' + esc(formatReceiptCents(it.paid_price_cents)) + '</strong></td>' +
+                '<td>' + esc(it.group_key || '—') + '</td>' +
+              '</tr>'
+            );
+          }).join('') +
+        '</tbody>' +
+      '</table>'
+    );
+  } catch (e) {
+    if (e && e.status === 401) return;
+    out.innerHTML = '<p class="rcpt-muted">Search failed — check your connection.</p>';
+  }
+}
+
+/* --- Receipt Review / Detail Card --- */
+
+async function renderReceiptDetailShell(app, session, receiptId) {
+  app.innerHTML = (
+    '<section class="rcpt-wrap">' +
+      '<p><a href="#/receipts" class="btn">&larr; Back to Receipts</a></p>' +
+      '<p class="rcpt-muted">Loading receipt…</p>' +
+    '</section>'
+  );
+  try {
+    const res = await receiptsApiFetch('/receipts/' + encodeURIComponent(receiptId));
+    if (res.status === 404) {
+      app.innerHTML = (
+        '<section class="rcpt-wrap">' +
+          '<p><a href="#/receipts" class="btn">&larr; Back to Receipts</a></p>' +
+          '<p class="rcpt-status rcpt-status-err">Receipt not found.</p>' +
+        '</section>'
+      );
+      return;
+    }
+    const receipt = await res.json();
+    renderReceiptReviewCard(app, receipt);
+  } catch (e) {
+    if (e && e.status === 401) return;
+    app.innerHTML = (
+      '<section class="rcpt-wrap">' +
+        '<p><a href="#/receipts" class="btn">&larr; Back to Receipts</a></p>' +
+        '<p class="rcpt-status rcpt-status-err">Could not load receipt.</p>' +
+      '</section>'
+    );
+  }
+}
+
+function receiptItemRowHTML(it, idx) {
+  const needsRev = Boolean(it.needs_review);
+  return (
+    '<tr class="rcpt-item-row' + (needsRev ? ' rcpt-row-needs-review' : '') + '" data-rcpt-idx="' + idx + '">' +
+      '<td class="rcpt-raw-cell">' +
+        '<div class="rcpt-raw-line">' + esc(it.raw_line || '') + '</div>' +
+        '<input type="hidden" class="rcpt-in-raw" value="' + esc(it.raw_line || '') + '">' +
+        '<input type="hidden" class="rcpt-in-taxflag" value="' + esc(it.tax_flag || '') + '">' +
+        '<input type="text" class="rcpt-in-dept" placeholder="Dept" value="' + esc(it.receipt_dept || '') + '">' +
+      '</td>' +
+      '<td><input type="text" class="rcpt-in-brand" placeholder="Brand" value="' + esc(it.brand || '') + '"></td>' +
+      '<td><input type="text" class="rcpt-in-product" placeholder="Product" value="' + esc(it.product_name || '') + '"></td>' +
+      '<td><input type="text" class="rcpt-in-pack" placeholder="Pack" value="' + esc(it.pack_size || '') + '"></td>' +
+      '<td><input type="number" step="any" class="rcpt-in-qty" placeholder="1" value="' + esc(it.qty_or_weight != null ? it.qty_or_weight : '') + '"></td>' +
+      '<td>' +
+        '<select class="rcpt-in-unit">' +
+          '<option value=""' + (!it.unit ? ' selected' : '') + '>—</option>' +
+          '<option value="ea"' + (it.unit === 'ea' ? ' selected' : '') + '>ea</option>' +
+          '<option value="lb"' + (it.unit === 'lb' ? ' selected' : '') + '>lb</option>' +
+        '</select>' +
+      '</td>' +
+      '<td><input type="text" inputmode="decimal" class="rcpt-in-reg" placeholder="0.00" value="' + esc(centsToInputDollars(it.reg_price_cents)) + '"></td>' +
+      '<td><input type="text" inputmode="decimal" class="rcpt-in-sale" placeholder="0.00" value="' + esc(centsToInputDollars(it.sale_price_cents)) + '"></td>' +
+      '<td><input type="text" inputmode="decimal" class="rcpt-in-paid" placeholder="0.00" value="' + esc(centsToInputDollars(it.paid_price_cents)) + '"></td>' +
+      '<td><input type="text" class="rcpt-in-groupkey" placeholder="groupKey" value="' + esc(it.group_key || '') + '"></td>' +
+    '</tr>'
+  );
+}
+
+function renderReceiptReviewCard(app, receipt) {
+  const items = Array.isArray(receipt.items) ? receipt.items : [];
+  app.innerHTML = (
+    '<section class="rcpt-wrap">' +
+      '<div class="rcpt-header-row">' +
+        '<a href="#/receipts" class="btn">&larr; Back to Receipts</a>' +
+        '<span class="badge ' + (receipt.status === 'verified' ? 'pareve' : 'meat') + '">' + esc(receipt.status || 'pending') + '</span>' +
+      '</div>' +
+      '<div class="rcpt-review-grid">' +
+        '<div class="rcpt-photo-pane card">' +
+          '<div class="card-body">' +
+            '<h2 class="rcpt-sec-title">Receipt Photo <span class="rcpt-tap-hint">(tap image to zoom)</span></h2>' +
+            '<div id="rcpt-img-holder" class="rcpt-img-holder"><p class="rcpt-muted">Loading image…</p></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rcpt-form-pane card">' +
+          '<div class="card-body">' +
+            '<h2 class="rcpt-sec-title">Review &amp; Confirm Receipt</h2>' +
+            '<div class="rcpt-meta-grid">' +
+              '<label class="rcpt-field"><span>Store</span><input type="text" id="rcpt-f-store" value="' + esc(receipt.store || '') + '"></label>' +
+              '<label class="rcpt-field"><span>Date (YYYY-MM-DD)</span><input type="date" id="rcpt-f-date" value="' + esc(receipt.receipt_date || '') + '"></label>' +
+              '<label class="rcpt-field"><span>Ticket #</span><input type="text" id="rcpt-f-ticket" value="' + esc(receipt.ticket_no || '') + '"></label>' +
+              '<label class="rcpt-field"><span>Subtotal ($)</span><input type="text" inputmode="decimal" id="rcpt-f-subtotal" value="' + esc(centsToInputDollars(receipt.subtotal_cents)) + '"></label>' +
+              '<label class="rcpt-field"><span>Total ($)</span><input type="text" inputmode="decimal" id="rcpt-f-total" value="' + esc(centsToInputDollars(receipt.total_cents)) + '"></label>' +
+              '<label class="rcpt-field"><span>Total Saved ($)</span><input type="text" inputmode="decimal" id="rcpt-f-saved" value="' + esc(centsToInputDollars(receipt.total_saved_cents)) + '"></label>' +
+            '</div>' +
+            '<div id="rcpt-checksum-bar" class="rcpt-checksum-bar" role="status"></div>' +
+            '<div class="rcpt-items-scroll">' +
+              '<table class="rcpt-items-table">' +
+                '<thead>' +
+                  '<tr><th>Register Line / Dept</th><th>Brand</th><th>Product</th><th>Pack</th><th>Qty/Wt</th><th>Unit</th><th>Reg $</th><th>Sale $</th><th>Paid $</th><th>Shopping groupKey</th></tr>' +
+                '</thead>' +
+                '<tbody id="rcpt-items-tbody">' +
+                  items.map((it, idx) => receiptItemRowHTML(it, idx)).join('') +
+                '</tbody>' +
+              '</table>' +
+            '</div>' +
+            '<div class="rcpt-review-actions">' +
+              '<button type="button" class="btn primary" id="rcpt-confirm-btn" disabled>Save Verified Receipt</button>' +
+              '<span id="rcpt-confirm-status" class="rcpt-status" role="status"></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</section>'
+  );
+
+  // Load authenticated receipt photo
+  const imgHolder = $('#rcpt-img-holder');
+  if (imgHolder && receipt.has_image) {
+    receiptsApiFetch('/receipts/' + encodeURIComponent(receipt.id) + '/image')
+      .then(r => (r.ok ? r.blob() : null))
+      .then(blob => {
+        if (!blob) {
+          imgHolder.innerHTML = '<p class="rcpt-muted">Receipt image unavailable.</p>';
+          return;
+        }
+        revokeReceiptObjectUrl();
+        _receiptActiveObjectUrl = URL.createObjectURL(blob);
+        imgHolder.innerHTML = '<img src="' + esc(_receiptActiveObjectUrl) + '" alt="Receipt photo" class="rcpt-photo" id="rcpt-photo-img">';
+        const imgEl = $('#rcpt-photo-img');
+        if (imgEl) {
+          imgEl.addEventListener('click', () => {
+            imgEl.classList.toggle('rcpt-img-fullscreen');
+          });
+        }
+      })
+      .catch(() => {
+        if (imgHolder) imgHolder.innerHTML = '<p class="rcpt-muted">Could not load receipt photo.</p>';
+      });
+  } else if (imgHolder) {
+    imgHolder.innerHTML = '<p class="rcpt-muted">No photo stored for this receipt.</p>';
+  }
+
+  const collectReviewPayload = () => {
+    const store = ($('#rcpt-f-store') && $('#rcpt-f-store').value || '').trim();
+    const receipt_date = ($('#rcpt-f-date') && $('#rcpt-f-date').value || '').trim();
+    const ticket_no = ($('#rcpt-f-ticket') && $('#rcpt-f-ticket').value || '').trim();
+    const subtotal_cents = parseReceiptDollarsToCents($('#rcpt-f-subtotal') && $('#rcpt-f-subtotal').value);
+    const total_cents = parseReceiptDollarsToCents($('#rcpt-f-total') && $('#rcpt-f-total').value);
+    const total_saved_cents = parseReceiptDollarsToCents($('#rcpt-f-saved') && $('#rcpt-f-saved').value);
+
+    const rows = Array.from(document.querySelectorAll('#rcpt-items-tbody .rcpt-item-row'));
+    const collectedItems = rows.map((tr, i) => {
+      const raw_line = ($('.rcpt-in-raw', tr) && $('.rcpt-in-raw', tr).value) || '';
+      const receipt_dept = ($('.rcpt-in-dept', tr) && $('.rcpt-in-dept', tr).value || '').trim() || null;
+      const brand = ($('.rcpt-in-brand', tr) && $('.rcpt-in-brand', tr).value || '').trim() || null;
+      const product_name = ($('.rcpt-in-product', tr) && $('.rcpt-in-product', tr).value || '').trim() || null;
+      const pack_size = ($('.rcpt-in-pack', tr) && $('.rcpt-in-pack', tr).value || '').trim() || null;
+      const qtyRaw = ($('.rcpt-in-qty', tr) && $('.rcpt-in-qty', tr).value || '').trim();
+      const qty_or_weight = qtyRaw !== '' && Number.isFinite(Number(qtyRaw)) ? Number(qtyRaw) : null;
+      const unitVal = ($('.rcpt-in-unit', tr) && $('.rcpt-in-unit', tr).value) || '';
+      const unit = (unitVal === 'lb' || unitVal === 'ea') ? unitVal : null;
+      const reg_price_cents = parseReceiptDollarsToCents($('.rcpt-in-reg', tr) && $('.rcpt-in-reg', tr).value);
+      const sale_price_cents = parseReceiptDollarsToCents($('.rcpt-in-sale', tr) && $('.rcpt-in-sale', tr).value);
+      const paid_price_cents = parseReceiptDollarsToCents($('.rcpt-in-paid', tr) && $('.rcpt-in-paid', tr).value);
+      const rawKey = ($('.rcpt-in-groupkey', tr) && $('.rcpt-in-groupkey', tr).value || '').trim();
+      const group_key = rawKey ? groupKey(rawKey) : null;
+      const taxFlagVal = ($('.rcpt-in-taxflag', tr) && $('.rcpt-in-taxflag', tr).value) || '';
+      return {
+        line_no: i + 1,
+        raw_line,
+        receipt_dept,
+        brand,
+        product_name,
+        pack_size,
+        qty_or_weight,
+        unit,
+        reg_price_cents,
+        sale_price_cents,
+        paid_price_cents,
+        tax_flag: taxFlagVal === 'F' ? 'F' : null,
+        group_key
+      };
+    });
+
+    return {
+      store,
+      receipt_date,
+      ticket_no,
+      subtotal_cents,
+      total_cents,
+      total_saved_cents,
+      items: collectedItems
+    };
+  };
+
+  const updateLiveChecksum = () => {
+    const payload = collectReviewPayload();
+    const chk = computeReceiptChecksum(payload.items, payload.total_cents);
+    const bar = $('#rcpt-checksum-bar');
+    const btn = $('#rcpt-confirm-btn');
+    if (bar) {
+      bar.textContent = chk.label;
+      bar.className = 'rcpt-checksum-bar ' + (chk.valid ? 'rcpt-checksum-ok' : 'rcpt-checksum-mismatch');
+    }
+    if (btn) {
+      btn.disabled = !chk.valid;
+    }
+    return { payload, chk };
+  };
+
+  const reviewSection = app.querySelector('.rcpt-wrap');
+  if (reviewSection) reviewSection.addEventListener('input', updateLiveChecksum);
+  updateLiveChecksum();
+
+  const confirmBtn = $('#rcpt-confirm-btn');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const { payload, chk } = updateLiveChecksum();
+      if (!chk.valid) return;
+      const st = $('#rcpt-confirm-status');
+      confirmBtn.disabled = true;
+      if (st) {
+        st.className = 'rcpt-status';
+        st.textContent = 'Saving verified receipt…';
+      }
+      try {
+        const res = await receiptsApiFetch('/receipts/' + encodeURIComponent(receipt.id) + '/confirm', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          confirmBtn.disabled = false;
+          if (st) {
+            st.className = 'rcpt-status rcpt-status-err';
+            st.textContent = 'Could not save (' + (err.error || res.status) + ').';
+          }
+          return;
+        }
+        toast('Receipt verified and saved!');
+        location.hash = '#/receipts';
+      } catch (e) {
+        if (e && e.status === 401) return;
+        confirmBtn.disabled = false;
+        if (st) {
+          st.className = 'rcpt-status rcpt-status-err';
+          st.textContent = 'Network error while saving receipt.';
+        }
+      }
+    });
+  }
+}
+
+/* ============================================================================
+   END DELIMITED RECEIPTS MODULE
+   ============================================================================ */
 
 /* ---------------- Go ---------------- */
 document.addEventListener('DOMContentLoaded', boot);
