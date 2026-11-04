@@ -1930,5 +1930,13 @@
     "edit_target": "chicken-mushroom-marsala",
     "created_at": "2026-11-04T00:49:51.913Z",
     "text": "Okay so multiple issues in this recipe both on the ingredient side and on the instruction side no butter is used. And the instructions forge"
+  },
+  {
+    "id": "inbox-mw1ejhj8-6kj7",
+    "status": "pending",
+    "type": "edit",
+    "edit_target": "chicken-mushroom-marsala",
+    "created_at": "2026-11-04T00:52:14.853Z",
+    "text": "Also garlic should be minced"
   }
 ]
