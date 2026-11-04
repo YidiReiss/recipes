@@ -1,9 +1,14 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-04 — Receipts retry-banner fix: hidden empty bar no longer renders (styles.css `v=20261104b`, index.html `v=20261104b`)
+
+- **What changed (Muse-built one-line CSS fix, from Yidi's approval, Nov 4, 2026):** `.rcpt-retry-banner` sets `display: flex`, which overrode the `hidden` attribute's `display: none`, so the empty retry banner always rendered as a pale-yellow bar under the Receipts header. Added `.rcpt-retry-banner[hidden] { display: none; }` directly after the banner rule. No JS change: `refreshPendingReceiptBanner()` already toggles `banner.hidden` correctly, so the banner still shows (flex) whenever an offline upload is stashed. No other styles touched; app.js unchanged.
+- **Deploy + live QA:** (to be finalized after the push)
+
 ## 2026-11-04 — Receipts heads-up copy: 30-minute explainer + post-upload status (app.js `v=20261104a`, index.html `v=20261104a`)
 
 - **What changed (Muse-built small copy change, from Yidi's approved wording, Nov 4, 2026; mirrors the recipe-intake heads-up):** (1) The signed-in `#/receipts` view now shows an explainer under the header, before any upload: "Snap or choose a photo of a receipt. Within about 30 minutes it shows up below as a Review Card with its line items, ready for you to check. If a photo can't be read, it'll be marked so you know." (2) The immediate post-upload status now reads "Uploaded — it should appear below as a Review Card within about 30 minutes." (single- and multi-photo variants), replacing "extraction in progress…", which gave no timeframe. (3) The poll-exhaustion fallback status uses the same wording. No behavior change: the 15s × 10 extract poll, auto-navigate on extraction, staging tray, Review Card, and checker step 5b are untouched; styles.css unchanged (reuses `.rcpt-sub`).
-- **Deploy + live QA:** (to be finalized after the push)
+- **Deploy + live QA (finalized Nov 4, 2026):** commit `ed895a9` (parent `07d910b`, 3 files: app.js, index.html, CHANGELOG.md), Pages deployment #1718 Active/Deployed, Nov 4, 2026, ~5:32 AM EST; served hashes matched staging byte-for-byte (new explainer present, old wording gone). Live QA battery (Nov 4, 5:35–5:38 AM EST, view-only): home 118, search, shopping grouping, signed-out unlock panel, Cook Mode all PASS; signed-in receipts view showed the explainer verbatim; the empty-list state did not show because a live receipt row was already present ("Receipt (extracting…)", PENDING EXTRACTION — Yidi's morning upload). Staging tray + post-upload status text remain code-verified only (no upload attempted by QA).
 
 ## 2026-11-03 — Receipts upload redesign: multi-photo staging tray, 1.8 MB caps, stacked viewer & unreadable flow (app.js `v=20261103a`, index.html `v=20261103a`, styles.css `v=20261103a`)
 

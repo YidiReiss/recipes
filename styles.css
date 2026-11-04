@@ -2104,6 +2104,10 @@ body.has-timer-dock .cook-mode-overlay {
   font-weight: 600;
 }
 
+.rcpt-retry-banner[hidden] {
+  display: none;
+}
+
 .rcpt-retry-actions {
   display: flex;
   gap: 0.5rem;
