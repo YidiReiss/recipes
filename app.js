@@ -7761,12 +7761,15 @@ async function sendSubmission() {
 
 const RECEIPTS_TOKEN_KEY = 'reiss_receipt_token';
 const RECEIPTS_GOOGLE_CLIENT_ID = '23951380866-bkvvgbhvvtaad5l4uh4hqe4vltsk28jg.apps.googleusercontent.com';
-const RECEIPTS_MAX_EDGE_PX = 1800;
-const RECEIPTS_TARGET_MAX_BYTES = 300 * 1024;
-const RECEIPTS_HARD_MAX_BYTES = 500 * 1024;
-const RECEIPTS_START_QUALITY = 0.85;
-const RECEIPTS_MIN_QUALITY = 0.60;
-const RECEIPTS_QUALITY_STEP = 0.05;
+const RECEIPTS_MAX_EDGE_PX = 2560;
+const RECEIPTS_FALLBACK_EDGE_PX = 2200;
+const RECEIPTS_MIN_DECODE_EDGE_PX = 200;
+const RECEIPTS_TARGET_MAX_BYTES = 1750000;
+const RECEIPTS_HARD_MAX_BYTES = 1800000;
+const RECEIPTS_START_QUALITY = 0.88;
+const RECEIPTS_MIN_QUALITY = 0.76;
+const RECEIPTS_QUALITY_STEP = 0.06;
+const RECEIPTS_MAX_PHOTOS = 6;
 const RECEIPTS_POLL_INTERVAL_MS = 15 * 1000;
 const RECEIPTS_POLL_MAX_ATTEMPTS = 10;
 const RECEIPTS_IDB_NAME = 'reiss_receipts_offline';
@@ -7774,6 +7777,8 @@ const RECEIPTS_IDB_STORE = 'pending_receipt_uploads';
 
 let _receiptExtractPollTimer = null;
 let _receiptActiveObjectUrl = null;
+let _receiptActiveObjectUrls = [];
+let _stagedReceiptPhotos = [];
 let _gisScriptPromise = null;
 
 /* --- Pure helpers (exercised directly by browser-less Node test harness) --- */
@@ -7828,7 +7833,8 @@ async function stepDownJpegQuality(
   targetBytes = RECEIPTS_TARGET_MAX_BYTES,
   startQ = RECEIPTS_START_QUALITY,
   minQ = RECEIPTS_MIN_QUALITY,
-  step = RECEIPTS_QUALITY_STEP
+  step = RECEIPTS_QUALITY_STEP,
+  fallbackEncodeFn = null
 ) {
   let lastResult = null;
   let q = startQ;
@@ -7841,27 +7847,57 @@ async function stepDownJpegQuality(
     const curQ = qualities[i];
     const res = await encodeAtQualityFn(curQ);
     const bytes = typeof res === 'number' ? res : (res && typeof res.bytes === 'number' ? res.bytes : 0);
-    lastResult = { quality: curQ, bytes, data: res };
+    lastResult = { quality: curQ, bytes, data: res, scaledFallback: false, maxEdge: RECEIPTS_MAX_EDGE_PX };
     if (bytes > 0 && bytes <= targetBytes) {
       return {
         ok: true,
         quality: curQ,
         bytes,
         attemptCount: i + 1,
+        scaledFallback: false,
+        maxEdge: RECEIPTS_MAX_EDGE_PX,
         result: res
       };
     }
   }
+
+  // Fallback scale edge (2200px) if still above targetBytes after 0.76
+  if (typeof fallbackEncodeFn === 'function') {
+    const fallbackQualities = [0.82, minQ];
+    for (let j = 0; j < fallbackQualities.length; j++) {
+      const fbQ = Math.round(fallbackQualities[j] * 100) / 100;
+      const fbRes = await fallbackEncodeFn(fbQ, RECEIPTS_FALLBACK_EDGE_PX);
+      const fbBytes = typeof fbRes === 'number' ? fbRes : (fbRes && typeof fbRes.bytes === 'number' ? fbRes.bytes : 0);
+      if (fbBytes > 0) {
+        lastResult = { quality: fbQ, bytes: fbBytes, data: fbRes, scaledFallback: true, maxEdge: RECEIPTS_FALLBACK_EDGE_PX };
+        if (fbBytes <= targetBytes) {
+          return {
+            ok: true,
+            quality: fbQ,
+            bytes: fbBytes,
+            attemptCount: qualities.length + j + 1,
+            scaledFallback: true,
+            maxEdge: RECEIPTS_FALLBACK_EDGE_PX,
+            result: fbRes
+          };
+        }
+      }
+    }
+  }
+
+  // Never reject for size in the browser — return best compressed output
   return {
-    ok: false,
+    ok: true,
     quality: lastResult ? lastResult.quality : minQ,
     bytes: lastResult ? lastResult.bytes : 0,
-    attemptCount: qualities.length,
-    error: 'That receipt photo is still over 300 KB after compression. Please crop closer to the receipt or take a lower-resolution photo.'
+    attemptCount: qualities.length + (typeof fallbackEncodeFn === 'function' ? 2 : 0),
+    scaledFallback: Boolean(lastResult && lastResult.scaledFallback),
+    maxEdge: lastResult ? lastResult.maxEdge : RECEIPTS_MAX_EDGE_PX,
+    result: lastResult ? lastResult.data : null
   };
 }
 
-function computeReceiptChecksum(items, totalCents) {
+function computeReceiptChecksum(items, totalCents, receiptStatus = 'needs_review') {
   const list = Array.isArray(items) ? items : [];
   const hasValidTotal = Number.isInteger(totalCents) && totalCents >= 0;
   let sumCents = 0;
@@ -7874,7 +7910,8 @@ function computeReceiptChecksum(items, totalCents) {
       sumCents += p;
     }
   }
-  const valid = hasValidTotal && allItemsValid && sumCents === totalCents;
+  const isUnreadable = receiptStatus === 'unreadable';
+  const valid = !isUnreadable && hasValidTotal && allItemsValid && sumCents === totalCents;
   const displayTotal = hasValidTotal ? formatReceiptCents(totalCents) : '—';
   return {
     valid,
@@ -7968,6 +8005,7 @@ function clearReceiptSession(storageObj) {
   }
   stopReceiptExtractPoll();
   revokeReceiptObjectUrl();
+  clearStagedReceiptPhotos();
 }
 
 function stopReceiptExtractPoll() {
@@ -7982,6 +8020,87 @@ function revokeReceiptObjectUrl() {
     try { URL.revokeObjectURL(_receiptActiveObjectUrl); } catch (e) {}
     _receiptActiveObjectUrl = null;
   }
+  if (Array.isArray(_receiptActiveObjectUrls) && _receiptActiveObjectUrls.length) {
+    if (typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') {
+      for (let i = 0; i < _receiptActiveObjectUrls.length; i++) {
+        try { URL.revokeObjectURL(_receiptActiveObjectUrls[i]); } catch (e) {}
+      }
+    }
+    _receiptActiveObjectUrls = [];
+  }
+}
+
+/* --- Multi-photo staging helpers (Option A staging bar) --- */
+
+function getStagedReceiptPhotos() {
+  return _stagedReceiptPhotos.slice();
+}
+
+function stageReceiptPhotoRecord(photoObj) {
+  if (!photoObj || !photoObj.b64) return { ok: false, reason: 'invalid_photo' };
+  if (_stagedReceiptPhotos.length >= RECEIPTS_MAX_PHOTOS) {
+    return { ok: false, reason: 'max_photos', max: RECEIPTS_MAX_PHOTOS };
+  }
+  _stagedReceiptPhotos.push({
+    b64: photoObj.b64,
+    mime: photoObj.mime || 'image/jpeg',
+    bytes: Number(photoObj.bytes) || 0,
+    width: Number(photoObj.width) || 0,
+    height: Number(photoObj.height) || 0,
+    previewUrl: photoObj.previewUrl || ('data:' + (photoObj.mime || 'image/jpeg') + ';base64,' + photoObj.b64)
+  });
+  return { ok: true, count: _stagedReceiptPhotos.length };
+}
+
+function removeStagedReceiptPhoto(index) {
+  const idx = Number(index);
+  if (!Number.isInteger(idx) || idx < 0 || idx >= _stagedReceiptPhotos.length) return false;
+  _stagedReceiptPhotos.splice(idx, 1);
+  return true;
+}
+
+function clearStagedReceiptPhotos() {
+  _stagedReceiptPhotos = [];
+}
+
+function receiptStagingTrayHTML(stagedPhotos = _stagedReceiptPhotos) {
+  const list = Array.isArray(stagedPhotos) ? stagedPhotos : [];
+  if (!list.length) return '';
+  const canAddMore = list.length < RECEIPTS_MAX_PHOTOS;
+  const countLabel = list.length === 1 ? '1 photo' : (list.length + ' photos');
+  return (
+    '<div class="rcpt-staging-tray card">' +
+      '<div class="card-body">' +
+        '<div class="rcpt-staging-head">' +
+          '<strong>Staged Receipt (' + esc(countLabel) + ' of ' + RECEIPTS_MAX_PHOTOS + ' max)</strong>' +
+          '<span class="rcpt-tap-hint">Long receipts? Add up to ' + RECEIPTS_MAX_PHOTOS + ' overlapping photos in order from top to bottom.</span>' +
+        '</div>' +
+        '<div class="rcpt-staging-thumbs">' +
+          list.map((p, idx) => {
+            const kb = p.bytes ? Math.max(1, Math.round(p.bytes / 1024)) + ' KB' : '';
+            return (
+              '<div class="rcpt-staging-thumb" data-rcpt-stage-idx="' + idx + '">' +
+                '<img src="' + esc(p.previewUrl || ('data:' + (p.mime || 'image/jpeg') + ';base64,' + p.b64)) + '" alt="Photo ' + (idx + 1) + '">' +
+                '<div class="rcpt-staging-thumb-meta">' +
+                  '<span class="rcpt-staging-part">Photo ' + (idx + 1) + '</span>' +
+                  (kb ? '<span class="rcpt-staging-kb">' + esc(kb) + '</span>' : '') +
+                '</div>' +
+                '<button type="button" class="rcpt-staging-remove" data-rcpt-remove-idx="' + idx + '" aria-label="Remove Photo ' + (idx + 1) + '">&times;</button>' +
+              '</div>'
+            );
+          }).join('') +
+        '</div>' +
+        '<div class="rcpt-staging-actions">' +
+          '<button type="button" class="btn primary" id="rcpt-stage-upload-btn">Upload Receipt (' + esc(countLabel) + ')</button>' +
+          (canAddMore
+            ? '<label class="btn" for="rcpt-camera-input">+ Add Another Photo</label>' +
+              '<label class="btn" for="rcpt-gallery-input">+ From Gallery</label>'
+            : '<span class="rcpt-muted">Maximum ' + RECEIPTS_MAX_PHOTOS + ' photos reached</span>') +
+          '<button type="button" class="btn" id="rcpt-stage-clear-btn">Clear</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
 }
 
 /* --- Authenticated fetch wrapper for /receipts/* (clears token & shows unlock on 401) --- */
@@ -8017,7 +8136,7 @@ async function receiptsApiFetch(path, opts = {}) {
   return res;
 }
 
-/* --- Offline IndexedDB queue (`pending_receipt_uploads`) --- */
+/* --- Offline IndexedDB queue (`pending_receipt_uploads`, multi-photo + receipt_id resume) --- */
 
 function openReceiptsIdb() {
   return new Promise((resolve, reject) => {
@@ -8036,15 +8155,38 @@ function openReceiptsIdb() {
   });
 }
 
-async function stashPendingReceiptUpload(imageB64, mime = 'image/jpeg') {
+async function stashPendingReceiptUpload(payloadOrB64, mime = 'image/jpeg') {
   try {
     const db = await openReceiptsIdb();
-    const item = {
-      id: 'pending-rcpt-' + Date.now().toString(36),
-      image_b64: imageB64,
-      mime,
-      created_at: new Date().toISOString()
-    };
+    let item;
+    if (payloadOrB64 && typeof payloadOrB64 === 'object' && Array.isArray(payloadOrB64.photos)) {
+      const photos = payloadOrB64.photos.map(p => ({
+        b64: p.b64 || p.image_b64 || '',
+        mime: p.mime || 'image/jpeg'
+      }));
+      item = {
+        id: 'pending-rcpt-' + Date.now().toString(36),
+        photos,
+        image_b64: photos[0] ? photos[0].b64 : '',
+        mime: photos[0] ? photos[0].mime : 'image/jpeg',
+        receipt_id: payloadOrB64.receipt_id || null,
+        next_seq: Number.isInteger(payloadOrB64.next_seq) ? payloadOrB64.next_seq : 1,
+        replace: Boolean(payloadOrB64.replace),
+        created_at: new Date().toISOString()
+      };
+    } else {
+      const b64Str = String(payloadOrB64 || '');
+      item = {
+        id: 'pending-rcpt-' + Date.now().toString(36),
+        photos: [{ b64: b64Str, mime: mime || 'image/jpeg' }],
+        image_b64: b64Str,
+        mime: mime || 'image/jpeg',
+        receipt_id: null,
+        next_seq: 1,
+        replace: false,
+        created_at: new Date().toISOString()
+      };
+    }
     await new Promise((res, rej) => {
       const tx = db.transaction(RECEIPTS_IDB_STORE, 'readwrite');
       const store = tx.objectStore(RECEIPTS_IDB_STORE);
@@ -8089,7 +8231,7 @@ async function clearPendingReceiptUploads() {
   } catch (e) {}
 }
 
-/* --- Client-side EXIF-aware compression before upload --- */
+/* --- Client-side EXIF-aware compression before upload (2560px max edge, 0.88->0.76, 2200px fallback, no size rejection) --- */
 
 async function compressReceiptPhotoFile(file) {
   if (!file) throw new Error('Please choose a receipt photo first.');
@@ -8113,35 +8255,65 @@ async function compressReceiptPhotoFile(file) {
     srcH = drawable.height;
   }
 
-  const dims = computeReceiptScaleDims(srcW, srcH, RECEIPTS_MAX_EDGE_PX);
+  if (Math.min(srcW, srcH) < RECEIPTS_MIN_DECODE_EDGE_PX) {
+    if (drawable && typeof drawable.close === 'function') {
+      try { drawable.close(); } catch (e) {}
+    }
+    throw new Error('That image is too small (' + srcW + '×' + srcH + ' px). Please take a clearer photo of the receipt.');
+  }
+
+  let activeDims = computeReceiptScaleDims(srcW, srcH, RECEIPTS_MAX_EDGE_PX);
   const canvas = document.createElement('canvas');
-  canvas.width = dims.width;
-  canvas.height = dims.height;
+  canvas.width = activeDims.width;
+  canvas.height = activeDims.height;
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(drawable, 0, 0, dims.width, dims.height);
+  ctx.drawImage(drawable, 0, 0, activeDims.width, activeDims.height);
+
+  const encodeCanvasAt = async (quality) => {
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
+    if (!blob) return { bytes: 0, blob: null };
+    return { bytes: blob.size, blob };
+  };
+
+  const fallbackEncodeAt = async (quality, fallbackMaxEdge) => {
+    const fbDims = computeReceiptScaleDims(srcW, srcH, fallbackMaxEdge || RECEIPTS_FALLBACK_EDGE_PX);
+    if (fbDims.width !== canvas.width || fbDims.height !== canvas.height) {
+      activeDims = fbDims;
+      canvas.width = fbDims.width;
+      canvas.height = fbDims.height;
+      ctx.drawImage(drawable, 0, 0, fbDims.width, fbDims.height);
+    }
+    return encodeCanvasAt(quality);
+  };
+
+  const stepRes = await stepDownJpegQuality(
+    encodeCanvasAt,
+    RECEIPTS_TARGET_MAX_BYTES,
+    RECEIPTS_START_QUALITY,
+    RECEIPTS_MIN_QUALITY,
+    RECEIPTS_QUALITY_STEP,
+    fallbackEncodeAt
+  );
+
   if (drawable && typeof drawable.close === 'function') {
     try { drawable.close(); } catch (e) {}
   }
 
-  const stepRes = await stepDownJpegQuality(async (quality) => {
-    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
-    if (!blob) return { bytes: 0, blob: null };
-    return { bytes: blob.size, blob };
-  }, RECEIPTS_TARGET_MAX_BYTES, RECEIPTS_START_QUALITY, RECEIPTS_MIN_QUALITY, RECEIPTS_QUALITY_STEP);
-
-  if (!stepRes.ok || !stepRes.result || !stepRes.result.blob) {
-    throw new Error(stepRes.error || 'Could not compress that receipt photo under 300 KB.');
+  const finalBlob = stepRes && stepRes.result && stepRes.result.blob;
+  if (!finalBlob) {
+    throw new Error('Could not decode or re-encode that photo.');
   }
 
-  const dataUrl = String(await readAsDataURL(stepRes.result.blob));
+  const dataUrl = String(await readAsDataURL(finalBlob));
   const b64 = dataUrl.split(',')[1] || '';
   return {
     b64,
     mime: 'image/jpeg',
     bytes: stepRes.bytes,
     quality: stepRes.quality,
-    width: dims.width,
-    height: dims.height
+    width: activeDims.width,
+    height: activeDims.height,
+    previewUrl: dataUrl
   };
 }
 
@@ -8270,12 +8442,13 @@ function renderReceiptsDashboard(app, session) {
         '<div class="rcpt-header-actions">' +
           '<label class="btn primary rcpt-upload-btn" for="rcpt-camera-input">+ Scan / Upload Receipt</label>' +
           '<input type="file" id="rcpt-camera-input" accept="image/*" capture="environment" hidden>' +
-          '<label class="btn rcpt-gallery-btn" for="rcpt-gallery-input">Choose Photo</label>' +
-          '<input type="file" id="rcpt-gallery-input" accept="image/*" hidden>' +
+          '<label class="btn rcpt-gallery-btn" for="rcpt-gallery-input">Choose Photo(s)</label>' +
+          '<input type="file" id="rcpt-gallery-input" accept="image/*" multiple hidden>' +
           '<button type="button" class="btn rcpt-signout-btn" id="rcpt-signout-btn">Sign out</button>' +
         '</div>' +
       '</div>' +
       '<div id="rcpt-retry-banner" class="rcpt-retry-banner" hidden></div>' +
+      '<div id="rcpt-staging-bar" class="rcpt-staging-bar" hidden></div>' +
       '<div id="rcpt-upload-status" class="rcpt-status" role="status"></div>' +
       '<div class="rcpt-search-box card">' +
         '<div class="card-body">' +
@@ -8302,11 +8475,11 @@ function renderReceiptsDashboard(app, session) {
     });
   }
 
-  const onFilePicked = (e) => {
-    const f = e.target && e.target.files && e.target.files[0];
-    if (f) {
-      handleReceiptFileUpload(f);
+  const onFilePicked = async (e) => {
+    const files = e.target && e.target.files ? Array.from(e.target.files) : [];
+    if (files.length) {
       e.target.value = '';
+      await stageSelectedReceiptFiles(files);
     }
   };
   const camIn = $('#rcpt-camera-input');
@@ -8330,8 +8503,95 @@ function renderReceiptsDashboard(app, session) {
     });
   }
 
+  renderReceiptStagingTray();
   refreshPendingReceiptBanner();
   loadRecentReceiptsList();
+}
+
+function renderReceiptStagingTray() {
+  const slot = $('#rcpt-staging-bar');
+  if (!slot) return;
+  if (!_stagedReceiptPhotos.length) {
+    slot.hidden = true;
+    slot.innerHTML = '';
+    return;
+  }
+  slot.hidden = false;
+  slot.innerHTML = receiptStagingTrayHTML(_stagedReceiptPhotos);
+
+  const uploadBtn = $('#rcpt-stage-upload-btn');
+  if (uploadBtn) {
+    uploadBtn.addEventListener('click', () => {
+      uploadStagedReceiptPhotos();
+    });
+  }
+  const clearBtn = $('#rcpt-stage-clear-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      clearStagedReceiptPhotos();
+      renderReceiptStagingTray();
+      const st = $('#rcpt-upload-status');
+      if (st) st.textContent = '';
+    });
+  }
+  const removeBtns = slot.querySelectorAll('[data-rcpt-remove-idx]');
+  removeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-rcpt-remove-idx'), 10);
+      removeStagedReceiptPhoto(idx);
+      renderReceiptStagingTray();
+    });
+  });
+}
+
+async function stageSelectedReceiptFiles(files) {
+  const st = $('#rcpt-upload-status');
+  const remainingSlots = RECEIPTS_MAX_PHOTOS - _stagedReceiptPhotos.length;
+  if (remainingSlots <= 0) {
+    if (st) {
+      st.className = 'rcpt-status rcpt-status-err';
+      st.textContent = 'Already staged the maximum of ' + RECEIPTS_MAX_PHOTOS + ' photos for one receipt.';
+    }
+    return;
+  }
+  const slice = files.slice(0, remainingSlots);
+  for (let i = 0; i < slice.length; i++) {
+    if (st) {
+      st.className = 'rcpt-status';
+      st.textContent = 'Preparing photo ' + (_stagedReceiptPhotos.length + 1) + '…';
+    }
+    try {
+      const compressed = await compressReceiptPhotoFile(slice[i]);
+      stageReceiptPhotoRecord(compressed);
+      renderReceiptStagingTray();
+    } catch (e) {
+      if (st) {
+        st.className = 'rcpt-status rcpt-status-err';
+        st.textContent = e.message || 'Could not read that photo.';
+      }
+      return;
+    }
+  }
+  if (st) {
+    st.className = 'rcpt-status';
+    st.textContent = files.length > slice.length
+      ? ('Staged ' + _stagedReceiptPhotos.length + ' photos (capped at ' + RECEIPTS_MAX_PHOTOS + ' per receipt). Tap Upload Receipt when ready.')
+      : ('Photo ' + _stagedReceiptPhotos.length + ' staged. Tap Upload Receipt or + Add Another Photo.');
+  }
+}
+
+async function uploadStagedReceiptPhotos() {
+  if (!_stagedReceiptPhotos.length) return;
+  const photosToUpload = _stagedReceiptPhotos.map(p => ({
+    b64: p.b64,
+    mime: p.mime || 'image/jpeg'
+  }));
+  await uploadMultiPhotoReceiptSequence({
+    photos: photosToUpload,
+    receipt_id: null,
+    next_seq: 1,
+    isRetry: false
+  });
 }
 
 async function refreshPendingReceiptBanner() {
@@ -8344,9 +8604,18 @@ async function refreshPendingReceiptBanner() {
     return;
   }
   const latest = pending[pending.length - 1];
+  const photoList = Array.isArray(latest.photos) && latest.photos.length
+    ? latest.photos
+    : (latest.image_b64 ? [{ b64: latest.image_b64, mime: latest.mime || 'image/jpeg' }] : []);
+  const startSeq = Number.isInteger(latest.next_seq) && latest.next_seq >= 1 ? latest.next_seq : 1;
+  const remainingCount = Math.max(1, photoList.length - (startSeq - 1));
+  const label = remainingCount > 1
+    ? (remainingCount + ' unuploaded receipt photos saved offline on this device.')
+    : 'Unuploaded receipt photo saved offline on this device.';
+
   banner.hidden = false;
   banner.innerHTML = (
-    '<span>Unuploaded receipt photo saved offline on this device.</span>' +
+    '<span>' + esc(label) + '</span>' +
     '<div class="rcpt-retry-actions">' +
       '<button type="button" class="btn primary" id="rcpt-retry-upload-btn">Retry Upload</button>' +
       '<button type="button" class="btn" id="rcpt-discard-upload-btn">Discard</button>' +
@@ -8356,7 +8625,13 @@ async function refreshPendingReceiptBanner() {
   const discardBtn = $('#rcpt-discard-upload-btn');
   if (retryBtn) {
     retryBtn.addEventListener('click', () => {
-      uploadCompressedReceiptPayload(latest.image_b64, latest.mime || 'image/jpeg', true);
+      uploadMultiPhotoReceiptSequence({
+        photos: photoList,
+        receipt_id: latest.receipt_id || null,
+        next_seq: startSeq,
+        replace: Boolean(latest.replace),
+        isRetry: true
+      });
     });
   }
   if (discardBtn) {
@@ -8368,66 +8643,106 @@ async function refreshPendingReceiptBanner() {
 }
 
 async function handleReceiptFileUpload(file) {
-  const st = $('#rcpt-upload-status');
-  if (st) {
-    st.className = 'rcpt-status';
-    st.textContent = 'Compressing receipt photo…';
-  }
-  let compressed;
-  try {
-    compressed = await compressReceiptPhotoFile(file);
-  } catch (e) {
-    if (st) {
-      st.className = 'rcpt-status rcpt-status-err';
-      st.textContent = e.message || 'Could not compress that photo.';
-    }
-    return;
-  }
-  await uploadCompressedReceiptPayload(compressed.b64, compressed.mime, false);
+  await stageSelectedReceiptFiles([file]);
 }
 
 async function uploadCompressedReceiptPayload(imageB64, mime, isRetry) {
+  await uploadMultiPhotoReceiptSequence({
+    photos: [{ b64: imageB64, mime: mime || 'image/jpeg' }],
+    receipt_id: null,
+    next_seq: 1,
+    isRetry: Boolean(isRetry)
+  });
+}
+
+async function uploadMultiPhotoReceiptSequence(opts = {}) {
+  const photos = Array.isArray(opts.photos) ? opts.photos : [];
+  if (!photos.length) return;
+  let receiptId = opts.receipt_id || null;
+  const startSeq = Number.isInteger(opts.next_seq) && opts.next_seq >= 1 ? opts.next_seq : 1;
+  const isReplace = Boolean(opts.replace);
+  const isRetry = Boolean(opts.isRetry);
+  const totalPhotos = photos.length;
+
   const st = $('#rcpt-upload-status');
-  if (st) {
-    st.className = 'rcpt-status';
-    st.textContent = isRetry ? 'Retrying receipt upload…' : 'Uploading receipt…';
-  }
-  try {
-    const res = await receiptsApiFetch('/receipts/upload', {
-      method: 'POST',
-      body: JSON.stringify({ image_b64: imageB64, mime: mime || 'image/jpeg' })
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
+  const uploadBtn = $('#rcpt-stage-upload-btn');
+  if (uploadBtn) uploadBtn.disabled = true;
+
+  for (let idx = startSeq - 1; idx < totalPhotos; idx++) {
+    const seq = idx + 1;
+    const item = photos[idx];
+    if (st) {
+      st.className = 'rcpt-status';
+      st.textContent = totalPhotos > 1
+        ? ((isRetry ? 'Retrying photo ' : 'Uploading photo ') + seq + ' of ' + totalPhotos + '…')
+        : (isRetry ? 'Retrying receipt upload…' : 'Uploading receipt…');
+    }
+
+    const reqBody = {
+      image_b64: item.b64 || item.image_b64,
+      mime: item.mime || 'image/jpeg'
+    };
+    if (receiptId) {
+      reqBody.receipt_id = receiptId;
+      reqBody.seq = seq;
+      if (isReplace && seq === 1) {
+        reqBody.replace = true;
+      }
+    }
+
+    try {
+      const res = await receiptsApiFetch('/receipts/upload', {
+        method: 'POST',
+        body: JSON.stringify(reqBody)
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        if (uploadBtn) uploadBtn.disabled = false;
+        if (st) {
+          st.className = 'rcpt-status rcpt-status-err';
+          st.textContent = res.status === 413
+            ? 'Receipt photo exceeds the 1.8 MB limit.'
+            : res.status === 429
+              ? 'Daily receipt upload limit (20/day) reached.'
+              : 'Upload failed on photo ' + seq + ' (' + res.status + ' ' + (errData.error || '') + ').';
+        }
+        return;
+      }
+      const data = await res.json();
+      if (data && data.receipt_id) {
+        receiptId = data.receipt_id;
+      }
+    } catch (e) {
+      if (e && e.status === 401) return;
+      if (uploadBtn) uploadBtn.disabled = false;
+      await stashPendingReceiptUpload({
+        photos,
+        receipt_id: receiptId,
+        next_seq: seq,
+        replace: isReplace && seq === 1
+      });
+      await refreshPendingReceiptBanner();
       if (st) {
         st.className = 'rcpt-status rcpt-status-err';
-        st.textContent = res.status === 413
-          ? 'Receipt photo exceeds the 500 KB limit.'
-          : res.status === 429
-            ? 'Daily receipt upload limit (20/day) reached.'
-            : 'Upload failed (' + res.status + ' ' + (errData.error || '') + ').';
+        st.textContent = 'Network error — your receipt photo(s) were saved on this device. Tap Retry Upload above when back online.';
       }
       return;
     }
-    const data = await res.json();
-    await clearPendingReceiptUploads();
-    refreshPendingReceiptBanner();
-    if (st) {
-      st.className = 'rcpt-status rcpt-status-ok';
-      st.textContent = 'Uploaded — extraction in progress…';
-    }
-    if (data && data.receipt_id) {
-      startReceiptExtractPoll(data.receipt_id);
-      loadRecentReceiptsList();
-    }
-  } catch (e) {
-    if (e && e.status === 401) return;
-    await stashPendingReceiptUpload(imageB64, mime || 'image/jpeg');
-    await refreshPendingReceiptBanner();
-    if (st) {
-      st.className = 'rcpt-status rcpt-status-err';
-      st.textContent = 'Network error — your receipt photo was saved on this device. Tap Retry Upload above when back online.';
-    }
+  }
+
+  clearStagedReceiptPhotos();
+  renderReceiptStagingTray();
+  await clearPendingReceiptUploads();
+  refreshPendingReceiptBanner();
+  if (st) {
+    st.className = 'rcpt-status rcpt-status-ok';
+    st.textContent = totalPhotos > 1
+      ? ('Uploaded ' + totalPhotos + ' photos — extraction in progress…')
+      : 'Uploaded — extraction in progress…';
+  }
+  if (receiptId) {
+    startReceiptExtractPoll(receiptId);
+    loadRecentReceiptsList();
   }
 }
 
@@ -8479,20 +8794,28 @@ async function loadRecentReceiptsList() {
     wrap.innerHTML = '<div class="rcpt-cards">' + list.map(r => {
       const statusLabel = r.status === 'verified'
         ? '<span class="badge pareve">Verified</span>'
-        : r.status === 'needs_review'
-          ? '<span class="badge meat">Needs Review</span>'
-          : '<span class="badge neutral">Pending Extraction</span>';
-      const storeName = r.store || 'Receipt (extracting…)';
+        : r.status === 'unreadable'
+          ? '<span class="badge meat">Unreadable</span>'
+          : r.status === 'needs_review'
+            ? '<span class="badge meat">Needs Review</span>'
+            : '<span class="badge neutral">Pending Extraction</span>';
+      const storeName = r.store || (r.status === 'unreadable' ? 'Unreadable Receipt' : 'Receipt (extracting…)');
       const dateStr = r.receipt_date || (r.created_at ? r.created_at.slice(0, 10) : '—');
       const totalStr = r.total_cents != null ? formatReceiptCents(r.total_cents) : '—';
       const savedStr = r.total_saved_cents ? ' (saved ' + formatReceiptCents(r.total_saved_cents) + ')' : '';
       const countStr = r.item_count != null ? (r.item_count + ' items') : '';
+      const photoStr = r.photo_count && r.photo_count > 1 ? (r.photo_count + ' photos') : '';
+      const metaParts = [dateStr, countStr, photoStr].filter(Boolean).join(' &middot; ');
+      const noteLine = r.status === 'unreadable' && r.status_note
+        ? '<div class="rcpt-list-note">' + esc(r.status_note) + '</div>'
+        : '';
       return (
         '<a class="card rcpt-list-card" href="#/receipts/' + encodeURIComponent(r.id) + '">' +
           '<div class="card-body rcpt-list-card-body">' +
             '<div>' +
               '<h3>' + esc(storeName) + '</h3>' +
-              '<div class="card-meta">' + esc(dateStr) + (countStr ? ' &middot; ' + esc(countStr) : '') + '</div>' +
+              '<div class="card-meta">' + metaParts + '</div>' +
+              noteLine +
             '</div>' +
             '<div class="rcpt-list-right">' +
               '<div class="rcpt-list-total">' + esc(totalStr) + '<span class="rcpt-saved-note">' + esc(savedStr) + '</span></div>' +
@@ -8563,7 +8886,7 @@ async function runReceiptPriceSearch(q) {
   }
 }
 
-/* --- Receipt Review / Detail Card --- */
+/* --- Receipt Review / Detail Card (Stacked Multi-Photo + Unreadable Banner) --- */
 
 async function renderReceiptDetailShell(app, session, receiptId) {
   app.innerHTML = (
@@ -8625,19 +8948,97 @@ function receiptItemRowHTML(it, idx) {
   );
 }
 
+function resolveReceiptPhotoSeqs(receipt) {
+  if (receipt && Array.isArray(receipt.photo_seqs) && receipt.photo_seqs.length > 0) {
+    return receipt.photo_seqs.map(n => Number(n)).filter(n => Number.isInteger(n) && n >= 1);
+  }
+  const count = receipt && Number.isInteger(receipt.photo_count) && receipt.photo_count > 0
+    ? receipt.photo_count
+    : (receipt && receipt.has_image ? 1 : 0);
+  const seqs = [];
+  for (let i = 1; i <= count; i++) seqs.push(i);
+  return seqs;
+}
+
+function receiptStackedPhotosPlaceholderHTML(photoSeqs) {
+  const seqs = Array.isArray(photoSeqs) ? photoSeqs : [];
+  if (!seqs.length) {
+    return '<p class="rcpt-muted">No photo stored for this receipt.</p>';
+  }
+  const total = seqs.length;
+  return (
+    '<div class="rcpt-photo-stack">' +
+      seqs.map((seq, idx) => (
+        '<div class="rcpt-photo-part" data-rcpt-photo-seq="' + seq + '">' +
+          '<div class="rcpt-photo-part-label">Part ' + (idx + 1) + ' of ' + total + '</div>' +
+          '<div class="rcpt-photo-slot" id="rcpt-photo-slot-' + seq + '">' +
+            '<p class="rcpt-muted">Loading Part ' + (idx + 1) + '…</p>' +
+          '</div>' +
+        '</div>'
+      )).join('') +
+    '</div>'
+  );
+}
+
+function receiptUnreadableBannerHTML(receipt, canAddMorePhotos) {
+  if (!receipt || receipt.status !== 'unreadable') return '';
+  const reason = receipt.status_note || 'This receipt photo could not be read clearly. Please retake or replace the photo.';
+  return (
+    '<div class="rcpt-unreadable-banner" id="rcpt-unreadable-banner" role="alert">' +
+      '<div class="rcpt-unreadable-text">' +
+        '<strong>Unreadable Receipt:</strong> ' + esc(reason) +
+      '</div>' +
+      '<div class="rcpt-unreadable-actions">' +
+        '<label class="btn primary" for="rcpt-replace-input">Retake / Replace Photo</label>' +
+        '<input type="file" id="rcpt-replace-input" accept="image/*" hidden>' +
+        (canAddMorePhotos
+          ? '<label class="btn" for="rcpt-detail-add-input">+ Add Photo</label>'
+          : '') +
+        '<button type="button" class="btn rcpt-delete-btn" id="rcpt-unreadable-delete-btn">Delete Receipt</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
 function renderReceiptReviewCard(app, receipt) {
   const items = Array.isArray(receipt.items) ? receipt.items : [];
+  const photoSeqs = resolveReceiptPhotoSeqs(receipt);
+  const isVerified = receipt.status === 'verified';
+  const isUnreadable = receipt.status === 'unreadable';
+  const canAddMorePhotos = !isVerified && photoSeqs.length < RECEIPTS_MAX_PHOTOS;
+  const maxExistingSeq = photoSeqs.length ? Math.max(...photoSeqs) : 0;
+
+  const badgeClass = isVerified ? 'pareve' : (isUnreadable || receipt.status === 'needs_review' ? 'meat' : 'neutral');
+  const photoHeading = photoSeqs.length > 1
+    ? ('Receipt Photos (' + photoSeqs.length + ' parts)')
+    : 'Receipt Photo';
+
   app.innerHTML = (
     '<section class="rcpt-wrap">' +
       '<div class="rcpt-header-row">' +
         '<a href="#/receipts" class="btn">&larr; Back to Receipts</a>' +
-        '<span class="badge ' + (receipt.status === 'verified' ? 'pareve' : 'meat') + '">' + esc(receipt.status || 'pending') + '</span>' +
+        '<div class="rcpt-header-actions">' +
+          '<span class="badge ' + badgeClass + '">' + esc(receipt.status || 'pending') + '</span>' +
+          (!isVerified
+            ? '<button type="button" class="btn rcpt-delete-btn" id="rcpt-delete-btn">Delete Receipt</button>'
+            : '') +
+        '</div>' +
       '</div>' +
+      receiptUnreadableBannerHTML(receipt, canAddMorePhotos) +
+      '<div id="rcpt-detail-action-status" class="rcpt-status" role="status"></div>' +
       '<div class="rcpt-review-grid">' +
         '<div class="rcpt-photo-pane card">' +
           '<div class="card-body">' +
-            '<h2 class="rcpt-sec-title">Receipt Photo <span class="rcpt-tap-hint">(tap image to zoom)</span></h2>' +
-            '<div id="rcpt-img-holder" class="rcpt-img-holder"><p class="rcpt-muted">Loading image…</p></div>' +
+            '<div class="rcpt-photo-pane-head">' +
+              '<h2 class="rcpt-sec-title">' + esc(photoHeading) + ' <span class="rcpt-tap-hint">(tap image to zoom)</span></h2>' +
+              (canAddMorePhotos
+                ? '<label class="btn rcpt-add-part-btn" for="rcpt-detail-add-input">+ Add Photo (Part ' + (photoSeqs.length + 1) + ')</label>'
+                : '') +
+              '<input type="file" id="rcpt-detail-add-input" accept="image/*" hidden>' +
+            '</div>' +
+            '<div id="rcpt-img-holder" class="rcpt-img-holder">' +
+              receiptStackedPhotosPlaceholderHTML(photoSeqs) +
+            '</div>' +
           '</div>' +
         '</div>' +
         '<div class="rcpt-form-pane card">' +
@@ -8672,31 +9073,157 @@ function renderReceiptReviewCard(app, receipt) {
     '</section>'
   );
 
-  // Load authenticated receipt photo
-  const imgHolder = $('#rcpt-img-holder');
-  if (imgHolder && receipt.has_image) {
-    receiptsApiFetch('/receipts/' + encodeURIComponent(receipt.id) + '/image')
-      .then(r => (r.ok ? r.blob() : null))
-      .then(blob => {
-        if (!blob) {
-          imgHolder.innerHTML = '<p class="rcpt-muted">Receipt image unavailable.</p>';
+  // Load each authenticated receipt photo part sequentially/parallel
+  revokeReceiptObjectUrl();
+  if (photoSeqs.length > 0 && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+    photoSeqs.forEach((seq, idx) => {
+      const slotEl = $('#rcpt-photo-slot-' + seq);
+      receiptsApiFetch('/receipts/' + encodeURIComponent(receipt.id) + '/image?seq=' + encodeURIComponent(seq))
+        .then(r => (r.ok ? r.blob() : null))
+        .then(blob => {
+          if (!slotEl) return;
+          if (!blob) {
+            slotEl.innerHTML = '<p class="rcpt-muted">Part ' + (idx + 1) + ' image unavailable.</p>';
+            return;
+          }
+          const objUrl = URL.createObjectURL(blob);
+          _receiptActiveObjectUrls.push(objUrl);
+          if (idx === 0) _receiptActiveObjectUrl = objUrl;
+          const imgId = idx === 0 ? 'rcpt-photo-img' : ('rcpt-photo-img-' + seq);
+          slotEl.innerHTML = '<img src="' + esc(objUrl) + '" alt="Receipt photo Part ' + (idx + 1) + ' of ' + photoSeqs.length + '" class="rcpt-photo" id="' + imgId + '">';
+          const imgEl = $('#' + imgId);
+          if (imgEl) {
+            imgEl.addEventListener('click', () => {
+              imgEl.classList.toggle('rcpt-img-fullscreen');
+            });
+          }
+        })
+        .catch(() => {
+          if (slotEl) slotEl.innerHTML = '<p class="rcpt-muted">Could not load Part ' + (idx + 1) + ' photo.</p>';
+        });
+    });
+  }
+
+  // Delete receipt handler (header button + unreadable banner button)
+  const runDeleteReceipt = async () => {
+    const actSt = $('#rcpt-detail-action-status');
+    if (actSt) {
+      actSt.className = 'rcpt-status';
+      actSt.textContent = 'Deleting receipt…';
+    }
+    try {
+      const res = await receiptsApiFetch('/receipts/' + encodeURIComponent(receipt.id), {
+        method: 'DELETE'
+      });
+      if (!res.ok) {
+        if (actSt) {
+          actSt.className = 'rcpt-status rcpt-status-err';
+          actSt.textContent = 'Could not delete receipt (' + res.status + ').';
+        }
+        return;
+      }
+      if (typeof toast === 'function') toast('Receipt deleted.');
+      location.hash = '#/receipts';
+    } catch (e) {
+      if (e && e.status === 401) return;
+      if (actSt) {
+        actSt.className = 'rcpt-status rcpt-status-err';
+        actSt.textContent = 'Network error while deleting receipt.';
+      }
+    }
+  };
+  const delBtn = $('#rcpt-delete-btn');
+  const unrdDelBtn = $('#rcpt-unreadable-delete-btn');
+  if (delBtn) delBtn.addEventListener('click', runDeleteReceipt);
+  if (unrdDelBtn) unrdDelBtn.addEventListener('click', runDeleteReceipt);
+
+  // Retake / Replace photo handler (replace: true)
+  const replaceInput = $('#rcpt-replace-input');
+  if (replaceInput) {
+    replaceInput.addEventListener('change', async (e) => {
+      const file = e.target && e.target.files && e.target.files[0];
+      if (!file) return;
+      e.target.value = '';
+      const actSt = $('#rcpt-detail-action-status');
+      if (actSt) {
+        actSt.className = 'rcpt-status';
+        actSt.textContent = 'Compressing replacement photo…';
+      }
+      try {
+        const compressed = await compressReceiptPhotoFile(file);
+        if (actSt) actSt.textContent = 'Uploading replacement photo…';
+        const res = await receiptsApiFetch('/receipts/' + 'upload', {
+          method: 'POST',
+          body: JSON.stringify({
+            receipt_id: receipt.id,
+            seq: 1,
+            replace: true,
+            image_b64: compressed.b64,
+            mime: compressed.mime
+          })
+        });
+        if (!res.ok) {
+          if (actSt) {
+            actSt.className = 'rcpt-status rcpt-status-err';
+            actSt.textContent = 'Could not replace photo (' + res.status + ').';
+          }
           return;
         }
-        revokeReceiptObjectUrl();
-        _receiptActiveObjectUrl = URL.createObjectURL(blob);
-        imgHolder.innerHTML = '<img src="' + esc(_receiptActiveObjectUrl) + '" alt="Receipt photo" class="rcpt-photo" id="rcpt-photo-img">';
-        const imgEl = $('#rcpt-photo-img');
-        if (imgEl) {
-          imgEl.addEventListener('click', () => {
-            imgEl.classList.toggle('rcpt-img-fullscreen');
-          });
+        if (typeof toast === 'function') toast('Photo replaced — queued for extraction.');
+        renderReceiptDetailShell(app, getValidReceiptSession(), receipt.id);
+      } catch (err) {
+        if (err && err.status === 401) return;
+        if (actSt) {
+          actSt.className = 'rcpt-status rcpt-status-err';
+          actSt.textContent = err.message || 'Could not replace receipt photo.';
         }
-      })
-      .catch(() => {
-        if (imgHolder) imgHolder.innerHTML = '<p class="rcpt-muted">Could not load receipt photo.</p>';
-      });
-  } else if (imgHolder) {
-    imgHolder.innerHTML = '<p class="rcpt-muted">No photo stored for this receipt.</p>';
+      }
+    });
+  }
+
+  // + Add Photo handler on existing receipt (appends next seq)
+  const detailAddInput = $('#rcpt-detail-add-input');
+  if (detailAddInput) {
+    detailAddInput.addEventListener('change', async (e) => {
+      const file = e.target && e.target.files && e.target.files[0];
+      if (!file) return;
+      e.target.value = '';
+      const nextSeq = maxExistingSeq + 1;
+      const actSt = $('#rcpt-detail-action-status');
+      if (actSt) {
+        actSt.className = 'rcpt-status';
+        actSt.textContent = 'Compressing Part ' + nextSeq + '…';
+      }
+      try {
+        const compressed = await compressReceiptPhotoFile(file);
+        if (actSt) actSt.textContent = 'Uploading Part ' + nextSeq + '…';
+        const res = await receiptsApiFetch('/receipts/upload', {
+          method: 'POST',
+          body: JSON.stringify({
+            receipt_id: receipt.id,
+            seq: nextSeq,
+            image_b64: compressed.b64,
+            mime: compressed.mime
+          })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          if (actSt) {
+            actSt.className = 'rcpt-status rcpt-status-err';
+            actSt.textContent = 'Could not add photo (' + (errData.error || res.status) + ').';
+          }
+          return;
+        }
+        if (typeof toast === 'function') toast('Added Part ' + nextSeq + ' — queued for extraction.');
+        renderReceiptDetailShell(app, getValidReceiptSession(), receipt.id);
+      } catch (err) {
+        if (err && err.status === 401) return;
+        if (actSt) {
+          actSt.className = 'rcpt-status rcpt-status-err';
+          actSt.textContent = err.message || 'Could not add receipt photo.';
+        }
+      }
+    });
   }
 
   const collectReviewPayload = () => {
@@ -8707,7 +9234,9 @@ function renderReceiptReviewCard(app, receipt) {
     const total_cents = parseReceiptDollarsToCents($('#rcpt-f-total') && $('#rcpt-f-total').value);
     const total_saved_cents = parseReceiptDollarsToCents($('#rcpt-f-saved') && $('#rcpt-f-saved').value);
 
-    const rows = Array.from(document.querySelectorAll('#rcpt-items-tbody .rcpt-item-row'));
+    const rows = typeof document !== 'undefined' && document.querySelectorAll
+      ? Array.from(document.querySelectorAll('#rcpt-items-tbody .rcpt-item-row'))
+      : [];
     const collectedItems = rows.map((tr, i) => {
       const raw_line = ($('.rcpt-in-raw', tr) && $('.rcpt-in-raw', tr).value) || '';
       const receipt_dept = ($('.rcpt-in-dept', tr) && $('.rcpt-in-dept', tr).value || '').trim() || null;
@@ -8754,26 +9283,31 @@ function renderReceiptReviewCard(app, receipt) {
 
   const updateLiveChecksum = () => {
     const payload = collectReviewPayload();
-    const chk = computeReceiptChecksum(payload.items, payload.total_cents);
+    const chk = computeReceiptChecksum(payload.items, payload.total_cents, receipt.status);
     const bar = $('#rcpt-checksum-bar');
     const btn = $('#rcpt-confirm-btn');
     if (bar) {
-      bar.textContent = chk.label;
+      bar.textContent = isUnreadable
+        ? 'Receipt is marked unreadable — retake or replace the photo to extract items.'
+        : chk.label;
       bar.className = 'rcpt-checksum-bar ' + (chk.valid ? 'rcpt-checksum-ok' : 'rcpt-checksum-mismatch');
     }
     if (btn) {
-      btn.disabled = !chk.valid;
+      btn.disabled = isUnreadable || !chk.valid;
     }
     return { payload, chk };
   };
 
-  const reviewSection = app.querySelector('.rcpt-wrap');
-  if (reviewSection) reviewSection.addEventListener('input', updateLiveChecksum);
+  const reviewSection = typeof app.querySelector === 'function' ? app.querySelector('.rcpt-wrap') : null;
+  if (reviewSection && typeof reviewSection.addEventListener === 'function') {
+    reviewSection.addEventListener('input', updateLiveChecksum);
+  }
   updateLiveChecksum();
 
   const confirmBtn = $('#rcpt-confirm-btn');
   if (confirmBtn) {
     confirmBtn.addEventListener('click', async () => {
+      if (isUnreadable) return;
       const { payload, chk } = updateLiveChecksum();
       if (!chk.valid) return;
       const st = $('#rcpt-confirm-status');
