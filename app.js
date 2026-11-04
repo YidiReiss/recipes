@@ -8447,6 +8447,7 @@ function renderReceiptsDashboard(app, session) {
           '<button type="button" class="btn rcpt-signout-btn" id="rcpt-signout-btn">Sign out</button>' +
         '</div>' +
       '</div>' +
+      '<p class="rcpt-sub">Snap or choose a photo of a receipt. Within about 30 minutes it shows up below as a Review Card with its line items, ready for you to check. If a photo can\u2019t be read, it\u2019ll be marked so you know.</p>' +
       '<div id="rcpt-retry-banner" class="rcpt-retry-banner" hidden></div>' +
       '<div id="rcpt-staging-bar" class="rcpt-staging-bar" hidden></div>' +
       '<div id="rcpt-upload-status" class="rcpt-status" role="status"></div>' +
@@ -8737,8 +8738,8 @@ async function uploadMultiPhotoReceiptSequence(opts = {}) {
   if (st) {
     st.className = 'rcpt-status rcpt-status-ok';
     st.textContent = totalPhotos > 1
-      ? ('Uploaded ' + totalPhotos + ' photos — extraction in progress…')
-      : 'Uploaded — extraction in progress…';
+      ? ('Uploaded ' + totalPhotos + ' photos — it should appear below as a Review Card within about 30 minutes.')
+      : 'Uploaded — it should appear below as a Review Card within about 30 minutes.';
   }
   if (receiptId) {
     startReceiptExtractPoll(receiptId);
@@ -8769,7 +8770,7 @@ function startReceiptExtractPoll(receiptId) {
     } else {
       const st = $('#rcpt-upload-status');
       if (st && attempts >= RECEIPTS_POLL_MAX_ATTEMPTS) {
-        st.textContent = 'Uploaded — queued for Muse intake check (runs every 30 minutes). You can open it from Recent Receipts once extracted.';
+        st.textContent = 'Uploaded — it should appear below as a Review Card within about 30 minutes. You can open it from Recent Receipts once extracted.';
       }
     }
   };
