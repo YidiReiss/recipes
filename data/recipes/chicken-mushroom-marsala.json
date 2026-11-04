@@ -93,7 +93,7 @@
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-04T01:15:11.144Z",
@@ -140,6 +140,15 @@
         }
       ],
       "reasoning": "Inbox edit inbox-mw1ejhj8-6kj7: garlic should be minced (prep set to minced on the 3-4 cloves garlic line; timing already added by the preceding edit)."
+    },
+    {
+      "ts": "2026-11-04T01:17:56.728Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true after inbox edits (butter removed, garlic/wine/slurry steps added; garlic set to minced). PDF regenerated via Recipe Press with banner photo."
     }
   ]
 }
