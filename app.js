@@ -8922,10 +8922,19 @@ async function renderReceiptDetailShell(app, session, receiptId) {
 
 function receiptItemRowHTML(it, idx) {
   const needsRev = Boolean(it.needs_review);
+  const reasonText = needsRev
+    ? ((it.review_reason && String(it.review_reason).trim())
+        ? String(it.review_reason).trim()
+        : 'Needs review \u2014 no reason recorded.')
+    : '';
+  const reasonLine = needsRev
+    ? '<div class="rcpt-review-reason">' + esc(reasonText) + '</div>'
+    : '';
   return (
     '<tr class="rcpt-item-row' + (needsRev ? ' rcpt-row-needs-review' : '') + '" data-rcpt-idx="' + idx + '">' +
       '<td class="rcpt-raw-cell">' +
         '<div class="rcpt-raw-line">' + esc(it.raw_line || '') + '</div>' +
+        reasonLine +
         '<input type="hidden" class="rcpt-in-raw" value="' + esc(it.raw_line || '') + '">' +
         '<input type="hidden" class="rcpt-in-taxflag" value="' + esc(it.tax_flag || '') + '">' +
         '<input type="text" class="rcpt-in-dept" placeholder="Dept" value="' + esc(it.receipt_dept || '') + '">' +
