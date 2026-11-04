@@ -51,7 +51,8 @@
         {
           "qty": "3-4",
           "unit": "cloves",
-          "item": "garlic"
+          "item": "garlic",
+          "prep": "minced"
         },
         {
           "qty": "8",
@@ -126,6 +127,19 @@
         }
       ],
       "reasoning": "Inbox edit inbox-mw1egf8o-08t6: no butter is used (removed butter from ingredients and instructions); garlic added after mushrooms saute; marsala wine addition added (1/2 cup, before stock); flour-water slurry step added at the end to thicken the sauce (amounts not specified in request, written unquantified). Butter/intended-fat note and tags_need_review cleared as resolved by this edit."
+    },
+    {
+      "ts": "2026-11-04T01:15:46.708Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 10 items])",
+          "to": "1 items ([section: 10 items])"
+        }
+      ],
+      "reasoning": "Inbox edit inbox-mw1ejhj8-6kj7: garlic should be minced (prep set to minced on the 3-4 cloves garlic line; timing already added by the preceding edit)."
     }
   ]
 }
