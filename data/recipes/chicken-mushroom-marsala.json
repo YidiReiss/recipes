@@ -70,11 +70,6 @@
           "item": "chicken stock"
         },
         {
-          "qty": "2",
-          "unit": "tbsp",
-          "item": "unsalted butter"
-        },
-        {
           "qty": "1/4",
           "unit": "cup",
           "item": "chopped flat-leaf parsley or chives, plus more for garnish"
@@ -83,18 +78,54 @@
     }
   ],
   "instructions": [
-    "Place the chicken in a single layer on a cutting board, cover with plastic wrap, and pound lightly using the flat end of a meat mallet until the tenderloins are \u00bc-inch thick.",
-    "Stir together the flour, \u00bd tsp salt, and \u00bd tsp pepper in a wide, shallow bowl.",
+    "Place the chicken in a single layer on a cutting board, cover with plastic wrap, and pound lightly using the flat end of a meat mallet until the tenderloins are ¼-inch thick.",
+    "Stir together the flour, ½ tsp salt, and ½ tsp pepper in a wide, shallow bowl.",
     "Heat the oil in a large skillet over medium heat until shimmering. Dip the chicken pieces into the flour mixture, turning to coat both sides, shake off the excess flour, and place in the heated skillet. Cook 3 minutes on each side, until golden and cooked through. Remove from the skillet and keep warm.",
-    "Add the mushrooms to the skillet and saut\u00e9 over medium-high heat for 5 minutes, until the water has evaporated and the mushrooms are browned. Season with the remaining 1 tsp salt and \u00bc tsp pepper. Add the chicken stock and simmer for 5 minutes, until the sauce reduces slightly. Stir in the butter.",
-    "Return the chicken to the pan and simmer gently for 1 minute to heat through. Garnish with parsley or chives before serving."
+    "Add the mushrooms to the skillet and sauté over medium-high heat for 5 minutes, until the water has evaporated and the mushrooms are browned. Add the garlic and cook briefly until fragrant. Season with the remaining 1 tsp salt and ¼ tsp pepper. Add the 1/2 cup dry marsala wine. Add the chicken stock and simmer for 5 minutes, until the sauce reduces slightly.",
+    "In a small bowl, whisk flour with water until smooth, then stir the mixture into the skillet and simmer until the sauce thickens. Return the chicken to the pan and simmer gently for 1 minute to heat through.",
+    "Garnish with parsley or chives before serving."
   ],
   "pairings": [],
-  "notes": "Chicken stock updated from \u00bd cup to 1 cup in the doc. Recipe pairs butter with chicken \u2014 verify intended fat (butter vs. margarine).",
+  "notes": "Chicken stock updated from ½ cup to 1 cup in the doc.",
   "source": "",
-  "tags_need_review": true,
+  "tags_need_review": false,
   "pdf": null,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true,
+  "history": [
+    {
+      "ts": "2026-11-04T01:15:11.144Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 11 items])",
+          "to": "1 items ([section: 10 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "5 items (Place the chicken in a single layer on a; Stir together the flour, ½ tsp salt, and; Heat the oil in a large skillet over med; …)",
+          "to": "6 items (Place the chicken in a single layer on a; Stir together the flour, ½ tsp salt, and; Heat the oil in a large skillet over med; …)"
+        },
+        {
+          "field": "notes",
+          "from": "Chicken stock updated from ½ cup to 1 cup in the doc. Recipe pairs butter with chicken — verify intended fat (butter vs. margarine).",
+          "to": "Chicken stock updated from ½ cup to 1 cup in the doc."
+        },
+        {
+          "field": "tags_need_review",
+          "from": true,
+          "to": false
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Inbox edit inbox-mw1egf8o-08t6: no butter is used (removed butter from ingredients and instructions); garlic added after mushrooms saute; marsala wine addition added (1/2 cup, before stock); flour-water slurry step added at the end to thicken the sauce (amounts not specified in request, written unquantified). Butter/intended-fat note and tags_need_review cleared as resolved by this edit."
+    }
+  ]
 }
