@@ -1922,5 +1922,13 @@
     "actor": "Muse",
     "note": "Yidi-approved substitution: Yidi said usually we use diced California steak, and optionally beef neck bones. Replacing ham bone with optional beef neck bones and diced ham with diced California steak.",
     "created_at": "2026-11-01T23:28:45.620Z"
+  },
+  {
+    "id": "inbox-mw1egf8o-08t6",
+    "status": "pending",
+    "type": "edit",
+    "edit_target": "chicken-mushroom-marsala",
+    "created_at": "2026-11-04T00:49:51.913Z",
+    "text": "Okay so multiple issues in this recipe both on the ingredient side and on the instruction side no butter is used. And the instructions forge"
   }
 ]
