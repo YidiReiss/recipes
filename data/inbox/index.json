@@ -1949,5 +1949,16 @@
     "actor": "Muse",
     "note": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated i…",
     "created_at": "2026-11-05T01:06:39.869Z"
+  },
+  {
+    "id": "edit-mw2ui05d-r11g",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "baked-feta-pasta",
+    "recipe_id": "baked-feta-pasta",
+    "title": "Baked Feta Pasta",
+    "actor": "Muse",
+    "note": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated i…",
+    "created_at": "2026-11-05T01:06:44.187Z"
   }
 ]
