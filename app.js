@@ -292,7 +292,267 @@ async function refreshMealPlan() {
   mealPlan = mergeMealPlan(mp, mealPlan);
 }
 
-/* ---------------- Router ---------------- */
+/* ---------------- Router & User Guide (#/guide) ---------------- */
+const GUIDE_SECTION_SLUGS = [
+  'getting-around',
+  'recipes-search',
+  'recipe-detail',
+  'cook-mode',
+  'meal-planner',
+  'shopping-list',
+  'submitting',
+  'editing',
+  'receipts',
+  'architecture',
+  'shot-list'
+];
+
+function helpLinkHTML(slug, newTab) {
+  const href = '#/guide' + (slug ? '/' + encodeURIComponent(slug) : '');
+  const attrs = newTab ? ' target="_blank" rel="noopener"' : '';
+  return '<a class="help-link no-print" href="' + href + '"' + attrs +
+    ' title="User guide" aria-label="Help — open user guide section">?</a>';
+}
+
+function resolveGuideSectionSlug(rawHeading) {
+  const s = String(rawHeading || '').trim();
+  const commentMatch = s.match(/<!--\s*id:([a-z0-9-]+)\s*-->/i);
+  if (commentMatch && GUIDE_SECTION_SLUGS.includes(commentMatch[1].toLowerCase())) {
+    return commentMatch[1].toLowerCase();
+  }
+  const numMatch = s.match(/^(\d+)\.\s+/);
+  if (numMatch) {
+    const idx = parseInt(numMatch[1], 10) - 1;
+    if (idx >= 0 && idx < GUIDE_SECTION_SLUGS.length) return GUIDE_SECTION_SLUGS[idx];
+  }
+  const lower = s.toLowerCase();
+  if (GUIDE_SECTION_SLUGS.includes(lower)) return lower;
+  return null;
+}
+
+function rewriteGuideHref(rawHref) {
+  const href = String(rawHref || '').trim();
+  if (!href.startsWith('#')) return href;
+  if (href === '#/' || href.startsWith('#/')) return href;
+  const frag = href.slice(1).trim().toLowerCase();
+  if (!frag) return '#/guide';
+  if (GUIDE_SECTION_SLUGS.includes(frag)) return '#/guide/' + frag;
+  const numMatch = frag.match(/^(\d+)-/);
+  if (numMatch) {
+    const idx = parseInt(numMatch[1], 10) - 1;
+    if (idx >= 0 && idx < GUIDE_SECTION_SLUGS.length) return '#/guide/' + GUIDE_SECTION_SLUGS[idx];
+  }
+  return '#/guide';
+}
+
+function formatGuideInline(text) {
+  const codeTokens = [];
+  const withCodePlaceholders = String(text || '').replace(/`([^`]+)`/g, (_, c) => {
+    const idx = codeTokens.length;
+    codeTokens.push('<code>' + esc(c) + '</code>');
+    return '\u0000CODE' + idx + '\u0000';
+  });
+  const linkTokens = [];
+  const withLinkPlaceholders = withCodePlaceholders.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, rawUrl) => {
+    const idx = linkTokens.length;
+    const url = rewriteGuideHref(rawUrl);
+    const isExternal = /^https?:\/\//i.test(url) || /\.pdf($|\?)/i.test(url);
+    const extAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    linkTokens.push('<a href="' + esc(url) + '"' + extAttrs + '>' + esc(label) + '</a>');
+    return '\u0000LINK' + idx + '\u0000';
+  });
+  let out = esc(withLinkPlaceholders);
+  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  out = out.replace(/\u0000LINK(\d+)\u0000/g, (_, i) => linkTokens[+i] || '');
+  out = out.replace(/\u0000CODE(\d+)\u0000/g, (_, i) => codeTokens[+i] || '');
+  return out;
+}
+
+function renderGuideMarkdownHTML(md) {
+  const lines = String(md || '').split(/\r?\n/);
+  const out = [];
+  let listStack = []; // [{ type: 'ol'|'ul', indent: number }]
+  let para = [];
+
+  const flushPara = () => {
+    if (para.length) {
+      out.push('<p>' + formatGuideInline(para.join(' ')) + '</p>');
+      para = [];
+    }
+  };
+  const closeListsTo = (targetIndent) => {
+    while (listStack.length && listStack[listStack.length - 1].indent > targetIndent) {
+      const top = listStack.pop();
+      out.push('</li></' + top.type + '>');
+    }
+  };
+  const closeAllLists = () => {
+    while (listStack.length) {
+      const top = listStack.pop();
+      out.push('</li></' + top.type + '>');
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const trimmed = raw.trim();
+
+    if (!trimmed) {
+      flushPara();
+      continue;
+    }
+
+    if (/^---+$/.test(trimmed)) {
+      flushPara();
+      closeAllLists();
+      out.push('<hr class="guide-hr">');
+      continue;
+    }
+
+    if (/^<img\b/i.test(trimmed)) {
+      flushPara();
+      closeAllLists();
+      const srcMatch = trimmed.match(/\bsrc="([^"]+)"/i);
+      const altMatch = trimmed.match(/\balt="([^"]*)"/i);
+      const widthMatch = trimmed.match(/\bwidth="([^"]+)"/i);
+      const src = srcMatch ? srcMatch[1] : '';
+      const alt = altMatch ? altMatch[1] : '';
+      const widthAttr = widthMatch ? ' width="' + esc(widthMatch[1]) + '"' : ' width="373"';
+      out.push('<figure class="guide-figure"><img class="guide-shot" src="' + esc(src) + '" alt="' + esc(alt) + '"' + widthAttr + ' loading="lazy"></figure>');
+      continue;
+    }
+
+    if (/^\[SCREENSHOT:/i.test(trimmed)) {
+      flushPara();
+      closeAllLists();
+      out.push('<div class="guide-shot-placeholder">' + esc(trimmed) + '</div>');
+      continue;
+    }
+
+    const h1 = trimmed.match(/^#\s+(.+)$/);
+    if (h1) {
+      flushPara();
+      closeAllLists();
+      out.push('<h1 class="recipe-title">' + formatGuideInline(h1[1]) + '</h1>');
+      continue;
+    }
+
+    const h2 = trimmed.match(/^##\s+(.+)$/);
+    if (h2) {
+      flushPara();
+      closeAllLists();
+      const rawTitle = h2[1];
+      const slug = resolveGuideSectionSlug(rawTitle);
+      const cleanTitle = rawTitle.replace(/<!--\s*id:[a-z0-9-]+\s*-->/ig, '').trim();
+      const idAttr = slug ? slug : 'guide-toc';
+      const dataAttr = slug ? ' data-guide-slug="' + esc(slug) + '"' : '';
+      out.push('<h2 class="guide-sec-head" id="' + esc(idAttr) + '"' + dataAttr + '>' + formatGuideInline(cleanTitle) + '</h2>');
+      continue;
+    }
+
+    const h3 = trimmed.match(/^###\s+(.+)$/);
+    if (h3) {
+      flushPara();
+      closeAllLists();
+      out.push('<h3 class="guide-sub-head">' + formatGuideInline(h3[1]) + '</h3>');
+      continue;
+    }
+
+    const bq = trimmed.match(/^>\s*(.+)$/);
+    if (bq) {
+      flushPara();
+      out.push('<blockquote class="guide-quote">' + formatGuideInline(bq[1]) + '</blockquote>');
+      continue;
+    }
+
+    const olMatch = raw.match(/^(\s*)\d+\.\s+(.+)$/);
+    const ulMatch = raw.match(/^(\s*)-\s+(.+)$/);
+    if (olMatch || ulMatch) {
+      flushPara();
+      const indent = (olMatch ? olMatch[1] : ulMatch[1]).length;
+      const type = olMatch ? 'ol' : 'ul';
+      const itemText = olMatch ? olMatch[2] : ulMatch[2];
+
+      if (!listStack.length) {
+        listStack.push({ type, indent });
+        out.push('<' + type + '><li>' + formatGuideInline(itemText));
+      } else {
+        const top = listStack[listStack.length - 1];
+        if (indent > top.indent) {
+          listStack.push({ type, indent });
+          out.push('<' + type + '><li>' + formatGuideInline(itemText));
+        } else {
+          closeListsTo(indent);
+          const cur = listStack[listStack.length - 1];
+          if (!cur || cur.type !== type) {
+            if (cur) {
+              listStack.pop();
+              out.push('</li></' + cur.type + '>');
+            }
+            listStack.push({ type, indent });
+            out.push('<' + type + '><li>' + formatGuideInline(itemText));
+          } else {
+            out.push('</li><li>' + formatGuideInline(itemText));
+          }
+        }
+      }
+      continue;
+    }
+
+    if (listStack.length && /^\s{2,}\S/.test(raw)) {
+      out.push(' ' + formatGuideInline(trimmed));
+      continue;
+    }
+
+    closeAllLists();
+    para.push(trimmed);
+  }
+
+  flushPara();
+  closeAllLists();
+  return out.join('\n');
+}
+
+let _guideMarkdownCache = null;
+
+async function renderGuide(app, sectionSlug) {
+  document.title = 'User Guide — Reiss Family Recipes';
+  const topbar =
+    '<div class="guide-topbar no-print">' +
+      '<a class="back-link" href="#/">← Home</a>' +
+      '<a class="btn secondary guide-pdf-btn" href="USER-GUIDE.pdf" target="_blank" rel="noopener">📄 Download PDF</a>' +
+    '</div>';
+
+  const scrollToSlug = (slug) => {
+    if (!slug || typeof document === 'undefined') return;
+    const target = document.getElementById(slug);
+    if (target && typeof target.scrollIntoView === 'function') {
+      target.scrollIntoView({ block: 'start' });
+    }
+  };
+
+  if (_guideMarkdownCache) {
+    app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
+      renderGuideMarkdownHTML(_guideMarkdownCache) + '</article>';
+    if (sectionSlug) scrollToSlug(sectionSlug);
+    return;
+  }
+
+  app.innerHTML = topbar + '<article class="guide-content" id="guide-content"><p class="muted">Loading user guide…</p></article>';
+  try {
+    const res = await fetch('USER-GUIDE.md?v=20261105b');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    _guideMarkdownCache = await res.text();
+    app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
+      renderGuideMarkdownHTML(_guideMarkdownCache) + '</article>';
+    if (sectionSlug) scrollToSlug(sectionSlug);
+  } catch (e) {
+    app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
+      '<p class="form-status error">Could not load the in-page user guide right now. You can still open the <a href="USER-GUIDE.pdf" target="_blank" rel="noopener">PDF User Guide</a>.</p></article>';
+  }
+}
+
 function route() {
   closeModal();
   if (typeof closeCookMode === 'function' && cookModeState) closeCookMode(true);
@@ -307,11 +567,17 @@ function route() {
   $('#nav-shopping').classList.toggle('active', h.startsWith('#/shopping'));
   const navRcpt = $('#nav-receipts');
   if (navRcpt) navRcpt.classList.toggle('active', h.startsWith('#/receipts'));
+  const navGuide = $('#nav-guide');
+  if (navGuide) navGuide.classList.toggle('active', h === '#/guide' || h.startsWith('#/guide/'));
   if (!h.startsWith('#/receipts') && typeof stopReceiptExtractPoll === 'function') {
     stopReceiptExtractPoll();
   }
   window.scrollTo(0, 0);
   document.title = 'Reiss Family Recipes';
+  if (h === '#/guide' || h.startsWith('#/guide/')) {
+    const slug = h.startsWith('#/guide/') ? decodeURIComponent(h.slice('#/guide/'.length)).trim() : '';
+    return renderGuide(app, slug);
+  }
   if (h.startsWith('#/recipe/')) return renderRecipe(app, decodeURIComponent(h.slice(9)));
   if (h.startsWith('#/edit/')) return renderEdit(app, decodeURIComponent(h.slice(7)));
   if (h.startsWith('#/delete/')) return renderDelete(app, decodeURIComponent(h.slice(9)));
@@ -980,7 +1246,7 @@ function renderRecipes(app) {
   const tags = allTags(), cats = allCats();
   app.innerHTML =
     '<section class="hero">' +
-      '<h1>What are we cooking?</h1>' +
+      '<h1>What are we cooking? ' + helpLinkHTML('recipes-search') + '</h1>' +
       '<div class="search-row hero-search combo-wrap no-print">' +
         '<input type="search" id="q" placeholder="Search recipes, ingredients, tags…" ' +
         'value="' + esc(filters.q) + '" aria-label="Search recipes" autocomplete="off" ' +
@@ -1108,7 +1374,7 @@ async function ensurePlannedRecipes() {
 async function renderShopping(app) {
   document.title = 'Shopping List — Reiss Family Recipes';
   app.innerHTML =
-    '<section class="page-head"><h1>Shopping List</h1>' +
+    '<section class="page-head"><h1>Shopping List ' + helpLinkHTML('shopping-list') + '</h1>' +
     '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p>' +
     '<label class="shop-staple-toggle no-print"><input type="checkbox" id="shop-hide-staples"' + (getHideStaples() ? ' checked' : '') + '> Hide pantry staples</label></section>' +
     '<div id="shop-wrap"></div>' +
@@ -1340,11 +1606,11 @@ function renderLanding(app) {
 
   app.innerHTML =
     '<section class="hero landing-hero">' +
-      '<h1>Reiss Family Recipes</h1>' +
+      '<h1>Reiss Family Recipes ' + helpLinkHTML('getting-around') + '</h1>' +
       '<p class="muted">What are we cooking this week?</p>' +
     '</section>' +
     '<section class="landing-cards">' +
-      '<a class="landing-card" href="#/recipes">' +
+      '<a class="landing-card landing-card-featured" href="#/recipes">' +
         '<div class="landing-card-icon">🍳</div>' +
         '<h2>Recipes</h2><p>' + recipes.length + ' recipes</p></a>' +
       '<a class="landing-card" href="#/planner">' +
@@ -1353,6 +1619,9 @@ function renderLanding(app) {
       '<a class="landing-card" href="#/shopping">' +
         '<div class="landing-card-icon">🛒</div>' +
         '<h2>Shopping List</h2><p>' + toBuyCount + ' items to buy</p></a>' +
+      '<a class="landing-card" href="#/receipts">' +
+        '<div class="landing-card-icon">🕒</div>' +
+        '<h2>Shopping History</h2><p>Receipts &amp; price history</p></a>' +
     '</section>' +
     '<section class="home-section">' +
       '<div class="section-head"><h2>This week</h2>' +
@@ -1885,7 +2154,7 @@ async function renderRecipe(app, id) {
     '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
     '<article class="recipe-print">' +
       '<div class="recipe-hero">' + bannerHTML(r) + '</div>' +
-      '<h1 class="recipe-title">' + esc(r.title) + '</h1>' +
+      '<h1 class="recipe-title">' + esc(r.title) + ' ' + helpLinkHTML('recipe-detail') + '</h1>' +
       badgesHTML(r) +
       ratingRowHTML +
       cookBarHTML +
@@ -3206,6 +3475,7 @@ function renderCookModeOverlay() {
           ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="cm-wake-btn" data-cm-act="toggle-wake" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '">☀ ' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake: Off') + '</button>'
           : '<span class="wake-unsupported" id="cm-wake-unsupported">Screen wake lock not supported on this browser</span>') +
         '<button type="button" class="pill" data-cm-act="probe" title="Test Device Capabilities">🔍 Test Device Capabilities</button>' +
+        helpLinkHTML('cook-mode', true) +
         '<button type="button" class="btn secondary cm-exit-btn" data-cm-act="exit">✕ Exit Cook Mode</button>' +
       '</div>' +
     '</div>' +
@@ -3626,7 +3896,7 @@ async function renderDelete(app, id) {
     app.innerHTML =
       '<a class="back-link" href="#/recipe/' + encodeURIComponent(r.id) + '">← Back to recipe</a>' +
       '<div class="delete-confirm">' +
-        '<h1 class="recipe-title">Delete recipe?</h1>' +
+        '<h1 class="recipe-title">Delete recipe? ' + helpLinkHTML('editing', true) + '</h1>' +
         '<p class="delete-name">"' + esc(r.title) + '"</p>' +
         '<p class="delete-warn">This will permanently remove the recipe, its photo PDF, and its entry from the recipe list. <strong>This can\'t be undone.</strong></p>' +
         (err ? '<p class="form-error">' + esc(err) + '</p>' : '') +
@@ -3720,7 +3990,7 @@ function renderEdit(app, id) {
   document.title = 'Edit: ' + r.title + ' — Reiss Family Recipes';
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipe/' + encodeURIComponent(id) + '">← Back to recipe</a>' +
-    '<h1 class="recipe-title">Edit recipe</h1>' +
+    '<h1 class="recipe-title">Edit recipe ' + helpLinkHTML('editing', true) + '</h1>' +
     '<div class="field ai-edit-box" style="background:#f8f6f1;border:1px solid #e0d5c1;border-radius:12px;padding:1rem;margin-bottom:1.5rem">' +
       '<label for="ai-edit-request" style="font-weight:600;display:block;margin-bottom:.5rem">🤖 Describe changes in plain words</label>' +
       '<textarea id="ai-edit-request" rows="3" style="width:100%;box-sizing:border-box" ' +
@@ -3791,7 +4061,7 @@ function renderAdd(app) {
   document.title = 'Add recipe — Reiss Family Recipes';
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
-    '<h1 class="recipe-title">Add recipe</h1>' +
+    '<h1 class="recipe-title">Add recipe ' + helpLinkHTML('editing', true) + '</h1>' +
     recipeFormHTML(editDraft, '#/');
   wireRecipeForm(saveNewRecipe);
 }
@@ -4505,7 +4775,7 @@ function renderPlanner(app) {
   app.innerHTML =
     '<div class="planner-nav no-print">' +
       '<button class="btn secondary" id="wk-prev" type="button">‹ Prev</button>' +
-      '<h2>' + esc(label) + '</h2>' +
+      '<h2>' + esc(label) + ' ' + helpLinkHTML('meal-planner') + '</h2>' +
       '<button class="btn secondary" id="wk-next" type="button">Next ›</button>' +
     '</div>' +
     '<div class="shop-day-row no-print">' +
@@ -6368,7 +6638,7 @@ function renderQuickSort(app) {
   });
   app.innerHTML =
     '<a class="back-link no-print" href="#/planner">← Back to planner</a>' +
-    '<h1 class="recipe-title">Tune the rotation</h1>' +
+    '<h1 class="recipe-title">Tune the rotation ' + helpLinkHTML('meal-planner') + '</h1>' +
     '<p class="muted">Every recipe joins the rotation automatically, grouped by the ' +
     'planner\u2019s best guess. Tap a pill only to correct it — Auto means the guess ' +
     'stands. Ratings are shared: one family opinion per recipe. The Needs a side ' +
@@ -6672,7 +6942,7 @@ function renderSubmit(app) {
   if (!Array.isArray(window._submitPhotos)) window._submitPhotos = [];
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
-    '<h1 class="recipe-title">Submit a recipe</h1>' +
+    '<h1 class="recipe-title">Submit a recipe ' + helpLinkHTML('submitting', true) + '</h1>' +
     '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, upload a PDF, or a combination. ' +
     'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
     'If something can\u2019t be figured out, it\u2019ll be marked below so you know.</p>' +
@@ -8449,7 +8719,7 @@ function receiptsUnlockHTML() {
   return (
     '<section class="rcpt-wrap rcpt-unlock-card card">' +
       '<div class="card-body">' +
-        '<h1 class="rcpt-title">Receipts</h1>' +
+        '<h1 class="rcpt-title">Shopping History ' + helpLinkHTML('receipts') + '</h1>' +
         '<p class="rcpt-sub">Receipts are private to Yidi &amp; Nava &mdash; the rest of the recipe site needs no sign-in.</p>' +
         '<div id="rcpt-gis-btn" class="rcpt-gis-slot"></div>' +
         '<p id="rcpt-unlock-status" class="rcpt-status" role="status"></p>' +
@@ -8562,7 +8832,7 @@ function renderReceiptsDashboard(app, session) {
     '<section class="rcpt-wrap">' +
       '<div class="rcpt-header-row">' +
         '<div>' +
-          '<h1 class="rcpt-title">Receipts</h1>' +
+          '<h1 class="rcpt-title">Shopping History ' + helpLinkHTML('receipts') + '</h1>' +
           '<p class="rcpt-sub">Signed in as <strong>' + esc(session.email) + '</strong></p>' +
         '</div>' +
         '<div class="rcpt-header-actions">' +
@@ -9179,7 +9449,7 @@ function renderReceiptReviewCard(app, receipt) {
         '</div>' +
         '<div class="rcpt-form-pane card">' +
           '<div class="card-body">' +
-            '<h2 class="rcpt-sec-title">Review &amp; Confirm Receipt</h2>' +
+            '<h2 class="rcpt-sec-title">Review &amp; Confirm Receipt ' + helpLinkHTML('receipts', true) + '</h2>' +
             '<div class="rcpt-meta-grid">' +
               '<label class="rcpt-field"><span>Store</span><input type="text" id="rcpt-f-store" value="' + esc(receipt.store || '') + '"></label>' +
               '<label class="rcpt-field"><span>Date (YYYY-MM-DD)</span><input type="date" id="rcpt-f-date" value="' + esc(receipt.receipt_date || '') + '"></label>' +
