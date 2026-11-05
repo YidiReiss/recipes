@@ -730,48 +730,48 @@
           "lunch": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           }
         },
         {
           "lunch": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           },
           "dinner": {
             "dishes": [],
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away"
+            "note": "Vacation — eating out / away"
           }
         }
       ],
@@ -834,14 +834,14 @@
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           }
         },
@@ -850,14 +850,14 @@
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           }
         },
@@ -866,14 +866,14 @@
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           }
         },
@@ -882,14 +882,14 @@
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": true,
-            "note": "Vacation \u2014 eating out / away",
+            "note": "Vacation — eating out / away",
             "dishes": []
           }
         },
@@ -983,8 +983,9 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": ""
+            "skipped": true,
+            "note": "Moscowitz barbecue",
+            "dishes": []
           }
         },
         {
@@ -992,13 +993,41 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "meat-lasagna",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              },
+              {
+                "custom": "Broccoli",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": false
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Leftovers cover a lunch"
+              }
+            ]
           }
         },
         {
@@ -1006,13 +1035,43 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "chicken-mushroom-marsala",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Leftovers cover a lunch"
+              },
+              {
+                "recipe": "rice",
+                "leftovers": false,
+                "cookDate": null,
+                "variant": "white",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           }
         },
         {
@@ -1020,13 +1079,43 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "chicken-mushroom-marsala",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              },
+              {
+                "recipe": "rice",
+                "leftovers": true,
+                "cookDate": null,
+                "variant": "white",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "dill-dip-salmon",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           }
         },
         {
@@ -1034,13 +1123,34 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "baked-feta-pasta",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ]
           }
         },
         {
@@ -1048,13 +1158,25 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "dill-dip-salmon",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": ""
+            "skipped": true,
+            "note": "YPM Dinner",
+            "dishes": []
           }
         },
         {
@@ -1062,13 +1184,24 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": false,
+                "cookDate": "2026-11-05",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
@@ -1286,7 +1419,155 @@
           "unit": "oz"
         }
       ],
-      "manualItems": [],
+      "manualItems": [
+        {
+          "id": "mmvy29lyi",
+          "text": "Potatoes",
+          "have": true,
+          "updatedAt": 1793563414257,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563414257,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy29xxj",
+          "text": "Sweet potato",
+          "have": true,
+          "updatedAt": 1793562801036,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793562801036,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy2a6kj",
+          "text": "Lemons",
+          "have": true,
+          "updatedAt": 1793563042386,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563042386,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy2age0",
+          "text": "Pizza balls",
+          "have": true,
+          "updatedAt": 1793564336769,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564336769,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy2avnn",
+          "text": "Smoothies on sale",
+          "have": true,
+          "updatedAt": 1793563786217,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563786217,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy2bvgt",
+          "text": "Puff pastry sheets",
+          "have": true,
+          "updatedAt": 1793564338286,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564338286,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy2c4r8",
+          "text": "Bronzini fillet",
+          "have": false,
+          "updatedAt": 1793551637780,
+          "updatedBy": "smvy24fnxqn3wqn"
+        },
+        {
+          "id": "mmvy2cp2g",
+          "text": "Pickles",
+          "have": true,
+          "updatedAt": 1793563729937,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563729937,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy748l0",
+          "text": "String Cheese l",
+          "have": false,
+          "updatedAt": 1793559669206,
+          "updatedBy": "smvy748l09ld21q",
+          "deleted": true
+        },
+        {
+          "id": "mmvy74jch",
+          "text": "String Cheese",
+          "have": true,
+          "updatedAt": 1793564151355,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564151355,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy74unh",
+          "text": "Cream cheese",
+          "have": true,
+          "updatedAt": 1793564093046,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793564093046,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy83wd5",
+          "text": "Bananas or clementines",
+          "have": true,
+          "updatedAt": 1793563668843,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563668843,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        },
+        {
+          "id": "mmvy9iad9",
+          "text": "5 Cucumbers",
+          "have": true,
+          "updatedAt": 1793563783924,
+          "updatedBy": "smvy8ym7uiqd3dj",
+          "haveSession": "smvy8ym7uiqd3dj",
+          "haveAt": 1793563783924,
+          "haveSessions": [
+            "smvy8ym7uiqd3dj"
+          ]
+        }
+      ],
       "optionalPromoted": [],
       "shoppingDay": "2026-11-08"
     },
@@ -1816,7 +2097,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Ground-beef night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -1849,7 +2130,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night \u00b7 Leftovers cover a lunch"
+                "reason": "Pasta night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -1882,7 +2163,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night \u00b7 Leftovers cover a lunch"
+                "reason": "Chicken night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -1915,7 +2196,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night \u00b7 Leftovers cover a lunch"
+                "reason": "Fish / veg night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -1948,7 +2229,7 @@
                 "cookDate": null,
                 "locked": true,
                 "drafted": true,
-                "reason": "Standing \u2014 Thursday pizza night"
+                "reason": "Standing — Thursday pizza night"
               }
             ],
             "skipped": false,
@@ -1981,7 +2262,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat dinner \u00b7 Never made \u2014 worth a try"
+                "reason": "Shabbat dinner · Never made — worth a try"
               }
             ],
             "skipped": false,
@@ -1997,7 +2278,7 @@
                 "cookDate": "2026-11-05",
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch \u00b7 Cook Thursday"
+                "reason": "Shabbat lunch · Cook Thursday"
               }
             ],
             "skipped": false,
@@ -2028,7 +2309,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night \u00b7 Leftovers cover a lunch"
+                "reason": "Pasta night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2061,7 +2342,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night \u00b7 Leftovers cover a lunch"
+                "reason": "Chicken night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2094,7 +2375,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night \u00b7 Leftovers cover a lunch"
+                "reason": "Fish / veg night · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2127,7 +2408,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night \u00b7 #2 this week \u00b7 Leftovers cover a lunch"
+                "reason": "Pasta night · #2 this week · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2160,7 +2441,7 @@
                 "cookDate": null,
                 "locked": true,
                 "drafted": true,
-                "reason": "Standing \u2014 Thursday pizza night"
+                "reason": "Standing — Thursday pizza night"
               }
             ],
             "skipped": false,
@@ -2193,7 +2474,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat dinner \u00b7 Never made \u2014 worth a try"
+                "reason": "Shabbat dinner · Never made — worth a try"
               }
             ],
             "skipped": false,
@@ -2209,7 +2490,7 @@
                 "cookDate": "2026-11-05",
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch \u00b7 Cook Thursday"
+                "reason": "Shabbat lunch · Cook Thursday"
               }
             ],
             "skipped": false,
@@ -2256,7 +2537,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Ground-beef night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
             ]
           }
@@ -2291,7 +2572,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night \u00b7 Favorite \u00b7 Not made in 4 wks \u00b7 Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Not made in 4 wks · Leftovers cover a lunch"
               }
             ]
           }
@@ -2326,7 +2607,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
               }
             ]
           }
@@ -2361,7 +2642,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night \u00b7 Favorite \u00b7 Not made in 4 wks \u00b7 Leftovers cover a lunch"
+                "reason": "Fish / veg night · Favorite · Not made in 4 wks · Leftovers cover a lunch"
               }
             ]
           }
@@ -2396,7 +2677,7 @@
                 "cookDate": null,
                 "locked": true,
                 "drafted": true,
-                "reason": "Standing \u2014 Thursday pizza night"
+                "reason": "Standing — Thursday pizza night"
               }
             ]
           }
@@ -2431,7 +2712,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat dinner \u00b7 Never made \u2014 worth a try"
+                "reason": "Shabbat dinner · Never made — worth a try"
               }
             ]
           }
@@ -2478,7 +2759,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Ground-beef night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2509,7 +2790,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2540,7 +2821,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2571,7 +2852,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night \u00b7 Favorite \u00b7 Leftovers cover a lunch"
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
               }
             ],
             "skipped": false,
@@ -2602,7 +2883,7 @@
                 "cookDate": null,
                 "locked": true,
                 "drafted": true,
-                "reason": "Standing \u2014 Thursday pizza night"
+                "reason": "Standing — Thursday pizza night"
               }
             ],
             "skipped": false,
@@ -2633,7 +2914,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat dinner \u00b7 Favorite \u00b7 Never made \u2014 worth a try"
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try"
               }
             ],
             "skipped": false,
