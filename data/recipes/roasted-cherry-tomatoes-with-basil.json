@@ -40,15 +40,16 @@
         },
         {
           "qty": "6",
-          "unit": null,
-          "item": "garlic cloves, unpeeled (optional)"
+          "unit": "cloves",
+          "item": "garlic",
+          "prep": "unpeeled (optional)"
         }
       ]
     }
   ],
   "instructions": [
     "Place a rack in the center of the oven. Preheat the oven to 500°F.",
-    "Place the tomatoes in the smallest pan that will hold them comfortably. Drizzle the olive oil over them. Rub the oil over the tomatoes and pan. Sprinkle with the salt. Roast for 10 minutes. Shake the pan to move the tomatoes around.",
+    "Place the tomatoes and the garlic cloves in the smallest pan that will hold them comfortably. Drizzle the olive oil over them. Rub the oil over the tomatoes and pan. Sprinkle with the salt. Roast for 10 minutes. Shake the pan to move the tomatoes around.",
     "Roast for 15 minutes more.",
     "Add the basil and toss lightly. Serve warm."
   ],
@@ -69,6 +70,30 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 15 min (base 5 + stem 1.5 lb tomatoes + chiffonade basil) per Sous Chef estimation rules. Servings 3 and cook 25 kept."
+    },
+    {
+      "ts": "2026-11-05T01:06:48.233Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 5 items])",
+          "to": "1 items ([section: 5 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "4 items (Place a rack in the center of the oven. ; Place the tomatoes in the smallest pan t; Roast for 15 minutes more.; …)",
+          "to": "4 items (Place a rack in the center of the oven. ; Place the tomatoes and the garlic cloves; Roast for 15 minutes more.; …)"
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated in steps."
     }
-  ]
+  ],
+  "pdf_stale": true
 }
