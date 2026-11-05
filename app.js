@@ -1510,12 +1510,91 @@ function wireHomeSuggest(input) {
   });
 }
 
+function recipeCardHTML(r) {
+  return '<a class="card" href="#/recipe/' + encodeURIComponent(r.id) + '">' +
+    bannerHTML(r) +
+    '<div class="card-body"><h2>' + esc(r.title) + '</h2>' +
+    '<div class="card-meta">' + esc(fmtTime(totalTime(r))) + ' total · Serves ' + esc(r.servings || '—') + '</div>' +
+    badgesHTML(r) + '</div></a>';
+}
+
+function partitionSearchResults(list, query) {
+  const items = Array.isArray(list) ? list : [];
+  const rawQ = String(query == null ? '' : query).trim();
+  const needle = rawQ.toLowerCase();
+  if (!needle) {
+    return { active: false, query: '', titleMatches: [], ingredientMatches: [], otherMatches: [] };
+  }
+  const titleMatches = [];
+  const ingredientMatches = [];
+  const otherMatches = [];
+  for (let i = 0; i < items.length; i++) {
+    const r = items[i];
+    if (!r) continue;
+    const titleStr = String(r.title || '').toLowerCase();
+    if (titleStr.includes(needle)) {
+      titleMatches.push(r);
+      continue;
+    }
+    const ingHay = typeof r.ingredients_text === 'string'
+      ? r.ingredients_text.toLowerCase()
+      : String(r.search_text || '').toLowerCase();
+    if (ingHay.includes(needle)) {
+      ingredientMatches.push(r);
+      continue;
+    }
+    otherMatches.push(r);
+  }
+  return { active: true, query: rawQ, titleMatches, ingredientMatches, otherMatches };
+}
+
+function searchSectionHeaderHTML(kind, labelText, count) {
+  return '<div class="search-section-head" data-search-section="' + esc(kind) + '">' +
+    '<h2 class="search-section-title">' + labelText + ' <span class="search-section-count">(' + count + ')</span></h2>' +
+    '</div>';
+}
+
+function gridSectionsHTML(list, query) {
+  const part = partitionSearchResults(list, query);
+  if (!part.active) {
+    return (Array.isArray(list) ? list : []).map(recipeCardHTML).join('');
+  }
+  let html = '';
+  if (part.titleMatches.length) {
+    html += searchSectionHeaderHTML(
+      'title',
+      "Titles matching '" + esc(part.query) + "'",
+      part.titleMatches.length
+    ) + part.titleMatches.map(recipeCardHTML).join('');
+  }
+  if (part.ingredientMatches.length) {
+    html += searchSectionHeaderHTML(
+      'ingredient',
+      "With '" + esc(part.query) + "' as an ingredient",
+      part.ingredientMatches.length
+    ) + part.ingredientMatches.map(recipeCardHTML).join('');
+  }
+  if (part.otherMatches.length) {
+    html += searchSectionHeaderHTML(
+      'other',
+      'More matches',
+      part.otherMatches.length
+    ) + part.otherMatches.map(recipeCardHTML).join('');
+  }
+  return html;
+}
+
 function drawGrid() {
   const grid = $('#grid');
   if (!grid) return;
   const list = filteredRecipes();
+  const rawQ = String(filters.q || '').trim();
+  const part = rawQ ? partitionSearchResults(list, rawQ) : null;
+  const shownCount = part
+    ? (part.titleMatches.length + part.ingredientMatches.length + part.otherMatches.length)
+    : list.length;
   $('#result-count').textContent = recipes.length
-    ? list.length + ' of ' + recipes.length + ' recipe' + (recipes.length === 1 ? '' : 's')
+    ? shownCount + ' of ' + recipes.length + ' recipe' + (recipes.length === 1 ? '' : 's')
     : '';
 
   if (!recipes.length) {
@@ -1526,20 +1605,14 @@ function drawGrid() {
       '</div>';
     return;
   }
-  if (!list.length) {
+  if (!shownCount) {
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1">' +
         '<p>No recipes match. Try clearing a filter.</p>' +
       '</div>';
     return;
   }
-  grid.innerHTML = list.map(r =>
-    '<a class="card" href="#/recipe/' + encodeURIComponent(r.id) + '">' +
-      bannerHTML(r) +
-      '<div class="card-body"><h2>' + esc(r.title) + '</h2>' +
-      '<div class="card-meta">' + esc(fmtTime(totalTime(r))) + ' total · Serves ' + esc(r.servings || '—') + '</div>' +
-      badgesHTML(r) + '</div></a>'
-  ).join('');
+  grid.innerHTML = rawQ ? gridSectionsHTML(list, rawQ) : list.map(recipeCardHTML).join('');
 }
 
 /* ---------------- Recipe page ---------------- */
@@ -4134,33 +4207,12 @@ async function saveRecipe(id) {
     // Update our SHA and history from the worker's response.
     if (saveResult.sha) currentEditSha = saveResult.sha;
     if (saveResult.history) d.history = saveResult.history;
-    // Update metadata for lazy loading (list/search/filter).
-    const metaEntry = {
-      id: d.id, title: d.title, banner_image: d.banner_image,
-      kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
-      categories: d.categories || [], tags: d.tags || [],
-      prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
-      leftover_friendly: !!d.leftover_friendly, needs_side: !!d.needs_side, tags_need_review: !!d.tags_need_review,
-      photo_generated: !!d.photo_generated,
-      search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
-    };
-    const updateMeta = async () => {
-      const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
-      const mi = meta.findIndex(x => x.id === id);
-      if (mi >= 0) meta[mi] = metaEntry; else meta.push(metaEntry);
-      await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Update meta: ' + d.title);
-    };
-    try {
-      await updateMeta();
-    } catch (e) {
-      console.warn('meta.json first attempt failed, retrying once...', e);
-      try {
-        await new Promise(r => setTimeout(r, 800));
-        await updateMeta();
-      } catch (e2) {
-        console.error('meta.json update failed', e2);
-        toast('Recipe saved, but card index failed to sync — please click Save again.');
-      }
+    // Single-writer handoff: Worker /save-recipe rebuilds and upserts the card
+    // into data/recipes/meta.json and returns it on saveResult.card.
+    const metaEntry = (saveResult && saveResult.card) ? saveResult.card : buildRecipeCard(d);
+    if (saveResult && (saveResult.meta_write_failed || saveResult.meta_synced === false)) {
+      console.warn('meta.json sync failed in worker', saveResult.meta_error || '');
+      toast('Recipe saved, but card index failed to sync — please click Save again.');
     }
     const i = recipes.findIndex(x => x.id === id);
     if (i >= 0) recipes[i] = metaEntry;
@@ -4211,33 +4263,12 @@ async function saveNewRecipe() {
     const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
     idx.push(id);
     await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
-    // Update meta.json for lazy loading (list/search/filter use metadata only).
-    const metaEntry = {
-      id: d.id, title: d.title, banner_image: d.banner_image,
-      kosher_status: d.kosher_status, kosher_for_passover: !!d.kosher_for_passover,
-      categories: d.categories || [], tags: d.tags || [],
-      prep_minutes: d.prep_minutes, cook_minutes: d.cook_minutes, servings: d.servings,
-      leftover_friendly: !!d.leftover_friendly, needs_side: !!d.needs_side, tags_need_review: !!d.tags_need_review,
-      photo_generated: !!d.photo_generated,
-      search_text: ((d.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || '')).join(' ') + ' ' + (d.notes || '')).trim(),
-    };
-    const updateMeta = async () => {
-      const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
-      const mi = meta.findIndex(x => x.id === d.id);
-      if (mi >= 0) meta[mi] = metaEntry; else meta.push(metaEntry);
-      await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Add to meta: ' + d.title);
-    };
-    try {
-      await updateMeta();
-    } catch (e) {
-      console.warn('meta.json first attempt failed, retrying once...', e);
-      try {
-        await new Promise(r => setTimeout(r, 800));
-        await updateMeta();
-      } catch (e2) {
-        console.error('meta.json update failed', e2);
-        toast('Recipe saved, but card index failed to sync — please click Save again.');
-      }
+    // Single-writer handoff: Worker /save-recipe rebuilds and upserts the card
+    // into data/recipes/meta.json and returns it on saveResult.card.
+    const metaEntry = (saveResult && saveResult.card) ? saveResult.card : buildRecipeCard(d);
+    if (saveResult && (saveResult.meta_write_failed || saveResult.meta_synced === false)) {
+      console.warn('meta.json sync failed in worker', saveResult.meta_error || '');
+      toast('Recipe saved, but card index failed to sync — please click Save again.');
     }
     recipes.push(metaEntry);
     metaById[id] = metaEntry;
@@ -5957,6 +5988,102 @@ async function setRecipePref(id, patch) {
    and skip the Recent submissions auto-log. The fast list
    (meta.json) is patched in place from the same save, so its
    variants and every other card field survive. */
+function inferVariantSlotClass(recipe, variantObj) {
+  if (variantObj && variantObj.slotClass) return variantObj.slotClass;
+  const r = recipe || {};
+  const vKey = variantObj && variantObj.key ? variantObj.key : null;
+  const vLabel = (variantObj && variantObj.label) ? String(variantObj.label) : '';
+  const itemsText = (r.ingredients || [])
+    .flatMap(s => (s.items || []).filter(i => !i.variant || i.variant === vKey).map(i => i.item || ''))
+    .join(' ');
+  const synthMeta = {
+    id: r.id,
+    title: (String(r.title || '') + (vLabel ? ' ' + vLabel : '')).trim(),
+    categories: r.categories || [],
+    kosher_status: r.kosher_status,
+    tags: r.tags || [],
+    prep_minutes: r.prep_minutes,
+    cook_minutes: r.cook_minutes,
+    servings: r.servings,
+    leftover_friendly: !!r.leftover_friendly,
+    search_text: itemsText.trim()
+  };
+  return inferPlanningMeta(synthMeta).slotClass;
+}
+
+function buildRecipeCard(d) {
+  const r = d || {};
+  const ingItems = (r.ingredients || []).flatMap(s => (s.items || []).map(i => i.item || ''));
+  const ingredientsText = ingItems.join(' ').trim();
+  const searchText = (ingItems.join(' ') + ' ' + (r.notes || '')).trim();
+  const card = {
+    id: r.id,
+    title: r.title,
+    banner_image: r.banner_image,
+    kosher_status: r.kosher_status,
+    kosher_for_passover: !!r.kosher_for_passover,
+    categories: r.categories || [],
+    tags: r.tags || [],
+    prep_minutes: r.prep_minutes,
+    cook_minutes: r.cook_minutes,
+    servings: r.servings,
+    leftover_friendly: !!r.leftover_friendly,
+    needs_side: !!r.needs_side,
+    tags_need_review: !!r.tags_need_review,
+    photo_generated: !!r.photo_generated,
+    search_text: searchText,
+    ingredients_text: ingredientsText
+  };
+  if (Array.isArray(r.variants) && r.variants.length) {
+    const ordered = [...r.variants].sort((a, b) => ((b && b.default) ? 1 : 0) - ((a && a.default) ? 1 : 0));
+    const builtVars = ordered
+      .filter(v => v && v.key)
+      .map(v => ({
+        key: v.key,
+        label: v.label || v.key,
+        slotClass: inferVariantSlotClass(r, v)
+      }));
+    if (builtVars.length) card.variants = builtVars;
+  }
+  return card;
+}
+
+function cardDriftFields(card, recipe) {
+  if (!card || typeof card !== 'object' || !recipe || typeof recipe !== 'object') {
+    return ['card_missing'];
+  }
+  const expected = buildRecipeCard(recipe);
+  const diffs = [];
+  const scalarKeys = [
+    'id', 'title', 'banner_image', 'kosher_status', 'kosher_for_passover',
+    'prep_minutes', 'cook_minutes', 'servings',
+    'leftover_friendly', 'needs_side', 'tags_need_review', 'photo_generated',
+    'search_text', 'ingredients_text'
+  ];
+  for (let i = 0; i < scalarKeys.length; i++) {
+    const k = scalarKeys[i];
+    if (!(k in card) || card[k] !== expected[k]) diffs.push(k);
+  }
+  if (!Array.isArray(card.categories) || JSON.stringify(card.categories) !== JSON.stringify(expected.categories)) {
+    diffs.push('categories');
+  }
+  if (!Array.isArray(card.tags) || JSON.stringify(card.tags) !== JSON.stringify(expected.tags)) {
+    diffs.push('tags');
+  }
+  if ('variants' in expected) {
+    if (!Array.isArray(card.variants) || JSON.stringify(card.variants) !== JSON.stringify(expected.variants)) {
+      diffs.push('variants');
+    }
+  } else if ('variants' in card && card.variants !== undefined) {
+    diffs.push('variants');
+  }
+  return diffs;
+}
+
+function cardIsStale(card, recipe) {
+  return cardDriftFields(card, recipe).length > 0;
+}
+
 function withNeedsSide(recipe, value) {
   const out = { ...(recipe || {}) };
   out.needs_side = !!value;
@@ -5976,12 +6103,13 @@ async function setNeedsSide(id, value, byName) {
     // callers pass the name resolved in the tap handler (a prompt
     // after an await is swallowed on mobile browsers).
     const name = byName || getEditorName();
+    let saveResult = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       const fresh = await ghGet('data/recipes/' + id + '.json');
       const current = JSON.parse(fresh.text);
       if (!current || current.id !== id) throw new Error('Recipe not found');
       try {
-        await bridgeSaveRecipe('data/recipes/' + id + '.json',
+        saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json',
           withNeedsSide(current, value), 'site-editor (' + name + ')',
           'Needs-a-side flag ' + (value ? 'on' : 'off'), fresh.sha, 'edit', true);
         break;
@@ -5990,23 +6118,21 @@ async function setNeedsSide(id, value, byName) {
         throw e;
       }
     }
-    // Patch the fast list in place, with one retry like saveRecipe.
-    let metaSaved = false;
-    for (let attempt = 0; attempt < 2 && !metaSaved; attempt++) {
-      try {
-        const meta = JSON.parse((await ghGet('data/recipes/meta.json')).text);
-        const mi = meta.findIndex(x => x.id === id);
-        if (mi >= 0) meta[mi] = patchMetaNeedsSide(meta[mi], value);
-        await ghPut('data/recipes/meta.json', JSON.stringify(meta), 'Needs-a-side flag: ' + id);
-        metaSaved = true;
-      } catch (e) {
-        if (attempt === 0) await new Promise(r => setTimeout(r, 800));
-        else throw e;
-      }
+    // Single-writer handoff: Worker /save-recipe updates data/recipes/meta.json
+    // and returns the rebuilt card on saveResult.card.
+    if (saveResult && (saveResult.meta_write_failed || saveResult.meta_synced === false)) {
+      console.warn('meta.json sync failed in worker', saveResult.meta_error || '');
+      toast('Recipe saved, but card index failed to sync — please try toggling again.');
     }
-    if (metaById[id]) metaById[id] = patchMetaNeedsSide(metaById[id], value);
-    const ri = recipes.findIndex(x => x.id === id);
-    if (ri >= 0) recipes[ri] = patchMetaNeedsSide(recipes[ri], value);
+    if (saveResult && saveResult.card) {
+      metaById[id] = saveResult.card;
+      const ri = recipes.findIndex(x => x.id === id);
+      if (ri >= 0) recipes[ri] = saveResult.card;
+    } else {
+      if (metaById[id]) metaById[id] = patchMetaNeedsSide(metaById[id], value);
+      const ri = recipes.findIndex(x => x.id === id);
+      if (ri >= 0) recipes[ri] = patchMetaNeedsSide(recipes[ri], value);
+    }
     if (byId[id]) byId[id] = withNeedsSide(byId[id], value);
   } finally {
     _needsSideSaving.delete(id);
