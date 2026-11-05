@@ -486,6 +486,68 @@ body {
 #ing-editor .dynamic-block { overflow-x: auto; }
 #ing-editor .dynamic-block .mini-row { min-width: 32rem; }
 
+@media (max-width: 600px) {
+  .edit-form { padding: 0.85rem; }
+  #ing-editor .dynamic-block {
+    overflow-x: visible;
+    padding: 0.55rem;
+  }
+  #ing-editor .dynamic-block .mini-row {
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  #ing-editor .dynamic-block .mini-row:first-child,
+  #ing-editor .dynamic-block .mini-row.ing-header {
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.35rem;
+  }
+  #ing-editor .dynamic-block .mini-row input[type="text"],
+  #ing-editor .dynamic-block .mini-row select {
+    padding: 0.38rem 0.45rem;
+    font-size: 0.88rem;
+  }
+  #ing-editor .dynamic-block .mini-row input.qty,
+  #ing-editor .dynamic-block .mini-row.ing-header span.qty {
+    flex: 0 0 3.2rem;
+  }
+  #ing-editor .dynamic-block .mini-row input.unit,
+  #ing-editor .dynamic-block .mini-row.ing-header span.unit {
+    flex: 0 0 4.2rem;
+  }
+  #ing-editor .dynamic-block .mini-row input[data-item$="|item"],
+  #ing-editor .dynamic-block .mini-row.ing-header span.ing-name {
+    flex: 1 1 calc(100% - 8.5rem);
+  }
+  #ing-editor .dynamic-block .mini-row input[data-item$="|prep"],
+  #ing-editor .dynamic-block .mini-row.ing-header span.prep {
+    flex: 1 1 6.5rem;
+  }
+  #ing-editor .dynamic-block .mini-row .ing-opt-check,
+  #ing-editor .dynamic-block .mini-row.ing-header span.ing-opt {
+    flex: 0 0 2.2rem;
+    width: 2.2rem;
+  }
+  #ing-editor .dynamic-block .mini-row select.ing-variant,
+  #ing-editor .dynamic-block .mini-row.ing-header span.ing-ver {
+    flex: 0 0 5.5rem;
+    font-size: 0.84rem;
+  }
+  #ing-editor .dynamic-block .mini-row button.link-btn.danger,
+  #ing-editor .dynamic-block .mini-row.ing-header span.ing-x {
+    flex: 0 0 1.6rem;
+    text-align: center;
+  }
+  #ing-editor .dynamic-block .mini-row button[data-secdel] {
+    flex: 0 0 auto;
+    padding: 0 0.25rem;
+  }
+}
+
 .link-btn {
   background: none;
   border: none;
@@ -986,7 +1048,31 @@ footer.site-footer {
 .landing-card h2 { font-size: 1.1rem; margin: 0 0 0.25rem; }
 .landing-card p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
 @media (max-width: 600px) {
-  .landing-cards { grid-template-columns: 1fr; max-width: 400px; }
+  .landing-hero { padding: 0.45rem 0.5rem 0.35rem; }
+  .landing-hero h1 { font-size: 1.35rem; margin: 0 0 0.1rem; }
+  .landing-hero p { margin: 0; font-size: 0.82rem; }
+  .landing-cards {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 0.35rem;
+    margin: 0 auto 0.55rem;
+    padding: 0 0.5rem;
+  }
+  .landing-card {
+    padding: 0.32rem 0.75rem;
+    border-radius: 9px;
+  }
+  .landing-card-icon { font-size: 1.05rem; margin-bottom: 0.05rem; line-height: 1.1; }
+  .landing-card h2 { font-size: 0.9rem; margin: 0; line-height: 1.2; }
+  .landing-card p { font-size: 0.75rem; line-height: 1.2; }
+  .home-section { margin: 0.55rem 0; }
+  .home-section .section-head { margin-bottom: 0.3rem; }
+  .home-section .section-head h2 { font-size: 1.05rem; }
+  .home-section .plan-carousel { gap: 0.5rem; padding: 0.2rem 0.2rem 0.45rem; }
+  .home-section .carousel-day { flex: 0 0 118px; padding: 0.45rem 0.55rem; }
+  .home-section .carousel-day h4 { font-size: 0.85rem; }
+  .home-section .carousel-date { font-size: 0.72rem; margin-bottom: 0.2rem; }
+  .home-section .carousel-meal { font-size: 0.78rem; margin-bottom: 0.2rem; }
 }
 
 /* Plan carousel */
