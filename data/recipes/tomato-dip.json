@@ -20,8 +20,8 @@
           "unit": "tsp"
         },
         {
-          "item": "fresh garlic",
-          "prep": "pressed",
+          "item": "garlic",
+          "prep": "minced",
           "qty": "6",
           "unit": "cloves"
         },
@@ -74,7 +74,7 @@
   "needs_kosher_review": false,
   "kosher_review_notes": "",
   "leftover_note": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "history": [
     {
       "ts": "2026-11-01T04:57:40.924Z",
@@ -88,6 +88,24 @@
         }
       ],
       "reasoning": "Yidi approved 2026-11-01: restore categories to [dips]. Live categories were [] (verified), causing the classifier to count Tomato Dip main-eligible (72 vs 71) and 2 test failures in the AI Studio suite run (246/248)."
+    },
+    {
+      "ts": "2026-11-05T01:06:39.869Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 7 items])",
+          "to": "1 items ([section: 7 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated in steps."
     }
   ]
 }
