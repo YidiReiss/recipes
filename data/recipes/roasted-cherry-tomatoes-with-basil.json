@@ -93,7 +93,16 @@
         }
       ],
       "reasoning": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated in steps."
+    },
+    {
+      "ts": "2026-11-05T01:15:44.791Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
