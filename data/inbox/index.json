@@ -1960,5 +1960,16 @@
     "actor": "Muse",
     "note": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated i…",
     "created_at": "2026-11-05T01:06:44.187Z"
+  },
+  {
+    "id": "edit-mw2ui34f-d0s8",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "roasted-cherry-tomatoes-with-basil",
+    "recipe_id": "roasted-cherry-tomatoes-with-basil",
+    "title": "Roasted Cherry Tomatoes with Basil",
+    "actor": "Muse",
+    "note": "Garlic wording normalization, Yidi-approved Nov 4 2026: item 'garlic', unit cloves, handling in prep only (minced; unpeeled optional). Pressed = minced in household terminology. Prep not repeated i…",
+    "created_at": "2026-11-05T01:06:48.233Z"
   }
 ]
