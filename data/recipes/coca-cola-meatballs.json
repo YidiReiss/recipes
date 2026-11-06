@@ -172,7 +172,16 @@
         }
       ],
       "reasoning": "Yidi edit request (inbox-mw49pszo-byxa): removed green bell pepper; Worcestershire sauce reduced to less than 1 Tbsp; added salt (just under 1 tsp for meatballs, 1 dash for sauce) and black pepper (1/4 tsp for meatballs, a few dashes for sauce) as ingredients; onion minced very fine in chopper (ingredient prep + both instruction steps)."
+    },
+    {
+      "ts": "2026-11-06T01:17:42.273Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true
+  "pdf_stale": false
 }
