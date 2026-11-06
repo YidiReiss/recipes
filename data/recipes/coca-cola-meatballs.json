@@ -44,13 +44,25 @@
           "qty": "1",
           "unit": null,
           "item": "onion",
-          "prep": "minced in chopper, divided"
+          "prep": "minced very fine in chopper, divided"
         },
         {
           "qty": "2",
           "unit": "tsp",
           "item": "fresh garlic",
           "prep": "minced"
+        },
+        {
+          "qty": "just under 1",
+          "unit": "tsp",
+          "item": "salt",
+          "prep": "for the meatballs"
+        },
+        {
+          "qty": "¼",
+          "unit": "tsp",
+          "item": "black pepper",
+          "prep": "for the meatballs"
         },
         {
           "qty": "1",
@@ -63,26 +75,33 @@
           "item": "Coca-Cola"
         },
         {
-          "qty": "2",
+          "qty": "less than 1",
           "unit": "Tbsp",
           "item": "Worcestershire sauce"
         },
         {
-          "qty": "½",
+          "qty": "1 dash",
           "unit": null,
-          "item": "green bell pepper"
+          "item": "salt",
+          "prep": "for the sauce"
+        },
+        {
+          "qty": "a few dashes",
+          "unit": null,
+          "item": "black pepper",
+          "prep": "for the sauce"
         }
       ]
     }
   ],
   "instructions": [
     "Preheat the oven to 180°C (350°F). Spray a 20 x 30 cm (8 x 12 inch) oven dish with cooking spray.",
-    "In a large mixing bowl, combine the beef, breadcrumbs, egg, water, half of the chopped onion (and half of the green bell pepper, if using), half the salt and half the black pepper. Mix well and form into balls; place in a single layer in the prepared oven dish.",
-    "In a small bowl, mix together the remaining onion, salt, and pepper. Add the garlic, tomato sauce, Coca-Cola, Worcestershire sauce, and the green bell pepper. Pour over the meatballs.",
+    "In a large mixing bowl, combine the beef, breadcrumbs, egg, water, half of the very finely minced onion, the salt for the meatballs, and the black pepper for the meatballs. Mix well and form into balls; place in a single layer in the prepared oven dish.",
+    "In a small bowl, mix together the remaining very finely minced onion, the dash of salt for the sauce, and the few dashes of black pepper for the sauce. Add the garlic, tomato sauce, Coca-Cola, and Worcestershire sauce. Pour over the meatballs.",
     "Bake 50-60 minutes (turning twice), until the sauce is bubbly and the meatballs are fully cooked."
   ],
   "pairings": [],
-  "notes": "Salt and black pepper are referenced in the instructions ('half the Salt and half the Black Pepper') but no amounts are given in the ingredient list.",
+  "notes": null,
   "source": null,
   "tags_need_review": false,
   "history": [
@@ -125,7 +144,35 @@
         "PDF regenerated"
       ],
       "reasoning": "PDF re-press after pepper/garlic sweep edit; pdf_stale was true."
+    },
+    {
+      "ts": "2026-11-06T01:15:16.260Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 10 items])",
+          "to": "1 items ([section: 13 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "4 items (Preheat the oven to 180°C (350°F). Spray; In a large mixing bowl, combine the beef; In a small bowl, mix together the remain; …)",
+          "to": "4 items (Preheat the oven to 180°C (350°F). Spray; In a large mixing bowl, combine the beef; In a small bowl, mix together the remain; …)"
+        },
+        {
+          "field": "notes",
+          "from": "Salt and black pepper are referenced in the instructions ('half the Salt and half the Black Pepper') but no amounts are given in the ingredient list.",
+          "to": null
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Yidi edit request (inbox-mw49pszo-byxa): removed green bell pepper; Worcestershire sauce reduced to less than 1 Tbsp; added salt (just under 1 tsp for meatballs, 1 dash for sauce) and black pepper (1/4 tsp for meatballs, a few dashes for sauce) as ingredients; onion minced very fine in chopper (ingredient prep + both instruction steps)."
     }
   ],
-  "pdf_stale": false
+  "pdf_stale": true
 }
