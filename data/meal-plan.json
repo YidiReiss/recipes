@@ -1830,9 +1830,9 @@
   },
   "recipePrefs": {
     "coca-cola-meatballs": {
-      "rating": null,
-      "updatedAt": 1793499500869,
-      "updatedBy": "Yidi",
+      "rating": "favorite",
+      "updatedAt": 1793926655776,
+      "updatedBy": "Kitchen Alexa",
       "effort": "shabbat"
     },
     "amnon-s-frozen-pizza": {
