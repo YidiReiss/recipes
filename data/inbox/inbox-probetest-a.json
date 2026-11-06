@@ -1,0 +1,12 @@
+{
+  "id": "inbox-probetest-a",
+  "url": null,
+  "image": null,
+  "note": null,
+  "text": "Shadow Test \u2014 Cinnamon Toast\n\nIngredients:\n- 2 slices white bread\n- 1 tablespoon butter, softened\n- 1 teaspoon cinnamon\n- 1 tablespoon sugar\n\nInstructions:\n1. Toast the bread until golden.\n2. Spread with butter.\n3. Mix the cinnamon and sugar, sprinkle over the toast.",
+  "type": "submission",
+  "status": "working",
+  "created_at": "2026-11-06T11:30:35.632Z",
+  "recipe_id": null,
+  "fail_reason": null
+}
