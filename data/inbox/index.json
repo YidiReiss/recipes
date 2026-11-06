@@ -1980,17 +1980,5 @@
     "created_at": "2026-11-06T01:00:30.084Z",
     "text": "So we need multiple different changes first of all is the fact that we don't use a bell peppers so that should be removed. Also for the worc",
     "recipe_id": "coca-cola-meatballs"
-  },
-  {
-    "id": "inbox-probetest-a",
-    "url": null,
-    "image": null,
-    "note": null,
-    "text": "Shadow Test \u2014 Cinnamon Toast\n\nIngredients:\n- 2 slices white bread\n- 1 tablespoon butter, softened\n- 1 teaspoon cinnamon\n- 1 tablespoon sugar\n\nInstructions:\n1. Toast the bread until golden.\n2. Spread with butter.\n3. Mix the cinnamon and sugar, sprinkle over the toast.",
-    "type": "submission",
-    "status": "done",
-    "created_at": "2026-11-06T11:30:35.632Z",
-    "recipe_id": "shadow-test-cinnamon-toast",
-    "fail_reason": null
   }
 ]
