@@ -2822,5 +2822,28 @@
         "slotClass": "chicken"
       }
     ]
+  },
+  {
+    "id": "shadow-test-cinnamon-toast",
+    "title": "Shadow Test — Cinnamon Toast",
+    "banner_image": "assets/images/shadow-test-cinnamon-toast.jpg",
+    "kosher_status": "dairy",
+    "kosher_for_passover": false,
+    "categories": [
+      "breakfast"
+    ],
+    "tags": [
+      "quick",
+      "sweet"
+    ],
+    "prep_minutes": 15,
+    "cook_minutes": 3,
+    "servings": "1",
+    "leftover_friendly": false,
+    "needs_side": false,
+    "tags_need_review": false,
+    "photo_generated": true,
+    "search_text": "white bread butter cinnamon sugar Test submission for the intake-probe 72-hour shadow test (Event A, Nov 6, 2026) — to be cleaned up after the test.",
+    "ingredients_text": "white bread butter cinnamon sugar"
   }
 ]
