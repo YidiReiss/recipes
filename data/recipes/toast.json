@@ -78,7 +78,7 @@
   "pdf": "pdfs/toast.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "history": [
     {
@@ -107,6 +107,15 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-08T04:29:26.616Z",
+      "actor": "probe-test",
+      "action": "edit",
+      "changes": [
+        "pdf_stale: false -> true"
+      ],
+      "reasoning": "Shadow test Event B2 (re-test after git-v8 fix) — pdf_stale flag only, no content change"
     }
   ]
 }
