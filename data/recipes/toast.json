@@ -78,7 +78,7 @@
   "pdf": "pdfs/toast.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "history": [
     {
@@ -89,6 +89,15 @@
         "Created recipe"
       ],
       "reasoning": "Intake from text submission. Servings stated: 1. Cook: '2-3 minutes' -> upper bound 3. Prep: nothing active beyond handling - 5 base + measure/pour/open charges ~7, floored to 15 per Yidi's rule. Toppings marked optional per note."
+    },
+    {
+      "ts": "2026-11-08T00:29:28.726Z",
+      "actor": "shadow-test-event-b",
+      "action": "edit",
+      "changes": [
+        "pdf_stale set to true (shadow test Event B, no content change)"
+      ],
+      "reasoning": "Shadow test Event B - pdf_stale flag only, no content change"
     }
   ]
 }
