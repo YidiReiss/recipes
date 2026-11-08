@@ -1,0 +1,87 @@
+{
+  "banner_image": "assets/images/christina-contis-pasta-caprese.jpg",
+  "categories": [
+    "main",
+    "pasta"
+  ],
+  "cook_minutes": 15,
+  "id": "christina-contis-pasta-caprese",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "olive oil",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "mozzarella",
+          "prep": "cubed",
+          "qty": "1",
+          "unit": "16-ounce package"
+        },
+        {
+          "item": "garlic",
+          "prep": "crushed",
+          "qty": "4",
+          "unit": "cloves"
+        },
+        {
+          "item": "basil leaves",
+          "prep": "chopped (reserve a few leaves for garnish)",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "crushed dried red pepper",
+          "prep": "to taste",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "salt and pepper",
+          "prep": "to taste",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "crushed San Marzano tomatoes",
+          "qty": "1",
+          "unit": "28-ounce can"
+        },
+        {
+          "item": "fusilli or other corkscrew pasta",
+          "qty": "1",
+          "unit": "lb"
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Combine the olive oil, cubed mozzarella, garlic, basil, crushed red pepper, salt and pepper, and crushed tomatoes in a large bowl, stirring together.",
+    "Transfer the mixture to a pot and warm over medium heat, stirring occasionally, until hot and the mozzarella begins to melt.",
+    "Boil the pasta as directed. Drain, then pour the hot pasta over the sauce. Mix and serve."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "",
+  "kosher_status": "dairy",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "Yidi's version: uses a can of crushed tomatoes instead of whole tomatoes, so there is no crushing or simmering the tomatoes first. Everything is mixed cold, then warmed in a pot until the mozzarella melts. Adapted from Christina Conti's Pasta Caprese (newspaper clipping).",
+  "pairings": [],
+  "pdf": "pdfs/christina-contis-pasta-caprese.pdf",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "prep_minutes": 15,
+  "servings": "4",
+  "source": "Newspaper clipping: Christina Conti's Pasta Caprese",
+  "tags": [
+    "quick",
+    "weeknight",
+    "vegetarian"
+  ],
+  "tags_need_review": false,
+  "title": "Christina Conti's Pasta Caprese"
+}
