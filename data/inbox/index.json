@@ -2002,5 +2002,16 @@
     "actor": "site-editor (Yidi)",
     "note": "Changed servings, leftover_note, ingredients, notes, source, needs_side, needs_kosher_review, kosher_review_notes",
     "created_at": "2026-11-08T03:53:09.483Z"
+  },
+  {
+    "id": "edit-mw7c28iy-nor4",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "toast",
+    "recipe_id": "toast",
+    "title": "Toast",
+    "actor": "probe-test",
+    "note": "Shadow test Event B2 (re-test after git-v8 fix) — pdf_stale flag only, no content change",
+    "created_at": "2026-11-08T04:29:26.616Z"
   }
 ]
