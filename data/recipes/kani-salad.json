@@ -10,7 +10,7 @@
   "tags": [
     "quick"
   ],
-  "prep_minutes": 15,
+  "prep_minutes": 30,
   "cook_minutes": 0,
   "servings": "7",
   "leftover_friendly": false,
@@ -38,7 +38,7 @@
         {
           "qty": "½",
           "unit": "tsp",
-          "item": "granulated sugar"
+          "item": "Honey"
         },
         {
           "qty": "½",
@@ -58,17 +58,21 @@
         {
           "qty": "5",
           "unit": "oz",
-          "item": "imitation crab sticks, shredded into thin strips (250 g)"
+          "item": "imitation crab sticks",
+          "prep": "Shredded into thin strips"
         },
         {
           "qty": "1",
           "unit": null,
-          "item": "carrot, julienned 3\" long (about 1 cup)"
+          "item": "Carrot",
+          "prep": "julienned 3\" long (about 1 cup)",
+          "optional": true
         },
         {
-          "qty": "1",
+          "qty": "4",
           "unit": null,
-          "item": "cucumber, julienned 3\" long (about 1½ cups)"
+          "item": "Perian Cucumbers",
+          "prep": "Julienned 3\" long (about 1½ cups)"
         },
         {
           "qty": "1",
@@ -99,10 +103,10 @@
   "notes": "",
   "source": "",
   "tags_need_review": false,
-  "needs_kosher_review": null,
-  "kosher_review_notes": null,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
   "pdf": null,
-  "pdf_stale": false,
+  "pdf_stale": true,
   "history": [
     {
       "ts": "2026-10-19T23:47:32.511Z",
@@ -121,6 +125,45 @@
         }
       ],
       "reasoning": "Yidi inbox edit: remove kosher review flag — no review needed, they will only buy a kosher brand of kani."
+    },
+    {
+      "ts": "2026-11-08T13:28:16.061Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "prep_minutes",
+          "from": 15,
+          "to": 30
+        },
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 6 items]; [section: 6 items])",
+          "to": "2 items ([section: 6 items]; [section: 6 items])"
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": "Fixed some qtys"
     }
-  ]
+  ],
+  "needs_side": false
 }
