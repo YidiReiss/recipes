@@ -1581,92 +1581,157 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
             "skipped": false,
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
             "skipped": false,
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
             "skipped": false,
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
-          }
-        },
-        {
-          "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
-          },
-          "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
-          }
-        },
-        {
-          "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
-          },
-          "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [],
             "skipped": false,
             "note": ""
           }
@@ -1675,7 +1740,29 @@
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
-      "shoppingDay": "2026-11-08"
+      "shoppingDay": "2026-11-08",
+      "draftChips": {
+        "hostingFri": false,
+        "hostingSat": false,
+        "eatOut": [
+          1,
+          2,
+          4,
+          5,
+          6
+        ],
+        "useUp": []
+      },
+      "carryInPool": {
+        "coca-cola-meatballs|": {
+          "recipe": "coca-cola-meatballs",
+          "variant": null,
+          "servings": 13,
+          "cookOffset": -1,
+          "source": "Saturday lunch"
+        }
+      },
+      "lunchWarnings": []
     },
     "2026-11-15": {
       "days": [
@@ -2502,6 +2589,354 @@
             "skipped": false,
             "note": "",
             "dishes": []
+          }
+        }
+      ],
+      "lunchWarnings": []
+    },
+    "2026-11-08": {
+      "draftedAt": "2026-11-08T14:54:40.307Z",
+      "firstDraftedAt": "2026-11-08T14:54:40.307Z",
+      "draftCount": 1,
+      "chips": {
+        "hostingFri": false,
+        "hostingSat": false,
+        "eatOut": [
+          1,
+          2,
+          4,
+          5,
+          6
+        ],
+        "useUp": []
+      },
+      "days": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
+          }
+        }
+      ],
+      "firstDays": [
+        {
+          "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "burritos",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": "beef",
+                "reason": "Leftovers from a dinner this week"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [
+              {
+                "recipe": "coca-cola-meatballs",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from Shabbat"
+              }
+            ],
+            "skipped": false,
+            "note": ""
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          }
+        },
+        {
+          "lunch": {
+            "dishes": [],
+            "skipped": true,
+            "note": "Eat out"
+          },
+          "dinner": {
+            "dishes": [],
+            "skipped": false,
+            "note": ""
           }
         }
       ],
