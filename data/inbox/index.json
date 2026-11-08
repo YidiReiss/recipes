@@ -2024,5 +2024,20 @@
     "actor": "site-editor (Yidi)",
     "note": "Fixed some qtys",
     "created_at": "2026-11-08T13:28:16.061Z"
+  },
+  {
+    "id": "inbox-mw7yj6ok-54h",
+    "url": null,
+    "image": "data/inbox/inbox-mw7yj6ok-54h.jpg",
+    "images": [
+      "data/inbox/inbox-mw7yj6ok-54h.jpg"
+    ],
+    "file": null,
+    "note": "So for the instructions, we buy the crushed tomatoes in a can so we don’t have to cook and crush the tomatoes so instead, we just mix all the cold ingredients together and then I put it on in the pot on the stove and warm it up so that it gets hot and it melts the ingredients together",
+    "text": null,
+    "status": "pending",
+    "created_at": "2026-11-08T14:58:31.547Z",
+    "recipe_id": null,
+    "fail_reason": null
   }
 ]
