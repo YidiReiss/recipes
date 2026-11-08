@@ -1204,7 +1204,7 @@
     ],
     "prep_minutes": 15,
     "cook_minutes": 35,
-    "servings": 6,
+    "servings": "6",
     "leftover_friendly": false,
     "needs_side": false,
     "tags_need_review": false,
