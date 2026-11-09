@@ -1,8 +1,6 @@
 {
   "banner_image": "assets/images/tomato-dip.jpg",
-  "categories": [
-    "dips"
-  ],
+  "categories": [],
   "id": "tomato-dip",
   "ingredients": [
     {
@@ -51,7 +49,7 @@
     }
   ],
   "instructions": [
-    "Put the tomatoes, salt, garlic, black pepper, cayenne, and vinegar in a food processor fitted with the S blade.",
+    "Put the quartered tomatoes, salt, garlic, black pepper, cayenne, and vinegar in a food processor fitted with the S blade.",
     "Add the olive oil slowly while the mixture is blending on medium-low speed."
   ],
   "kosher_for_passover": false,
@@ -68,13 +66,13 @@
   ],
   "tags_need_review": false,
   "title": "Tomato Dip",
-  "prep_minutes": 15,
+  "prep_minutes": 20,
   "cook_minutes": 0,
   "servings": "6",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "leftover_note": "",
-  "pdf_stale": false,
+  "leftover_note": "Lasts 2+ weeks",
+  "pdf_stale": true,
   "history": [
     {
       "ts": "2026-11-01T04:57:40.924Z",
@@ -115,6 +113,45 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-09T02:19:26.066Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "1 items (dips)",
+          "to": "[]"
+        },
+        {
+          "field": "instructions",
+          "from": "2 items (Put the tomatoes, salt, garlic, black pe; Add the olive oil slowly while the mixtu)",
+          "to": "2 items (Put the quartered tomatoes, salt, garlic; Add the olive oil slowly while the mixtu)"
+        },
+        {
+          "field": "prep_minutes",
+          "from": 15,
+          "to": 20
+        },
+        {
+          "field": "leftover_note",
+          "from": "",
+          "to": "Lasts 2+ weeks"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "needs_side": false
 }
