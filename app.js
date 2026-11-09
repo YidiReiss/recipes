@@ -541,7 +541,7 @@ async function renderGuide(app, sectionSlug) {
 
   app.innerHTML = topbar + '<article class="guide-content" id="guide-content"><p class="muted">Loading user guide…</p></article>';
   try {
-    const res = await fetch('USER-GUIDE.md?v=20261105b');
+    const res = await fetch('USER-GUIDE.md?v=20261108a');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     _guideMarkdownCache = await res.text();
     app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
@@ -8293,9 +8293,16 @@ async function stepDownJpegQuality(
   };
 }
 
-function computeReceiptChecksum(items, totalCents, receiptStatus = 'needs_review') {
+function normalizeReceiptTaxCents(v) {
+  if (v === undefined || v === null || v === '') return null;
+  return Number.isInteger(v) && v >= 0 ? v : null;
+}
+
+function computeReceiptChecksum(items, totalCents, receiptStatus = 'needs_review', taxCents = null) {
   const list = Array.isArray(items) ? items : [];
   const hasValidTotal = Number.isInteger(totalCents) && totalCents >= 0;
+  const normTax = normalizeReceiptTaxCents(taxCents);
+  const hasTax = normTax !== null;
   let sumCents = 0;
   let allItemsValid = true;
   for (let i = 0; i < list.length; i++) {
@@ -8306,15 +8313,21 @@ function computeReceiptChecksum(items, totalCents, receiptStatus = 'needs_review
       sumCents += p;
     }
   }
+  const reconciledCents = sumCents + (hasTax ? normTax : 0);
   const isUnreadable = receiptStatus === 'unreadable';
-  const valid = !isUnreadable && hasValidTotal && allItemsValid && sumCents === totalCents;
+  const valid = !isUnreadable && hasValidTotal && allItemsValid && reconciledCents === totalCents;
   const displayTotal = hasValidTotal ? formatReceiptCents(totalCents) : '—';
+  const label = hasTax
+    ? ('Items (' + formatReceiptCents(sumCents) + ') + Tax (' + formatReceiptCents(normTax) + ') = ' + formatReceiptCents(reconciledCents) + ' of ' + displayTotal + ' total')
+    : ('Items sum to ' + formatReceiptCents(sumCents) + ' of ' + displayTotal + ' total');
   return {
     valid,
     sumCents,
+    taxCents: normTax,
+    reconciledCents,
     totalCents: hasValidTotal ? totalCents : null,
-    diffCents: hasValidTotal ? (sumCents - totalCents) : null,
-    label: 'Items sum to ' + formatReceiptCents(sumCents) + ' of ' + displayTotal + ' total'
+    diffCents: hasValidTotal ? (reconciledCents - totalCents) : null,
+    label
   };
 }
 
@@ -9418,6 +9431,10 @@ function renderReceiptReviewCard(app, receipt) {
   const photoHeading = photoSeqs.length > 1
     ? ('Receipt Photos (' + photoSeqs.length + ' parts)')
     : 'Receipt Photo';
+  const initialTaxCents = normalizeReceiptTaxCents(receipt.tax_cents);
+  const initialTaxDisplay = initialTaxCents !== null
+    ? ('Tax: ' + formatReceiptCents(initialTaxCents))
+    : 'Tax \u2014 not captured';
 
   app.innerHTML = (
     '<section class="rcpt-wrap">' +
@@ -9468,6 +9485,15 @@ function renderReceiptReviewCard(app, receipt) {
                   items.map((it, idx) => receiptItemRowHTML(it, idx)).join('') +
                 '</tbody>' +
               '</table>' +
+            '</div>' +
+            '<div class="rcpt-tax-row" id="rcpt-tax-row">' +
+              '<div class="rcpt-tax-info">' +
+                '<strong id="rcpt-tax-label">' + esc(initialTaxDisplay) + '</strong>' +
+              '</div>' +
+              '<label class="rcpt-field rcpt-tax-field">' +
+                '<span>Tax ($)</span>' +
+                '<input type="text" inputmode="decimal" id="rcpt-f-tax" placeholder="Not captured" value="' + esc(centsToInputDollars(initialTaxCents)) + '">' +
+              '</label>' +
             '</div>' +
             '<div class="rcpt-review-actions">' +
               '<button type="button" class="btn primary" id="rcpt-confirm-btn" disabled>Save Verified Receipt</button>' +
@@ -9637,6 +9663,10 @@ function renderReceiptReviewCard(app, receipt) {
     const receipt_date = ($('#rcpt-f-date') && $('#rcpt-f-date').value || '').trim();
     const ticket_no = ($('#rcpt-f-ticket') && $('#rcpt-f-ticket').value || '').trim();
     const subtotal_cents = parseReceiptDollarsToCents($('#rcpt-f-subtotal') && $('#rcpt-f-subtotal').value);
+    const taxInputEl = $('#rcpt-f-tax');
+    const tax_cents = taxInputEl
+      ? parseReceiptDollarsToCents(taxInputEl.value)
+      : normalizeReceiptTaxCents(receipt.tax_cents);
     const total_cents = parseReceiptDollarsToCents($('#rcpt-f-total') && $('#rcpt-f-total').value);
     const total_saved_cents = parseReceiptDollarsToCents($('#rcpt-f-saved') && $('#rcpt-f-saved').value);
 
@@ -9681,6 +9711,7 @@ function renderReceiptReviewCard(app, receipt) {
       receipt_date,
       ticket_no,
       subtotal_cents,
+      tax_cents,
       total_cents,
       total_saved_cents,
       items: collectedItems
@@ -9689,7 +9720,13 @@ function renderReceiptReviewCard(app, receipt) {
 
   const updateLiveChecksum = () => {
     const payload = collectReviewPayload();
-    const chk = computeReceiptChecksum(payload.items, payload.total_cents, receipt.status);
+    const chk = computeReceiptChecksum(payload.items, payload.total_cents, receipt.status, payload.tax_cents);
+    const taxLabelEl = $('#rcpt-tax-label');
+    if (taxLabelEl) {
+      taxLabelEl.textContent = payload.tax_cents !== null
+        ? ('Tax: ' + formatReceiptCents(payload.tax_cents))
+        : 'Tax \u2014 not captured';
+    }
     const bar = $('#rcpt-checksum-bar');
     const btn = $('#rcpt-confirm-btn');
     if (bar) {
