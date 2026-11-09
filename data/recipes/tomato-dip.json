@@ -72,7 +72,7 @@
   "needs_kosher_review": false,
   "kosher_review_notes": "",
   "leftover_note": "Lasts 2+ weeks",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-01T04:57:40.924Z",
@@ -151,6 +151,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-09T02:54:17.614Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
