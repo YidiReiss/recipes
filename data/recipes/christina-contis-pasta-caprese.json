@@ -1,13 +1,13 @@
 {
   "banner_image": "assets/images/christina-contis-pasta-caprese.jpg",
   "categories": [
-    "main",
-    "pasta"
+    "main"
   ],
-  "cook_minutes": 15,
+  "cook_minutes": 25,
   "id": "christina-contis-pasta-caprese",
   "ingredients": [
     {
+      "section": "",
       "items": [
         {
           "item": "olive oil",
@@ -22,7 +22,7 @@
         },
         {
           "item": "garlic",
-          "prep": "crushed",
+          "prep": "Minced",
           "qty": "4",
           "unit": "cloves"
         },
@@ -54,13 +54,12 @@
           "qty": "1",
           "unit": "lb"
         }
-      ],
-      "section": ""
+      ]
     }
   ],
   "instructions": [
-    "Combine the olive oil, cubed mozzarella, garlic, basil, crushed red pepper, salt and pepper, and crushed tomatoes in a large bowl, stirring together.",
-    "Transfer the mixture to a pot and warm over medium heat, stirring occasionally, until hot and the mozzarella begins to melt.",
+    "Combine the olive oil, garlic, basil, crushed red pepper, salt and pepper, and crushed tomatoes in a deep pan, stirring together, and simmer for 15 minutes",
+    "Add cubed mozzarella, depends how melted you want it for the time",
     "Boil the pasta as directed. Drain, then pour the hot pasta over the sauce. Mix and serve."
   ],
   "kosher_for_passover": false,
@@ -72,7 +71,7 @@
   "notes": "Yidi's version: uses a can of crushed tomatoes instead of whole tomatoes, so there is no crushing or simmering the tomatoes first. Everything is mixed cold, then warmed in a pot until the mozzarella melts. Adapted from Christina Conti's Pasta Caprese (newspaper clipping).",
   "pairings": [],
   "pdf": "pdfs/christina-contis-pasta-caprese.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "prep_minutes": 15,
   "servings": "4",
@@ -83,5 +82,51 @@
     "vegetarian"
   ],
   "tags_need_review": false,
-  "title": "Christina Conti's Pasta Caprese"
+  "title": "Basil Mozzarella Pasta",
+  "needs_side": false,
+  "history": [
+    {
+      "ts": "2026-11-10T21:31:23.315Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "2 items (main; pasta)",
+          "to": "1 items (main)"
+        },
+        {
+          "field": "cook_minutes",
+          "from": 15,
+          "to": 25
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "3 items (Combine the olive oil, cubed mozzarella,; Transfer the mixture to a pot and warm o; Boil the pasta as directed. Drain, then )",
+          "to": "3 items (Combine the olive oil, garlic, basil, cr; Add cubed mozzarella, depends how melted; Boil the pasta as directed. Drain, then )"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "title",
+          "from": "Christina Conti's Pasta Caprese",
+          "to": "Basil Mozzarella Pasta"
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": null
+    }
+  ]
 }
