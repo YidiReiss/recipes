@@ -541,7 +541,7 @@ async function renderGuide(app, sectionSlug) {
 
   app.innerHTML = topbar + '<article class="guide-content" id="guide-content"><p class="muted">Loading user guide…</p></article>';
   try {
-    const res = await fetch('USER-GUIDE.md?v=20261108a');
+    const res = await fetch('USER-GUIDE.md?v=20261110a');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     _guideMarkdownCache = await res.text();
     app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
@@ -9350,6 +9350,7 @@ function receiptItemRowHTML(it, idx) {
       '</td>' +
       '<td><input type="text" class="rcpt-in-brand" placeholder="Brand" value="' + esc(it.brand || '') + '"></td>' +
       '<td><input type="text" class="rcpt-in-product" placeholder="Product" value="' + esc(it.product_name || '') + '"></td>' +
+      '<td><input type="text" class="rcpt-in-category" placeholder="Category" value="' + esc(it.category || '') + '"></td>' +
       '<td><input type="text" class="rcpt-in-pack" placeholder="Pack" value="' + esc(it.pack_size || '') + '"></td>' +
       '<td><input type="number" step="any" class="rcpt-in-qty" placeholder="1" value="' + esc(it.qty_or_weight != null ? it.qty_or_weight : '') + '"></td>' +
       '<td>' +
@@ -9479,7 +9480,7 @@ function renderReceiptReviewCard(app, receipt) {
             '<div class="rcpt-items-scroll">' +
               '<table class="rcpt-items-table">' +
                 '<thead>' +
-                  '<tr><th>Register Line / Dept</th><th>Brand</th><th>Product</th><th>Pack</th><th>Qty/Wt</th><th>Unit</th><th>Reg $</th><th>Sale $</th><th>Paid $</th><th>Shopping groupKey</th></tr>' +
+                  '<tr><th>Register Line / Dept</th><th>Brand</th><th>Product</th><th>Category</th><th>Pack</th><th>Qty/Wt</th><th>Unit</th><th>Reg $</th><th>Sale $</th><th>Paid $</th><th>Shopping groupKey</th></tr>' +
                 '</thead>' +
                 '<tbody id="rcpt-items-tbody">' +
                   items.map((it, idx) => receiptItemRowHTML(it, idx)).join('') +
@@ -9678,6 +9679,7 @@ function renderReceiptReviewCard(app, receipt) {
       const receipt_dept = ($('.rcpt-in-dept', tr) && $('.rcpt-in-dept', tr).value || '').trim() || null;
       const brand = ($('.rcpt-in-brand', tr) && $('.rcpt-in-brand', tr).value || '').trim() || null;
       const product_name = ($('.rcpt-in-product', tr) && $('.rcpt-in-product', tr).value || '').trim() || null;
+      const category = ($('.rcpt-in-category', tr) && $('.rcpt-in-category', tr).value || '').trim() || null;
       const pack_size = ($('.rcpt-in-pack', tr) && $('.rcpt-in-pack', tr).value || '').trim() || null;
       const qtyRaw = ($('.rcpt-in-qty', tr) && $('.rcpt-in-qty', tr).value || '').trim();
       const qty_or_weight = qtyRaw !== '' && Number.isFinite(Number(qtyRaw)) ? Number(qtyRaw) : null;
@@ -9695,6 +9697,7 @@ function renderReceiptReviewCard(app, receipt) {
         receipt_dept,
         brand,
         product_name,
+        category,
         pack_size,
         qty_or_weight,
         unit,
