@@ -2941,13 +2941,12 @@
   },
   {
     "id": "christina-contis-pasta-caprese",
-    "title": "Christina Conti's Pasta Caprese",
+    "title": "Basil Mozzarella Pasta",
     "banner_image": "assets/images/christina-contis-pasta-caprese.jpg",
     "kosher_status": "dairy",
     "kosher_for_passover": false,
     "categories": [
-      "main",
-      "pasta"
+      "main"
     ],
     "tags": [
       "quick",
@@ -2955,13 +2954,13 @@
       "vegetarian"
     ],
     "prep_minutes": 15,
-    "cook_minutes": 15,
+    "cook_minutes": 25,
     "servings": "4",
     "leftover_friendly": false,
     "needs_side": false,
     "tags_need_review": false,
     "photo_generated": true,
-    "pdf_stale": false,
+    "pdf_stale": true,
     "search_text": "olive oil mozzarella garlic basil leaves crushed dried red pepper salt and pepper crushed San Marzano tomatoes fusilli or other corkscrew pasta Yidi's version: uses a can of crushed tomatoes instead of whole tomatoes, so there is no crushing or simmering the tomatoes first. Everything is mixed cold, then warmed in a pot until the mozzarella melts. Adapted from Christina Conti's Pasta Caprese (newspaper clipping).",
     "ingredients_text": "olive oil mozzarella garlic basil leaves crushed dried red pepper salt and pepper crushed San Marzano tomatoes fusilli or other corkscrew pasta"
   }
