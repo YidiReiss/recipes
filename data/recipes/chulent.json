@@ -1,8 +1,8 @@
 {
   "id": "chulent",
   "title": "Chulent",
-  "kosher_status": "pareve",
-  "kosher_for_passover": true,
+  "kosher_status": "meat",
+  "kosher_for_passover": false,
   "categories": [
     "main"
   ],
@@ -10,24 +10,131 @@
     "shabbat",
     "comfort"
   ],
-  "prep_minutes": 0,
-  "cook_minutes": 0,
-  "servings": "",
+  "prep_minutes": 25,
+  "cook_minutes": 720,
+  "servings": "6",
   "leftover_friendly": true,
   "leftover_note": "",
   "banner_image": "assets/images/chulent.jpg",
-  "ingredients": [],
-  "instructions": [],
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "1",
+          "unit": null,
+          "item": "onion",
+          "prep": "chopped (medium dice)"
+        },
+        {
+          "qty": "",
+          "unit": null,
+          "item": "oil (any type)",
+          "prep": "enough to coat the bottom of the crock pot"
+        },
+        {
+          "qty": "about a 10-ounce disposable soup bowl, three-quarters full of navy beans and one-quarter full of pinto beans",
+          "unit": null,
+          "item": "navy beans and pinto beans",
+          "prep": "checked for rocks and bad beans"
+        },
+        {
+          "qty": "about 6",
+          "unit": "oz",
+          "item": "barley"
+        },
+        {
+          "qty": "",
+          "unit": null,
+          "item": "flank steak or chulent meat"
+        },
+        {
+          "qty": "1-2",
+          "unit": null,
+          "item": "russet potatoes",
+          "prep": "depending on size"
+        },
+        {
+          "qty": "1",
+          "unit": "tbsp",
+          "item": "salt"
+        },
+        {
+          "qty": "3",
+          "unit": "tbsp",
+          "item": "onion powder"
+        },
+        {
+          "qty": "1 1/2",
+          "unit": "tbsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "a sprinkle",
+          "unit": null,
+          "item": "black pepper"
+        },
+        {
+          "qty": "a little",
+          "unit": null,
+          "item": "cayenne pepper",
+          "prep": "not a lot"
+        },
+        {
+          "qty": "a little",
+          "unit": null,
+          "item": "crushed red pepper"
+        },
+        {
+          "qty": "a sprinkle",
+          "unit": null,
+          "item": "paprika"
+        },
+        {
+          "qty": "about 2",
+          "unit": "tbsp",
+          "item": "honey"
+        },
+        {
+          "qty": "about 3",
+          "unit": "tbsp",
+          "item": "barbecue sauce"
+        },
+        {
+          "qty": "3",
+          "unit": "slices",
+          "item": "kishka"
+        },
+        {
+          "qty": "",
+          "unit": null,
+          "item": "water",
+          "prep": "enough to just about cover the potatoes"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Put a thin layer of oil on the bottom of the crock pot. Add the chopped onion.",
+    "Add the beans and the barley.",
+    "Add the meat.",
+    "Place the potatoes on top of the meat, so the meat is not the top layer.",
+    "Add the salt, onion powder, garlic powder, black pepper, cayenne pepper, crushed red pepper, and paprika.",
+    "Add the honey and barbecue sauce.",
+    "Add the kishka slices.",
+    "Add enough water to just about cover the potatoes.",
+    "Cook on low in the crock pot until ready the next day."
+  ],
   "pairings": [],
-  "notes": "Recipe content was empty in the source document; ingredients and instructions could not be extracted.",
+  "notes": "",
   "source": "",
-  "tags_need_review": true,
+  "tags_need_review": false,
   "photo_generated": true,
-  "pdf": null,
-  "needs_side": false,
+  "pdf": "pdfs/chulent.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
   "pdf_stale": true,
+  "needs_side": false,
   "history": [
     {
       "ts": "2026-11-12T04:28:15.321Z",
@@ -91,6 +198,64 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-12T11:32:50.541Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        {
+          "field": "kosher_status",
+          "from": "pareve",
+          "to": "meat"
+        },
+        {
+          "field": "kosher_for_passover",
+          "from": true,
+          "to": false
+        },
+        {
+          "field": "prep_minutes",
+          "from": 0,
+          "to": 25
+        },
+        {
+          "field": "cook_minutes",
+          "from": 0,
+          "to": 720
+        },
+        {
+          "field": "servings",
+          "from": "",
+          "to": "6"
+        },
+        {
+          "field": "ingredients",
+          "from": "[]",
+          "to": "1 items ([section: 17 items])"
+        },
+        {
+          "field": "instructions",
+          "from": "[]",
+          "to": "9 items (Put a thin layer of oil on the bottom of; Add the beans and the barley.; Add the meat.; …)"
+        },
+        {
+          "field": "notes",
+          "from": "Recipe content was empty in the source document; ingredients and instructions could not be extracted.",
+          "to": ""
+        },
+        {
+          "field": "tags_need_review",
+          "from": true,
+          "to": false
+        },
+        {
+          "field": "pdf",
+          "from": null,
+          "to": "pdfs/chulent.pdf"
+        }
+      ],
+      "reasoning": "Backfill of empty chulent from pasted text. prep=5 base+onion chop 3+beans 1+barley 1+oil 1+water 1+9 measured spices/sauces 9=21, round up to 25. cook=720: overnight on low until next day, about 12h. servings=6: beans 1.25c dry/0.5=2.5, barley 0.75c/0.5=1.5, potatoes 2x6oz/6=2, sum 6 (meat qty unstated). kosher_status meat (flank steak, kishka); kosher_for_passover false (barley is chametz)."
     }
   ]
 }
