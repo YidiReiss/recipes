@@ -1054,12 +1054,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "chicken-mushroom-marsala",
+                "recipe": "cornflake-chicken",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night · Leftovers cover a lunch"
+                "reason": "Favorite · Leftovers cover a lunch"
               },
               {
                 "recipe": "rice",
@@ -1160,7 +1160,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "dill-dip-salmon",
+                "recipe": "cornflake-chicken",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
