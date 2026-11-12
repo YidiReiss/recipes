@@ -1,8 +1,8 @@
 {
   "id": "burritos",
   "title": "Burritos",
-  "kosher_status": "meat",
-  "kosher_for_passover": false,
+  "kosher_status": "pareve",
+  "kosher_for_passover": true,
   "categories": [
     "main"
   ],
@@ -208,9 +208,9 @@
   "source": "",
   "tags_need_review": false,
   "pdf": "pdfs/burritos.pdf",
-  "needs_kosher_review": false,
+  "needs_kosher_review": true,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "variants": [
     {
@@ -220,7 +220,8 @@
     },
     {
       "key": "chicken",
-      "label": "Chicken"
+      "label": "Chicken",
+      "default": false
     }
   ],
   "history": [
@@ -366,6 +367,39 @@
         }
       ],
       "reasoning": "Needs-a-side flag on"
+    },
+    {
+      "ts": "2026-11-12T04:38:39.657Z",
+      "actor": "site-editor (Tester)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "kosher_status",
+          "from": "meat",
+          "to": "pareve"
+        },
+        {
+          "field": "kosher_for_passover",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "variants",
+          "from": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\"})",
+          "to": "2 items ({\"key\":\"beef\",\"label\":\"Beef\",\"default\":t; {\"key\":\"chicken\",\"label\":\"Chicken\",\"defa)"
+        }
+      ],
+      "reasoning": null
     }
   ],
   "needs_side": true
