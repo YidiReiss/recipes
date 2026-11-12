@@ -1581,23 +1581,28 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
-                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "reason": "Ground-beef night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1608,18 +1613,22 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1630,49 +1639,57 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
+                "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Pasta night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1683,11 +1700,13 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -1697,13 +1716,15 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1714,26 +1735,30 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
@@ -2600,9 +2625,9 @@
       "lunchWarnings": []
     },
     "2026-11-08": {
-      "draftedAt": "2026-11-08T14:54:40.307Z",
+      "draftedAt": "2026-11-12T00:34:08.029Z",
       "firstDraftedAt": "2026-11-08T14:54:40.307Z",
-      "draftCount": 1,
+      "draftCount": 2,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -2624,23 +2649,28 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
-                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "reason": "Ground-beef night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -2651,18 +2681,22 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -2673,49 +2707,57 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
+                "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "reason": "Pasta night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -2726,11 +2768,13 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -2740,13 +2784,15 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -2757,26 +2803,30 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           }
         },
         {
           "lunch": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Eat out"
+            "note": "Eat out",
+            "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
