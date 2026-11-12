@@ -1,0 +1,15 @@
+{
+  "id": "inbox-mwcwom1i-3s",
+  "url": "https://example.com/recipe",
+  "image": "data/inbox/inbox-mwcwom1i-3s.jpg",
+  "images": [
+    "data/inbox/inbox-mwcwom1i-3s.jpg"
+  ],
+  "file": null,
+  "note": null,
+  "text": null,
+  "status": "pending",
+  "created_at": "2026-11-12T02:05:36.848Z",
+  "recipe_id": null,
+  "fail_reason": null
+}
