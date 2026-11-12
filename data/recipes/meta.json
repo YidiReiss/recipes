@@ -1754,8 +1754,8 @@
     "id": "chulent",
     "title": "Chulent",
     "banner_image": "assets/images/chulent.jpg",
-    "kosher_status": "pareve",
-    "kosher_for_passover": true,
+    "kosher_status": "meat",
+    "kosher_for_passover": false,
     "categories": [
       "main"
     ],
@@ -1763,16 +1763,16 @@
       "shabbat",
       "comfort"
     ],
-    "prep_minutes": 0,
-    "cook_minutes": 0,
-    "servings": "",
+    "prep_minutes": 25,
+    "cook_minutes": 720,
+    "servings": "6",
     "leftover_friendly": true,
     "needs_side": false,
-    "tags_need_review": true,
+    "tags_need_review": false,
     "photo_generated": true,
     "pdf_stale": true,
-    "search_text": "Recipe content was empty in the source document; ingredients and instructions could not be extracted.",
-    "ingredients_text": ""
+    "search_text": "onion oil (any type) navy beans and pinto beans barley flank steak or chulent meat russet potatoes salt onion powder garlic powder black pepper cayenne pepper crushed red pepper paprika honey barbecue sauce kishka water",
+    "ingredients_text": "onion oil (any type) navy beans and pinto beans barley flank steak or chulent meat russet potatoes salt onion powder garlic powder black pepper cayenne pepper crushed red pepper paprika honey barbecue sauce kishka water"
   },
   {
     "id": "mushroom-cheese-quiche",
