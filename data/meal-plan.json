@@ -2191,6 +2191,11 @@
       "rating": "fine",
       "updatedAt": 1794448410653,
       "updatedBy": "Tester"
+    },
+    "cucumber-salad": {
+      "rating": "skip",
+      "updatedAt": 1794449374963,
+      "updatedBy": "Tester"
     }
   },
   "draftSnapshots": {
