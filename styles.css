@@ -2333,6 +2333,9 @@ body.has-timer-dock .cook-mode-overlay {
     font-size: 0.85rem;
     white-space: nowrap;
   }
+  .cm-autoread-suffix {
+    display: none;
+  }
   .cm-nav-deck {
     grid-template-columns: 1fr 2fr;
   }

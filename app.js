@@ -3496,7 +3496,7 @@ function renderCookModeOverlay() {
           '</button>' +
           '<button type="button" class="btn secondary cm-repeat-btn" data-cm-act="repeat-step" title="Read this step again">🔁 Repeat</button>' +
           '<label class="cm-autoread-label">' +
-            '<input type="checkbox" id="cm-autoread"' + (st.autoRead ? ' checked' : '') + '> Auto-read on Next' +
+            '<input type="checkbox" id="cm-autoread"' + (st.autoRead ? ' checked' : '') + '> Auto-read<span class="cm-autoread-suffix"> on Next</span>' +
           '</label>' +
         '</div>' +
         '<div class="cm-nav-deck">' +
