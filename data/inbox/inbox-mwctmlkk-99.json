@@ -8,8 +8,14 @@
   "file": null,
   "note": null,
   "text": null,
-  "status": "pending",
+  "status": "needs_input",
   "created_at": "2026-11-12T00:40:03.984Z",
   "recipe_id": null,
-  "fail_reason": null
+  "fail_reason": "The submitted photo contains no recipe \u2014 it is a pixelated abstract image with no title, ingredients, or instructions, and the linked URL is a placeholder (example.com) with no recipe content.",
+  "needs": [
+    "title",
+    "ingredients",
+    "instructions"
+  ],
+  "updated_at": "2026-11-12T00:59:16.158057Z"
 }
