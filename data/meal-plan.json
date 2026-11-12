@@ -1674,12 +1674,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "christina-contis-pasta-caprese",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
@@ -2636,9 +2636,9 @@
       "lunchWarnings": []
     },
     "2026-11-08": {
-      "draftedAt": "2026-11-12T01:59:56.391Z",
+      "draftedAt": "2026-11-12T02:34:00.568Z",
       "firstDraftedAt": "2026-11-08T14:54:40.307Z",
-      "draftCount": 4,
+      "draftCount": 5,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -2670,7 +2670,7 @@
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
-                "locked": false,
+                "locked": true,
                 "variant": "beef",
                 "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
@@ -2754,12 +2754,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "christina-contis-pasta-caprese",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
