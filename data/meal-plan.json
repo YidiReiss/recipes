@@ -1023,7 +1023,7 @@
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
-                "locked": false,
+                "locked": true,
                 "reason": "Pasta night · Leftovers cover a lunch"
               }
             ]
