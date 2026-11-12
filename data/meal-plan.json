@@ -1590,7 +1590,7 @@
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
-                "locked": true,
+                "locked": false,
                 "variant": "beef",
                 "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
