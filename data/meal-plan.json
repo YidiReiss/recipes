@@ -1586,12 +1586,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Ground-beef night · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "variant": "beef",
+                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
@@ -1656,12 +1657,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": null,
+                "variant": "beef",
                 "reason": "Leftovers from a dinner this week"
               }
             ]
@@ -1673,7 +1674,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "christina-contis-pasta-caprese",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
@@ -2630,9 +2631,9 @@
       "lunchWarnings": []
     },
     "2026-11-08": {
-      "draftedAt": "2026-11-12T00:34:08.029Z",
+      "draftedAt": "2026-11-12T01:57:03.613Z",
       "firstDraftedAt": "2026-11-08T14:54:40.307Z",
-      "draftCount": 2,
+      "draftCount": 3,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -2660,12 +2661,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Ground-beef night · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "variant": "beef",
+                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
@@ -2730,12 +2732,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": null,
+                "variant": "beef",
                 "reason": "Leftovers from a dinner this week"
               }
             ]
@@ -2747,7 +2749,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "christina-contis-pasta-caprese",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
