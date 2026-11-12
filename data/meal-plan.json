@@ -2297,6 +2297,11 @@
       "rating": "skip",
       "updatedAt": 1794456553103,
       "updatedBy": "Tester"
+    },
+    "caramel-chewy-pie": {
+      "rating": "favorite",
+      "updatedAt": 1794456645029,
+      "updatedBy": "Tester"
     }
   },
   "draftSnapshots": {
