@@ -1586,13 +1586,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
-                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "reason": "Favorite · Leftovers cover a lunch"
               }
             ]
           }
@@ -1657,12 +1656,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "burritos",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": "beef",
+                "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
             ]
