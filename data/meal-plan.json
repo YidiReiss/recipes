@@ -983,9 +983,8 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": true,
-            "note": "Moscowitz barbecue",
-            "dishes": []
+            "skipped": false,
+            "note": ""
           }
         },
         {
