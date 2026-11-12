@@ -1674,7 +1674,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
@@ -2642,9 +2642,9 @@
       "lunchWarnings": []
     },
     "2026-11-08": {
-      "draftedAt": "2026-11-12T02:34:00.568Z",
+      "draftedAt": "2026-11-12T04:01:34.129Z",
       "firstDraftedAt": "2026-11-08T14:54:40.307Z",
-      "draftCount": 5,
+      "draftCount": 6,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -2760,7 +2760,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
