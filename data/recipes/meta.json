@@ -2963,5 +2963,33 @@
     "pdf_stale": false,
     "search_text": "olive oil mozzarella garlic basil leaves crushed dried red pepper salt and pepper crushed San Marzano tomatoes fusilli or other corkscrew pasta Yidi's version: uses a can of crushed tomatoes instead of whole tomatoes, so there is no crushing or simmering the tomatoes first. Everything is mixed cold, then warmed in a pot until the mozzarella melts. Adapted from Christina Conti's Pasta Caprese (newspaper clipping).",
     "ingredients_text": "olive oil mozzarella garlic basil leaves crushed dried red pepper salt and pepper crushed San Marzano tomatoes fusilli or other corkscrew pasta"
+  },
+  {
+    "id": "braised-short-ribs",
+    "title": "Braised Short Ribs (Basics with Babish)",
+    "banner_image": "assets/images/braised-short-ribs.jpg",
+    "kosher_status": "meat",
+    "kosher_for_passover": false,
+    "categories": [
+      "main",
+      "beef"
+    ],
+    "tags": [
+      "braised",
+      "one-pot",
+      "comfort",
+      "shabbat",
+      "make-ahead"
+    ],
+    "prep_minutes": 45,
+    "cook_minutes": 360,
+    "servings": "6",
+    "leftover_friendly": true,
+    "needs_side": false,
+    "tags_need_review": false,
+    "photo_generated": false,
+    "pdf_stale": false,
+    "search_text": "short ribs kosher salt black pepper carrots celery stalks large onions vegetable oil tomato paste garlic chicken stock (or beef stock) amber ale (or dry red wine) prune juice soy sauce fresh thyme sprigs fresh parsley sprigs From Basics with Babish (Sep 17, 2020). Recipe page: https://www.babi.sh/recipes/short-ribs. Make-ahead: cool the braising liquid, chill 4+ hours, lift off the solidified fat, then reheat the ribs in the sauce.",
+    "ingredients_text": "short ribs kosher salt black pepper carrots celery stalks large onions vegetable oil tomato paste garlic chicken stock (or beef stock) amber ale (or dry red wine) prune juice soy sauce fresh thyme sprigs fresh parsley sprigs"
   }
 ]
