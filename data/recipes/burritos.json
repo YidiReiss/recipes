@@ -353,7 +353,20 @@
         }
       ],
       "reasoning": "Needs-a-side flag off"
+    },
+    {
+      "ts": "2026-11-12T01:56:44.300Z",
+      "actor": "site-editor (Tester)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_side",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Needs-a-side flag on"
     }
   ],
-  "needs_side": false
+  "needs_side": true
 }
