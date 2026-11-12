@@ -2129,5 +2129,16 @@
     "actor": "site-editor (Tester)",
     "note": "Changed kosher_status, kosher_for_passover, prep_minutes, cook_minutes, servings, leftover_note, source, needs_side, needs_kosher_review, kosher_review_notes",
     "created_at": "2026-11-12T04:28:15.321Z"
+  },
+  {
+    "id": "edit-mwd25hwq-dxll",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "burritos",
+    "recipe_id": "burritos",
+    "title": "Burritos",
+    "actor": "site-editor (Tester)",
+    "note": "Changed kosher_status, kosher_for_passover, needs_kosher_review, variants",
+    "created_at": "2026-11-12T04:38:39.657Z"
   }
 ]
