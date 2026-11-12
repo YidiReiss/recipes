@@ -1799,8 +1799,16 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "macarone-paflotski",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1811,11 +1819,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "macarone-paflotski",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1826,11 +1852,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "dairy-free-chicken-fettuccine-alfredo",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1841,11 +1885,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "macarone-paflotski",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "gochujang-korean-tofu",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1856,11 +1918,29 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "penne-alla-vodka",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "custom": "Pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "locked": true,
+                "drafted": true,
+                "reason": "Standing — Thursday pizza night"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -1871,19 +1951,45 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "dairy-free-chicken-fettuccine-alfredo",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "sweet-and-sour-meatballs",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try · Serves a crowd"
+              }
+            ],
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "chulent",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "reason": "Shabbat lunch · Rated fine"
+              }
+            ],
             "skipped": false,
             "note": ""
           },
@@ -1897,44 +2003,13 @@
         }
       ],
       "draftChips": {
-        "hostingFri": false,
+        "hostingFri": true,
         "hostingSat": false,
         "eatOut": [],
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [
-        {
-          "day": 1,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 2,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 3,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 4,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        },
-        {
-          "day": 5,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 1
-        }
-      ],
+      "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": [],
@@ -3016,11 +3091,11 @@
       "lunchWarnings": []
     },
     "2026-11-15": {
-      "draftedAt": "2026-11-01T03:18:44.322Z",
+      "draftedAt": "2026-11-12T04:02:13.731Z",
       "firstDraftedAt": "2026-11-01T03:18:30.605Z",
-      "draftCount": 2,
+      "draftCount": 3,
       "chips": {
-        "hostingFri": false,
+        "hostingFri": true,
         "hostingSat": false,
         "eatOut": [],
         "useUp": []
@@ -3034,10 +3109,6 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "recipe": "macarone-paflotski",
@@ -3047,7 +3118,9 @@
                 "locked": false,
                 "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
@@ -3069,20 +3142,18 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "penne-alla-vodka",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night · Favorite · Not made in 4 wks · Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
@@ -3093,7 +3164,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3104,10 +3175,6 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "recipe": "dairy-free-chicken-fettuccine-alfredo",
@@ -3117,7 +3184,9 @@
                 "locked": false,
                 "reason": "Chicken night · Favorite · Leftovers cover a lunch"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
@@ -3139,20 +3208,18 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
-                "recipe": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night · Favorite · Not made in 4 wks · Leftovers cover a lunch"
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
@@ -3163,7 +3230,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "penne-alla-vodka",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3174,10 +3241,6 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "custom": "Pizza",
@@ -3187,7 +3250,9 @@
                 "drafted": true,
                 "reason": "Standing — Thursday pizza night"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
@@ -3198,7 +3263,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "dairy-free-chicken-fettuccine-alfredo",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3209,28 +3274,22 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
-                "recipe": "brisket-with-vegetables-and-dried-fruit",
+                "recipe": "sweet-and-sour-meatballs",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat dinner · Never made — worth a try"
+                "reason": "Shabbat dinner · Favorite · Never made — worth a try · Serves a crowd"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           }
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "recipe": "chulent",
@@ -3238,9 +3297,11 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Shabbat lunch"
+                "reason": "Shabbat lunch · Rated fine"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           },
           "dinner": {
             "recipe": null,
