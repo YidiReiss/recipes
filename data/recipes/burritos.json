@@ -210,7 +210,7 @@
   "pdf": "pdfs/burritos.pdf",
   "needs_kosher_review": true,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "variants": [
     {
@@ -400,6 +400,15 @@
         }
       ],
       "reasoning": null
+    },
+    {
+      "ts": "2026-11-12T04:48:17.777Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": true
