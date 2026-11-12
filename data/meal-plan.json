@@ -1805,12 +1805,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Favorite · Leftovers cover a lunch"
+                "reason": "Beef version · Rated fine · Leftovers cover a lunch",
+                "variant": "beef"
               }
             ]
           }
@@ -1823,12 +1824,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "burritos",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": null,
+                "variant": "beef",
                 "reason": "Leftovers from a dinner this week"
               }
             ]
@@ -1893,7 +1894,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "dairy-free-chicken-fettuccine-alfredo",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1963,7 +1964,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "dairy-free-chicken-fettuccine-alfredo",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
