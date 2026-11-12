@@ -2349,7 +2349,7 @@ async function renderRecipe(app, id) {
    2. Big-Screen Cook Mode (cookModeStepHTML, cookModeIngredientsHTML,
       two-pane wide / collapsible phone drawer, knuckle-sized Next pad)
    3. One-Step Read-Aloud (browser speechSynthesis, one step then wait)
-   4. Device Capability Probe (checkCookCapabilities + 1-tap test UI)
+   4. (retired 2026-11-11: Device Capability Probe removed with the Cook Mode reorg — see CHANGELOG)
    5. Keep Screen Awake (acquireWakeLock / releaseWakeLock, auto on Cook Mode,
       visibilitychange re-acquire, 2-hour safety cap, honest fallback)
    ============================================================ */
@@ -3146,51 +3146,19 @@ function updateWakeLockButtons() {
   }
   const cmBtn = document.getElementById('cm-wake-btn');
   if (cmBtn) {
+    // The button holds an icon span + a label span: update ONLY the label text
+    // so the compact (icon-only) render on phones is never clobbered by the
+    // full desktop label (2026-11-11 Cook Mode reorg).
+    const labelText = wakeLockWanted
+      ? (active ? 'Screen awake: On' : 'Screen awake: Armed')
+      : 'Keep screen awake: Off';
     cmBtn.classList.toggle('active', wakeLockWanted);
     cmBtn.setAttribute('aria-pressed', wakeLockWanted ? 'true' : 'false');
-    cmBtn.textContent = wakeLockWanted
-      ? (active ? '☀ Screen awake: On' : '☀ Screen awake: Armed')
-      : '☀ Keep screen awake: Off';
+    cmBtn.setAttribute('aria-label', labelText);
+    const labelEl = cmBtn.querySelector('.cm-btn-label');
+    if (labelEl) labelEl.textContent = labelText;
+    else cmBtn.textContent = '☀ ' + labelText;
   }
-}
-
-/* ---------------- Device Capability Probe (Phase 1 detection & reporting) ---------------- */
-function checkCookCapabilities(winObj, navObj) {
-  const w = winObj || (typeof window !== 'undefined' ? window : {});
-  const n = navObj || (typeof navigator !== 'undefined' ? navigator : {});
-  const ttsSupported = !!('speechSynthesis' in w && typeof w.speechSynthesis && typeof w.speechSynthesis.speak === 'function');
-  let voiceCount = 0;
-  if (ttsSupported && typeof w.speechSynthesis.getVoices === 'function') {
-    try { voiceCount = (w.speechSynthesis.getVoices() || []).length; } catch (e) { voiceCount = 0; }
-  }
-  const speechRecSupported = !!('SpeechRecognition' in w || 'webkitSpeechRecognition' in w);
-  const wakeSupported = wakeLockSupported(n);
-  return {
-    speechSynthesis: ttsSupported,
-    voiceCount,
-    speechRecognition: speechRecSupported,
-    wakeLock: wakeSupported,
-    wakeLockActive: !!(wakeLockSentinel && !wakeLockSentinel.released)
-  };
-}
-
-function formatCapabilitiesReportHTML(caps) {
-  const c = caps || checkCookCapabilities();
-  const badge = ok => ok
-    ? '<span class="cap-badge ok">Supported</span>'
-    : '<span class="cap-badge no">Not supported</span>';
-  return '<div class="cm-probe-card" role="region" aria-label="Device capability probe">' +
-    '<div class="cm-probe-head"><strong>Device Capabilities Report</strong>' +
-      '<button type="button" class="link-btn" data-cm-act="close-probe">Close</button></div>' +
-    '<ul class="cm-probe-list">' +
-      '<li><span>Voice alarm (speechSynthesis):</span> ' + badge(c.speechSynthesis) + '</li>' +
-      '<li><span>Step Read-Aloud (speechSynthesis):</span> ' + badge(c.speechSynthesis) +
-        ' <span class="muted">(' + Number(c.voiceCount || 0) + ' voice' + (c.voiceCount === 1 ? '' : 's') + ')</span></li>' +
-      '<li><span>Keep Screen Awake (navigator.wakeLock):</span> ' + badge(c.wakeLock) +
-        (c.wakeLock ? (' <span class="muted">(' + (c.wakeLockActive ? 'currently locked' : 'unlocked') + ')</span>') : '') + '</li>' +
-      '<li><span>Voice Recognition API (Phase 2 probe only — mic NOT opened):</span> ' + badge(c.speechRecognition) + '</li>' +
-    '</ul>' +
-  '</div>';
 }
 
 /* ---------------- One-Step Read-Aloud (browser speechSynthesis) ---------------- */
@@ -3468,18 +3436,15 @@ function renderCookModeOverlay() {
         '<span class="cm-progress-pill">Step ' + (st.stepIdx + 1) + ' of ' + steps.length + '</span>' +
       '</div>' +
       '<div class="cm-top-actions">' +
-        '<button type="button" class="btn secondary cm-drawer-toggle" data-cm-act="toggle-ing">' +
-          (st.ingDrawerOpen ? 'Hide Ingredients' : '📋 Ingredients') +
+        '<button type="button" class="btn secondary cm-drawer-toggle' + (st.ingDrawerOpen ? ' active' : '') + '" data-cm-act="toggle-ing" aria-label="Toggle ingredients drawer" aria-expanded="' + (st.ingDrawerOpen ? 'true' : 'false') + '">' +
+          '<span class="cm-icon" aria-hidden="true">📋</span><span class="cm-btn-label">' + (st.ingDrawerOpen ? 'Hide Ingredients' : 'Ingredients') + '</span>' +
         '</button>' +
         (wlSupported
-          ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="cm-wake-btn" data-cm-act="toggle-wake" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '">☀ ' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake: Off') + '</button>'
+          ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="cm-wake-btn" data-cm-act="toggle-wake" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '" aria-label="' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake: Off') + '"><span class="cm-icon" aria-hidden="true">☀</span><span class="cm-btn-label">' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake: Off') + '</span></button>'
           : '<span class="wake-unsupported" id="cm-wake-unsupported">Screen wake lock not supported on this browser</span>') +
-        '<button type="button" class="pill" data-cm-act="probe" title="Test Device Capabilities">🔍 Test Device Capabilities</button>' +
-        helpLinkHTML('cook-mode', true) +
-        '<button type="button" class="btn secondary cm-exit-btn" data-cm-act="exit">✕ Exit Cook Mode</button>' +
+        '<button type="button" class="btn secondary cm-exit-btn" data-cm-act="exit" aria-label="Exit Cook Mode"><span class="cm-icon" aria-hidden="true">✕</span><span class="cm-btn-label">Exit Cook Mode</span></button>' +
       '</div>' +
     '</div>' +
-    (st.probeOpen ? formatCapabilitiesReportHTML(checkCookCapabilities()) : '') +
     '<div class="cm-workspace">' +
       '<aside class="cm-ing-pane' + (st.ingDrawerOpen ? ' is-open' : '') + '">' +
         '<div class="cm-ing-head">' +
@@ -3490,6 +3455,7 @@ function renderCookModeOverlay() {
         '<div class="cm-ing-scroll" id="cm-ing-scroll">' +
           cookModeIngredientsHTML(r, f, vKey, st.checkedIngredients) +
         '</div>' +
+        '<div class="cm-ing-foot">' + helpLinkHTML('cook-mode', true) + '<span class="cm-ing-foot-text">Cook Mode guide</span></div>' +
       '</aside>' +
       '<section class="cm-stage" id="cm-stage">' +
         cookModeStepHTML(r, st.stepIdx) +
@@ -3561,7 +3527,6 @@ function openCookMode(recipe, hooks) {
     ingDrawerOpen: false,
     autoRead: false,
     isSpeaking: false,
-    probeOpen: false,
     getScale: (hooks && hooks.getScale) ? hooks.getScale : () => 1,
     setScale: (hooks && hooks.setScale) ? hooks.setScale : () => {},
     getVariant: (hooks && hooks.getVariant) ? hooks.getVariant : () => variantDefaultKey(recipe.variants),
@@ -3632,12 +3597,6 @@ function openCookMode(recipe, hooks) {
       } else if (act === 'toggle-wake') {
         if (wakeLockWanted) await releaseWakeLock();
         else await acquireWakeLock();
-        renderCookModeOverlay();
-      } else if (act === 'probe') {
-        cookModeState.probeOpen = !cookModeState.probeOpen;
-        renderCookModeOverlay();
-      } else if (act === 'close-probe') {
-        cookModeState.probeOpen = false;
         renderCookModeOverlay();
       }
     });
