@@ -2920,7 +2920,7 @@
     "cook_minutes": 15,
     "servings": "4",
     "leftover_friendly": true,
-    "needs_side": false,
+    "needs_side": true,
     "tags_need_review": false,
     "photo_generated": true,
     "pdf_stale": false,
