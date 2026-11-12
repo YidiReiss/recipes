@@ -133,7 +133,7 @@
   "pdf": "pdfs/chulent.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "needs_side": false,
   "history": [
     {
@@ -256,6 +256,15 @@
         }
       ],
       "reasoning": "Backfill of empty chulent from pasted text. prep=5 base+onion chop 3+beans 1+barley 1+oil 1+water 1+9 measured spices/sauces 9=21, round up to 25. cook=720: overnight on low until next day, about 12h. servings=6: beans 1.25c dry/0.5=2.5, barley 0.75c/0.5=1.5, potatoes 2x6oz/6=2, sum 6 (meat qty unstated). kosher_status meat (flank steak, kishka); kosher_for_passover false (barley is chametz)."
+    },
+    {
+      "ts": "2026-11-12T11:35:46.064Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
