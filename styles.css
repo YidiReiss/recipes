@@ -2045,6 +2045,7 @@ body.has-timer-dock .cook-mode-overlay {
 }
 .cm-progress-pill {
   display: inline-block;
+  white-space: nowrap;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
   background: var(--accent);
@@ -2229,6 +2230,7 @@ body.has-timer-dock .cook-mode-overlay {
 }
 .cm-read-btn, .cm-repeat-btn {
   min-height: 48px;
+  white-space: nowrap;
   font-size: 1.02rem;
   padding: 0.5rem 1rem;
 }

@@ -2964,7 +2964,36 @@ function ensureTimerDockMounted() {
       renderTimerDock();
     });
   }
+  // Rotation/resize changes the dock's wrapped height without any timer
+  // action; re-measure so the clearance tracks it.
+  if (typeof window !== 'undefined' && !dock._resizeWired) {
+    dock._resizeWired = true;
+    window.addEventListener('resize', () => {
+      if (typeof document !== 'undefined' && document.body.classList.contains('has-timer-dock')) syncTimerDockClearance();
+    });
+  }
   return dock;
+}
+
+/* Timer-dock clearance (2026-11-11 fix): the dock is a fixed bar whose height
+   varies with width and timer count (~200px at 393px with one timer, ~135px
+   in short landscape, ~110px on desktop) — the old fixed 108px lift in CSS
+   let it cover Cook Mode's nav row and speech bar on phones. Measure the
+   live dock and lift the overlay (and page content) by exactly that. The
+   CSS 108px/120px values stay as a pre-JS fallback. */
+function syncTimerDockClearance() {
+  if (typeof document === 'undefined') return;
+  const overlay = document.querySelector('.cook-mode-overlay');
+  if (!activeTimers.length) {
+    if (overlay) overlay.style.bottom = '';
+    document.body.style.paddingBottom = '';
+    return;
+  }
+  const dock = document.getElementById('timer-dock');
+  if (!dock || dock.hidden) return;
+  const h = dock.offsetHeight;
+  if (overlay) overlay.style.bottom = h + 'px';
+  document.body.style.paddingBottom = h + 'px';
 }
 
 function renderTimerDock() {
@@ -2975,11 +3004,13 @@ function renderTimerDock() {
     dock.hidden = true;
     dock.innerHTML = '';
     document.body.classList.remove('has-timer-dock');
+    syncTimerDockClearance();
     return;
   }
   dock.hidden = false;
   document.body.classList.add('has-timer-dock');
   dock.innerHTML = timerDockHTML(activeTimers, timerVoiceEnabled);
+  syncTimerDockClearance();
 }
 
 function tickAllTimers() {
@@ -3476,6 +3507,9 @@ function renderCookModeOverlay() {
         '</div>' +
       '</section>' +
     '</div>';
+  // Re-apply the dock clearance after every re-render: the overlay element
+  // is reused, but a fresh element after close/reopen starts unlifted.
+  syncTimerDockClearance();
 }
 
 function speakCurrentCookModeStep() {
