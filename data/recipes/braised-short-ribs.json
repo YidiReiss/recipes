@@ -1,0 +1,145 @@
+{
+  "banner_image": "assets/images/braised-short-ribs.jpg",
+  "categories": [
+    "main",
+    "beef"
+  ],
+  "cook_minutes": 360,
+  "id": "braised-short-ribs",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "short ribs",
+          "prep": "English style, about 8 individual ribs",
+          "qty": "3-4",
+          "unit": "lb"
+        },
+        {
+          "item": "kosher salt",
+          "prep": "to season",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "black pepper",
+          "prep": "freshly ground, to season",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "carrots",
+          "prep": "peeled and chopped into large pieces",
+          "qty": "1/2",
+          "unit": "lb"
+        },
+        {
+          "item": "celery stalks",
+          "prep": "chopped into large pieces",
+          "qty": "5",
+          "unit": null
+        },
+        {
+          "item": "large onions",
+          "prep": "peeled and sliced",
+          "qty": "2",
+          "unit": null
+        },
+        {
+          "item": "vegetable oil",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "tomato paste",
+          "qty": "3",
+          "unit": "tbsp"
+        },
+        {
+          "item": "garlic",
+          "prep": "minced",
+          "qty": "5",
+          "unit": "cloves"
+        },
+        {
+          "item": "chicken stock (or beef stock)",
+          "qty": "2",
+          "unit": "cup"
+        },
+        {
+          "item": "amber ale (or dry red wine)",
+          "qty": "2",
+          "unit": "cup"
+        },
+        {
+          "item": "prune juice",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "soy sauce",
+          "qty": "1",
+          "unit": "tbsp"
+        },
+        {
+          "item": "fresh thyme sprigs",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "fresh parsley sprigs",
+          "qty": null,
+          "unit": null
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Trim the excess silver skin and fat from the ribs.",
+    "Season the ribs generously on all sides with kosher salt and black pepper.",
+    "Peel and chop the carrots, slice the onions, and chop the celery into large chunks.",
+    "In a large Dutch oven, heat the vegetable oil over medium-high heat until it starts smoking.",
+    "In batches, brown the ribs on all sides, being careful not to overcrowd the pot. Place the ribs back in the same spot to avoid burning the fond; if the fond is exposed, add onions to protect it from burning.",
+    "Once the ribs are browned, remove them and set aside. Add the onions to the pot and sauté until soft and browned, about 5-7 minutes. Add the tomato paste and sauté for 2-3 minutes, until the paste darkens slightly.",
+    "Add the carrots and celery and sauté briefly to warm through.",
+    "Add the garlic, ale (or wine), chicken stock, soy sauce, and prune juice. Stir to combine. Add the thyme and parsley sprigs.",
+    "Nestle the browned short ribs back into the pot, making sure the least browned side faces up. The liquid should cover most of the ribs, leaving the tops slightly exposed.",
+    "Preheat the oven to 275°F. Cover the pot and transfer to the oven. Braise for 4-5 hours, checking after 3.5 hours. The ribs are done when they can be easily pierced with a paring knife and show no resistance.",
+    "Remove the ribs from the pot and strain the braising liquid to remove the solids. If serving immediately, skim off the excess fat. If making ahead, rapidly cool the liquid by adding ice cubes, chill for 4+ hours, then remove the solidified fat.",
+    "Add the ribs back into the reduced sauce to reheat for 20 minutes. Baste the ribs with the sauce, cover, and let them sit to absorb the flavors.",
+    "Serve the ribs over mashed potatoes or polenta. Top with the reduced sauce and garnish with fresh parsley."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "",
+  "kosher_status": "meat",
+  "leftover_friendly": true,
+  "needs_kosher_review": false,
+  "notes": "From Basics with Babish (Sep 17, 2020). Recipe page: https://www.babi.sh/recipes/short-ribs. Make-ahead: cool the braising liquid, chill 4+ hours, lift off the solidified fat, then reheat the ribs in the sauce.",
+  "pairings": [],
+  "pdf": "pdfs/braised-short-ribs.pdf",
+  "pdf_stale": false,
+  "prep_minutes": 45,
+  "servings": "6",
+  "source": "https://www.youtube.com/watch?v=DUTyGfwdBaY",
+  "tags": [
+    "braised",
+    "one-pot",
+    "comfort",
+    "shabbat",
+    "make-ahead"
+  ],
+  "tags_need_review": false,
+  "title": "Braised Short Ribs (Basics with Babish)",
+  "history": [
+    {
+      "ts": "2026-11-12T04:47:11.156Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from Basics with Babish video (YouTube DUTyGfwdBaY) + recipe page babi.sh/recipes/short-ribs. Servings 6 and cook 6h from source. Prep estimate 45: base 5 + measure/pour 8 (oil, tomato paste, stock, ale, prune juice, soy sauce, salt, pepper) + carrots peel 1 + chop 3 + celery rough chop 1.5 + onions peel 2 + slice 4.5 + garlic 2 + trim ribs 14 = 41 -> 45. Banner: recipe page og:image (finished dish)."
+    }
+  ]
+}
