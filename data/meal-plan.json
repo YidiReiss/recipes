@@ -1674,12 +1674,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "saucy-salmon-bites",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
@@ -2742,9 +2742,9 @@
       "lunchWarnings": []
     },
     "2026-11-08": {
-      "draftedAt": "2026-11-12T04:25:05.524Z",
+      "draftedAt": "2026-11-12T04:31:49.770Z",
       "firstDraftedAt": "2026-11-08T14:54:40.307Z",
-      "draftCount": 7,
+      "draftCount": 8,
       "chips": {
         "hostingFri": false,
         "hostingSat": false,
@@ -2860,12 +2860,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "saucy-salmon-bites",
+                "recipe": "christina-contis-pasta-caprese",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night · Favorite · Never made — worth a try · Leftovers cover a lunch"
+                "reason": "Pasta night · Favorite · Never made — worth a try · Leftovers cover a lunch"
               }
             ]
           }
