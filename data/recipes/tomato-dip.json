@@ -1,6 +1,8 @@
 {
   "banner_image": "assets/images/tomato-dip.jpg",
-  "categories": [],
+  "categories": [
+    "dips"
+  ],
   "id": "tomato-dip",
   "ingredients": [
     {
@@ -160,6 +162,19 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-13T01:22:57.426Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "[]",
+          "to": "1 items (dips)"
+        }
+      ],
+      "reasoning": "Restoring Yidi's Nov 1 decision: categories back to [\"dips\"]. The site editor (10 checkboxes, no dips) silently dropped \"dips\" on a Nov 8 save (commit d38c76d) - second time categories emptied. Categories-only change."
     }
   ],
   "needs_side": false
