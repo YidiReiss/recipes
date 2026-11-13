@@ -2029,7 +2029,9 @@
     "banner_image": "assets/images/tomato-dip.jpg",
     "kosher_status": "pareve",
     "kosher_for_passover": false,
-    "categories": [],
+    "categories": [
+      "dips"
+    ],
     "tags": [
       "no-cook",
       "make-ahead"
