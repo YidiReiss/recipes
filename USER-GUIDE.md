@@ -343,7 +343,7 @@ Tap **Shopping List** in the top navigation bar to open this week's grocery list
 
 ## 7. Submitting Recipes and the Recent Submissions Log
 
-To add a recipe without typing out every ingredient and step yourself, tap **Recipes** in the top bar and then tap **Submit recipe** (`#/submit`).
+To add a recipe without typing out every ingredient and step yourself, tap **+ Add a recipe** on the Home page (`#/`) or on the **Recipes** page (`#/recipes`). This opens the unified **Add a recipe** screen (`#/submit`) with **✨ Auto-Import (Link / Photo / Text)** selected by default (you can switch to **✍️ Manual Form (Type Ingredients)** at any time using the toggle at the top of the screen without losing anything you've typed).
 
 <img src="assets/guide/shot-21.jpg" alt="Shot 21 — Submit a recipe page (#/submit) showing the Link input, Choose photo / Take photo buttons, Choose PDF button, Note input, Paste recipe text box, Submit / Cancel buttons, and the Recent submissions section header (the submit form is taller than one phone frame — the Link input is cut at the top and the form continues below the frame)" width="373">
 
@@ -401,7 +401,7 @@ Each entry in the log displays a status badge:
 
 ## 8. Adding, Editing, and Deleting Recipes (Plus Change History)
 
-You can create a new recipe manually by tapping **+ Add recipe** on the Recipes page (`#/add`), or edit any existing recipe by tapping **Edit** at the bottom of its recipe page (`#/edit/<id>`).
+You can create a new recipe manually by tapping **+ Add a recipe** on the Home page (`#/`) or the Recipes page (`#/recipes`) and switching the top toggle to **✍️ Manual Form (Type Ingredients)** (or visiting `#/add` directly, which opens the unified screen with Manual Form preselected), or edit any existing recipe by tapping **Edit** at the bottom of its recipe page (`#/edit/<id>`).
 
 ### Option 1: Describe Changes in Plain Words (AI Edit)
 At the top of the **Edit recipe** page (`#/edit/<id>`) is a shaded box labeled **🤖 Describe changes in plain words**:
@@ -412,7 +412,7 @@ At the top of the **Edit recipe** page (`#/edit/<id>`) is a shaded box labeled *
 <img src="assets/guide/shot-25.jpg" alt="Shot 25 — Top of the Edit recipe page (#/edit/<id>) showing the &quot;🤖 Describe changes in plain words&quot; AI edit box and the top fields of the manual recipe form (Title, Kosher status, Prep, Cook, Servings, Kosher flags, Planning, Categories)" width="373">
 
 ### Option 2: Using the Manual Recipe Form
-Below the AI edit box (or right at the top when creating a new recipe at `#/add`) is the full manual form:
+Below the AI edit box (or inside the **✍️ Manual Form** tab when creating a new recipe at `#/submit` or `#/add`) is the full manual form:
 1. **Basic Info & Flags:**
    - **Title:** The recipe's display name.
    - **Kosher status:** `Meat`, `Dairy`, or `Pareve`.
