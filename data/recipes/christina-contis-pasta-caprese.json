@@ -1,7 +1,8 @@
 {
   "banner_image": "assets/images/christina-contis-pasta-caprese.jpg",
   "categories": [
-    "main"
+    "main",
+    "pasta"
   ],
   "cook_minutes": 25,
   "id": "christina-contis-pasta-caprese",
@@ -136,6 +137,19 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-13T02:31:34.641Z",
+      "actor": "Muse",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "categories",
+          "from": "1 items (main)",
+          "to": "2 items (main; pasta)"
+        }
+      ],
+      "reasoning": "Restoring 'pasta' category lost Nov 10, 2026 in a site-editor save by Yidi (history: categories '2 items (main; pasta)' -> '1 items (main)'). Same editor bug as Tomato Dip: 'pasta' has no checkbox in the editor's 10-category list, so saving rebuilt categories without it. The Nov 10 save also renamed the title to 'Basil Mozzarella Pasta' — that rename stands; this change is categories only."
     }
   ]
 }
