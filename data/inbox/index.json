@@ -2165,5 +2165,16 @@
     "actor": "Muse",
     "note": "Restoring Yidi's Nov 1 decision: categories back to [\"dips\"]. The site editor (10 checkboxes, no dips) silently dropped \"dips\" on a Nov 8 save (commit d38c76d) - second time categories emptied. Cat…",
     "created_at": "2026-11-13T01:22:57.426Z"
+  },
+  {
+    "id": "edit-mwed1x3l-suhz",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "christina-contis-pasta-caprese",
+    "recipe_id": "christina-contis-pasta-caprese",
+    "title": "Basil Mozzarella Pasta",
+    "actor": "Muse",
+    "note": "Restoring 'pasta' category lost Nov 10, 2026 in a site-editor save by Yidi (history: categories '2 items (main; pasta)' -> '1 items (main)'). Same editor bug as Tomato Dip: 'pasta' has no checkbox …",
+    "created_at": "2026-11-13T02:31:34.641Z"
   }
 ]
