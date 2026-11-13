@@ -2948,7 +2948,8 @@
     "kosher_status": "dairy",
     "kosher_for_passover": false,
     "categories": [
-      "main"
+      "main",
+      "pasta"
     ],
     "tags": [
       "quick",
