@@ -7,10 +7,10 @@ A recipe collection site for Yidi and Nava Reiss. Vanilla HTML/CSS/JS, no build 
 
 ### 1. Static Site (`site/`)
 - `index.html` — Single-page app shell. Loads `app.js` with a cache-busting version query.
-- `app.js` (~2,100 lines) — All client logic: routing, recipe list, recipe detail, meal planner, shopping list, submit page, manual editor, inbox log.
-- `styles.css` (~950 lines) — All styling, mobile-first.
+- `app.js` — All client logic: routing, recipe list, recipe detail (with instant metadata shell from `metaById[id]` + 200ms delayed loading indicator + in-place `#recipe-detail-body` handover), Cook Mode, meal planner, shopping list, unified Add a recipe screen (`#/submit` & `#/add` with in-place Auto-Import / Manual Form toggle), manual editor, inbox log, and receipts module.
+- `styles.css` — All styling, mobile-first (including Cook Mode A2 portrait eyebrow, 2-line title clamp, labeled Ingredients drawer toggle, and uniform 44×44 phone controls).
 
-**Data loading:** On boot, fetches `data/recipes/meta.json` and `data/shopping-sections.json` (parallel via `Promise.allSettled`), plus the live meal plan. Full recipe JSONs load on demand via `ensureRecipe()`. Missing `shopping-sections.json` degrades gracefully to flat alphabetical shopping list. All metadata held in memory for instant search/filter.
+**Data loading:** On boot, fetches `data/recipes/meta.json` and `data/shopping-sections.json` (`Promise.allSettled`) in parallel with a non-blocking `fetchLiveMealPlan()`. The initial route renders as soon as `meta.json` and `shopping-sections.json` settle (seeded with `loadShopLocal()`), and category tile hero images preload during idle time (`preloadCategoryTileImages()`). When `fetchLiveMealPlan()` resolves, `mealPlan` merges via `mergeMealPlan(mp, mealPlan)` and refreshes plan-dependent views (`#/`, `#/planner`, `#/planner/tune`, `#/shopping`) if not mid-edit. Full recipe JSONs load on demand via `ensureRecipe()`.
 
 ### 2. Write Bridge (Cloudflare Worker)
 - **URL:** https://recipe-bridge.leibreiss.workers.dev

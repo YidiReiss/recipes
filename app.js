@@ -19,8 +19,11 @@ const REPO = { owner: 'YidiReiss', repo: 'recipes', branch: 'main' };
 /* Private write bridge — set to the deployed Worker URL. */
 const BRIDGE = 'https://recipe-bridge.leibreiss.workers.dev';
 const editingEnabled = () => true; // editing is always on; no login gate
-const KNOWN_CATEGORIES = ['main', 'side', 'soup', 'salad', 'fish', 'chicken',
-                          'meat', 'dessert', 'baking', 'breakfast'];
+const KNOWN_CATEGORIES = [
+  'main', 'side', 'soup', 'salad', 'appetizer', 'dips',
+  'fish', 'chicken', 'beef', 'meat', 'pasta', 'kugel',
+  'dessert', 'baking', 'breakfast'
+];
 
 /* ---------------- State ---------------- */
 let recipes = [];          // recipe metadata, in manifest order (list/search/filter)
@@ -225,8 +228,10 @@ function loadError() {
 }
 
 async function boot() {
-  // Lazy loading: fetch only metadata + meal plan upfront (2 requests).
-  // Full recipe JSONs load on demand via ensureRecipe() and are cached in byId.
+  // Lazy loading: fetch metadata, shopping sections, and live meal plan in parallel.
+  // Render the initial route as soon as meta.json + shopping-sections.json settle;
+  // when fetchLiveMealPlan() resolves, merge and refresh if on a plan-dependent route.
+  const livePlanPromise = Promise.resolve().then(() => fetchLiveMealPlan()).catch(() => null);
   try {
     const cb = '?v=' + Date.now();
     const [metaResSettled, secResSettled] = await Promise.allSettled([
@@ -250,12 +255,8 @@ async function boot() {
   } catch (e) { loadError(); return; }
 
   byId = {};  // full recipe cache, populated on demand
-
-  try {
-    const mp = await fetchLiveMealPlan();
-    mealPlan = (mp && typeof mp.weeks === 'object') ? mp : { weeks: {} };
-  } catch (e) { mealPlan = { weeks: {} }; }
-  // Merge any local shopping-list state (offline taps) over the server copy
+  mealPlan = { weeks: {} };
+  // Merge any local shopping-list state (offline taps) immediately so first paint has local state
   loadShopLocal();
   initTimerVoiceSetting();
   loadTimersFromSession();
@@ -264,6 +265,22 @@ async function boot() {
 
   window.addEventListener('hashchange', route);
   route();
+  preloadCategoryTileImages();
+
+  livePlanPromise.then(mp => {
+    if (mp && typeof mp.weeks === 'object') {
+      mealPlan = mergeMealPlan(mp, mealPlan);
+      saveShopLocal();
+      if (!editingSlot) {
+        const h = location.hash || '#/';
+        const app = $('#app');
+        if (h === '#/' || h === '') renderLanding(app);
+        else if (h === '#/planner') renderPlanner(app);
+        else if (h === '#/planner/tune') renderQuickSort(app);
+        else if (h === '#/shopping') renderShopping(app);
+      }
+    }
+  });
 
   // Keep the meal plan fresh when someone else (e.g. Nava) saves:
   // re-fetch when the tab regains focus, unless mid-edit.
@@ -541,7 +558,7 @@ async function renderGuide(app, sectionSlug) {
 
   app.innerHTML = topbar + '<article class="guide-content" id="guide-content"><p class="muted">Loading user guide…</p></article>';
   try {
-    const res = await fetch('USER-GUIDE.md?v=20261110a');
+    const res = await fetch('USER-GUIDE.md?v=20261112a');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     _guideMarkdownCache = await res.text();
     app.innerHTML = topbar + '<article class="guide-content" id="guide-content">' +
@@ -572,7 +589,7 @@ function route() {
   if (!h.startsWith('#/receipts') && typeof stopReceiptExtractPoll === 'function') {
     stopReceiptExtractPoll();
   }
-  window.scrollTo(0, 0);
+  if (!h.startsWith('#/recipe/')) window.scrollTo(0, 0);
   document.title = 'Reiss Family Recipes';
   if (h === '#/guide' || h.startsWith('#/guide/')) {
     const slug = h.startsWith('#/guide/') ? decodeURIComponent(h.slice('#/guide/'.length)).trim() : '';
@@ -1042,30 +1059,31 @@ function weekStripHTML() {
   return out.join('');
 }
 
-function tilesHTML() {
-  const tile = (label, count, img, act) =>
-    '<button type="button" class="cat-tile" data-tile="' + esc(act) + '">' +
-      (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '<span class="tile-ph"></span>') +
-      '<span class="tile-label">' + esc(label) + ' <em>' + count + '</em></span></button>';
-  // Pinned hero photos (Yidi, 2026-10-21): one hand-picked representative
-  // recipe per tile — representativeness is a judgment call, so the picks
-  // are curated, not computed. Fallback when a hero is deleted, leaves the
-  // group, or loses its photo: the first member with a photo that no
-  // earlier tile is already using (keeps tiles duplicate-free).
-  const TILE_HEROES = {
-    'kosher:meat': 'brisket-with-vegetables-and-dried-fruit',
-    'kosher:dairy': 'baked-ziti',
-    'kosher:pareve': 'potato-kugel',
-    'cat:main': 'michelin-star-beef-short-ribs-fallow',
-    'cat:side': 'roasted-potatoes',
-    'cat:soup': 'chicken-soup',
-    'cat:salad': 'cucumber-salad',
-    'cat:fish': 'mediterranean-roasted-whole-fish',
-    'cat:chicken': 'forty-clove-garlic-chicken',
-    'cat:baking': 'cinnamon-rolls',
-    'cat:dessert': 'chocolate-cake',
-    'cat:appetizer': 'authentic-italian-bruschetta'
-  };
+// Pinned hero photos (Yidi, 2026-10-21): one hand-picked representative
+// recipe per tile — representativeness is a judgment call, so the picks
+// are curated, not computed. Fallback when a hero is deleted, leaves the
+// group, or loses its photo: the first member with a photo that no
+// earlier tile is already using (keeps tiles duplicate-free).
+const TILE_HEROES = {
+  'kosher:meat': 'brisket-with-vegetables-and-dried-fruit',
+  'kosher:dairy': 'baked-ziti',
+  'kosher:pareve': 'potato-kugel',
+  'cat:main': 'michelin-star-beef-short-ribs-fallow',
+  'cat:side': 'roasted-potatoes',
+  'cat:soup': 'chicken-soup',
+  'cat:salad': 'cucumber-salad',
+  'cat:fish': 'mediterranean-roasted-whole-fish',
+  'cat:chicken': 'forty-clove-garlic-chicken',
+  'cat:baking': 'cinnamon-rolls',
+  'cat:dessert': 'chocolate-cake',
+  'cat:appetizer': 'authentic-italian-bruschetta'
+};
+// Curated category tiles (Yidi, 2026-10-20): a fixed editorial order —
+// the old allCats().slice(0, 6) took the first six ALPHABETICALLY, which
+// buried main/side/fish/soup and promoted typo categories like "desserts".
+const TILE_CATS = ['main', 'side', 'soup', 'salad', 'fish', 'chicken', 'baking', 'dessert', 'appetizer'];
+
+function pickCategoryTileSpecs() {
   const usedImgs = new Set();
   const pickImg = (key, rs) => {
     const hero = rs.find(r => r.id === TILE_HEROES[key]);
@@ -1075,22 +1093,47 @@ function tilesHTML() {
     if (chosen) usedImgs.add(chosen.banner_image);
     return chosen ? chosen.banner_image : '';
   };
-  const out = [];
+  const specs = [];
   ['meat', 'dairy', 'pareve'].forEach(k => {
     const rs = recipes.filter(r => r.kosher_status === k);
     if (!rs.length) return;
-    out.push(tile(k[0].toUpperCase() + k.slice(1), rs.length, pickImg('kosher:' + k, rs), 'kosher:' + k));
+    specs.push({ key: 'kosher:' + k, label: k[0].toUpperCase() + k.slice(1), count: rs.length, img: pickImg('kosher:' + k, rs) });
   });
-  // Curated category tiles (Yidi, 2026-10-20): a fixed editorial order —
-  // the old allCats().slice(0, 6) took the first six ALPHABETICALLY, which
-  // buried main/side/fish/soup and promoted typo categories like "desserts".
-  const TILE_CATS = ['main', 'side', 'soup', 'salad', 'fish', 'chicken', 'baking', 'dessert', 'appetizer'];
   TILE_CATS.forEach(c => {
     const rs = recipes.filter(r => (r.categories || []).includes(c));
     if (!rs.length) return;
-    out.push(tile(c[0].toUpperCase() + c.slice(1), rs.length, pickImg('cat:' + c, rs), 'cat:' + c));
+    specs.push({ key: 'cat:' + c, label: c[0].toUpperCase() + c.slice(1), count: rs.length, img: pickImg('cat:' + c, rs) });
   });
-  return out.join('');
+  return specs;
+}
+
+function pickCategoryTileImages() {
+  return [...new Set(pickCategoryTileSpecs().map(s => s.img).filter(Boolean))];
+}
+
+function preloadCategoryTileImages() {
+  const run = () => {
+    if (typeof Image !== 'function') return;
+    pickCategoryTileImages().forEach(url => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = url;
+    });
+  };
+  if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(run);
+  } else if (typeof setTimeout === 'function') {
+    const tid = setTimeout(run, 50);
+    if (tid && typeof tid.unref === 'function') tid.unref();
+  }
+}
+
+function tilesHTML() {
+  const tile = (label, count, img, act) =>
+    '<button type="button" class="cat-tile" data-tile="' + esc(act) + '">' +
+      (img ? '<img src="' + esc(img) + '" alt="" decoding="async">' : '<span class="tile-ph"></span>') +
+      '<span class="tile-label">' + esc(label) + ' <em>' + count + '</em></span></button>';
+  return pickCategoryTileSpecs().map(s => tile(s.label, s.count, s.img, s.key)).join('');
 }
 
 function shoppingFromLabel() {
@@ -1290,8 +1333,7 @@ function renderRecipes(app) {
       '<div class="filter-actions"><button class="btn secondary" id="f-clear" type="button">Clear filters</button></div>' +
     '</div>' +
     '<p class="result-count" id="result-count"></p>' +
-    '<div class="no-print" style="margin:0 0 1rem"><a class="btn" href="#/add">+ Add recipe</a> ' +
-    '<a class="btn secondary" href="#/submit">Submit recipe</a></div>' +
+    '<div class="no-print" style="margin:0 0 1rem"><a class="btn" id="recipes-add-recipe-btn" href="#/submit">+ Add a recipe</a></div>' +
     '<div class="card-grid" id="grid"></div></section>';
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
@@ -1623,6 +1665,9 @@ function renderLanding(app) {
         '<div class="landing-card-icon">🕒</div>' +
         '<h2>Shopping History</h2><p>Receipts &amp; price history</p></a>' +
     '</section>' +
+    '<div class="landing-add-row no-print">' +
+      '<a class="btn landing-add-btn" id="home-add-recipe-btn" href="#/submit">+ Add a recipe</a>' +
+    '</div>' +
     '<section class="home-section">' +
       '<div class="section-head"><h2>This week</h2>' +
       '<a class="link-btn" href="#/planner">Open planner →</a></div>' +
@@ -2060,11 +2105,100 @@ function pluralizeScaledUnit(unit, formattedQty) {
   return unit; // tbsp, tsp, g, ml, oz, lb are invariant
 }
 
+function recipeRatingRowHTML(curRating) {
+  return '<div class="rating-row no-print"><span class="rating-label">Family rating:</span>' +
+    '<span class="seg-control" id="rating-seg">' +
+    [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']].map(([v, l]) =>
+      '<button type="button" class="seg-btn' + (curRating === v ? ' active' : '') +
+      '" data-rating="' + v + '">' + l + '</button>').join('') +
+    '</span></div>';
+}
+
+function recipeCookBarHTML(wlSupported, wanted, disabled) {
+  return '<div class="cook-entry-bar no-print">' +
+    '<button type="button" class="btn cook-launch-btn" id="open-cook-mode-btn"' + (disabled ? ' disabled' : '') + '>🍳 Cook Mode</button>' +
+    (wlSupported
+      ? '<button type="button" class="pill wake-pill' + (wanted ? ' active' : '') + '" id="detail-wake-btn" aria-pressed="' + (wanted ? 'true' : 'false') + '">☀ ' + (wanted ? 'Screen awake: On' : 'Keep screen awake') + '</button>'
+      : '<span class="wake-unsupported" id="detail-wake-unsupported">Screen wake lock not supported on this browser</span>') +
+  '</div>';
+}
+
+function recipeHeroHeaderHTML(card, ratingRowHTML, cookBarHTML) {
+  return '<div class="recipe-hero">' + bannerHTML(card) + '</div>' +
+    '<h1 class="recipe-title">' + esc(card.title) + ' ' + helpLinkHTML('recipe-detail') + '</h1>' +
+    badgesHTML(card) +
+    ratingRowHTML +
+    cookBarHTML +
+    (card.needs_kosher_review
+      ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
+        (card.kosher_review_notes ? '<br>' + esc(card.kosher_review_notes) : '') + '</div>'
+      : '') +
+    '<div class="recipe-meta">' +
+      '<span>Prep <strong>' + esc(fmtTime(card.prep_minutes)) + '</strong></span>' +
+      '<span>Cook <strong>' + esc(fmtTime(card.cook_minutes)) + '</strong></span>' +
+      '<span>Total <strong>' + esc(fmtTime(totalTime(card))) + '</strong></span>' +
+      '<span>Serves <strong id="header-servings-val">' + esc(card.servings || '—') + '</strong></span>' +
+    '</div>';
+}
+
 async function renderRecipe(app, id) {
-  const r = await ensureRecipe(id);
+  const startHash = (typeof location !== 'undefined' && typeof location.hash === 'string') ? location.hash : '';
+  const routeMovedAway = () => {
+    if (typeof location === 'undefined' || typeof location.hash !== 'string') return false;
+    if (location.hash !== startHash) return true;
+    if (location.hash.startsWith('#/recipe/') && decodeURIComponent(location.hash.slice(9)) !== id) return true;
+    return false;
+  };
+
+  let curRating = (((mealPlan && mealPlan.recipePrefs) || {})[id] || {}).rating || null;
+  const wlSupported = wakeLockSupported();
+  const metaCard = metaById[id] || null;
+  let shellPainted = false;
+  let loadingTimer = null;
+
+  // Instant shell (P2): if the full recipe JSON is not yet cached in byId[id]
+  // and metaById[id] exists, paint the back-link, banner, title, badges,
+  // rating row, cook bar, and prep/cook/total/serves synchronously so the old
+  // screen is replaced immediately on click.
+  if (!byId[id] && metaCard) {
+    document.title = metaCard.title + ' — Reiss Family Recipes';
+    app.innerHTML =
+      '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
+      '<article class="recipe-print">' +
+        recipeHeroHeaderHTML(metaCard, recipeRatingRowHTML(curRating), recipeCookBarHTML(wlSupported, wakeLockWanted, true)) +
+        '<div id="recipe-detail-body"></div>' +
+      '</article>';
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+    shellPainted = true;
+    loadingTimer = setTimeout(() => {
+      if (routeMovedAway()) return;
+      const bodyEl = (app && typeof app.querySelector === 'function')
+        ? app.querySelector('#recipe-detail-body')
+        : null;
+      if (bodyEl) {
+        bodyEl.innerHTML = '<p class="muted" id="recipe-loading-msg">Loading recipe…</p>';
+      } else if (app && typeof app.innerHTML === 'string' && app.innerHTML.includes('<div id="recipe-detail-body"></div>')) {
+        app.innerHTML = app.innerHTML.replace(
+          '<div id="recipe-detail-body"></div>',
+          '<div id="recipe-detail-body"><p class="muted" id="recipe-loading-msg">Loading recipe…</p></div>'
+        );
+      }
+    }, 200);
+    if (loadingTimer && typeof loadingTimer.unref === 'function') loadingTimer.unref();
+  }
+
+  let r;
+  try {
+    r = await ensureRecipe(id);
+  } finally {
+    if (loadingTimer) clearTimeout(loadingTimer);
+  }
+  if (routeMovedAway()) return;
+
   if (!r) {
     app.innerHTML = '<a class="back-link" href="#/recipes">← All recipes</a>' +
       '<div class="empty-state"><h2>Recipe not found</h2></div>';
+    if (!shellPainted && typeof window !== 'undefined' && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
     return;
   }
   document.title = r.title + ' — Reiss Family Recipes';
@@ -2119,14 +2253,8 @@ async function renderRecipe(app, id) {
         (v.key === selectedVariant ? ' active' : '') + '" data-variant="' + esc(v.key) + '">' +
         esc(v.label) + '</button>').join('') + '</div>'
     : '';
-  let curRating = ((mealPlan.recipePrefs || {})[r.id] || {}).rating || null;
-  const ratingRowHTML =
-    '<div class="rating-row no-print"><span class="rating-label">Family rating:</span>' +
-    '<span class="seg-control" id="rating-seg">' +
-    [['favorite', 'Favorite'], ['fine', 'Fine'], ['skip', 'Skip']].map(([v, l]) =>
-      '<button type="button" class="seg-btn' + (curRating === v ? ' active' : '') +
-      '" data-rating="' + v + '">' + l + '</button>').join('') +
-    '</span></div>';
+  curRating = (((mealPlan && mealPlan.recipePrefs) || {})[r.id] || {}).rating || null;
+  const ratingRowHTML = recipeRatingRowHTML(curRating);
 
   const pairHTML = (r.pairings && r.pairings.length)
     ? '<section class="recipe-section"><h2>Pairings</h2><ul class="pairing-list">' +
@@ -2141,59 +2269,67 @@ async function renderRecipe(app, id) {
   const leftoverNote = r.leftover_note ||
     (r.leftover_friendly ? 'Good for leftovers.' : 'Best eaten fresh.');
 
-  const wlSupported = wakeLockSupported();
-  const cookBarHTML =
-    '<div class="cook-entry-bar no-print">' +
-      '<button type="button" class="btn cook-launch-btn" id="open-cook-mode-btn">🍳 Cook Mode</button>' +
-      (wlSupported
-        ? '<button type="button" class="pill wake-pill' + (wakeLockWanted ? ' active' : '') + '" id="detail-wake-btn" aria-pressed="' + (wakeLockWanted ? 'true' : 'false') + '">☀ ' + (wakeLockWanted ? 'Screen awake: On' : 'Keep screen awake') + '</button>'
-        : '<span class="wake-unsupported" id="detail-wake-unsupported">Screen wake lock not supported on this browser</span>') +
+  const cookBarHTML = recipeCookBarHTML(wlSupported, wakeLockWanted);
+
+  const kosherAlertInBodyHTML = (r.needs_kosher_review && (!shellPainted || !metaCard || !metaCard.needs_kosher_review))
+    ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
+      (r.kosher_review_notes ? '<br>' + esc(r.kosher_review_notes) : '') + '</div>'
+    : '';
+
+  const detailBodyHTML =
+    kosherAlertInBodyHTML +
+    '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + variantPillsHTML +
+    '<div id="ing-wrap">' + ingHTML + '</div></section>' +
+    '<section class="recipe-section"><h2>Instructions</h2><ol class="steps" id="detail-steps">' +
+      (r.instructions || []).map((s, idx) => '<li>' + renderStepWithTimersHTML(s, idx + 1) + '</li>').join('') +
+    '</ol></section>' +
+    pairHTML +
+    '<section class="recipe-section"><h2>Leftovers</h2>' +
+      '<div class="leftover-box ' + (r.leftover_friendly ? 'yes' : 'no') + '">' +
+        (r.leftover_friendly ? '✓ ' : '✗ ') + esc(leftoverNote) +
+      '</div></section>' +
+    ((r.notes || r.source)
+      ? '<p class="source-line">' + esc([r.notes, r.source].filter(Boolean).join(' — ')) + '</p>'
+      : '') +
+    '<div class="actions no-print">' +
+      '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
+      (pdfUrl(r) ? '<a class="btn" href="' + esc(pdfUrl(r)) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
+      '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
+      '<button class="btn' + (pdfUrl(r) ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
+    '</div>' +
+    '<div class="danger-zone no-print">' +
+      '<a class="btn danger-outline" href="#/delete/' + encodeURIComponent(r.id) + '">Delete recipe</a>' +
     '</div>';
 
-  app.innerHTML =
-    '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
-    '<article class="recipe-print">' +
-      '<div class="recipe-hero">' + bannerHTML(r) + '</div>' +
-      '<h1 class="recipe-title">' + esc(r.title) + ' ' + helpLinkHTML('recipe-detail') + '</h1>' +
-      badgesHTML(r) +
-      ratingRowHTML +
-      cookBarHTML +
-      (r.needs_kosher_review
-        ? '<div class="kosher-alert"><strong>⚠️ Potential kosher issues — review needed.</strong>' +
-          (r.kosher_review_notes ? '<br>' + esc(r.kosher_review_notes) : '') + '</div>'
-        : '') +
-      '<div class="recipe-meta">' +
-        '<span>Prep <strong>' + esc(fmtTime(r.prep_minutes)) + '</strong></span>' +
-        '<span>Cook <strong>' + esc(fmtTime(r.cook_minutes)) + '</strong></span>' +
-        '<span>Total <strong>' + esc(fmtTime(totalTime(r))) + '</strong></span>' +
-        '<span>Serves <strong id="header-servings-val">' + esc(r.servings || '—') + '</strong></span>' +
-      '</div>' +
-      '<section class="recipe-section"><h2>Ingredients</h2>' + scaleBarHTML() + variantPillsHTML +
-      '<div id="ing-wrap">' + ingHTML + '</div></section>' +
-      '<section class="recipe-section"><h2>Instructions</h2><ol class="steps" id="detail-steps">' +
-        (r.instructions || []).map((s, idx) => '<li>' + renderStepWithTimersHTML(s, idx + 1) + '</li>').join('') +
-      '</ol></section>' +
-      pairHTML +
-      '<section class="recipe-section"><h2>Leftovers</h2>' +
-        '<div class="leftover-box ' + (r.leftover_friendly ? 'yes' : 'no') + '">' +
-          (r.leftover_friendly ? '✓ ' : '✗ ') + esc(leftoverNote) +
-        '</div></section>' +
-      ((r.notes || r.source)
-        ? '<p class="source-line">' + esc([r.notes, r.source].filter(Boolean).join(' — ')) + '</p>'
-        : '') +
-      '<div class="actions no-print">' +
-        '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
-        (pdfUrl(r) ? '<a class="btn" href="' + esc(pdfUrl(r)) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
-        '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
-        '<button class="btn' + (pdfUrl(r) ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
-      '</div>' +
-      '<div class="danger-zone no-print">' +
-        '<a class="btn danger-outline" href="#/delete/' + encodeURIComponent(r.id) + '">Delete recipe</a>' +
-      '</div>' +
-    '</article>';
+  if (shellPainted) {
+    const bodyEl = (app && typeof app.querySelector === 'function')
+      ? app.querySelector('#recipe-detail-body')
+      : null;
+    if (bodyEl) {
+      bodyEl.innerHTML = detailBodyHTML;
+    }
+    if (!bodyEl || !app.nodeType) {
+      app.innerHTML =
+        '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
+        '<article class="recipe-print">' +
+          recipeHeroHeaderHTML(metaCard, ratingRowHTML, cookBarHTML) +
+          '<div id="recipe-detail-body">' + detailBodyHTML + '</div>' +
+        '</article>';
+    }
+  } else {
+    app.innerHTML =
+      '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
+      '<article class="recipe-print">' +
+        recipeHeroHeaderHTML(r, ratingRowHTML, cookBarHTML) +
+        '<div id="recipe-detail-body">' + detailBodyHTML + '</div>' +
+      '</article>';
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+  }
 
-  $('#share-btn').onclick = () => shareRecipe(r);
-  $('#print-btn').onclick = () => window.print();
+  const shareBtn = $('#share-btn') || (app.querySelector && app.querySelector('#share-btn'));
+  if (shareBtn) shareBtn.onclick = () => shareRecipe(r);
+  const printBtn = $('#print-btn') || (app.querySelector && app.querySelector('#print-btn'));
+  if (printBtn) printBtn.onclick = () => window.print();
 
   // Scale controls: recompute all quantities from data-base-qty on every change.
   // Store targetServings (not rounded factor) to avoid precision loss.
@@ -2321,6 +2457,10 @@ async function renderRecipe(app, id) {
   // detail page too.
   const openCookBtn = app.querySelector('#open-cook-mode-btn');
   if (openCookBtn) {
+    // The shell paints the button disabled (P2); enable it now that the
+    // recipe is loaded and the handler below is being wired. No-op on the
+    // full-render path, where the button was never disabled.
+    openCookBtn.disabled = false;
     openCookBtn.addEventListener('click', () => {
       openCookMode(r, {
         getScale: () => scaleState.factor,
@@ -3800,9 +3940,9 @@ function recipeFormHTML(r, cancelHref) {
         '<label><input type="checkbox" id="e-needs-side"' + (r.needs_side ? ' checked' : '') + '> Needs a side</label>' +
       '</div></div>' +
       '<div class="field"><label>Categories</label><div class="checks">' +
-        KNOWN_CATEGORIES.map(c =>
-          '<label><input type="checkbox" class="e-cat" value="' + c + '"' +
-          ((r.categories || []).includes(c) ? ' checked' : '') + '> ' + c + '</label>').join('') +
+        [...new Set([...KNOWN_CATEGORIES, ...(r.categories || [])])].map(c =>
+          '<label><input type="checkbox" class="e-cat" value="' + esc(c) + '"' +
+          ((r.categories || []).includes(c) ? ' checked' : '') + '> ' + esc(c) + '</label>').join('') +
       '</div></div>' +
       '<div class="field"><label for="e-tags">Tags (comma-separated)</label>' +
         '<input type="text" id="e-tags" value="' + esc((r.tags || []).join(', ')) + '"></div>' +
@@ -4050,13 +4190,7 @@ async function wireAiEdit(recipeId) {
 }
 
 function renderAdd(app) {
-  editDraft = blankRecipe();
-  document.title = 'Add recipe — Reiss Family Recipes';
-  app.innerHTML =
-    '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
-    '<h1 class="recipe-title">Add recipe ' + helpLinkHTML('editing', true) + '</h1>' +
-    recipeFormHTML(editDraft, '#/');
-  wireRecipeForm(saveNewRecipe);
+  return renderAddRecipeScreen(app, 'manual');
 }
 
 function wireRecipeForm(onSave) {
@@ -4097,7 +4231,13 @@ function collectRecipeForm(d) {
   d.needs_side = $('#e-needs-side') ? $('#e-needs-side').checked : !!d.needs_side;
   d.needs_kosher_review = $('#e-kosher-review') ? $('#e-kosher-review').checked : false;
   d.kosher_review_notes = $('#e-kosher-notes') ? $('#e-kosher-notes').value.trim() : '';
-  d.categories = [...document.querySelectorAll('.e-cat')].filter(c => c.checked).map(c => c.value);
+  // Preserve-merge: keep any category that had no rendered .e-cat checkbox
+  // (a category the form cannot show must never be deleted by saving).
+  const catBoxes = [...document.querySelectorAll('.e-cat')];
+  const offeredCats = new Set(catBoxes.map(c => c.value));
+  const checkedCats = catBoxes.filter(c => c.checked).map(c => c.value);
+  const preservedCats = (Array.isArray(d.categories) ? d.categories : []).filter(c => !offeredCats.has(c));
+  d.categories = [...new Set([...preservedCats, ...checkedCats])];
   d.tags = $('#e-tags').value.split(',').map(t => t.trim()).filter(Boolean);
   d.banner_image = $('#e-banner').value.trim();
   d.pdf = $('#e-pdf').value.trim() || null;
@@ -4115,6 +4255,7 @@ function collectRecipeForm(d) {
   // untagged ingredient is shared by every version).
   const vars = (Array.isArray(d.variants) ? d.variants : [])
     .map(v => ({
+      ...v,
       key: v.key || slugify(v.label || ''),
       label: (v.label || '').trim(),
       default: !!v.default
@@ -6930,43 +7071,98 @@ function clearSubmitDraft() {
   try { localStorage.removeItem(SUBMIT_DRAFT_KEY); } catch (e) {}
   window._submitPhotos = [];
 }
-function renderSubmit(app) {
-  document.title = 'Submit a recipe — Reiss Family Recipes';
+function setAddRecipeMode(mode) {
+  const isImport = mode !== 'manual';
+  const importPane = $('#add-pane-import');
+  const manualPane = $('#add-pane-manual');
+  if (importPane) {
+    importPane.hidden = !isImport;
+    importPane.style.display = isImport ? '' : 'none';
+  }
+  if (manualPane) {
+    manualPane.hidden = isImport;
+    manualPane.style.display = isImport ? 'none' : '';
+  }
+  const importBtn = $('#add-mode-import');
+  const manualBtn = $('#add-mode-manual');
+  if (importBtn) {
+    importBtn.classList.toggle('active', isImport);
+    importBtn.classList.toggle('secondary', !isImport);
+    importBtn.setAttribute('aria-pressed', isImport ? 'true' : 'false');
+  }
+  if (manualBtn) {
+    manualBtn.classList.toggle('active', !isImport);
+    manualBtn.classList.toggle('secondary', isImport);
+    manualBtn.setAttribute('aria-pressed', !isImport ? 'true' : 'false');
+  }
+  const helpWrap = $('#add-help-wrap');
+  if (helpWrap) {
+    helpWrap.innerHTML = helpLinkHTML(isImport ? 'submitting' : 'editing', true);
+  }
+}
+
+function renderAddRecipeScreen(app, initialMode) {
+  const isImport = initialMode !== 'manual';
+  editDraft = blankRecipe();
   if (!Array.isArray(window._submitPhotos)) window._submitPhotos = [];
+  document.title = 'Add a recipe — Reiss Family Recipes';
   app.innerHTML =
     '<a class="back-link no-print" href="#/recipes">← All recipes</a>' +
-    '<h1 class="recipe-title">Submit a recipe ' + helpLinkHTML('submitting', true) + '</h1>' +
-    '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, upload a PDF, or a combination. ' +
-    'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
-    'If something can\u2019t be figured out, it\u2019ll be marked below so you know.</p>' +
-    '<form class="edit-form no-print" id="submit-form" onsubmit="return false">' +
-      '<div class="field"><label for="s-url">Link (optional)</label>' +
-        '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
-      '<div class="field"><label>Photos (optional)</label>' +
-        '<input type="file" id="s-photo" accept="image/*" multiple style="display:none">' +
-        '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
-          '<button class="btn secondary" id="s-choose-btn" type="button">🖼️ Choose photo</button>' +
-          '<button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
-        '<div class="form-hint" id="s-photo-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
-      '<div class="field"><label>PDF recipe (optional)</label>' +
-        '<input type="file" id="s-pdf" accept=".pdf,application/pdf" style="display:none">' +
-        '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
-          '<button class="btn secondary" id="s-pdf-btn" type="button">📄 Choose PDF</button></div>' +
-        '<div class="form-hint" id="s-pdf-hint">A PDF of a recipe — text and layout are both used.</div></div>' +
-      '<div class="field"><label for="s-note">Note (optional)</label>' +
-        '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
-      '<div class="field"><label for="s-text">Or paste the recipe (optional)</label>' +
-        '<textarea id="s-text" rows="8" placeholder="Paste the full recipe text here — title, ingredients, instructions. Sous Chef will parse it into a proper recipe. No need to format it perfectly."></textarea>' +
-        '<div class="form-hint">Just dump the text — Sous Chef handles the rest.</div></div>' +
-      '<div class="form-status" id="submit-status"></div>' +
-      '<div class="actions" style="margin-bottom:0">' +
-        '<button class="btn" id="submit-send" type="button">Submit</button>' +
-        '<a class="btn secondary" href="#/" id="submit-cancel">Cancel</a>' +
-      '</div>' +
-    '</form>' +
-    '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
-    '<div id="inbox-list"><p>Loading…</p></div>';
-  $('#submit-send').onclick = sendSubmission;
+    '<h1 class="recipe-title">Add a recipe <span id="add-help-wrap">' + helpLinkHTML(isImport ? 'submitting' : 'editing', true) + '</span></h1>' +
+    '<div class="add-mode-toggle no-print" role="tablist" aria-label="Add recipe mode">' +
+      '<button type="button" class="btn' + (isImport ? '' : ' secondary') + ' add-mode-btn' + (isImport ? ' active' : '') + '" id="add-mode-import" data-add-mode="import" aria-pressed="' + (isImport ? 'true' : 'false') + '">' +
+        '✨ Auto-Import <span class="add-mode-sub">(Link / Photo / Text)</span>' +
+      '</button>' +
+      '<button type="button" class="btn' + (!isImport ? '' : ' secondary') + ' add-mode-btn' + (!isImport ? ' active' : '') + '" id="add-mode-manual" data-add-mode="manual" aria-pressed="' + (!isImport ? 'true' : 'false') + '">' +
+        '✍️ Manual Form <span class="add-mode-sub">(Type Ingredients)</span>' +
+      '</button>' +
+    '</div>' +
+    '<div id="add-pane-import" data-add-pane="import"' + (isImport ? '' : ' hidden style="display:none"') + '>' +
+      '<p class="no-print" style="max-width:34rem">Paste a link, attach a photo of a recipe, upload a PDF, or a combination. ' +
+      'It goes into the inbox, and within about 30 minutes it shows up in the collection as a finished recipe with its PDF. ' +
+      'If something can\u2019t be figured out, it\u2019ll be marked below so you know.</p>' +
+      '<form class="edit-form no-print" id="submit-form" onsubmit="return false">' +
+        '<div class="field"><label for="s-url">Link (optional)</label>' +
+          '<input type="url" id="s-url" placeholder="https://… recipe page, video, post"></div>' +
+        '<div class="field"><label>Photos (optional)</label>' +
+          '<input type="file" id="s-photo" accept="image/*" multiple style="display:none">' +
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+            '<button class="btn secondary" id="s-choose-btn" type="button">🖼️ Choose photo</button>' +
+            '<button class="btn secondary" id="s-camera-btn" type="button">📷 Take photo</button></div>' +
+          '<div class="form-hint" id="s-photo-hint">A photo of a written recipe, a dish, a cookbook page…</div></div>' +
+        '<div class="field"><label>PDF recipe (optional)</label>' +
+          '<input type="file" id="s-pdf" accept=".pdf,application/pdf" style="display:none">' +
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+            '<button class="btn secondary" id="s-pdf-btn" type="button">📄 Choose PDF</button></div>' +
+          '<div class="form-hint" id="s-pdf-hint">A PDF of a recipe — text and layout are both used.</div></div>' +
+        '<div class="field"><label for="s-note">Note (optional)</label>' +
+          '<input type="text" id="s-note" placeholder="Anything helpful — whose recipe, occasion…"></div>' +
+        '<div class="field"><label for="s-text">Or paste the recipe (optional)</label>' +
+          '<textarea id="s-text" rows="8" placeholder="Paste the full recipe text here — title, ingredients, instructions. Sous Chef will parse it into a proper recipe. No need to format it perfectly."></textarea>' +
+          '<div class="form-hint">Just dump the text — Sous Chef handles the rest.</div></div>' +
+        '<div class="form-status" id="submit-status"></div>' +
+        '<div class="actions" style="margin-bottom:0">' +
+          '<button class="btn" id="submit-send" type="button">Submit</button>' +
+          '<a class="btn secondary" href="#/" id="submit-cancel">Cancel</a>' +
+        '</div>' +
+      '</form>' +
+      '<h2 class="recipe-title" style="font-size:1.2rem;margin-top:2rem">Recent submissions</h2>' +
+      '<div id="inbox-list"><p>Loading…</p></div>' +
+    '</div>' +
+    '<div id="add-pane-manual" data-add-pane="manual"' + (!isImport ? '' : ' hidden style="display:none"') + '>' +
+      recipeFormHTML(editDraft, '#/') +
+    '</div>';
+
+  // Wire both panes once on mount so toggling visibility never re-renders or wipes typed fields.
+  wireRecipeForm(saveNewRecipe);
+
+  const importModeBtn = $('#add-mode-import');
+  const manualModeBtn = $('#add-mode-manual');
+  if (importModeBtn) importModeBtn.onclick = () => setAddRecipeMode('import');
+  if (manualModeBtn) manualModeBtn.onclick = () => setAddRecipeMode('manual');
+
+  const sendBtn = $('#submit-send');
+  if (sendBtn) sendBtn.onclick = sendSubmission;
   const cancelBtn = $('#submit-cancel');
   if (cancelBtn) cancelBtn.addEventListener('click', () => { clearSubmitDraft(); });
   // Single photo input (with multiple); buttons trigger gallery/files or in-page camera.
@@ -7036,6 +7232,10 @@ function renderSubmit(app) {
   restoreSubmitDraft();
   window._inboxRespondOpen = null;
   loadInboxList();
+}
+
+function renderSubmit(app) {
+  return renderAddRecipeScreen(app, 'import');
 }
 
 /* Shared photo resize helper: resize longest edge to 2400px JPEG (q=0.85),
