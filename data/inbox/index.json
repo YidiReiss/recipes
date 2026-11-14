@@ -2106,17 +2106,13 @@
       "data/inbox/inbox-mwcwom1i-3s.jpg"
     ],
     "file": null,
-    "note": null,
+    "note": "Answer from Yidi (Nov 14, 2026): This was a test. No recipe needed",
     "text": null,
-    "status": "needs_input",
+    "status": "pending",
     "created_at": "2026-11-12T02:05:36.848Z",
     "recipe_id": null,
-    "fail_reason": "The submitted photo contains no recipe — it is a pixelated abstract image with no title, ingredients, or instructions, and the linked URL is a placeholder (example.com) with no recipe content.",
-    "needs": [
-      "title",
-      "ingredients",
-      "instructions"
-    ],
+    "fail_reason": null,
+    "needs": null,
     "updated_at": "2026-11-12T02:44:59.384654Z"
   },
   {
