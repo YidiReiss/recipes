@@ -1214,6 +1214,7 @@ function shoppingListHTML() {
 
   // Helper to render items grouped by department (or flat if shoppingSections is null)
   const renderShopSections = (genItems, manItems, renderGen, renderMan, containerAttr) => {
+    renderMan = renderMan || (() => '');   // v20261112b: the Optional section passes null; [].map(null) throws and wipes the whole list
     if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
       const lis = (genItems || []).map(renderGen).join('') + (manItems || []).map(renderMan).join('');
       return lis ? '<div class="shop-list"' + (containerAttr ? ' ' + containerAttr : '') + '>' + lis + '</div>' : '';

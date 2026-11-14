@@ -2355,7 +2355,7 @@ body.has-timer-dock .cook-mode-overlay {
   }
   .cm-title {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.22;
@@ -2474,7 +2474,7 @@ body.has-timer-dock .cook-mode-overlay {
   }
   .cm-title {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.22;
