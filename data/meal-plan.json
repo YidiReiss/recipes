@@ -1580,9 +1580,11 @@
             "note": ""
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Got food from Kayla and Jake bbq"
+            "note": "Got food from Kayla and Jake bbq",
+            "dishes": []
           }
         },
         {
@@ -1664,10 +1666,6 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1678,7 +1676,9 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           },
           "dinner": {
             "recipe": null,
