@@ -88,7 +88,7 @@
   "notes": "If you like Indian food, you'll love the wonderful blend of textures and spices in this easy casserole. Family handwritten edits applied: garlic raised to 3-4 cloves, the 1-1/2 cups cooked brown rice struck out, water raised to 1 cup, curry powder 2 1/2 tsp. A handwritten 'potatoes' note (circled 1) appears with no amount - not added, flagged for review. Checkmark on the page suggests the family has tried it.",
   "pairings": [],
   "pdf": "pdfs/curried-chick-pea-casserole.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "prep_minutes": 20,
   "servings": "6",
@@ -131,6 +131,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1 1/2 cup onions becomes 3 onions."
+    },
+    {
+      "ts": "2026-11-15T22:00:20.132Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
