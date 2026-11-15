@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "store": "Aron's Kissena Farms",
-  "updated": "2026-11-01",
+  "updated": "2026-11-15",
   "departments": [
     "Bread & Bakery",
     "Fresh Produce",
@@ -57,12 +57,6 @@
       "department": "Health & Specialty Diets",
       "subcategory": "Non-Dairy Milk",
       "confidence": "medium",
-      "source": "seed-v1"
-    },
-    "anchovie": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Fish & Seafood",
-      "confidence": "high",
       "source": "seed-v1"
     },
     "arugula": {
@@ -144,12 +138,6 @@
       "source": "seed-v1"
     },
     "bay leaf": {
-      "department": "Grocery",
-      "subcategory": "Spices & Seasonings",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "bay leave": {
       "department": "Grocery",
       "subcategory": "Spices & Seasonings",
       "confidence": "high",
@@ -431,18 +419,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "cherry or grape tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
-      "confidence": "medium",
-      "source": "seed-v1"
-    },
-    "cherry tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
     "chick peas (1-pound can)": {
       "department": "Grocery",
       "subcategory": "Canned Goods & Soups",
@@ -618,8 +594,8 @@
       "source": "seed-v1"
     },
     "chopped fresh dill or 1 tsp dried dill": {
-      "department": "Grocery",
-      "subcategory": "Dried Fruit & Nuts",
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
       "confidence": "medium",
       "source": "seed-v1"
     },
@@ -773,12 +749,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "craisins or dried cranberrie": {
-      "department": "Grocery",
-      "subcategory": "Dried Fruit & Nuts",
-      "confidence": "medium",
-      "source": "seed-v1"
-    },
     "cranberry sauce": {
       "department": "Grocery",
       "subcategory": "Condiments & Sauces",
@@ -804,14 +774,14 @@
       "source": "seed-v1"
     },
     "crushed red pepper": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
       "confidence": "high",
       "source": "seed-v1"
     },
     "crushed red pepper flake": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1085,12 +1055,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "fresh basil leave": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Herbs",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
     "fresh breadcrumbs (pulse 1½ slices of bread in the food processor)": {
       "department": "Bread & Bakery",
       "subcategory": "Bread & Bakery",
@@ -1166,12 +1130,6 @@
     "fresh strawberries, hulled and thinly sliced (several whole strawberries reserved for garnish)": {
       "department": "Fresh Produce",
       "subcategory": "Fresh Fruit",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "fresh thyme leave": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Herbs",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1334,12 +1292,6 @@
     "granulated sugar": {
       "department": "Grocery",
       "subcategory": "Baking Needs",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "grape tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1532,12 +1484,6 @@
     "hot sauce (such as frank's)": {
       "department": "Grocery",
       "subcategory": "Condiments & Sauces",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "idaho potatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1853,12 +1799,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "mint leave": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Herbs",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
     "minute steak (1 package)": {
       "department": "Meat, Poultry & Fish",
       "subcategory": "Beef & Veal",
@@ -2135,12 +2075,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "plum or grape tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
-      "confidence": "medium",
-      "source": "seed-v1"
-    },
     "potato": {
       "department": "Fresh Produce",
       "subcategory": "Fresh Vegetables",
@@ -2150,12 +2084,6 @@
     "potato starch": {
       "department": "Grocery",
       "subcategory": "Baking Needs",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "potatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -2256,8 +2184,8 @@
       "source": "seed-v1"
     },
     "red pepper flake": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -2268,8 +2196,8 @@
       "source": "seed-v1"
     },
     "red pepper powder": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
+      "department": "Grocery",
+      "subcategory": "Spices & Seasonings",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -2336,12 +2264,6 @@
     "ripe mango": {
       "department": "Fresh Produce",
       "subcategory": "Fresh Fruit",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
-    "ripe tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -2639,12 +2561,6 @@
       "confidence": "high",
       "source": "seed-v1"
     },
-    "strawberrie": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Fruit",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
     "strawberries, slightly under-ripe, diced into quarter-inch piece": {
       "department": "Fresh Produce",
       "subcategory": "Fresh Fruit",
@@ -2807,12 +2723,6 @@
       "confidence": "medium",
       "source": "seed-v1"
     },
-    "tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
-      "confidence": "high",
-      "source": "seed-v1"
-    },
     "tuna": {
       "department": "Meat, Poultry & Fish",
       "subcategory": "Fish & Seafood",
@@ -2913,12 +2823,6 @@
       "department": "Fresh Produce",
       "subcategory": "Fresh Fruit",
       "confidence": "medium",
-      "source": "seed-v1"
-    },
-    "vine ripe tomatoe": {
-      "department": "Fresh Produce",
-      "subcategory": "Fresh Vegetables",
-      "confidence": "high",
       "source": "seed-v1"
     },
     "vinegar": {
@@ -3040,6 +2944,132 @@
       "subcategory": "Fresh Vegetables",
       "confidence": "high",
       "source": "seed-v1"
+    },
+    "vine ripe tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh basil leaf": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "mint leaf": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cherry tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "craisins or dried cranberry": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "anchovy": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Fish & Seafood",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "ripe tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "idaho potato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "grape tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "fresh thyme leaf": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "cherry or grape tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "strawberry": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "seed-v1"
+    },
+    "plum or grape tomato": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "medium",
+      "source": "seed-v1"
+    },
+    "mozzarella": {
+      "department": "Dairy & Eggs",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "crushed san marzano tomato": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "rosemary": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Herbs",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "prune juice": {
+      "department": "Beverages",
+      "subcategory": "Juice",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "barbecue sauce": {
+      "department": "Grocery",
+      "subcategory": "Condiments & Sauces",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "quince": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "vegetable broth": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "fresh or frozen cranberries (do not thaw; 3½ cups)": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "manual-20261115"
     }
   }
 }
