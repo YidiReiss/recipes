@@ -7,6 +7,7 @@
   "id": "gochujang-korean-tofu",
   "ingredients": [
     {
+      "section": "Tofu",
       "items": [
         {
           "item": "extra firm tofu",
@@ -29,10 +30,10 @@
           "qty": "3",
           "unit": "tbsp"
         }
-      ],
-      "section": "Tofu"
+      ]
     },
     {
+      "section": "Sauce",
       "items": [
         {
           "item": "low sodium tamari or soy sauce",
@@ -91,8 +92,7 @@
           "qty": "1",
           "unit": "tsp"
         }
-      ],
-      "section": "Sauce"
+      ]
     }
   ],
   "instructions": [
@@ -111,10 +111,7 @@
   "leftover_friendly": false,
   "leftover_note": "Loses its crispness within a few hours, so don't prep the tofu ahead; the sauce can be made ahead and the tofu cooked when ready to serve.",
   "notes": "Source page bills it as vegan and gluten free; the listed version uses honey (pareve; swap maple syrup for a fully vegan version) and is gluten free only if GF-certified tamari and breadcrumbs are used.",
-  "pairings": [
-    "Rice",
-    "Cucumber salad"
-  ],
+  "pairings": [],
   "pdf": "pdfs/gochujang-korean-tofu.pdf",
   "prep_minutes": 15,
   "servings": "4",
@@ -161,6 +158,48 @@
         }
       ],
       "reasoning": "Per Yidi: tofu is not a category - removed from categories (kept main) and added as a tag. Pasta stays a category."
+    },
+    {
+      "ts": "2026-11-15T15:50:51.514Z",
+      "actor": "site-editor (Yidi)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 4 items]; [section: 11 items])",
+          "to": "2 items ([section: 4 items]; [section: 11 items])"
+        },
+        {
+          "field": "pairings",
+          "from": "2 items (Rice; Cucumber salad)",
+          "to": "[]"
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": true
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
-  ]
+  ],
+  "needs_side": true,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
