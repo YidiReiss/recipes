@@ -109,7 +109,7 @@
   "notes": "Crispy, flavorful and so versatile — a great weeknight dinner. Works nicely on both bone-in meat and boneless chicken breast. Per Yidi: a full chicken isn't required — the equivalent quantity of chicken legs/thighs works (the recipe already lists this as an option).",
   "pairings": [],
   "pdf": "pdfs/crispy-chicken.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": false,
   "prep_minutes": 30,
   "servings": "4-6",
@@ -158,6 +158,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D2: '1 chicken' becomes qty 5-6 bone-in skin-on chicken legs and thighs (we buy 5 or 6 leg-and-thigh combos); prep updated to match."
+    },
+    {
+      "ts": "2026-11-15T22:00:35.419Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
