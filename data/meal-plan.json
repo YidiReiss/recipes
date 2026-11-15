@@ -1580,10 +1580,9 @@
             "note": ""
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Got food from Kayla and Jake bbq"
           }
         },
         {
