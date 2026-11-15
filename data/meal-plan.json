@@ -1932,17 +1932,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "taco-salad",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": false,
-                "reason": null,
-                "locked": true,
-                "orphan": true
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -2006,16 +1996,16 @@
       "carryInPool": {},
       "lunchWarnings": [
         {
-          "day": 5,
-          "kind": "orphan",
-          "recipe": "taco-salad",
-          "variant": null
-        },
-        {
           "day": 1,
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [
