@@ -64,14 +64,14 @@
     ],
     "prep_minutes": 15,
     "cook_minutes": 30,
-    "servings": 6,
+    "servings": "6",
     "leftover_friendly": false,
     "needs_side": false,
     "tags_need_review": false,
     "photo_generated": false,
-    "pdf_stale": false,
-    "search_text": "potatoes (quantity not specified) onion soup mix (a good amount, sprinkled) garlic, hot paprika, Jerusalem spice, cumin, coriander, and black pepper (sprinkled to taste) oil",
-    "ingredients_text": "potatoes (quantity not specified) onion soup mix (a good amount, sprinkled) garlic, hot paprika, Jerusalem spice, cumin, coriander, and black pepper (sprinkled to taste) oil"
+    "pdf_stale": true,
+    "search_text": "yellow potatoes (The Little Potato Company) onion soup mix garlic powder avocado oil hot paprika jerusalem spice cumin coriander black pepper",
+    "ingredients_text": "yellow potatoes (The Little Potato Company) onion soup mix garlic powder avocado oil hot paprika jerusalem spice cumin coriander black pepper"
   },
   {
     "id": "mushroom-kugel-for-passover-and-all-year-round",
