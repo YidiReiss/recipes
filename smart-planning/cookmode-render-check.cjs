@@ -252,9 +252,9 @@ check('20. CSS: Portrait .cm-step-badge is visible as eyebrow (display: block, 0
   /\.cm-step-badge\s*\{[^}]*display:\s*block;[^}]*font-size:\s*0\.78rem;[^}]*border-bottom:\s*1px solid var\(--cream-dark\);/.test(portraitCSS));
 check('21. CSS: Landscape .cm-step-badge stays hidden (display: none)',
   /\.cm-step-badge\s*\{\s*display:\s*none;\s*\}/.test(landscapeCSS));
-check('22. CSS: T1 Portrait & Landscape .cm-title wraps to 2 lines (-webkit-line-clamp: 2), no ellipsis/nowrap',
-  /\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*2;/.test(portraitCSS) &&
-  /\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*2;/.test(landscapeCSS) &&
+check('22. CSS: T1 Portrait & Landscape .cm-title wraps to 3 lines (-webkit-line-clamp: 3), no ellipsis/nowrap',
+  /\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*3;/.test(portraitCSS) &&
+  /\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*3;/.test(landscapeCSS) &&
   !/\.cm-title\s*\{[^}]*white-space:\s*nowrap/.test(portraitCSS) &&
   !/\.cm-title\s*\{[^}]*white-space:\s*nowrap/.test(landscapeCSS));
 check('23. CSS: T2 Portrait & Landscape .wake-pill.active uses warm cream (#fff6ec / #d9a074 / var(--accent-dark))',
