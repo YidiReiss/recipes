@@ -1654,23 +1654,23 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "christina-contis-pasta-caprese",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "christina-contis-pasta-caprese",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · Favorite · Never made — worth a try · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1776,14 +1776,7 @@
           "source": "Saturday lunch"
         }
       },
-      "lunchWarnings": [
-        {
-          "day": 3,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 2
-        }
-      ]
+      "lunchWarnings": []
     },
     "2026-11-15": {
       "days": [
