@@ -2014,7 +2014,15 @@
       },
       "carryInPool": {},
       "lunchWarnings": [],
-      "haveGenerated": [],
+      "haveGenerated": [
+        {
+          "key": "garlic|clove",
+          "session": "smwi093dx8q78cg",
+          "at": 1794757506190,
+          "qty": 1,
+          "unit": "clove"
+        }
+      ],
       "manualItems": [],
       "optionalPromoted": [
         {
