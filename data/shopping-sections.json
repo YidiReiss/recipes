@@ -462,26 +462,26 @@
       "source": "seed-v1"
     },
     "chicken broth": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "high",
       "source": "seed-v1"
     },
     "chicken broth (tabatchnick wholesome chicken broth, or organic imagine vegetarian no-chicken broth)": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "medium",
       "source": "seed-v1"
     },
     "chicken broth/stock": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "high",
       "source": "seed-v1"
     },
     "chicken consommé": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -504,20 +504,20 @@
       "source": "seed-v1"
     },
     "chicken stock": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "high",
       "source": "seed-v1"
     },
     "chicken stock or bouillon": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "medium",
       "source": "seed-v1"
     },
     "chicken stock or vegetable stock": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Poultry",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "medium",
       "source": "seed-v1"
     },
@@ -1266,8 +1266,8 @@
       "source": "seed-v1"
     },
     "good-quality beef stock (homemade or store-bought)": {
-      "department": "Meat, Poultry & Fish",
-      "subcategory": "Beef & Veal",
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "medium",
       "source": "seed-v1"
     },
@@ -3068,6 +3068,18 @@
     "fresh or frozen cranberries (do not thaw; 3½ cups)": {
       "department": "Fresh Produce",
       "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "vegetable stock": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "beef stock": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
       "confidence": "high",
       "source": "manual-20261115"
     }
