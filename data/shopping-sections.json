@@ -288,10 +288,10 @@
       "source": "seed-v1"
     },
     "butternut squash": {
-      "department": "Dairy & Eggs",
-      "subcategory": "Dairy",
-      "confidence": "low",
-      "source": "seed-v1"
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "manual-20261115"
     },
     "cabbage": {
       "department": "Fresh Produce",
@@ -3080,6 +3080,24 @@
     "beef stock": {
       "department": "Grocery",
       "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "squash": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Vegetables",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "apple": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "manual-20261115"
+    },
+    "cornmeal": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
       "confidence": "high",
       "source": "manual-20261115"
     }
