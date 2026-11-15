@@ -8,6 +8,7 @@
   "id": "osvo-babulas",
   "ingredients": [
     {
+      "section": "",
       "items": [
         {
           "item": "rice (any, not sticky rice)",
@@ -22,7 +23,7 @@
           "unit": null
         },
         {
-          "item": "dried tomato or small tomato",
+          "item": "tomato",
           "qty": "1",
           "unit": null
         },
@@ -108,8 +109,7 @@
           "qty": "2",
           "unit": null
         }
-      ],
-      "section": ""
+      ]
     }
   ],
   "instructions": [
@@ -131,7 +131,7 @@
   "notes": "Babula's osvo. Potatoes (2 golden) and eggs (2) are optional, per Yidi (Nov 15, 2026); crock pot on low about 20 hours, then keep warm until lunch. Instructions as submitted, in shorthand.",
   "pairings": [],
   "pdf": "pdfs/osvo-babulas.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "prep_minutes": 30,
   "servings": "4",
@@ -154,6 +154,30 @@
         "Created recipe"
       ],
       "reasoning": "Intake of Osvo - Babulas (text submission, Yidi's Nov 15 answers applied: 2 golden potatoes optional, 2 eggs optional, crock pot low ~20h then keep warm). prep = 5 base + shred carrots 3 + cube prunes 1.5 + chop onion 3 + wash rice 2 + handling 1 each x14 (tomato, olcha, apple, lamb shank, beef, orange squash, oil, salt, red pepper flakes, turmeric, paprika, water, golden potatoes, eggs) = 28.5 -> 30. cook = 1200 (crock pot low ~20 hours, per Yidi). servings = 4: main, rice anchor 1 cup dry / 0."
+    },
+    {
+      "ts": "2026-11-15T21:46:53.099Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 18 items])",
+          "to": "1 items ([section: 18 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D3: 'dried tomato or small tomato' becomes just 'tomato'. No-qty spices (red pepper flakes, turmeric, paprika) left exactly as-is."
     }
-  ]
+  ],
+  "needs_side": false
 }
