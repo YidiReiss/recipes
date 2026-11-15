@@ -1830,12 +1830,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "simple-sesame-noodles",
                 "leftovers": false,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
+                "reason": "Favorite · Not made in 4 wks · Leftovers cover a lunch"
               }
             ]
           }
@@ -1848,7 +1848,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "simple-sesame-noodles",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1918,7 +1918,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "simple-sesame-noodles",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1953,7 +1953,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "simple-sesame-noodles",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -2032,10 +2032,7 @@
           "removedAt": 1794757460325
         }
       ],
-      "shoppingDay": "2026-11-11",
-      "dismissedShopKeys": [
-        "panko breadcrumb|cup"
-      ]
+      "shoppingDay": "2026-11-11"
     }
   },
   "recipePrefs": {
