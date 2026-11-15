@@ -77,7 +77,7 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
 ['totalTime', 'ymd', 'blankSlot'].forEach(n => geval(extractDeclSemi(n)));
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
- 'UNICODE_FRACTIONS', 'PANTRY_STAPLES'].forEach(n => geval(extractDecl(n)));
+ 'UNICODE_FRACTIONS', 'PANTRY_STAPLES', 'SECTION_GENERIC_WORDS'].forEach(n => geval(extractDecl(n)));
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -87,10 +87,10 @@ geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       extract('attemptSaveMealPlan') + '\n' +
       extract('saveMealPlan'));
 extract('parseQty', true).forEach(src => geval(src));   // single def in app.js since 2026-11-01 (dead duplicate removed)
-['qtyToNum', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'groupKey',
+['qtyToNum', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'singularizeWord', 'groupKey',
  'parseSingleValue', 'parseFractionOrDecimal',
  'fromTsp', 'parseServings', 'normalizeSlot', 'sundayOf', 'weekDayYmd',
- 'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'lookupShoppingSection', 'buildShoppingList',
+ 'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'sectionMatchWords', 'lookupShoppingSection', 'buildShoppingList',
  'isPantryStaple',
  'normalizeHaveMarks', 'mergeHaveMarks', 'mergeManualItems', 'normalizePromotedList',
  'mergePromoted', 'mergeWeekState', 'mergeMealPlan', 'mergeDraftSnap', 'bridgeReadMealPlan',

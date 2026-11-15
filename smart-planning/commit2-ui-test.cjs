@@ -84,7 +84,7 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
 ['totalTime', 'ymd', 'blankSlot'].forEach(n => geval(extractDeclSemi(n)));
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
- 'UNICODE_FRACTIONS'].forEach(n => geval(extractDecl(n)));
+ 'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS'].forEach(n => geval(extractDecl(n)));
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -94,10 +94,10 @@ geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       extract('attemptSaveMealPlan') + '\n' +
       extract('saveMealPlan'));
 extract('parseQty', true).forEach(src => geval(src));
-['qtyToNum', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'groupKey',
+['qtyToNum', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'singularizeWord', 'groupKey',
  'parseSingleValue', 'parseFractionOrDecimal',
  'fromTsp', 'parseServings', 'normalizeSlot', 'sundayOf', 'weekDayYmd',
- 'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'lookupShoppingSection', 'buildShoppingList',
+ 'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'sectionMatchWords', 'lookupShoppingSection', 'buildShoppingList',
  'normalizeHaveMarks', 'mergeHaveMarks', 'mergeManualItems', 'normalizePromotedList',
  'mergePromoted', 'mergeWeekState', 'mergeMealPlan', 'mergeDraftSnap', 'bridgeReadMealPlan',
  'slugify',
@@ -1341,13 +1341,17 @@ async function main() {
     /\.cm-drawer-toggle\s+\.cm-btn-label\s*\{\s*display:\s*inline;\s*\}/.test(landscapeCSS));
 
   // 20b. Section B (r1): Home + Browse entry buttons and Unified Add a recipe screen with toggle
-  ['activeHaveMarks', 'planCarouselHTML', 'helpLinkHTML', 'renderLanding',
+  ['activeHaveMarks', 'planCarouselHTML', 'helpLinkHTML', 'renderLanding', 'homeToBuyCount',
    'blankRecipe', 'historyHTML', 'recipeFormHTML', 'setAddRecipeMode', 'renderAddRecipeScreen',
    'renderAdd', 'renderSubmit'].forEach(n => geval(extract(n)));
   ['GUIDE_SECTION_SLUGS', 'KNOWN_CATEGORIES'].forEach(n => geval(extractDecl(n)));
 
   const landingApp = { innerHTML: '' };
   globalThis.document = { title: '' };
+  // v20261112c: renderLanding warms the recipe cache and re-renders if the
+  // home counter changes — stub the async fetch so this stays synchronous.
+  globalThis.ensurePlannedRecipes = () => Promise.resolve();
+  globalThis.location = { hash: '#/' };
   renderLanding(landingApp);
   const cardsCloseIdx = landingApp.innerHTML.indexOf('</section>', landingApp.innerHTML.indexOf('class="landing-cards"'));
   const homeAddBtnIdx = landingApp.innerHTML.indexOf('id="home-add-recipe-btn"');
@@ -1521,11 +1525,14 @@ async function main() {
     categories: ['drinks', 'dips'],
     ingredients: [{ section: '', items: [{ qty: '1', unit: 'cup', item: 'water' }] }],
     instructions: ['Stir.'],
-    pairings: [], variants: []
+    pairings: [],
+    variants: [{ key: 'beef', label: 'Beef', default: true, slotClass: 'ground-beef' }]
   });
   collectRecipeForm(mergeDraft);
   check('Section B (categories): collectRecipeForm preserve-merges — keeps an unlisted category, drops an offered-but-unchecked one, keeps a checked one',
     JSON.stringify(mergeDraft.categories) === JSON.stringify(['drinks', 'main']));
+  check('Section B (variants): collectRecipeForm preserves extra properties (e.g. slotClass) on existing variant objects',
+    mergeDraft.variants.length === 1 && mergeDraft.variants[0].slotClass === 'ground-beef');
   globalThis.$ = catDollar;
   globalThis.document = catDocument;
 
@@ -1536,7 +1543,12 @@ async function main() {
 
   globalThis.wakeLockWanted = false;
   geval(extractDecl('fmtTime'));
+  geval(extractDeclSemi('prettyDate'));
+  geval(extractDeclSemi('dayName'));
   ['pdfUrl', 'recipeRatingRowHTML', 'recipeCookBarHTML',
+   'plannerDateToWeekAndDay', 'plannerOffsetForWeekKey', 'formatPlannerConfirmDate',
+   'resolveAddPlannerVariant', 'addToPlannerPanelHTML', 'addToPlannerConfirmHTML',
+   'persistWeek', 'addRecipeToPlannerSlot',
    'recipeHeroHeaderHTML', 'renderRecipe'].forEach(n => geval(extract(n)));
 
   let scrollCalls = 0;
@@ -1567,6 +1579,7 @@ async function main() {
   const heroNodeRef = { tag: 'div', className: 'recipe-hero' };
   const bodyNodeRef = { innerHTML: '' };
   const cookBtnRef = { disabled: true, addEventListener() {} };
+  const addPlannerBtnRef = { disabled: true, classList: { remove() {}, add() {} }, setAttribute() {}, addEventListener() {} };
   const recipeApp = {
     nodeType: 1,
     innerHTML: '<div>Old Home Screen</div>',
@@ -1574,6 +1587,7 @@ async function main() {
       if (sel === '.recipe-hero') return heroNodeRef;
       if (sel === '#recipe-detail-body') return bodyNodeRef;
       if (sel === '#open-cook-mode-btn') return cookBtnRef;
+      if (sel === '#add-to-planner-btn') return addPlannerBtnRef;
       return null;
     },
     querySelectorAll() { return []; }
@@ -1757,6 +1771,209 @@ async function main() {
   check('Section 21 (cook-mode title): .cm-title clamps to 3 lines in both phone media queries, with no 2-line clamp left',
     (CSS.match(/\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*3/g) || []).length === 2 &&
     !/\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*2/.test(CSS));
+
+  /* ============ 22. Add to Planner from Recipe Detail Page (Nov 14, 2026) ============ */
+  // 22(a) recipeCookBarHTML renders #add-to-planner-btn (📅 Add to Planner) and respects disabled on the instant-shell path, enabled when wired
+  const cookBarEnabledHTML = recipeCookBarHTML(true, false, false);
+  const cookBarDisabledHTML = recipeCookBarHTML(true, false, true);
+  check('22(a) recipeCookBarHTML renders 📅 Add to Planner button (#add-to-planner-btn) and #add-planner-host, disabled on shell and enabled when wired',
+    cookBarEnabledHTML.includes('id="add-to-planner-btn">📅 Add to Planner</button>') &&
+    cookBarEnabledHTML.includes('id="add-planner-host"') &&
+    cookBarDisabledHTML.includes('id="add-to-planner-btn" disabled>📅 Add to Planner</button>') &&
+    shellHTMLImmediate.includes('id="add-to-planner-btn" disabled') &&
+    addPlannerBtnRef.disabled === false);
+
+  // Set up test recipes (one standard recipe with leftovers, one variant recipe) and clean mealPlan state
+  const PLAN_TEST_META = [
+    {
+      id: 'roast-chicken', title: 'Roast Chicken', kosher_status: 'meat',
+      categories: ['main', 'chicken'], prep_minutes: 15, cook_minutes: 60,
+      servings: '6', leftover_friendly: true
+    },
+    {
+      id: 'garlic-green-beans', title: 'Garlic Green Beans', kosher_status: 'pareve',
+      categories: ['side'], prep_minutes: 10, cook_minutes: 10,
+      servings: '4', leftover_friendly: false
+    },
+    {
+      id: 'stir-fry-bowls', title: 'Stir-Fry Bowls', kosher_status: 'meat',
+      categories: ['main'], prep_minutes: 20, cook_minutes: 15,
+      servings: '4', leftover_friendly: true,
+      variants: [
+        { key: 'chicken', label: 'Chicken', default: true, slotClass: 'chicken' },
+        { key: 'tofu', label: 'Tofu', default: false, slotClass: 'veg' }
+      ]
+    }
+  ];
+  setMeta(PLAN_TEST_META);
+  PLAN_TEST_META.forEach(m => { globalThis.byId[m.id] = { ...m }; });
+  setPlan({});
+
+  // 22(b) Adding a dish to an empty slot produces { recipe, variant (if any), drafted: false, reason: null, locked: false }
+  // on the right weekKey + dayIdx + meal, and runs recomputeWeekLunches(key).
+  const addSunRes = await addRecipeToPlannerSlot(globalThis.byId['roast-chicken'], '2026-11-15', 'dinner', null);
+  const wkNov15 = getWeek('2026-11-15');
+  const sunDinnerSlot = normalizeSlot(wkNov15.days[0].dinner);
+  const monLunchSlot = normalizeSlot(wkNov15.days[1].lunch);
+  check('22(b) adding a non-variant dish to an empty slot writes { recipe, drafted: false, reason: null, locked: false } (no variant key), persists via saveMealPlan, and runs recomputeWeekLunches',
+    addSunRes.added === true &&
+    addSunRes.duplicate === false &&
+    addSunRes.persisted === true &&
+    addSunRes.weekKey === '2026-11-15' &&
+    addSunRes.dayIdx === 0 &&
+    addSunRes.meal === 'dinner' &&
+    addSunRes.message === 'Added to Sunday, Nov 15 dinner' &&
+    sunDinnerSlot.dishes.length === 1 &&
+    JSON.stringify(sunDinnerSlot.dishes[0]) === JSON.stringify({
+      recipe: 'roast-chicken',
+      drafted: false,
+      reason: null,
+      locked: false
+    }) &&
+    !('variant' in sunDinnerSlot.dishes[0]) &&
+    monLunchSlot.dishes.length === 1 &&
+    monLunchSlot.dishes[0].recipe === 'roast-chicken' &&
+    monLunchSlot.dishes[0].leftovers === true &&
+    serverState.weeks['2026-11-15'].days[0].dinner.dishes[0].recipe === 'roast-chicken');
+
+  // 22(c) Adding to a slot that already has a dish appends alongside it (both dishes remain)
+  const addSideRes = await addRecipeToPlannerSlot(globalThis.byId['garlic-green-beans'], '2026-11-15', 'dinner', null);
+  const sunDinnerAfterSecond = normalizeSlot(getWeek('2026-11-15').days[0].dinner);
+  check('22(c) adding to a slot that already has a dish appends alongside it (both dishes remain)',
+    addSideRes.added === true &&
+    sunDinnerAfterSecond.dishes.length === 2 &&
+    sunDinnerAfterSecond.dishes[0].recipe === 'roast-chicken' &&
+    sunDinnerAfterSecond.dishes[1].recipe === 'garlic-green-beans' &&
+    sunDinnerAfterSecond.dishes[1].drafted === false &&
+    sunDinnerAfterSecond.dishes[1].locked === false);
+
+  // 22(d) Adding to a skipped slot (skipped: true, note: 'Eat out') clears skipped to false and note to ''
+  getWeek('2026-11-15').days[2].dinner = { dishes: [], skipped: true, note: 'Eat out' };
+  const addSkippedRes = await addRecipeToPlannerSlot(globalThis.byId['roast-chicken'], '2026-11-17', 'dinner', null);
+  const tueDinnerSlot = normalizeSlot(getWeek('2026-11-15').days[2].dinner);
+  check('22(d) adding to a skipped slot (skipped: true, note: "Eat out") clears skipped to false and note to ""',
+    addSkippedRes.added === true &&
+    addSkippedRes.dayIdx === 2 &&
+    tueDinnerSlot.skipped === false &&
+    tueDinnerSlot.note === '' &&
+    tueDinnerSlot.dishes.length === 1 &&
+    tueDinnerSlot.dishes[0].recipe === 'roast-chicken');
+
+  // 22(e) Variant handling + Dedupe: adding the same recipe + variant to a slot is a no-op returning 'Already on <Day> <meal>',
+  // while adding a different variant of the same recipe to that slot IS allowed (dish count becomes 2).
+  // Test on Friday, Nov 20 dinner (Shabbat slot — allowed with no restriction).
+  const addVar1 = await addRecipeToPlannerSlot(globalThis.byId['stir-fry-bowls'], '2026-11-20', 'dinner', 'chicken');
+  const friDinnerAfter1 = JSON.parse(JSON.stringify(normalizeSlot(getWeek('2026-11-15').days[5].dinner)));
+  const addVarDup = await addRecipeToPlannerSlot(globalThis.byId['stir-fry-bowls'], '2026-11-20', 'dinner', 'chicken');
+  const friDinnerAfterDup = JSON.parse(JSON.stringify(normalizeSlot(getWeek('2026-11-15').days[5].dinner)));
+  const addVar2 = await addRecipeToPlannerSlot(globalThis.byId['stir-fry-bowls'], '2026-11-20', 'dinner', 'tofu');
+  const friDinnerAfter2 = JSON.parse(JSON.stringify(normalizeSlot(getWeek('2026-11-15').days[5].dinner)));
+  check('22(e) dedupe blocks exact same recipe + variant ("Already on Friday dinner", dish count stays 1) and allows a different variant of the same recipe (dish count becomes 2)',
+    addVar1.added === true &&
+    addVar1.message === 'Added to Friday, Nov 20 dinner' &&
+    friDinnerAfter1.dishes.length === 1 &&
+    JSON.stringify(friDinnerAfter1.dishes[0]) === JSON.stringify({
+      recipe: 'stir-fry-bowls',
+      variant: 'chicken',
+      drafted: false,
+      reason: null,
+      locked: false
+    }) &&
+    addVarDup.added === false &&
+    addVarDup.duplicate === true &&
+    addVarDup.message === 'Already on Friday dinner' &&
+    friDinnerAfterDup.dishes.length === 1 &&
+    addVar2.added === true &&
+    friDinnerAfter2.dishes.length === 2 &&
+    friDinnerAfter2.dishes[0].variant === 'chicken' &&
+    friDinnerAfter2.dishes[1].variant === 'tofu');
+
+  // 22(f) Picker panel HTML (date defaults to today, Dinner active by default, version line shown only for variant recipes) + View planner week offset math
+  const panelVarHTML = addToPlannerPanelHTML(globalThis.byId['stir-fry-bowls'], 'tofu', '2026-11-20', 'dinner');
+  const panelNoVarHTML = addToPlannerPanelHTML(globalThis.byId['roast-chicken'], null, '2026-11-20', 'dinner');
+  const nextWeekKey = addDaysToKey(thisWeekKey(), 14);
+  const confirmHTML = addToPlannerConfirmHTML('Added to Friday, Nov 20 dinner', nextWeekKey, false);
+  check('22(f) addToPlannerPanelHTML renders date input, Lunch/Dinner toggle (Dinner default), conditional version line, and plannerOffsetForWeekKey computes exact week offset for View planner',
+    panelVarHTML.includes('id="ap-date"') &&
+    panelVarHTML.includes('value="2026-11-20"') &&
+    panelVarHTML.includes('data-ap-meal="dinner" aria-pressed="true"') &&
+    panelVarHTML.includes('id="ap-variant-line" data-ap-variant="tofu"') &&
+    panelVarHTML.includes('<strong id="ap-variant-label">Tofu</strong>') &&
+    !panelNoVarHTML.includes('id="ap-variant-line"') &&
+    confirmHTML.includes('id="ap-view-planner"') &&
+    plannerOffsetForWeekKey(thisWeekKey()) === 0 &&
+    plannerOffsetForWeekKey(nextWeekKey) === 2 &&
+    plannerOffsetForWeekKey(addDaysToKey(thisWeekKey(), -7)) === -1);
+
+  // Section 23. Shopping classification: groupKey -es fix + word-overlap
+  // fallback in lookupShoppingSection + map migration/additions (Nov 15, 2026).
+  // (stripSize/singularizeWord/groupKey/sectionMatchWords/lookupShoppingSection
+  // and SECTION_GENERIC_WORDS load at the top with the other real code.)
+  check('Section 23 (groupKey): -es plurals singularize cleanly (tomatoes->tomato, leaves->leaf, potatoes->potato, cherries->cherry, cranberries->cranberry)',
+    groupKey('crushed san marzano tomatoes') === 'crushed san marzano tomato' &&
+    groupKey('basil leaves') === 'basil leaf' &&
+    groupKey('russet potatoes') === 'russet potato' &&
+    groupKey('cherries') === 'cherry' &&
+    groupKey('cranberries') === 'cranberry' &&
+    groupKey('bunches') === 'bunch' &&
+    groupKey('boxes') === 'box');
+  check('Section 23 (groupKey): old singularization preserved (eggs->egg, glass stays glass, cheese unchanged, size words still stripped)',
+    groupKey('eggs') === 'egg' &&
+    groupKey('glass') === 'glass' &&
+    groupKey('cheese') === 'cheese' &&
+    groupKey('large egg') === 'egg');
+  const fixtureSections = { departments: ['Fresh Produce', 'Grocery', 'Dairy & Eggs', 'Meat, Poultry & Fish', 'Wine & Spirits'],
+    fallbackDepartment: 'Unsorted',
+    items: {
+      'ground beef': { department: 'Meat, Poultry & Fish', subcategory: 'Beef & Veal' },
+      'pasta': { department: 'Grocery', subcategory: 'Pasta, Rice & Grains' },
+      'basil': { department: 'Fresh Produce', subcategory: 'Fresh Herbs' },
+      'crushed red pepper': { department: 'Grocery', subcategory: 'Spices & Seasonings' },
+      'red pepper': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'tomato': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'egg': { department: 'Dairy & Eggs', subcategory: 'Eggs' },
+      'oil': { department: 'Grocery', subcategory: 'Oils & Vinegars' },
+      'black pepper': { department: 'Grocery', subcategory: 'Spices & Seasonings' },
+      'black pepper (plus 1/4 tsp more for the fish)': { department: 'Meat, Poultry & Fish', subcategory: 'Fish & Seafood' }
+    } };
+  globalThis.shoppingSections = fixtureSections;
+  check('Section 23 (fallback): exact match still wins and is unchanged (ground beef -> Meat)',
+    lookupShoppingSection('ground beef').department === 'Meat, Poultry & Fish');
+  check('Section 23 (fallback): descriptive items map on shared words (fusilli pasta -> Grocery, basil leaf -> Fresh Produce, crushed dried red pepper -> Grocery/Spices, grape tomato -> Fresh Produce)',
+    lookupShoppingSection('fusilli or other corkscrew pasta').department === 'Grocery' &&
+    lookupShoppingSection('basil leaf').department === 'Fresh Produce' &&
+    lookupShoppingSection('crushed dried red pepper').department === 'Grocery' &&
+    lookupShoppingSection('crushed dried red pepper').subcategory === 'Spices & Seasonings' &&
+    lookupShoppingSection('grape tomato').department === 'Fresh Produce');
+  check('Section 23 (fallback): word boundaries only — eggplant does not match egg, boiled does not match oil',
+    lookupShoppingSection('eggplant').department === 'Unsorted' &&
+    lookupShoppingSection('boiled egg').department === 'Dairy & Eggs');
+  check('Section 23 (fallback): clean entries beat note-carrying ones (spice blend -> black pepper in Grocery, not the fish-note entry)',
+    lookupShoppingSection('garlic, hot paprika, cumin, coriander, and black pepper').department === 'Grocery');
+  check('Section 23 (fallback): true unknowns still land in Unsorted (steamer, plain water)',
+    lookupShoppingSection('steamer (equipment)').department === 'Unsorted' &&
+    lookupShoppingSection('plain water').department === 'Unsorted');
+  const liveMap = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  globalThis.shoppingSections = liveMap;
+  check('Section 23 (map): migrated keys exist and mangled keys are gone (tomato, bay leaf present; tomatoe, bay leave, potatoe gone)',
+    liveMap.items['tomato'] && liveMap.items['bay leaf'] && liveMap.items['potato'] &&
+    !liveMap.items['tomatoe'] && !liveMap.items['bay leave'] && !liveMap.items['potatoe'] &&
+    !liveMap.items['cherry tomatoe'] && !liveMap.items['fresh basil leave']);
+  check('Section 23 (map): the screenshot items now sort right (mozzarella -> Dairy/Cheese, crushed San Marzano tomato -> Grocery/Canned, fusilli pasta -> Grocery, basil leaf -> Fresh Produce, crushed dried red pepper -> Grocery/Spices)',
+    lookupShoppingSection('mozzarella').department === 'Dairy & Eggs' &&
+    lookupShoppingSection('mozzarella').subcategory === 'Cheese' &&
+    lookupShoppingSection('crushed san marzano tomato').department === 'Grocery' &&
+    lookupShoppingSection('crushed san marzano tomato').subcategory === 'Canned Goods & Soups' &&
+    lookupShoppingSection('fusilli or other corkscrew pasta').department === 'Grocery' &&
+    lookupShoppingSection('basil leaf').department === 'Fresh Produce' &&
+    lookupShoppingSection('crushed dried red pepper').department === 'Grocery');
+  check('Section 23 (map): kishka and the steamer still land in Unsorted (no guess for them)',
+    lookupShoppingSection('kishka').department === 'Unsorted' &&
+    lookupShoppingSection('steamer (equipment)').department === 'Unsorted');
+  geval(extractDecl('PANTRY_STAPLES'));
+  geval(extract('isPantryStaple'));
+  check('Section 23 (staples): plain water is a pantry staple, and water with a note still is (parenthetical stripped); coconut water is not',
+    isPantryStaple('plain water') && isPantryStaple('water (maybe a little more)') && !isPantryStaple('coconut water'));
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
