@@ -2093,6 +2093,20 @@
           "at": 1794758614849,
           "qty": 1,
           "unit": "tbsp"
+        },
+        {
+          "key": "toasted sesame oil|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758615940,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "tomato paste|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758618254,
+          "qty": 1,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
