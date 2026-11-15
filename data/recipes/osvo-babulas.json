@@ -1,0 +1,159 @@
+{
+  "banner_image": "assets/images/osvo-babulas.jpg",
+  "categories": [
+    "main",
+    "meat"
+  ],
+  "cook_minutes": 1200,
+  "id": "osvo-babulas",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "rice (any, not sticky rice)",
+          "prep": "washed 3 times",
+          "qty": "1",
+          "unit": "cup"
+        },
+        {
+          "item": "carrots",
+          "prep": "shredded",
+          "qty": "2",
+          "unit": null
+        },
+        {
+          "item": "dried tomato or small tomato",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "dried plums (prunes)",
+          "prep": "cubed",
+          "qty": "2-3",
+          "unit": null
+        },
+        {
+          "item": "olcha",
+          "qty": "3/4",
+          "unit": "tbsp"
+        },
+        {
+          "item": "onion",
+          "prep": "chopped",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "apple",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "lamb shank",
+          "optional": true,
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "beef",
+          "prep": "a few pieces",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "orange squash",
+          "optional": true,
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "oil",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "salt",
+          "qty": "1.5",
+          "unit": "tsp"
+        },
+        {
+          "item": "red pepper flakes",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "turmeric",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "paprika",
+          "qty": null,
+          "unit": null
+        },
+        {
+          "item": "water",
+          "qty": "3",
+          "unit": "cup"
+        },
+        {
+          "item": "golden potatoes",
+          "optional": true,
+          "qty": "2",
+          "unit": null
+        },
+        {
+          "item": "eggs",
+          "optional": true,
+          "qty": "2",
+          "unit": null
+        }
+      ],
+      "section": ""
+    }
+  ],
+  "instructions": [
+    "Put a little oil in the pot (2 Tbsp).",
+    "Put in the sliced carrots, until they get brownish.",
+    "Then put in the onion, tomato, plums, and meat (with shank).",
+    "Wash the rice 3 times, then put it into the pot.",
+    "Add salt (1.5 tsp) and spices (red pepper flakes, turmeric, paprika).",
+    "Add 3 cups water to cover completely (knuckle length).",
+    "You can put in a potato or eggs.",
+    "Transfer to the crock pot and cook on low for about 20 hours, then keep warm until lunch."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "",
+  "kosher_status": "meat",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "Babula's osvo. Potatoes (2 golden) and eggs (2) are optional, per Yidi (Nov 15, 2026); crock pot on low about 20 hours, then keep warm until lunch. Instructions as submitted, in shorthand.",
+  "pairings": [],
+  "pdf": "pdfs/osvo-babulas.pdf",
+  "pdf_stale": false,
+  "photo_generated": true,
+  "prep_minutes": 30,
+  "servings": "4",
+  "source": "",
+  "tags": [
+    "one-pot",
+    "slow-cooker",
+    "shabbat",
+    "comfort"
+  ],
+  "tags_need_review": false,
+  "tips": [],
+  "title": "Osvo - Babulas",
+  "history": [
+    {
+      "ts": "2026-11-15T18:57:39.365Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake of Osvo - Babulas (text submission, Yidi's Nov 15 answers applied: 2 golden potatoes optional, 2 eggs optional, crock pot low ~20h then keep warm). prep = 5 base + shred carrots 3 + cube prunes 1.5 + chop onion 3 + wash rice 2 + handling 1 each x14 (tomato, olcha, apple, lamb shank, beef, orange squash, oil, salt, red pepper flakes, turmeric, paprika, water, golden potatoes, eggs) = 28.5 -> 30. cook = 1200 (crock pot low ~20 hours, per Yidi). servings = 4: main, rice anchor 1 cup dry / 0."
+    }
+  ]
+}
