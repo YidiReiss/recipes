@@ -2149,6 +2149,13 @@
           "at": 1794770175103,
           "qty": 1,
           "unit": ""
+        },
+        {
+          "key": "chicken stock or vegetable stock|cup",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794770217943,
+          "qty": 1,
+          "unit": "cup"
         }
       ],
       "manualItems": [],
