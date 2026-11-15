@@ -1,0 +1,140 @@
+{
+  "banner_image": "assets/images/crispy-chicken.jpg",
+  "categories": [
+    "main",
+    "chicken"
+  ],
+  "cook_minutes": 90,
+  "id": "crispy-chicken",
+  "ingredients": [
+    {
+      "items": [
+        {
+          "item": "chicken",
+          "prep": "cut into eighths, or 8 bone-in skin-on chicken legs and thighs",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "oil",
+          "qty": "2",
+          "unit": "tbsp"
+        }
+      ],
+      "section": ""
+    },
+    {
+      "items": [
+        {
+          "item": "egg",
+          "qty": "1",
+          "unit": null
+        },
+        {
+          "item": "mayonnaise",
+          "qty": "1",
+          "unit": "tbsp"
+        }
+      ],
+      "section": "Egg coating"
+    },
+    {
+      "items": [
+        {
+          "item": "flour",
+          "qty": "1/2",
+          "unit": "cup"
+        },
+        {
+          "item": "cornmeal",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "cornflake crumbs",
+          "qty": "1/4",
+          "unit": "cup"
+        },
+        {
+          "item": "cornstarch",
+          "qty": "2",
+          "unit": "tbsp"
+        },
+        {
+          "item": "black pepper",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "dried parsley",
+          "qty": "1/2",
+          "unit": "tsp"
+        },
+        {
+          "item": "paprika",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "kosher salt",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "sugar",
+          "qty": "1",
+          "unit": "tsp"
+        },
+        {
+          "item": "garlic powder",
+          "qty": "1",
+          "unit": "tsp"
+        }
+      ],
+      "section": "Crispy coating"
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350°F. In a shallow bowl, combine egg and mayonnaise; mix well. In a second bowl, thoroughly combine ingredients for crispy coating.",
+    "Spread oil into a 9 x 13-inch baking pan; set aside.",
+    "Dip chicken parts into egg mixture and then roll in crispy coating, coating well. Place in the oiled pan.",
+    "Spray chicken with cooking spray. Bake, uncovered, for 75-90 minutes."
+  ],
+  "kosher_for_passover": false,
+  "kosher_review_notes": "",
+  "kosher_status": "meat",
+  "leftover_friendly": true,
+  "leftover_note": "",
+  "needs_kosher_review": false,
+  "notes": "Crispy, flavorful and so versatile — a great weeknight dinner. Works nicely on both bone-in meat and boneless chicken breast. Per Yidi: a full chicken isn't required — the equivalent quantity of chicken legs/thighs works (the recipe already lists this as an option).",
+  "pairings": [],
+  "pdf": "pdfs/crispy-chicken.pdf",
+  "pdf_stale": false,
+  "photo_generated": false,
+  "prep_minutes": 30,
+  "servings": "4-6",
+  "source": "Leah Schapira — Fresh & Easy",
+  "tags": [
+    "weeknight",
+    "crispy"
+  ],
+  "tags_need_review": false,
+  "tips": [
+    {
+      "text": "You can also use this recipe to prepare skinless, boneless chicken breasts. Bake at 425°F for about 18-20 minutes. Baking time may vary depending on the size and thickness of the pieces.",
+      "title": "Chicken breasts option"
+    }
+  ],
+  "title": "Crispy Chicken",
+  "history": [
+    {
+      "ts": "2026-11-15T18:59:44.411Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake of Crispy Chicken (Leah Schapira, Fresh & Easy — cookbook photo; banner cropped from the submitted photo's finished-dish page). prep = 5 base + egg 1 + mayonnaise 1 + oil 1 + measuring 10 coating ingredients x1 (flour, cornmeal, cornflake crumbs, cornstarch, black pepper, dried parsley, paprika, kosher salt, sugar, garlic powder) + chicken handling 1 + dip-and-roll breading assembly 10 + cooking spray 1 = 30. cook = 90 (bake 75-90 min, upper bound). servings = 4-6 as stated in the source "
+    }
+  ]
+}
