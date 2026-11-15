@@ -624,8 +624,12 @@ function route() {
 
 /* Aggregate this week's planned recipes into a shopping list. */
 function fmtQty(n) {
-  // 1.5 -> "1½", 0.75 -> "¾", 2 -> "2". Reduces to eighths.
+  // 1.5 -> "1½", 0.75 -> "¾", 0.33 -> "⅓", 2 -> "2". Checks thirds first, then reduces to eighths.
   if (n == null) return '';
+  const whole3 = Math.floor(n + 1e-9);
+  const frac3 = n - whole3;
+  if (Math.abs(frac3 - 1 / 3) <= 0.015) return (whole3 ? String(whole3) : '') + '⅓';
+  if (Math.abs(frac3 - 2 / 3) <= 0.015) return (whole3 ? String(whole3) : '') + '⅔';
   const rounded = Math.round(n * 8) / 8;
   const whole = Math.floor(rounded);
   const frac = rounded - whole;
@@ -638,12 +642,13 @@ function fmtQty(n) {
 const UNCOUNTABLES = new Set(['water', 'salt', 'pepper', 'garlic', 'mayonnaise', 'flour', 'sugar', 'oil', 'milk',
   'butter', 'cheese', 'rice', 'pasta', 'bread', 'honey', 'vinegar', 'sauce', 'ketchup', 'mustard',
   'coca-cola', 'coke', 'coffee', 'tea', 'juice', 'broth', 'stock', 'cream', 'yogurt', 'beef', 'chicken',
-  'pork', 'fish', 'salmon', 'tuna', 'turkey', 'lamb', 'bacon', 'sausage', 'tofu', 'cornstarch']);
+  'pork', 'fish', 'salmon', 'tuna', 'turkey', 'lamb', 'bacon', 'sausage', 'tofu', 'cornstarch', 'pargiot']);
 const IRREGULAR_PLURALS = {
   tomato: 'tomatoes', potato: 'potatoes', hero: 'heroes',
   half: 'halves', loaf: 'loaves', leaf: 'leaves', knife: 'knives',
   clove: 'cloves', slice: 'slices', chili: 'chilies',
-  person: 'people', child: 'children', foot: 'feet', tooth: 'teeth'
+  person: 'people', child: 'children', foot: 'feet', tooth: 'teeth',
+  pargiot: 'pargiot'
 };
 const IRREGULAR_SINGULARS = Object.fromEntries(
   Object.entries(IRREGULAR_PLURALS).map(([sing, plur]) => [plur, sing])
@@ -727,13 +732,61 @@ function stripSize(item) {
   });
   return s.trim().replace(/\s+/g, ' ');
 }
+function stripSizeKeepCase(item) {
+  let s = ' ' + String(item || '') + ' ';
+  SIZE_WORDS.forEach(w => {
+    s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'gi'), ' ');
+  });
+  return s.trim().replace(/\s+/g, ' ');
+}
 /* Convert tsp/tbsp/cup to a common base so "½ cup + 3 tbsp" merges to one line. */
 const TSP_PER = { tsp: 1, tbsp: 3, cup: 48 };
 function fromTsp(total) {
-  // Prefer cups for anything >= ¼ cup (12 tsp) — "11 tbsp" becomes "¾ cup".
-  if (total >= 12) return { qty: total / 48, unit: 'cup' };
-  if (total >= 3) return { qty: total / 3, unit: 'tbsp' };
+  const isHalfStep = x => Math.abs(x * 2 - Math.round(x * 2)) < 1e-6;
+  if (total >= 12) {
+    const cups = total / 48;
+    const cupWhole = Math.floor(cups + 1e-9);
+    const cupFrac = cups - cupWhole;
+    const CUP_MARKS = [0, 0.25, 1 / 3, 0.5, 2 / 3, 0.75, 1];
+    if (CUP_MARKS.some(m => Math.abs(cupFrac - m) <= 0.015)) {
+      return { qty: cups, unit: 'cup' };
+    }
+    const tbsp = total / 3;
+    if (isHalfStep(tbsp)) {
+      return { qty: tbsp, unit: 'tbsp' };
+    }
+    return { qty: total, unit: 'tsp' };
+  }
+  if (total >= 3) {
+    const tbsp = total / 3;
+    if (isHalfStep(tbsp)) {
+      return { qty: tbsp, unit: 'tbsp' };
+    }
+  }
   return { qty: total, unit: 'tsp' };
+}
+/* Decompose a non-clean tsp total (>= 12) into the largest clean cup chunk
+   plus a remainder, so quantities read like real kitchen amounts instead of
+   an absurd tsp count (Yidi, Nov 15, 2026: "17 teaspoons is absurd").
+   The remainder renders through fromTsp itself (tbsp only on exact
+   half-steps at >= 3 tsp, else tsp), so 25 tsp -> 1/2 cup + 1 tsp and
+   17.5 tsp -> 1/3 cup + 1 1/2 tsp. Returns null when the total is already
+   clean (a cup mark or whole/half tbsp) — callers fall back to fromTsp. */
+function decomposeTsp(total) {
+  if (!(total >= 12)) return null;
+  const cups = total / 48;
+  const whole = Math.floor(cups + 1e-9);
+  const frac = cups - whole;
+  const MARKS = [1, 0.75, 2 / 3, 0.5, 1 / 3, 0.25, 0];
+  if (MARKS.some(m => Math.abs(frac - m) <= 0.015)) return null;
+  let mark = 0;
+  for (const m of MARKS) {
+    if (frac - m > 0.015) { mark = m; break; }
+  }
+  const chunkTsp = (whole + mark) * 48;
+  if (!(chunkTsp > 0) || !(chunkTsp < total - 1e-9)) return null;
+  const r = fromTsp(total - chunkTsp);
+  return { chunkQty: whole + mark, chunkUnit: 'cup', remQty: r.qty, remUnit: r.unit };
 }
 /* Count-to-volume for common produce, so "1 onion" + "½ cup chopped onion"
    merge. Conservative: only these two, widely-agreed conversions.
@@ -763,12 +816,34 @@ function singularizeWord(w) {
   if (/s$/.test(w)) return w.slice(0, -1);
   return w;
 }
-/* Canonical grouping key: lowercase, no size words, singular-ish. */
+/* Unambiguous head-noun aliases for canonical grouping.
+   'salt' -> 'kosher salt' (Yidi, Nov 15, 2026: "we basically only use kosher salt"). */
+const ITEM_ALIASES = {
+  'fresh lemon juice': 'lemon juice',
+  'fresh lime juice': 'lime juice',
+  'freshly ground black pepper': 'black pepper',
+  'ground black pepper': 'black pepper',
+  'freshly cracked black pepper': 'black pepper',
+  'salt': 'kosher salt'
+};
+/* Canonical grouping key: lowercase, no size words, singularized head noun,
+   with parentheticals/comma/semicolon notes preserved in the tail. */
 function groupKey(item) {
   let s = stripSize(item);
-  // singularize last word for grouping ("eggs"->"egg") so plurals merge
-  s = s.replace(/\b(\w+)$/, (m, w) => singularizeWord(w));
-  return s;
+  const m = s.match(/^([^,(;]+?)(\s*(?:[,(;].*))?$/);
+  const head = (m && m[1] ? m[1] : s).trim();
+  const tail = (m && m[2]) || '';
+  const singHead = head.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const aliases = (typeof ITEM_ALIASES === 'object' && ITEM_ALIASES) || {
+    'fresh lemon juice': 'lemon juice',
+    'fresh lime juice': 'lime juice',
+    'freshly ground black pepper': 'black pepper',
+    'ground black pepper': 'black pepper',
+    'freshly cracked black pepper': 'black pepper',
+    'salt': 'kosher salt'
+  };
+  const canonHead = aliases[singHead] || singHead;
+  return canonHead + tail;
 }
 /* Words that carry no identifying power in a shopping lookup ("fresh",
    "dried", "or", "cup", ...). The fallback only counts distinctive words,
@@ -826,6 +901,7 @@ function lookupShoppingSection(baseKey) {
       deptIndex: dIdx
     };
   }
+  const isStockLike = /\b(stock|broth|bouillon|consomm[eé])\b/i.test(k);
   const words = sectionMatchWords(k);
   if (words.length) {
     const wordSet = new Set(words);
@@ -833,6 +909,7 @@ function lookupShoppingSection(baseKey) {
     for (const entryKey of Object.keys(shoppingSections.items)) {
       const cand = shoppingSections.items[entryKey];
       if (!cand || !cand.department) continue;
+      if (isStockLike && cand.department === 'Meat, Poultry & Fish') continue;
       const eWords = [...new Set(sectionMatchWords(entryKey))];
       if (!eWords.length) continue;
       let score = 0;
@@ -857,7 +934,33 @@ function lookupShoppingSection(baseKey) {
       };
     }
   }
+  if (isStockLike) {
+    let dIdx = shoppingSections.departments.indexOf('Grocery');
+    if (dIdx === -1) dIdx = fallbackIdx;
+    return { department: 'Grocery', subcategory: 'Canned Goods & Soups', deptIndex: dIdx };
+  }
   return { department: fallback, subcategory: null, deptIndex: fallbackIdx };
+}
+/* Canonicalize unit variants (plural / spelled-out / capitalization) before keying. */
+const UNIT_ALIASES = {
+  cloves: 'clove', cans: 'can', cups: 'cup', packages: 'package',
+  blocks: 'block', bunches: 'bunch', stalks: 'stalk', sprigs: 'sprig',
+  slices: 'slice', pieces: 'piece', heads: 'head', ribs: 'rib',
+  tablespoon: 'tbsp', tablespoons: 'tbsp', tbsps: 'tbsp', tbs: 'tbsp',
+  teaspoon: 'tsp', teaspoons: 'tsp', tsps: 'tsp',
+  ounce: 'oz', ounces: 'oz', pound: 'lb', pounds: 'lb', lbs: 'lb'
+};
+function canonicalUnit(u) {
+  const low = String(u || '').trim().toLowerCase();
+  const map = (typeof UNIT_ALIASES === 'object' && UNIT_ALIASES) || {
+    cloves: 'clove', cans: 'can', cups: 'cup', packages: 'package',
+    blocks: 'block', bunches: 'bunch', stalks: 'stalk', sprigs: 'sprig',
+    slices: 'slice', pieces: 'piece', heads: 'head', ribs: 'rib',
+    tablespoon: 'tbsp', tablespoons: 'tbsp', tbsps: 'tbsp', tbs: 'tbsp',
+    teaspoon: 'tsp', teaspoons: 'tsp', tsps: 'tsp',
+    ounce: 'oz', ounces: 'oz', pound: 'lb', pounds: 'lb', lbs: 'lb'
+  };
+  return map[low] || low;
 }
 /* Pluralize units for display: "2 cups", but "2 tbsp" stays. */
 function pluralizeUnit(unit, qty) {
@@ -926,12 +1029,27 @@ function setHideStaples(v) {
 /* Split generated To Buy lines into visible vs pantry-staple lines. A staple
    the user explicitly promoted from Optional stays visible — an explicit
    "I need this" beats the view filter. */
+function canonicalShopKey(oldKey) {
+  if (!oldKey || typeof oldKey !== 'string') return '';
+  const idx = oldKey.indexOf('|');
+  const rawBase = idx >= 0 ? oldKey.slice(0, idx) : oldKey;
+  const rawUnit = idx >= 0 ? oldKey.slice(idx + 1) : '';
+  const cu = typeof canonicalUnit === 'function' ? canonicalUnit(rawUnit) : String(rawUnit || '').trim().toLowerCase();
+  return groupKey(rawBase).toLowerCase() + '|' + cu;
+}
 function partitionStaples(toBuy, week) {
   if (!getHideStaples()) return { active: toBuy, staples: [] };
   const promoted = promotedKeySet(week);
+  const canonFn = typeof canonicalShopKey === 'function' ? canonicalShopKey : (k => String(k || '').toLowerCase());
+  const tailSing = s => String(s || '').replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const promotedCanon = new Set([...promoted].map(canonFn));
+  const promotedBases = new Set([...promotedCanon].map(k => k.split('|')[0]).filter(Boolean));
+  const promotedTailBases = new Set([...promotedBases].map(tailSing));
   const active = [], staples = [];
   toBuy.forEach(it => {
-    (isPantryStaple((it.key || '').split('|')[0]) && !promoted.has(it.key) ? staples : active).push(it);
+    const base = (it.base || (it.key || '').split('|')[0]).toLowerCase();
+    const isProm = promoted.has(it.key) || promotedCanon.has(canonFn(it.key)) || promotedBases.has(base) || promotedTailBases.has(tailSing(base));
+    (isPantryStaple(base) && !isProm ? staples : active).push(it);
   });
   return { active, staples };
 }
@@ -942,28 +1060,70 @@ function partitionStaples(toBuy, week) {
 function splitShopItems(items, week) {
   const marks = activeHaveMarks(week && week.haveGenerated);
   const promoted = promotedKeySet(week);
-  const dismissed = new Set(Array.isArray(week && week.dismissedShopKeys) ? week.dismissedShopKeys.filter(Boolean) : []);
+  const canonFn = typeof canonicalShopKey === 'function' ? canonicalShopKey : (k => String(k || '').toLowerCase());
+  const cuFn = typeof canonicalUnit === 'function' ? canonicalUnit : (u => String(u || '').trim().toLowerCase());
+  const tailSing = s => String(s || '').replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const promotedCanon = new Set([...promoted].map(canonFn));
+  const promotedBases = new Set([...promotedCanon].map(k => k.split('|')[0]).filter(Boolean));
+  const promotedTailBases = new Set([...promotedBases].map(tailSing));
+  const dismissedRaw = Array.isArray(week && week.dismissedShopKeys) ? week.dismissedShopKeys.filter(Boolean) : [];
+  const dismissed = new Set(dismissedRaw);
+  const dismissedCanon = new Set(dismissedRaw.map(canonFn));
+  const dismissedBases = new Set([...dismissedCanon].map(k => k.split('|')[0]).filter(Boolean));
+  const dismissedTailBases = new Set([...dismissedBases].map(tailSing));
   const toBuy = [], haveIts = [], optionalIts = [];
   items.forEach(it => {
-    if (dismissed.has(it.key)) return;
-    const mark = marks.find(m => m.key === it.key);
-    if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
+    const itCanonKey = canonFn(it.key);
+    const base = (it.base || (it.key || '').split('|')[0]).toLowerCase();
+    const baseTS = tailSing(base);
+    if (dismissed.has(it.key) || dismissedCanon.has(itCanonKey) || dismissedBases.has(base) || dismissedTailBases.has(baseTS)) return;
+    const mark = marks.find(m => m.key === it.key) ||
+      marks.find(m => canonFn(m.key) === itCanonKey) ||
+      marks.find(m => canonFn(m.key).split('|')[0] === base) ||
+      marks.find(m => tailSing(canonFn(m.key).split('|')[0]) === baseTS);
+    const isPromoted = promoted.has(it.key) || promotedCanon.has(itCanonKey) || promotedBases.has(base) || promotedTailBases.has(baseTS);
+    if (it.optional && !mark && !isPromoted) { optionalIts.push(it); return; }
     if (!mark) { toBuy.push(it); return; }
-    const markedQty = (mark.qty !== null && mark.qty !== undefined) ? mark.qty : null;
-    const curQty = (it.qty !== null && it.qty !== undefined) ? it.qty : null;
-    if (markedQty !== null && curQty !== null && curQty > markedQty + 1e-9) {
-      const base = it.key.split('|')[0];
-      const remainder = Math.round((curQty - markedQty) * 100) / 100;
+    const rawItemUnit = (it.rawUnit !== undefined && it.rawUnit !== null)
+      ? String(it.rawUnit)
+      : cuFn(it.unit || (it.key || '').split('|')[1] || '');
+    const markRawUnit = cuFn(mark.unit || (mark.key || '').split('|')[1] || '');
+    let markedQty = (mark.qty !== null && mark.qty !== undefined) ? Number(mark.qty) : null;
+    if (markedQty !== null && !Number.isFinite(markedQty)) markedQty = null;
+    const curQty = (it.qty !== null && it.qty !== undefined && Number.isFinite(Number(it.qty))) ? Number(it.qty) : null;
+    let unitConverted = false;
+    if (markedQty !== null && markRawUnit && rawItemUnit && markRawUnit !== rawItemUnit && TSP_PER[markRawUnit] && TSP_PER[rawItemUnit]) {
+      markedQty = (markedQty * TSP_PER[markRawUnit]) / TSP_PER[rawItemUnit];
+      unitConverted = true;
+    }
+    const tol = unitConverted ? 0.025 : 1e-9;
+    if (markedQty !== null && curQty !== null && curQty > markedQty + tol) {
+      const snappedMark = unitConverted && Math.abs(markedQty * 8 - Math.round(markedQty * 8)) < 0.025
+        ? Math.round(markedQty * 8) / 8
+        : markedQty;
+      const markedClean = Math.round(snappedMark * 100) / 100;
+      const remainder = Math.round((curQty - markedClean) * 100) / 100;
       const srcs = Array.isArray(it.sources) ? it.sources.slice() : [];
+      const haveUnit = rawItemUnit ? pluralizeUnit(rawItemUnit, markedClean) : '';
+      const needUnit = rawItemUnit ? pluralizeUnit(rawItemUnit, remainder) : '';
+      const dispBase = it.displayHead || it.base || base;
+      const haveNoun = rawItemUnit ? dispBase : pluralize(dispBase, markedClean);
+      const needNoun = (rawItemUnit || it.extraBucketsText) ? dispBase : pluralize(dispBase, remainder);
+      const firstNeedQtyUnit = [fmtQty(remainder), needUnit].filter(Boolean).join(' ').trim();
+      const fullNeedQtyUnit = it.extraBucketsText
+        ? [firstNeedQtyUnit, it.extraBucketsText].filter(Boolean).join(' + ')
+        : firstNeedQtyUnit;
       haveIts.push({
-        key: it.key, base: it.base || base, split: 'have',
-        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim(),
+        key: it.key, base: it.base || base, displayHead: dispBase, split: 'have',
+        qty: markedClean, unit: haveUnit, rawUnit: rawItemUnit,
+        label: [fmtQty(markedClean), haveUnit, haveNoun].filter(Boolean).join(' ').trim(),
         sources: srcs,
         department: it.department, subcategory: it.subcategory, deptIndex: it.deptIndex
       });
       toBuy.push({
-        key: it.key, base: it.base || base, split: 'need',
-        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim(),
+        key: it.key, base: it.base || base, displayHead: dispBase, split: 'need',
+        qty: remainder, unit: needUnit, rawUnit: rawItemUnit,
+        label: [fullNeedQtyUnit, needNoun].filter(Boolean).join(' ').trim(),
         sources: srcs.slice(),
         department: it.department, subcategory: it.subcategory, deptIndex: it.deptIndex
       });
@@ -1014,12 +1174,59 @@ function buildShoppingList() {
       });
     });
   });
-  // Group on the clean item name (intake already split item/prep), with size
-  // words stripped so "1 egg" + "1 large egg" merge. Shopping list shows
-  // what to BUY only — prep notes are cooking instructions, not shopping info.
-  // tsp/tbsp/cup convert to a common base so "½ cup + 3 tbsp" becomes one line.
-  // Optional: an item is optional only if ALL occurrences are optional.
-  // If any recipe requires it, the aggregated line is required.
+  const cuFn = typeof canonicalUnit === 'function' ? canonicalUnit : (u => {
+    const low = String(u || '').trim().toLowerCase();
+    const m = {
+      cloves: 'clove', cans: 'can', cups: 'cup', packages: 'package',
+      blocks: 'block', bunches: 'bunch', stalks: 'stalk', sprigs: 'sprig',
+      slices: 'slice', pieces: 'piece', heads: 'head', ribs: 'rib',
+      tablespoon: 'tbsp', tablespoons: 'tbsp', tbsps: 'tbsp', tbs: 'tbsp',
+      teaspoon: 'tsp', teaspoons: 'tsp', tsps: 'tsp',
+      ounce: 'oz', ounces: 'oz', pound: 'lb', pounds: 'lb', lbs: 'lb'
+    };
+    return m[low] || low;
+  });
+  const keepCaseFn = typeof stripSizeKeepCase === 'function' ? stripSizeKeepCase : (item => {
+    let s = ' ' + String(item || '') + ' ';
+    SIZE_WORDS.forEach(w => {
+      s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'gi'), ' ');
+    });
+    return s.trim().replace(/\s+/g, ' ');
+  });
+  const boundsFn = typeof parseQtyBounds === 'function' ? parseQtyBounds : (qtyStr => {
+    const p = parseQty(qtyStr);
+    if (p === null || p === undefined) return null;
+    if (Array.isArray(p)) {
+      const nums = p.filter(n => typeof n === 'number' && Number.isFinite(n));
+      if (!nums.length) return null;
+      const low = Math.min(...nums), high = Math.max(...nums);
+      return { low, high, isRange: high > low };
+    }
+    if (typeof p === 'number' && Number.isFinite(p)) return { low: p, high: p, isRange: false };
+    return null;
+  });
+  const aliases = (typeof ITEM_ALIASES === 'object' && ITEM_ALIASES) || {
+    'fresh lemon juice': 'lemon juice',
+    'fresh lime juice': 'lime juice',
+    'freshly ground black pepper': 'black pepper',
+    'ground black pepper': 'black pepper',
+    'freshly cracked black pepper': 'black pepper',
+    'salt': 'kosher salt'
+  };
+  const computeDisplayHead = raw => {
+    const kept = keepCaseFn(raw);
+    const m = kept.match(/^([^,(;]+?)(\s*(?:[,(;].*))?$/);
+    const head = (m && m[1] ? m[1] : kept).trim();
+    const tail = (m && m[2]) || '';
+    const singLow = head.toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+    if (aliases[singLow]) return aliases[singLow] + tail;
+    return kept;
+  };
+  // Two-pass aggregation: group by canonical gkey first, with a unit-bucket
+  // sub-map inside each group entry so no-qty occurrences attach cleanly to
+  // quantified occurrences and distinct units join into one row.
+  // Optional: an item is optional only if ALL occurrences are optional — if
+  // any recipe requires it, the aggregated line is required.
   const map = new Map();
   entries.forEach(en => {
     const r = byId[en.id];
@@ -1042,71 +1249,162 @@ function buildShoppingList() {
         if (!raw) return;
         const gkey = groupKey(raw);
         if (!gkey) return;
-        let unitRaw = (it.unit || '').trim();
-        let qtyVal = qtyToNum(parseQty(it.qty));
-        // normalize convertible units to tsp-base for grouping
-        const ul = unitRaw.toLowerCase();
-        let convBase = null;
-        if (qtyVal !== null && TSP_PER[ul]) {
-          convBase = qtyVal * scale * TSP_PER[ul];
-          unitRaw = '__tspbase__';
-        } else if (qtyVal !== null && COUNT_TO_TSP[gkey] && (ul === '' || ul === 'clove' || ul === 'cloves')) {
-          // count-to-volume: "1 onion" -> 24 tsp so it merges with "½ cup chopped onion"
-          convBase = qtyVal * scale * COUNT_TO_TSP[gkey];
-          unitRaw = '__tspbase__';
-        }
-        const nkey = gkey + '|' + unitRaw.toLowerCase();
-        let e = map.get(nkey);
+        const baseKey = gkey.toLowerCase();
+        // Water never appears on the shopping list (Yidi, Nov 15, 2026).
+        if (baseKey === 'water' || baseKey === 'plain water') return;
+        let e = map.get(baseKey);
         if (!e) {
-          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase, optional: !!it.optional, sources: [en.id] };
-          map.set(nkey, e);
-        } else if (!e.sources.includes(en.id)) {
-          e.sources.push(en.id);
+          e = {
+            base: baseKey,
+            displayHead: computeDisplayHead(raw),
+            buckets: new Map(),
+            texts: [],
+            noQtyCount: 0,
+            optional: !!it.optional,
+            sources: [en.id]
+          };
+          map.set(baseKey, e);
+        } else {
+          if (!e.sources.includes(en.id)) e.sources.push(en.id);
+          // If first-seen was an alias variant or if raw is exact canonical,computeDisplayHead already canonicalized it.
         }
-        // If any occurrence is required, the whole line is required.
         if (!it.optional) e.optional = false;
-        if (convBase !== null) { e.qty += convBase; e.hasNum = true; }
-        else {
-          const n = qtyToNum(parseQty(it.qty));
-          if (n !== null) { e.qty += n * scale; e.hasNum = true; }
-          else if (it.qty && String(it.qty).trim()) e.texts.push(String(it.qty).trim());
+        const unitRaw = cuFn(it.unit);
+        const bounds = boundsFn(it.qty);
+        if (bounds !== null) {
+          let bKey = unitRaw;
+          let lowAdd = bounds.low * scale;
+          let highAdd = bounds.high * scale;
+          let isConv = false;
+          if (TSP_PER[unitRaw]) {
+            lowAdd = bounds.low * scale * TSP_PER[unitRaw];
+            highAdd = bounds.high * scale * TSP_PER[unitRaw];
+            bKey = '__tspbase__';
+            isConv = true;
+          } else if (COUNT_TO_TSP[baseKey] && (unitRaw === '' || unitRaw === 'clove')) {
+            lowAdd = bounds.low * scale * COUNT_TO_TSP[baseKey];
+            highAdd = bounds.high * scale * COUNT_TO_TSP[baseKey];
+            bKey = '__tspbase__';
+            isConv = true;
+          }
+          let b = e.buckets.get(bKey);
+          if (!b) {
+            b = { unit: bKey, qtyLow: 0, qtyHigh: 0, isConv };
+            e.buckets.set(bKey, b);
+          }
+          b.qtyLow += lowAdd;
+          b.qtyHigh += highAdd;
+        } else if (it.qty && String(it.qty).trim()) {
+          e.texts.push(String(it.qty).trim());
+        } else {
+          e.noQtyCount++;
         }
       });
     });
   });
-  return [...map.values()].map(e => {
-    let q = '', qnum = 0, dispUnit = e.unit;
-    if (e.hasNum) {
-      if (e.isConv) {
-        const c = fromTsp(Math.round(e.qty * 100) / 100);
-        qnum = Math.round(c.qty * 100) / 100;
-        q = fmtQty(qnum);
-        dispUnit = c.unit;
+  const formatBucket = b => {
+    let q = '', qnum = 0, dispUnit = b.unit, mixed = null;
+    if (b.isConv) {
+      const highTsp = Math.round(b.qtyHigh * 100) / 100;
+      const cHigh = fromTsp(highTsp);
+      qnum = Math.round(cHigh.qty * 100) / 100;
+      dispUnit = cHigh.unit;
+      // Ranges show the HIGH end only (Yidi, Nov 15, 2026: "the shopping list
+      // should take the higher end of the range just so that we're ready") —
+      // the low end is tracked but never rendered. Non-clean totals >= 12 tsp
+      // decompose into the largest clean cup chunk + remainder (see
+      // decomposeTsp) instead of an absurd tsp count.
+      if (cHigh.unit === 'tsp' && highTsp >= 12) {
+        mixed = (typeof decomposeTsp === 'function') ? decomposeTsp(highTsp) : null;
+      }
+      if (mixed) {
+        q = fmtQty(mixed.chunkQty) + ' ' + pluralizeUnit(mixed.chunkUnit, mixed.chunkQty) + ' + ' +
+            fmtQty(mixed.remQty) + ' ' + mixed.remUnit;
+        qnum = highTsp;
+        dispUnit = 'tsp';
       } else {
-        qnum = Math.round(e.qty * 100) / 100;
         q = fmtQty(qnum);
       }
+    } else {
+      qnum = Math.round(b.qtyHigh * 100) / 100;
+      q = fmtQty(qnum);
     }
-    if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
-    const name = pluralize(e.base, e.hasNum ? qnum : 0);
-    const du = dispUnit === '__tspbase__' ? '' : pluralizeUnit(dispUnit, e.hasNum ? qnum : 0);
-    // Stable key: raw (non-pluralized) unit so the key never changes with quantity.
     const rawDu = dispUnit === '__tspbase__' ? '' : dispUnit;
+    const du = mixed ? '' : (rawDu ? pluralizeUnit(rawDu, qnum) : '');
+    return { q, qnum, rawDu, du };
+  };
+  return [...map.values()].map(e => {
     const sec = typeof lookupShoppingSection === 'function'
       ? lookupShoppingSection(e.base)
       : { department: 'Unsorted', subcategory: null, deptIndex: 17 };
-    return {
-      key: e.base.toLowerCase() + '|' + rawDu.toLowerCase(),
-      base: e.base.toLowerCase(),
-      label: [q, du, name].filter(Boolean).join(' ').trim(),
-      qty: e.hasNum ? qnum : null,
-      unit: du,
-      optional: !!e.optional,
-      sources: Array.isArray(e.sources) ? e.sources.slice() : [],
-      department: sec.department,
-      subcategory: sec.subcategory,
-      deptIndex: sec.deptIndex
-    };
+    const bucketArr = [...e.buckets.values()];
+    let q = '', qnum = null, rawDu = '', du = '', name = '';
+    if (bucketArr.length === 1) {
+      const fb = formatBucket(bucketArr[0]);
+      q = fb.q;
+      qnum = fb.qnum;
+      rawDu = fb.rawDu;
+      du = fb.du;
+      if (e.texts.length) q = (q ? q + ' + ' : '') + e.texts.join(' + ');
+      name = rawDu ? e.displayHead : pluralize(e.displayHead, qnum);
+      return {
+        key: e.base + '|' + rawDu.toLowerCase(),
+        base: e.base,
+        displayHead: e.displayHead,
+        label: [q, du, name].filter(Boolean).join(' ').trim(),
+        qty: qnum,
+        unit: du,
+        rawUnit: rawDu,
+        optional: !!e.optional,
+        sources: Array.isArray(e.sources) ? e.sources.slice() : [],
+        department: sec.department,
+        subcategory: sec.subcategory,
+        deptIndex: sec.deptIndex
+      };
+    } else if (bucketArr.length > 1) {
+      const fbs = bucketArr.map(formatBucket);
+      const parts = fbs.map(fb => [fb.q, fb.du].filter(Boolean).join(' ').trim()).filter(Boolean);
+      if (e.texts.length) parts.push(...e.texts);
+      const fb0 = fbs[0];
+      qnum = fb0.qnum;
+      rawDu = fb0.rawDu;
+      du = fb0.du;
+      const anyUnit = fbs.some(fb => !!fb.rawDu);
+      name = anyUnit ? e.displayHead : pluralize(e.displayHead, qnum);
+      const extraBucketsText = parts.slice(1).join(' + ');
+      return {
+        key: e.base + '|' + rawDu.toLowerCase(),
+        base: e.base,
+        displayHead: e.displayHead,
+        extraBucketsText,
+        label: [parts.join(' + '), name].filter(Boolean).join(' ').trim(),
+        qty: qnum,
+        unit: du,
+        rawUnit: rawDu,
+        optional: !!e.optional,
+        sources: Array.isArray(e.sources) ? e.sources.slice() : [],
+        department: sec.department,
+        subcategory: sec.subcategory,
+        deptIndex: sec.deptIndex
+      };
+    } else {
+      q = e.texts.join(' + ');
+      name = pluralize(e.displayHead, 0);
+      return {
+        key: e.base + '|',
+        base: e.base,
+        displayHead: e.displayHead,
+        label: [q, name].filter(Boolean).join(' ').trim(),
+        qty: null,
+        unit: '',
+        rawUnit: '',
+        optional: !!e.optional,
+        sources: Array.isArray(e.sources) ? e.sources.slice() : [],
+        department: sec.department,
+        subcategory: sec.subcategory,
+        deptIndex: sec.deptIndex
+      };
+    }
   }).sort((a, b) => (a.deptIndex - b.deptIndex) || a.label.localeCompare(b.label));
 }
 /* Manual (synced) shopping-list items live on the week object. */
@@ -1378,7 +1676,17 @@ function shoppingListHTML() {
     if (!pricesMap) return null;
     const bk = itemBaseKey(it);
     if (!bk) return null;
-    const entry = pricesMap[bk];
+    let entry = pricesMap[bk];
+    if (!entry) {
+      const bkTailSing = bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+      for (const k of Object.keys(pricesMap)) {
+        const gk = groupKey(k).toLowerCase();
+        if (gk === bk || gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w)) === bkTailSing) {
+          entry = pricesMap[k];
+          break;
+        }
+      }
+    }
     if (!entry || !Number.isFinite(Number(entry.price_cents))) return null;
     return entry;
   };
@@ -2375,6 +2683,20 @@ function qtyToNum(q) {
     return nums.length ? Math.max(...nums) : null;
   }
   return (typeof q === 'number' && Number.isFinite(q)) ? q : null;
+}
+function parseQtyBounds(qtyStr) {
+  const p = parseQty(qtyStr);
+  if (p === null || p === undefined) return null;
+  if (Array.isArray(p)) {
+    const nums = p.filter(n => typeof n === 'number' && Number.isFinite(n));
+    if (!nums.length) return null;
+    const low = Math.min(...nums), high = Math.max(...nums);
+    return { low, high, isRange: high > low };
+  }
+  if (typeof p === 'number' && Number.isFinite(p)) {
+    return { low: p, high: p, isRange: false };
+  }
+  return null;
 }
 function formatQty(value, unit) {
   if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '';
@@ -5358,6 +5680,7 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
         dishBody = '<span class="slot-skipped">—</span>';
       }
       if (dish.leftovers) dishBody += ' <span class="badge leftovers">Leftovers</span>';
+      if (dish.orphan) dishBody += ' <span class="badge warn">⚠ No dinner to come from</span>';
       if (dish.coverage != null) {
         const need = lunchWarn && lunchWarn.kind === 'partial' ? lunchWarn.need : (di === 5 ? 1 : 2);
         dishBody += ' <span class="badge warn">Only ' + esc(dish.coverage) + ' of ' + need + ' servings</span>';
@@ -6339,6 +6662,29 @@ function recomputeWeekLunches(weekKey) {
   });
 
   const warnings = [];
+  // Orphaned leftovers (tweak #1, v20261115a): a leftover lunch dish in an
+  // untouchable slot (locked or hand-added) whose source dinner is gone
+  // has no bucket to come from. Flag it — never auto-clear it (a locked
+  // dish is locked for a reason; a manual dish is Yidi's own work).
+  // A dish is an orphan when NO bucket matches its recipe|variant key:
+  // carry-in pool entries count as buckets, so a lunch fed by last
+  // week's dinner never flags; a variant mismatch IS an orphan.
+  // Stamps are cleared first, so a restored dinner un-flags on the
+  // next recompute. Touchable slots were just rebuilt from buckets,
+  // so no orphan can survive there.
+  for (let d = 1; d <= 5; d++) {
+    const s = planSlot(week, d, 'lunch');
+    if (s.skipped) continue;
+    s.dishes.forEach(dish => { if (dish.orphan) delete dish.orphan; });
+    if (touchable.includes(d)) continue;
+    s.dishes.forEach(dish => {
+      if (!dish.leftovers || !dish.recipe) return;
+      const key = dish.recipe + '|' + (dish.variant || '');
+      if (buckets.some(b => b.key === key)) return;
+      dish.orphan = true;
+      warnings.push({ day: d, kind: 'orphan', recipe: dish.recipe, variant: dish.variant || null });
+    });
+  }
   touchable.forEach(d => {
     const need = d === 5 ? 1 : 2;   // Friday: 1 serving (Nava only)
     const bucket = buckets.find(b => {
@@ -7224,6 +7570,12 @@ async function recordMealFeedback(key, di, meal, idx, action) {
 /* Identity of a lunch warning for dismissal purposes: if a recompute
    produces a different warning, its signature differs and the strip
    shows again. */
+// warningSignature covers (day, kind, have, need). An orphan warning's
+// signature is day|orphan|0|0, so two orphaned dishes on the SAME day for
+// different recipes share one signature and dismiss together. That is
+// deliberate: adding the recipe to the signature would invalidate every
+// previously-dismissed warning, and the dish-level orphan note still
+// shows on each dish even when the strip is dismissed.
 function warningSignature(w) {
   return [w.day, w.kind, w.have || 0, w.need || 0].join('|');
 }
@@ -7236,10 +7588,25 @@ function planWarningsHTML(key, week) {
   const dismissed = new Set(Array.isArray(week.dismissedWarnings) ? week.dismissedWarnings : []);
   const visible = warns.filter(w => !dismissed.has(warningSignature(w)));
   if (!visible.length) return '';
-  const lines = visible.map(w => '<div class="warn-line">' + (w.kind === 'partial'
-    ? '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch only has ~' + (w.have || 0) +
-      ' leftover serving' + (w.have === 1 ? '' : 's') + ' (needs ' + w.need + ')'
-    : '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch isn\u2019t covered by leftovers') + '</div>').join('');
+  // Orphan line resolves the recipe title at render time (never stored
+  // denormalized in the warning — titles go stale on rename). The
+  // typeof guards keep this callable without a recipeMeta stub.
+  const warnText = w => {
+    if (w.kind === 'partial') {
+      return '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch only has ~' + (w.have || 0) +
+        ' leftover serving' + (w.have === 1 ? '' : 's') + ' (needs ' + w.need + ')';
+    }
+    if (w.kind === 'orphan') {
+      const m = (typeof recipeMeta === 'function') ? recipeMeta(w.recipe) : null;
+      const name = m ? m.title : (w.recipe || 'Leftovers');
+      const v = (w.variant && typeof variantLabelFor === 'function')
+        ? ' · ' + variantLabelFor(w.recipe, w.variant) : '';
+      return '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch: ' + esc(name + v) +
+        ' leftovers have no dinner to come from';
+    }
+    return '⚠ ' + PLAN_DAY_NAMES[w.day] + ' lunch isn\u2019t covered by leftovers';
+  };
+  const lines = visible.map(w => '<div class="warn-line">' + warnText(w) + '</div>').join('');
   return '<div class="plan-warnings no-print">' + lines +
     '<button class="warn-dismiss" data-dismiss-warnings="' + esc(key) +
     '" type="button" aria-label="Dismiss warnings">✕</button></div>';
