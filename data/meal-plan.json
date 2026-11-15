@@ -1583,18 +1583,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": "beef",
-                "reason": "Ground-beef night · Beef version · Favorite · Never made — worth a try · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -1655,17 +1644,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": "beef",
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1787,7 +1766,14 @@
           "source": "Saturday lunch"
         }
       },
-      "lunchWarnings": []
+      "lunchWarnings": [
+        {
+          "day": 3,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ]
     },
     "2026-11-15": {
       "days": [
