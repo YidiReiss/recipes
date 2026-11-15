@@ -1741,14 +1741,14 @@
     ],
     "prep_minutes": 30,
     "cook_minutes": 195,
-    "servings": 12,
+    "servings": "12",
     "leftover_friendly": true,
     "needs_side": false,
     "tags_need_review": false,
     "photo_generated": false,
-    "pdf_stale": false,
-    "search_text": "idaho potatoes eggs zucchini onion salt white pepper canola oil (to top line of cup) water",
-    "ingredients_text": "idaho potatoes eggs zucchini onion salt white pepper canola oil (to top line of cup) water"
+    "pdf_stale": true,
+    "search_text": "idaho potatoes eggs zucchini small-medium onion salt white pepper canola oil (to top line of cup) water",
+    "ingredients_text": "idaho potatoes eggs zucchini small-medium onion salt white pepper canola oil (to top line of cup) water"
   },
   {
     "id": "chulent",
