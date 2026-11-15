@@ -2334,5 +2334,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 2 tbsp onion becomes 1/4 onion (optional stays).",
     "created_at": "2026-11-15T21:48:42.040Z"
+  },
+  {
+    "id": "edit-mwidahmc-cfwy",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "reiss-mushroom-salad",
+    "recipe_id": "reiss-mushroom-salad",
+    "title": "Reiss Mushroom Salad",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/4 cup purple onion becomes 1/2 purple onion.",
+    "created_at": "2026-11-15T21:49:19.356Z"
   }
 ]
