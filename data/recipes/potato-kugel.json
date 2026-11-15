@@ -151,11 +151,20 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: unit 'small-medium' is a size descriptor, not a unit — moved into the item ('small-medium onion', qty 1, no unit) so the shopping list shows 1 onion."
+    },
+    {
+      "ts": "2026-11-15T22:00:07.976Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "pdf": null,
   "needs_side": false,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
