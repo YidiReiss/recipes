@@ -84,7 +84,8 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
 ['totalTime', 'ymd', 'blankSlot'].forEach(n => geval(extractDeclSemi(n)));
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
- 'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS'].forEach(n => geval(extractDecl(n)));
+ 'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS',
+ 'ITEM_ALIASES', 'UNIT_ALIASES'].forEach(n => geval(extractDecl(n)));
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -94,7 +95,8 @@ geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       extract('attemptSaveMealPlan') + '\n' +
       extract('saveMealPlan'));
 extract('parseQty', true).forEach(src => geval(src));
-['qtyToNum', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'singularizeWord', 'groupKey',
+['qtyToNum', 'parseQtyBounds', 'decomposeTsp', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'stripSizeKeepCase',
+ 'singularizeWord', 'groupKey', 'canonicalUnit', 'canonicalShopKey',
  'parseSingleValue', 'parseFractionOrDecimal',
  'fromTsp', 'parseServings', 'normalizeSlot', 'sundayOf', 'weekDayYmd',
  'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'sectionMatchWords', 'lookupShoppingSection', 'buildShoppingList',
@@ -2129,6 +2131,8 @@ async function main() {
   const receiptsMod = await import(pathToFileURL(receiptsPath).href);
 
   // 26(a) groupKey parity between app.js and receipts.js across -es/-ies plurals and the live recipe corpus
+  // (In v20261115b Step 1, app.js adds head-noun singularization + ITEM_ALIASES while receipts.js stays on
+  // git-v12; priceMatchFor bridges receipts.js group_keys via groupKey(k) + tail-singular tolerance.)
   const recipeDir26 = path.join(SITE_DIR, 'data', 'recipes');
   const recipeFiles26 = fs.existsSync(recipeDir26) ? fs.readdirSync(recipeDir26).filter(f => f.endsWith('.json')) : [];
   let corpusMismatches = 0;
@@ -2136,11 +2140,19 @@ async function main() {
     const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
     for (const sec of (rj.ingredients || [])) {
       for (const it of (sec.items || [])) {
-        if (it && it.item && groupKey(it.item) !== receiptsMod.groupKey(it.item)) corpusMismatches++;
+        if (!it || !it.item) continue;
+        const bk = groupKey(it.item);
+        const rk = receiptsMod.groupKey(it.item);
+        const gkFromRk = groupKey(rk);
+        if (bk !== rk &&
+            bk !== gkFromRk &&
+            bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w)) !== gkFromRk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w))) {
+          corpusMismatches++;
+        }
       }
     }
   }
-  check('Section 26 (groupKey parity): receipts.js groupKey matches app.js groupKey on -es/-ies plurals and across all ' + recipeFiles26.length + ' live recipes (0 mismatches)',
+  check('Section 26 (groupKey parity): receipts.js groupKey matches app.js groupKey on -es/-ies plurals and bridges cleanly across all ' + recipeFiles26.length + ' live recipes (0 mismatches)',
     receiptsMod.groupKey('crushed san marzano tomatoes') === groupKey('crushed san marzano tomatoes') &&
     receiptsMod.groupKey('basil leaves') === groupKey('basil leaves') &&
     receiptsMod.groupKey('russet potatoes') === groupKey('russet potatoes') &&
@@ -2215,10 +2227,12 @@ async function main() {
   // 26(c) Badge rendering, detail toggle markup, and estimated cart total in shoppingListHTML()
   // Place beans back in To buy (qty 2 cans) alongside romaine lettuce, plus an unpriced required item (tortillas)
   globalThis.byId.burritos.ingredients[0].items.push({ qty: '1', unit: 'pack', item: 'flour tortillas' });
-  // Plus a PRICED pantry staple (water): it hides in the staples section when
+  // Plus a PRICED pantry staple (sugar): it hides in the staples section when
   // the Hide-staples toggle is on, and must not count toward the cart total.
-  globalThis.byId.burritos.ingredients[1].items.push({ qty: '1', unit: 'cup', item: 'water' });
-  const water26 = buildShoppingList().find(it => it.base === 'water');
+  // (Water was the original fixture here; water never reaches the list since
+  // v20261115b, so the staple is sugar instead.)
+  globalThis.byId.burritos.ingredients[1].items.push({ qty: '1', unit: 'tsp', item: 'sugar' });
+  const sugar26 = buildShoppingList().find(it => it.base === 'sugar');
   const savedLocal26 = globalThis.localStorage;
   globalThis.localStorage = stubStorage({ 'recipe-hide-staples': '1' });
   wk25.haveGenerated = [];
@@ -2233,10 +2247,10 @@ async function main() {
       avg12m_cents: null,
       last3: [{ price_cents: 149, store: 'Bingo', receipt_date: '2026-11-08' }]
     },
-    [water26.base]: {
+    [sugar26.base]: {
       price_cents: 100,
       store: 'Bingo',
-      bought_name: 'Spring Water 1L',
+      bought_name: 'Domino Sugar 4lb',
       receipt_date: '2026-11-09',
       avg12m_cents: null,
       last3: [{ price_cents: 100, store: 'Bingo', receipt_date: '2026-11-09' }]
@@ -2254,11 +2268,11 @@ async function main() {
 
   // 26(d) Estimated cart total: 3 generated To buy lines (beans 2 cans @ $1.49, romaine @ $2.99, flour tortillas unpriced), plus 1 manual item (excluded from M) and 2 optional items (excluded from M)
   // Sum = $1.49 + $2.99 = $4.48 (one unit per line, NOT multiplied by 2 cans of beans), 2 of 3 items priced.
-  // The priced water staple ($1.00) is hidden by the Hide-staples toggle: its badge still renders in the staples section, but it must NOT enter the sum or M — without the activeToBuy fix the total would read $5.48 · 3 of 4.
+  // The priced sugar staple ($1.00) is hidden by the Hide-staples toggle: its badge still renders in the staples section, but it must NOT enter the sum or M — without the activeToBuy fix the total would read $5.48 · 3 of 4.
   check('Section 26 (estimated cart total): sums one unit per matched To buy line ($4.48) and reports 2 of 3 items priced (manual and optional items excluded from N and M)',
     html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
   check('Section 26 (estimated cart total): a priced pantry staple hidden by the Hide-staples toggle shows its badge but is excluded from the total (still $4.48 · 2 of 3, not $5.48 · 3 of 4)',
-    html26.includes('Spring Water 1L · $1.00 · Bingo · Nov 9') &&
+    html26.includes('Domino Sugar 4lb · $1.00 · Bingo · Nov 9') &&
     html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
 
   // Move beans to Already have: Already-have rows get NO badge, and cart total updates to $2.99 · 1 of 2 items priced
@@ -2349,6 +2363,358 @@ async function main() {
   await persistDraftChips('2026-11-15');
   check('Section 27 (chips): a use-up item added persists as useUp ["kale"]',
     JSON.stringify(serverState.weeks['2026-11-15'].draftChips.useUp) === '["kale"]');
+
+  // Section 29. Orphaned leftover lunches are flagged, never auto-cleared
+  // (tweak #1, v20261115a, Nov 15, 2026; Section 28 is reserved for the
+  // store picker). Fixture: Sunday burritos dinner (beef variant, serves 4
+  // -> 2 leftover servings) + Wednesday burrito-leftover lunch. Mon/Tue
+  // lunches are skipped so the Sunday bucket survives to Wednesday.
+  setMeta([{ id: 'burritos', title: 'Burritos', kosher_status: 'meat', categories: ['main'], servings: '4',
+    variants: [
+      { key: 'beef', label: 'Beef', default: true, slotClass: 'ground-beef' },
+      { key: 'chicken', label: 'Chicken', slotClass: 'chicken' }
+    ] }]);
+  globalThis.byId = { burritos: { id: 'burritos', title: 'Burritos', servings: '4',
+    variants: [
+      { key: 'beef', label: 'Beef', default: true, slotClass: 'ground-beef' },
+      { key: 'chicken', label: 'Chicken', slotClass: 'chicken' }
+    ], ingredients: [] } };
+  const K29 = thisWeekKey();
+  const P29 = prevWeekKeyOf(K29);
+  const orphanLunch = (over) => ({ recipe: 'burritos', variant: 'beef', leftovers: true,
+    drafted: true, locked: false, reason: 'Leftovers from a dinner this week', ...(over || {}) });
+  const mkOrphanWeek = (lunchDish) => {
+    const days = blankDays();
+    days[1].lunch.skipped = true;
+    days[2].lunch.skipped = true;
+    days[0].dinner.dishes = [{ recipe: 'burritos', variant: 'beef', drafted: false, locked: false }];
+    days[3].lunch.dishes = [lunchDish];
+    return days;
+  };
+  const warns29 = (wk) => (wk && Array.isArray(wk.lunchWarnings)) ? wk.lunchWarnings : [];
+  // (a) The already-working case: a drafted, unlocked lunch is cleared with
+  // its dinner and gets an uncovered warning (repro — must not regress).
+  setPlan({ [K29]: { days: mkOrphanWeek(orphanLunch()), lunchWarnings: [] } });
+  recomputeWeekLunches(K29);
+  let wk29 = getWeek(K29);
+  const covered29 = wk29.days[3].lunch.dishes.length === 1 &&
+    wk29.days[3].lunch.dishes[0].recipe === 'burritos' &&
+    !warns29(wk29).some(w => w.kind === 'orphan');
+  wk29.days[0].dinner = blankSlot();
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  check('Section 29 (orphan a): dinner standing covers the drafted Wed lunch (no orphan); clearing the dinner clears the lunch + records uncovered',
+    covered29 && wk29.days[3].lunch.dishes.length === 0 &&
+    warns29(wk29).some(w => w.day === 3 && w.kind === 'uncovered'));
+  // (b) The gap: a LOCKED lunch survives its dinner being cleared, flagged.
+  setPlan({ [K29]: { days: mkOrphanWeek(orphanLunch({ locked: true })), lunchWarnings: [] } });
+  wk29 = getWeek(K29);
+  wk29.days[0].dinner = blankSlot();
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  check('Section 29 (orphan b): a locked leftover lunch survives its dinner being cleared, stamped orphan, with the warning + strip line + dish note',
+    wk29.days[3].lunch.dishes.length === 1 &&
+    wk29.days[3].lunch.dishes[0].orphan === true &&
+    warns29(wk29).some(w => w.day === 3 && w.kind === 'orphan' && w.recipe === 'burritos' && w.variant === 'beef') &&
+    planWarningsHTML(K29, wk29).includes('Wednesday lunch: Burritos · Beef leftovers have no dinner to come from') &&
+    slotHTML(K29, 3, 'lunch', wk29.days[3].lunch, true, false).includes('No dinner to come from'));
+  // (c) Carry-in is not an orphan: last week's Friday dinner feeds the lunch.
+  const prev29 = blankDays();
+  prev29[5].dinner.dishes = [{ recipe: 'burritos', variant: 'beef', drafted: false, locked: false }];
+  setPlan({ [P29]: { days: prev29 }, [K29]: { days: mkOrphanWeek(orphanLunch({ locked: true })), lunchWarnings: [] } });
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  check('Section 29 (orphan c): a locked lunch fed by last week\'s Friday dinner (carry-in pool) is NOT an orphan',
+    wk29.days[3].lunch.dishes.length === 1 &&
+    wk29.days[3].lunch.dishes[0].orphan !== true &&
+    !warns29(wk29).some(w => w.kind === 'orphan'));
+  // (d) Variant mismatch is an orphan: only a beef dinner existed, the lunch
+  // is chicken-variant leftovers — flagged even while the beef dinner stands.
+  setPlan({ [K29]: { days: mkOrphanWeek(orphanLunch({ variant: 'chicken', locked: true })), lunchWarnings: [] } });
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  const mismatchBefore29 = warns29(wk29).some(w => w.kind === 'orphan' && w.variant === 'chicken');
+  wk29.days[0].dinner = blankSlot();
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  check('Section 29 (orphan d): a chicken-variant lunch is an orphan when only the beef dinner existed (flagged before and after the dinner is cleared)',
+    mismatchBefore29 && wk29.days[3].lunch.dishes.length === 1 &&
+    wk29.days[3].lunch.dishes[0].orphan === true &&
+    warns29(wk29).some(w => w.day === 3 && w.kind === 'orphan' && w.recipe === 'burritos' && w.variant === 'chicken'));
+  // (e) Clearing the orphan clears the flag.
+  setPlan({ [K29]: { days: mkOrphanWeek(orphanLunch({ locked: true })), lunchWarnings: [] } });
+  wk29 = getWeek(K29);
+  wk29.days[0].dinner = blankSlot();
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  const flagged29 = warns29(wk29).some(w => w.kind === 'orphan');
+  wk29.days[3].lunch.dishes.splice(0, 1); // slot-editor save removes the dish
+  recomputeWeekLunches(K29);
+  wk29 = getWeek(K29);
+  check('Section 29 (orphan e): removing the orphaned dish drops the orphan warning (flagged before removal, gone after)',
+    flagged29 && !warns29(wk29).some(w => w.kind === 'orphan') &&
+    wk29.days[3].lunch.dishes.length === 0);
+
+  // Section 30. Shopping List Step 1 logic fixes (v20261115b, Nov 15, 2026):
+  // groupKey head-noun singularization + ITEM_ALIASES, canonicalUnit,
+  // two-pass buildShoppingList with unit buckets + no-qty attach, label guard
+  // (pluralize skipped when unit present, displayHead preserved), range bounds
+  // + fromTsp clean kitchen units, splitShopItems hardening + mark migration
+  // + TSP_PER unit conversion, and stock/broth section routing.
+
+  // 30(1) groupKey head-noun singularization + note immunity
+  check('Section 30 (groupKey head-noun + note immunity): singularizes head noun before parentheticals/commas/semicolons and leaves trailing notes untouched ("matters" stays "matters")',
+    groupKey('black or pinto beans (15 oz)') === 'black or pinto bean (15 oz)' &&
+    groupKey('fresh brussel sprouts') === 'fresh brussel sprout' &&
+    groupKey('cumin seeds') === 'cumin seed' &&
+    groupKey('black pepper (plus 1/4 tsp more for the fish)') === 'black pepper (plus 1/4 tsp more for the fish)' &&
+    groupKey('gochujang (Korean red chili paste); check label if gluten free matters') === 'gochujang (korean red chili paste); check label if gluten free matters');
+
+  // 30(2) groupKey ITEM_ALIASES and held-out items
+  check('Section 30 (groupKey ITEM_ALIASES): canonicalizes lemon/lime juice and black pepper aliases and merges plain salt into kosher salt, while keeping held-out items distinct',
+    groupKey('fresh lemon juice') === 'lemon juice' &&
+    groupKey('fresh lime juice') === 'lime juice' &&
+    groupKey('freshly ground black pepper') === 'black pepper' &&
+    groupKey('ground black pepper') === 'black pepper' &&
+    groupKey('freshly cracked black pepper') === 'black pepper' &&
+    groupKey('salt') === 'kosher salt' &&
+    groupKey('fresh parsley') === 'fresh parsley' &&
+    groupKey('kosher salt') === 'kosher salt' &&
+    groupKey('jerusalem spice') === 'jerusalem spice' &&
+    groupKey('cumin seeds') !== groupKey('cumin'));
+
+  // 30(3) canonicalUnit + garlic cloves merge (6 cloves + 1 clove -> 7 cloves garlic, key garlic|clove)
+  const K30 = thisWeekKey();
+  setMeta([
+    { id: 'r30-a', title: 'Recipe A', kosher_status: 'pareve', categories: ['main'], servings: '4' },
+    { id: 'r30-b', title: 'Recipe B', kosher_status: 'pareve', categories: ['main'], servings: '4' }
+  ]);
+  globalThis.byId = {
+    'r30-a': {
+      id: 'r30-a', title: 'Recipe A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '6', unit: 'cloves', item: 'garlic' },
+        { qty: '1', unit: 'tbsp', item: 'lemon juice' },
+        { qty: '', unit: '', item: 'lemon juice' },
+        { qty: '1 1/2', unit: 'tsp', item: 'salt' }
+      ] }]
+    },
+    'r30-b': {
+      id: 'r30-b', title: 'Recipe B', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1', unit: 'clove', item: 'garlic' },
+        { qty: '1', unit: 'Tbsp', item: 'fresh lemon juice' },
+        { qty: '', unit: '', item: 'fresh lemon juice' },
+        { qty: '', unit: '', item: 'salt' }
+      ] }]
+    }
+  };
+  const days30 = blankDays();
+  days30[0].dinner.dishes = [{ recipe: 'r30-a' }];
+  days30[1].dinner.dishes = [{ recipe: 'r30-b' }];
+  setPlan({ [K30]: { days: days30 } });
+  const list30a = buildShoppingList();
+  const garlicCloves30 = list30a.filter(it => it.base === 'garlic');
+  check('Section 30 (canonicalUnit & garlic merge): 6 cloves (unit "cloves") + 1 clove (unit "clove") merge into one "7 cloves garlic" row with key "garlic|clove", and COUNT_TO_TSP has no garlic entry',
+    canonicalUnit('cloves') === 'clove' &&
+    canonicalUnit('cans') === 'can' &&
+    canonicalUnit('Tbsp') === 'tbsp' &&
+    canonicalUnit('tablespoons') === 'tbsp' &&
+    canonicalUnit('teaspoons') === 'tsp' &&
+    canonicalUnit('lbs') === 'lb' &&
+    canonicalUnit('pounds') === 'lb' &&
+    canonicalUnit('ounces') === 'oz' &&
+    COUNT_TO_TSP.garlic === undefined &&
+    garlicCloves30.length === 1 &&
+    garlicCloves30[0].label === '7 cloves garlic' &&
+    garlicCloves30[0].key === 'garlic|clove' &&
+    garlicCloves30[0].qty === 7);
+
+  // 30(4) No-qty attachment + multi-bucket join
+  const lemonRows30 = list30a.filter(it => it.base === 'lemon juice');
+  const saltRows30 = list30a.filter(it => it.base === 'kosher salt');
+  globalThis.byId['r30-b'].ingredients[0].items.push({ qty: '2', unit: 'teaspoons', item: 'garlic' });
+  const list30Multi = buildShoppingList();
+  const garlicMulti30 = list30Multi.filter(it => it.base === 'garlic');
+  check('Section 30 (no-qty attachment & multi-bucket join): 1 tbsp lemon juice + 1 tbsp fresh lemon juice + two no-qty lemon juice lines -> ONE "2 tbsp lemon juice" line; 1½ tsp salt + no-qty salt -> ONE "1½ tsp kosher salt" line; 7 cloves + 2 tsp garlic -> ONE "7 cloves + 2 tsp garlic" line',
+    lemonRows30.length === 1 &&
+    lemonRows30[0].label === '2 tbsp lemon juice' &&
+    lemonRows30[0].key === 'lemon juice|tbsp' &&
+    lemonRows30[0].qty === 2 &&
+    JSON.stringify(lemonRows30[0].sources) === JSON.stringify(['r30-a', 'r30-b']) &&
+    saltRows30.length === 1 &&
+    saltRows30[0].label === '1½ tsp kosher salt' &&
+    garlicMulti30.length === 1 &&
+    garlicMulti30[0].label === '7 cloves + 2 tsp garlic' &&
+    garlicMulti30[0].key === 'garlic|clove' &&
+    garlicMulti30[0].qty === 7);
+
+  // 30(5) Label inflection + brand casing preserved
+  globalThis.byId = {
+    'r30-a': {
+      id: 'r30-a', title: 'Recipe A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1', unit: 'lb', item: 'fresh brussel sprouts' },
+        { qty: '1', unit: 'can', item: 'black beans (15 oz)' },
+        { qty: '1', unit: 'can', item: 'black or pinto beans (15 oz)' },
+        { qty: '1/4', unit: 'tsp', item: 'cumin seeds' },
+        { qty: '1 1/2', unit: 'lbs', item: 'pargiot (dark chicken cutlets)' },
+        { qty: '1', unit: 'tbsp', item: 'mustard (Grey Poupon Dijon)' },
+        { qty: '1', unit: 'packet', item: 'Ortega taco seasoning' },
+        { qty: '2', unit: '', item: 'tomatoes' }
+      ] }]
+    },
+    'r30-b': {
+      id: 'r30-b', title: 'Recipe B', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '2', unit: '', item: 'tomatoes' }
+      ] }]
+    }
+  };
+  const days30b = blankDays();
+  days30b[0].dinner.dishes = [{ recipe: 'r30-a', scale: 1 }];
+  setPlan({ [K30]: { days: days30b } });
+  const list30b = buildShoppingList();
+  const labels30b = list30b.map(it => it.label);
+  const days30c = blankDays();
+  days30c[0].dinner.dishes = [{ recipe: 'r30-b', scale: 0.5 }];
+  setPlan({ [K30]: { days: days30c } });
+  const list30c = buildShoppingList();
+  check('Section 30 (label inflection & brand casing): unit-bearing lines preserve displayHead ("1 lb fresh brussel sprouts", "1 can black beans (15 oz)", "1 can black or pinto beans (15 oz)", "¼ tsp cumin seeds", "1½ lb pargiot (dark chicken cutlets)", "Grey Poupon Dijon", "Ortega") while unitless tomatoes inflect ("2 tomatoes" vs "1 tomato")',
+    labels30b.includes('1 lb fresh brussel sprouts') &&
+    labels30b.includes('1 can black beans (15 oz)') &&
+    labels30b.includes('1 can black or pinto beans (15 oz)') &&
+    labels30b.includes('¼ tsp cumin seeds') &&
+    labels30b.includes('1½ lb pargiot (dark chicken cutlets)') &&
+    labels30b.includes('1 tbsp mustard (Grey Poupon Dijon)') &&
+    labels30b.includes('1 packet Ortega taco seasoning') &&
+    labels30b.includes('2 tomatoes') &&
+    list30c.some(it => it.label === '1 tomato'));
+
+  // 30(6) fromTsp clean kitchen units
+  globalThis.byId = {
+    'r30-a': {
+      id: 'r30-a', title: 'Recipe A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '3 1/2', unit: 'tsp', item: 'kosher salt' },
+        { qty: '4', unit: 'tsp', item: 'cornstarch' },
+        { qty: '15', unit: 'tbsp', item: 'olive oil' },
+        { qty: '25', unit: 'tsp', item: 'milk' },
+        { qty: '17 1/2', unit: 'tsp', item: 'honey' }
+      ] }]
+    }
+  };
+  setPlan({ [K30]: { days: days30b } });
+  const list30Units = buildShoppingList();
+  const unitLabels30 = list30Units.map(it => it.label);
+  const ft16 = fromTsp(16);
+  check('Section 30 (fromTsp clean units): renders "3½ tsp kosher salt", "4 tsp cornstarch", "15 tbsp olive oil" (never "1 cup"), "½ cup + 1 tsp milk" and "⅓ cup + 1½ tsp honey" for non-clean totals, and 16 tsp -> "⅓ cup"',
+    unitLabels30.includes('3½ tsp kosher salt') &&
+    unitLabels30.includes('4 tsp cornstarch') &&
+    unitLabels30.includes('15 tbsp olive oil') &&
+    unitLabels30.includes('½ cup + 1 tsp milk') &&
+    unitLabels30.includes('⅓ cup + 1½ tsp honey') &&
+    Math.abs(ft16.qty - 16 / 48) < 1e-6 && ft16.unit === 'cup' && fmtQty(ft16.qty) === '⅓');
+
+  // 30(7) Ranges
+  globalThis.byId = {
+    'r30-a': {
+      id: 'r30-a', title: 'Recipe A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '2-4', unit: 'tsp', item: 'Sriracha chili sauce' }
+      ] }]
+    }
+  };
+  setPlan({ [K30]: { days: days30b } });
+  const list30d = buildShoppingList();
+  const sriracha30 = list30d.find(it => it.base === 'sriracha chili sauce');
+  check('Section 30 (ranges): "2-4 tsp Sriracha chili sauce" shows the HIGH end only as "4 tsp Sriracha chili sauce" (never "1⅜ tbsp", never "2–4 tsp") with numeric qty = 4',
+    !!sriracha30 &&
+    sriracha30.label === '4 tsp Sriracha chili sauce' &&
+    sriracha30.qty === 4 &&
+    sriracha30.unit === 'tsp');
+
+  // 30(8) Departments (stocks/broths -> Grocery > Canned Goods & Soups; water stays Unsorted)
+  const savedSections30 = globalThis.shoppingSections;
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  const secCs = lookupShoppingSection('chicken stock');
+  const secVs = lookupShoppingSection('vegetable stock');
+  const secCsvs = lookupShoppingSection('chicken stock or vegetable stock');
+  const secBs = lookupShoppingSection('beef stock');
+  const secCb = lookupShoppingSection('chicken broth');
+  const secDs = lookupShoppingSection('duck stock');
+  const secWater = lookupShoppingSection('water');
+  globalThis.shoppingSections = savedSections30;
+  check('Section 30 (departments): chicken stock, vegetable stock, chicken stock or vegetable stock, beef stock, chicken broth, and fallback duck stock route to Grocery > Canned Goods & Soups, while water stays Unsorted',
+    secCs.department === 'Grocery' && secCs.subcategory === 'Canned Goods & Soups' &&
+    secVs.department === 'Grocery' && secVs.subcategory === 'Canned Goods & Soups' &&
+    secCsvs.department === 'Grocery' && secCsvs.subcategory === 'Canned Goods & Soups' &&
+    secBs.department === 'Grocery' && secBs.subcategory === 'Canned Goods & Soups' &&
+    secCb.department === 'Grocery' && secCb.subcategory === 'Canned Goods & Soups' &&
+    secDs.department === 'Grocery' && secDs.subcategory === 'Canned Goods & Soups' &&
+    secWater.department === 'Unsorted');
+
+  // 30(9) Backward compat & splitShopItems hardening:
+  // - 2 cups -> 1 cup have + 1 cup need renders "1 cup" (never "1 cups"), with .qty and .unit on both
+  // - 3 cans -> 1 can have + 2 cans need renders "1 can" and "2 cans"
+  // - old keys garlic|cloves and black or pinto beans (15 oz)|can match via canonicalShopKey
+  // - old mark saved as 1.33 tbsp sriracha covers a 4 tsp item fully (no phantom remainder)
+  const split30Cup = splitShopItems([
+    { key: 'rice|cup', base: 'rice', displayHead: 'rice', label: '2 cups rice', qty: 2, unit: 'cups', rawUnit: 'cup', optional: false, sources: ['r30-a'], department: 'Grocery', subcategory: 'Grains, Rice & Dried', deptIndex: 4 }
+  ], {
+    haveGenerated: [{ key: 'rice|cup', qty: 1, unit: 'cup', session: 's1', at: 100 }]
+  });
+  const split30Can = splitShopItems([
+    { key: 'black or pinto bean (15 oz)|can', base: 'black or pinto bean (15 oz)', displayHead: 'black or pinto beans (15 oz)', label: '3 cans black or pinto beans (15 oz)', qty: 3, unit: 'cans', rawUnit: 'can', optional: false, sources: ['r30-a'], department: 'Grocery', subcategory: 'Canned Goods & Soups', deptIndex: 4 }
+  ], {
+    haveGenerated: [{ key: 'black or pinto beans (15 oz)|can', qty: 1, unit: 'can', session: 's1', at: 100 }]
+  });
+  const split30Garlic = splitShopItems([
+    { key: 'garlic|clove', base: 'garlic', displayHead: 'garlic', label: '7 cloves garlic', qty: 7, unit: 'cloves', rawUnit: 'clove', optional: false, sources: ['r30-a'], department: 'Fresh Produce', subcategory: 'Fresh Vegetables', deptIndex: 0 }
+  ], {
+    haveGenerated: [{ key: 'garlic|cloves', qty: 2, unit: 'cloves', session: 's1', at: 100 }]
+  });
+  const split30Sriracha = splitShopItems([
+    { key: 'sriracha chili sauce|tsp', base: 'sriracha chili sauce', displayHead: 'Sriracha chili sauce', label: '4 tsp Sriracha chili sauce', qty: 4, unit: 'tsp', rawUnit: 'tsp', optional: false, sources: ['r30-a'], department: 'Grocery', subcategory: 'Condiments & Sauces', deptIndex: 4 }
+  ], {
+    haveGenerated: [{ key: 'sriracha chili sauce|tbsp', qty: 1.33, unit: 'tbsp', session: 's1', at: 100 }]
+  });
+  check('Section 30 (backward compat & splitShopItems): 2 cups -> 1 cup have + 1 cup need renders "1 cup" (never "1 cups"); old keys (garlic|cloves, black or pinto beans (15 oz)|can) match via canonicalShopKey; 1.33 tbsp sriracha mark covers 4 tsp item fully',
+    split30Cup.haveIts.length === 1 &&
+    split30Cup.haveIts[0].label === '1 cup rice' &&
+    split30Cup.haveIts[0].qty === 1 &&
+    split30Cup.haveIts[0].unit === 'cup' &&
+    split30Cup.toBuy.length === 1 &&
+    split30Cup.toBuy[0].label === '1 cup rice' &&
+    split30Cup.toBuy[0].qty === 1 &&
+    split30Cup.toBuy[0].unit === 'cup' &&
+    split30Can.haveIts.length === 1 &&
+    split30Can.haveIts[0].label === '1 can black or pinto beans (15 oz)' &&
+    split30Can.toBuy.length === 1 &&
+    split30Can.toBuy[0].label === '2 cans black or pinto beans (15 oz)' &&
+    split30Garlic.haveIts.length === 1 &&
+    split30Garlic.haveIts[0].label === '2 cloves garlic' &&
+    split30Garlic.toBuy.length === 1 &&
+    split30Garlic.toBuy[0].label === '5 cloves garlic' &&
+    split30Sriracha.haveIts.length === 1 &&
+    split30Sriracha.toBuy.length === 0);
+
+  // 30(10) Water never appears on the shopping list (Yidi, Nov 15, 2026)
+  globalThis.byId = {
+    'r30-a': {
+      id: 'r30-a', title: 'Recipe A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1', unit: 'cup', item: 'water' },
+        { qty: '2', unit: 'tbsp', item: 'plain water' },
+        { qty: '1', unit: 'tsp', item: 'kosher salt' }
+      ] }]
+    }
+  };
+  setPlan({ [K30]: { days: days30b } });
+  const list30Water = buildShoppingList();
+  check('Section 30 (water exclusion): water and plain water never appear on the shopping list, while other items still build',
+    !list30Water.some(it => it.base === 'water' || it.base === 'plain water') &&
+    list30Water.some(it => it.base === 'kosher salt'));
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
