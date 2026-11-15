@@ -53,8 +53,8 @@
           "item": "dill"
         },
         {
-          "qty": "½",
-          "unit": "cup",
+          "qty": "1",
+          "unit": "",
           "item": "red onion",
           "prep": "sliced"
         }
@@ -72,5 +72,31 @@
   "pdf": "pdfs/cucumber-salad.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true,
+  "needs_side": false,
+  "history": [
+    {
+      "ts": "2026-11-15T21:47:29.372Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 7 items])",
+          "to": "1 items ([section: 7 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup red onion becomes 1 red onion."
+    }
+  ]
 }
