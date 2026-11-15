@@ -8,11 +8,12 @@
   "id": "crispy-chicken",
   "ingredients": [
     {
+      "section": "",
       "items": [
         {
-          "item": "chicken",
-          "prep": "cut into eighths, or 8 bone-in skin-on chicken legs and thighs",
-          "qty": "1",
+          "item": "bone-in skin-on chicken legs and thighs",
+          "prep": "cut into eighths, or 5-6 bone-in skin-on chicken legs and thighs",
+          "qty": "5-6",
           "unit": null
         },
         {
@@ -20,10 +21,10 @@
           "qty": "2",
           "unit": "tbsp"
         }
-      ],
-      "section": ""
+      ]
     },
     {
+      "section": "Egg coating",
       "items": [
         {
           "item": "egg",
@@ -35,10 +36,10 @@
           "qty": "1",
           "unit": "tbsp"
         }
-      ],
-      "section": "Egg coating"
+      ]
     },
     {
+      "section": "Crispy coating",
       "items": [
         {
           "item": "flour",
@@ -90,8 +91,7 @@
           "qty": "1",
           "unit": "tsp"
         }
-      ],
-      "section": "Crispy coating"
+      ]
     }
   ],
   "instructions": [
@@ -109,7 +109,7 @@
   "notes": "Crispy, flavorful and so versatile — a great weeknight dinner. Works nicely on both bone-in meat and boneless chicken breast. Per Yidi: a full chicken isn't required — the equivalent quantity of chicken legs/thighs works (the recipe already lists this as an option).",
   "pairings": [],
   "pdf": "pdfs/crispy-chicken.pdf",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": false,
   "prep_minutes": 30,
   "servings": "4-6",
@@ -135,6 +135,30 @@
         "Created recipe"
       ],
       "reasoning": "Intake of Crispy Chicken (Leah Schapira, Fresh & Easy — cookbook photo; banner cropped from the submitted photo's finished-dish page). prep = 5 base + egg 1 + mayonnaise 1 + oil 1 + measuring 10 coating ingredients x1 (flour, cornmeal, cornflake crumbs, cornstarch, black pepper, dried parsley, paprika, kosher salt, sugar, garlic powder) + chicken handling 1 + dip-and-roll breading assembly 10 + cooking spray 1 = 30. cook = 90 (bake 75-90 min, upper bound). servings = 4-6 as stated in the source "
+    },
+    {
+      "ts": "2026-11-15T21:46:34.250Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "3 items ([section: 2 items]; [section: 2 items]; [section: 10 items])",
+          "to": "3 items ([section: 2 items]; [section: 2 items]; [section: 10 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D2: '1 chicken' becomes qty 5-6 bone-in skin-on chicken legs and thighs (we buy 5 or 6 leg-and-thigh combos); prep updated to match."
     }
-  ]
+  ],
+  "needs_side": false
 }
