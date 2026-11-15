@@ -2016,7 +2016,13 @@
       "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
-      "optionalPromoted": [],
+      "optionalPromoted": [
+        {
+          "key": "jalapeno|",
+          "promotedAt": 1794757445895,
+          "removedAt": null
+        }
+      ],
       "shoppingDay": "2026-11-11"
     }
   },
