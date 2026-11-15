@@ -2121,6 +2121,27 @@
           "at": 1794758623255,
           "qty": 0.25,
           "unit": "cup"
+        },
+        {
+          "key": "low sodium tamari or soy sauce|cup",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758628797,
+          "qty": 0.25,
+          "unit": "cup"
+        },
+        {
+          "key": "cumin seed|tsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758629834,
+          "qty": 0.25,
+          "unit": "tsp"
+        },
+        {
+          "key": "sriracha chili sauce|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758631234,
+          "qty": 1.33,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
