@@ -50,7 +50,7 @@
         {
           "qty": "1",
           "unit": "can",
-          "item": "black or pinto beans (15 oz)",
+          "item": "black beans (15 oz)",
           "prep": "drained and rinsed"
         },
         {
@@ -59,10 +59,10 @@
           "item": "cumin seeds"
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1/2",
+          "unit": "tsp",
           "item": "crushed red pepper",
-          "prep": "a pinch"
+          "prep": ""
         },
         {
           "qty": "1",
@@ -72,10 +72,10 @@
           "optional": true
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1",
+          "unit": "tbsp",
           "item": "lemon juice",
-          "prep": "a squeeze"
+          "prep": ""
         }
       ]
     },
@@ -95,8 +95,8 @@
           "prep": "diced"
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1",
+          "unit": "tsp",
           "item": "salt"
         },
         {
@@ -118,7 +118,7 @@
         {
           "qty": "1/2",
           "unit": "cup",
-          "item": "vinegar"
+          "item": "white vinegar"
         },
         {
           "qty": "1/2",
@@ -126,16 +126,16 @@
           "item": "water"
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1",
+          "unit": "tsp",
           "item": "salt",
-          "prep": "a pinch"
+          "prep": ""
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1/2",
+          "unit": "tsp",
           "item": "sugar",
-          "prep": "a pinch"
+          "prep": ""
         }
       ]
     },
@@ -169,10 +169,10 @@
           "item": "honey"
         },
         {
-          "qty": "",
-          "unit": "",
+          "qty": "1",
+          "unit": "tsp",
           "item": "lemon juice",
-          "prep": "a squeeze"
+          "prep": ""
         }
       ]
     },
@@ -187,7 +187,7 @@
         {
           "qty": "",
           "unit": "",
-          "item": "oil",
+          "item": "avocado oil",
           "prep": "a little, for the pan"
         }
       ]
@@ -210,7 +210,7 @@
   "pdf": "pdfs/burritos.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "variants": [
     {
@@ -427,6 +427,24 @@
         }
       ],
       "reasoning": "Inbox edit inbox-mwi0qwdw-zjis: Yidi adjudicated 'No side needed and no kosher issues' — set needs_side false and cleared needs_kosher_review. No ingredient/photo change; kosher_status left untouched."
+    },
+    {
+      "ts": "2026-11-15T21:44:11.918Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "6 items ([section: 3 items]; [section: 5 items]; [section: 4 items]; …)",
+          "to": "6 items ([section: 3 items]; [section: 5 items]; [section: 4 items]; …)"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — black beans, white vinegar 1/2 cup, lemon juice 1 tbsp beans / 1 tsp sauce, salt 1 tsp x2, crushed red pepper 1/2 tsp, sugar 1/2 tsp, pan oil = avoca"
     }
   ],
   "needs_side": false
