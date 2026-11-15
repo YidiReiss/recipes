@@ -2107,6 +2107,13 @@
           "at": 1794758618254,
           "qty": 1,
           "unit": "tbsp"
+        },
+        {
+          "key": "vinegar|cup",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758622109,
+          "qty": 0.5,
+          "unit": "cup"
         }
       ],
       "manualItems": [],
