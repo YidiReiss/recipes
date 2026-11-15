@@ -1852,12 +1852,6 @@
                 "drafted": true,
                 "locked": false,
                 "reason": "Chicken night · Favorite · Leftovers cover a lunch"
-              },
-              {
-                "recipe": "taco-salad",
-                "drafted": false,
-                "reason": null,
-                "locked": false
               }
             ]
           }
@@ -1905,7 +1899,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "taco-salad",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1938,17 +1932,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "taco-salad",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -2016,6 +2000,12 @@
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [
