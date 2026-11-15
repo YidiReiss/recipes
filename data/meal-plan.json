@@ -2363,6 +2363,14 @@
           "qty": 3,
           "unit": "tbsp",
           "removed": true
+        },
+        {
+          "key": "black or pinto bean (15 oz)|can",
+          "session": "smwia3ozmdopi35",
+          "at": 1794774033992,
+          "qty": 1,
+          "unit": "can",
+          "removed": true
         }
       ],
       "manualItems": [],
