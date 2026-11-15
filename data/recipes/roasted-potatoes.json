@@ -154,10 +154,19 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — 1.5 lb yellow potatoes, onion soup mix 2 tbsp, compound spice line split into 6 lines, avocado oil 3 tbsp."
+    },
+    {
+      "ts": "2026-11-15T21:59:55.910Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
