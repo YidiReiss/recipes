@@ -2345,5 +2345,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/4 cup purple onion becomes 1/2 purple onion.",
     "created_at": "2026-11-15T21:49:19.356Z"
+  },
+  {
+    "id": "edit-mwidb8ev-9rmk",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+    "recipe_id": "salmon-loaf-en-croute-with-cucumber-dill-sauce",
+    "title": "Salmon Loaf En Croute with Cucumber Dill Sauce",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup onion becomes 1 onion; 3 tbsp onion becomes 1/3 onion (APPROXIMATION: 3 tbsp = 9 tsp = 3/8 onion; 1/3 is the c…",
+    "created_at": "2026-11-15T21:49:54.028Z"
   }
 ]
