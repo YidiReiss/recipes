@@ -1951,6 +1951,14 @@
                 "drafted": false,
                 "reason": null,
                 "locked": false
+              },
+              {
+                "custom": "Soup",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
