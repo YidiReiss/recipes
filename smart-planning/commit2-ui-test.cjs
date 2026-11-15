@@ -1322,9 +1322,9 @@ async function main() {
     /\.cm-step-card\s*\{[^}]*justify-content:\s*flex-start;[^}]*overflow-y:\s*auto;/.test(baseCookCSS) &&
     /\.cm-title-wrap\s*\{[^}]*align-items:\s*center;/.test(baseCookCSS));
 
-  check('T1 CSS: .cm-title wraps up to 2 lines (-webkit-line-clamp: 2) in BOTH phone media queries and never uses nowrap/ellipsis',
-    /\.cm-title\s*\{[^}]*display:\s*-webkit-box;[^}]*-webkit-line-clamp:\s*2;[^}]*-webkit-box-orient:\s*vertical;[^}]*overflow:\s*hidden;/.test(portraitCSS) &&
-    /\.cm-title\s*\{[^}]*display:\s*-webkit-box;[^}]*-webkit-line-clamp:\s*2;[^}]*-webkit-box-orient:\s*vertical;[^}]*overflow:\s*hidden;/.test(landscapeCSS) &&
+  check('T1 CSS: .cm-title wraps up to 3 lines (-webkit-line-clamp: 3) in BOTH phone media queries and never uses nowrap/ellipsis',
+    /\.cm-title\s*\{[^}]*display:\s*-webkit-box;[^}]*-webkit-line-clamp:\s*3;[^}]*-webkit-box-orient:\s*vertical;[^}]*overflow:\s*hidden;/.test(portraitCSS) &&
+    /\.cm-title\s*\{[^}]*display:\s*-webkit-box;[^}]*-webkit-line-clamp:\s*3;[^}]*-webkit-box-orient:\s*vertical;[^}]*overflow:\s*hidden;/.test(landscapeCSS) &&
     !/\.cm-title\s*\{[^}]*text-overflow:\s*ellipsis/.test(portraitCSS) &&
     !/\.cm-title\s*\{[^}]*text-overflow:\s*ellipsis/.test(landscapeCSS) &&
     !/\.cm-title\s*\{[^}]*-webkit-line-clamp/.test(baseCookCSS));
@@ -1727,6 +1727,36 @@ async function main() {
     JSON.stringify(pickedUrls) === JSON.stringify(['images/brisket.jpg', 'images/ziti.jpg', 'images/kugel.jpg']));
   check('Section C (P4): .cat-tile in styles.css uses warm gradient background instead of flat --cream-dark',
     /\.cat-tile\s*\{[^}]*background:\s*linear-gradient\(135deg,\s*#dfcbb2,\s*#b87b56\)/.test(CSS));
+
+  // Section 21. v20261112b regressions (Nov 14, 2026).
+  // (a) Shopping list blank page: shoppingListHTML passed null as the manual
+  // renderer for the Optional section; renderShopSections called [].map(null),
+  // which throws and discarded the whole list HTML. The guard defaults a null
+  // renderer to a no-op. (b) Cook Mode title clamps to 3 lines on phones.
+  ['splitShopItems', 'partitionStaples', 'promotedKeySet', 'promotedIsActive', 'weekStripHTML', 'shoppingListHTML', 'getHideStaples']
+    .forEach(n => geval(extract(n)));
+  setMeta([{ id: 'burritos', title: 'Burritos', kosher_status: 'meat', categories: ['main'], banner_image: 'images/burritos.jpg' }]);
+  globalThis.byId = { burritos: { id: 'burritos', title: 'Burritos', ingredients: [
+    { section: 'Beans (always)', items: [
+      { qty: '1', unit: 'can', item: 'black or pinto beans (15 oz)' },
+      { qty: '1', unit: '', item: 'jalapeno', prep: 'diced', optional: true }
+    ] },
+    { section: 'Fresh', items: [
+      { qty: '1', unit: '', item: 'heart of romaine lettuce', prep: 'sliced thin' }
+    ] }
+  ] } };
+  globalThis.shoppingSections = { departments: ['Fresh Produce', 'Grocery'], fallbackDepartment: 'Unsorted' };
+  const wkDays = blankDays();
+  wkDays[0].dinner.dishes = [{ recipe: 'burritos', drafted: false }];
+  setPlan({ [thisWeekKey()]: { days: wkDays, shoppingDay: thisWeekKey() } });
+  let shopHTML = null, shopErr = null;
+  try { shopHTML = shoppingListHTML(); } catch (e) { shopErr = e; }
+  check('Section 21 (shopping): shoppingListHTML renders To buy + Optional (with the optional jalapeno) instead of throwing when a planned dish has an optional ingredient',
+    !shopErr && shopHTML.includes('To buy') && shopHTML.includes('Optional') && shopHTML.includes('jalapeno'),
+    shopErr ? ('threw: ' + shopErr.message) : '');
+  check('Section 21 (cook-mode title): .cm-title clamps to 3 lines in both phone media queries, with no 2-line clamp left',
+    (CSS.match(/\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*3/g) || []).length === 2 &&
+    !/\.cm-title\s*\{[^}]*-webkit-line-clamp:\s*2/.test(CSS));
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
