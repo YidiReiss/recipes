@@ -1667,10 +1667,9 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Spirgel made us salmon bowls"
           }
         },
         {
