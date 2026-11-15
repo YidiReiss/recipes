@@ -2044,6 +2044,55 @@
           "at": 1794758507434,
           "qty": 1,
           "unit": "tbsp"
+        },
+        {
+          "key": "black or pinto beans (15 oz)|can",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758607945,
+          "qty": 1,
+          "unit": "can"
+        },
+        {
+          "key": "mayonnaise|cup",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758608673,
+          "qty": 1,
+          "unit": "cup"
+        },
+        {
+          "key": "hot sauce|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758609282,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "mustard (grey poupon dijon)|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758610907,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "ortega taco seasoning|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758612042,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "rice vinegar|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758612814,
+          "qty": 1,
+          "unit": "tbsp"
+        },
+        {
+          "key": "tamari or soy sauce|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758614849,
+          "qty": 1,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
