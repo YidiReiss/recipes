@@ -1938,23 +1938,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "sweet-and-sour-meatballs",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat dinner · Favorite · Never made — worth a try · Serves a crowd"
-              },
-              {
-                "recipe": "makie-fray-grilled-chicken",
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              }
-            ]
+            "note": ""
           }
         },
         {
