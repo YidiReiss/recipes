@@ -2185,6 +2185,20 @@
           "at": 1794770301144,
           "qty": 0.25,
           "unit": "cup"
+        },
+        {
+          "key": "purple onion|",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794770383645,
+          "qty": 1,
+          "unit": ""
+        },
+        {
+          "key": "shallot|",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794770384695,
+          "qty": 1,
+          "unit": ""
         }
       ],
       "manualItems": [],
