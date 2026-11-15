@@ -111,7 +111,8 @@ extract('parseQty', true).forEach(src => geval(src));
  /* Commit 2B */
  'variantDefaultKey', 'recipeVariantsFor', 'variantLabelFor',
  'ingredientVisibleForVariant', 'filterIngredientsForVariant',
- 'normalizeDraftChips', 'buildPrefsEntry', 'setRecipePref', 'buildYieldEntry',
+ 'normalizeDraftChips', 'persistWeek', 'readDraftChips', 'persistDraftChips',
+ 'buildPrefsEntry', 'setRecipePref', 'buildYieldEntry',
  'recordMealFeedback', 'warningSignature', 'planWarningsHTML',
  'lastMadeText', 'uniqueVariantKey', 'feedbackRowHTML', 'slotHTML',
  /* Phase 1 Cooking Enhancements */
@@ -1341,7 +1342,10 @@ async function main() {
     /\.cm-drawer-toggle\s+\.cm-btn-label\s*\{\s*display:\s*inline;\s*\}/.test(landscapeCSS));
 
   // 20b. Section B (r1): Home + Browse entry buttons and Unified Add a recipe screen with toggle
+  // v20261112d: homeToBuyCount now calls splitShopItems (To buy section only),
+  // so its deps come along — promotedKeySet/promotedIsActive for the Optional split.
   ['activeHaveMarks', 'planCarouselHTML', 'helpLinkHTML', 'renderLanding', 'homeToBuyCount',
+   'splitShopItems', 'promotedKeySet', 'promotedIsActive',
    'blankRecipe', 'historyHTML', 'recipeFormHTML', 'setAddRecipeMode', 'renderAddRecipeScreen',
    'renderAdd', 'renderSubmit'].forEach(n => geval(extract(n)));
   ['GUIDE_SECTION_SLUGS', 'KNOWN_CATEGORIES'].forEach(n => geval(extractDecl(n)));
@@ -1975,9 +1979,381 @@ async function main() {
   check('Section 23 (staples): plain water is a pantry staple, and water with a note still is (parenthetical stripped); coconut water is not',
     isPantryStaple('plain water') && isPantryStaple('water (maybe a little more)') && !isPantryStaple('coconut water'));
 
+  // Section 24. Home counter counts only what is needed (v20261112d, Nov 15, 2026):
+  // homeToBuyCount() is the To buy section (splitShopItems), not the raw
+  // buildShoppingList() total — a purely-optional item doesn't count, a
+  // promoted optional item does, and a partially-bought item counts its
+  // remainder line. Fixture: the Section 21 burritos (1 required beans line,
+  // 1 required lettuce line, 1 optional jalapeno) planned for dinner this week.
+  setMeta([{ id: 'burritos', title: 'Burritos', kosher_status: 'meat', categories: ['main'], banner_image: 'images/burritos.jpg' }]);
+  globalThis.byId = { burritos: { id: 'burritos', title: 'Burritos', ingredients: [
+    { section: 'Beans (always)', items: [
+      { qty: '1', unit: 'can', item: 'black or pinto beans (15 oz)' },
+      { qty: '1', unit: '', item: 'jalapeno', prep: 'diced', optional: true }
+    ] },
+    { section: 'Fresh', items: [
+      { qty: '1', unit: '', item: 'heart of romaine lettuce', prep: 'sliced thin' }
+    ] }
+  ] } };
+  const wk24Days = blankDays();
+  wk24Days[0].dinner.dishes = [{ recipe: 'burritos', drafted: false }];
+  setPlan({ [thisWeekKey()]: { days: wk24Days, shoppingDay: thisWeekKey() } });
+  const wk24 = getWeek(thisWeekKey());
+  const jalKey = buildShoppingList().find(it => it.optional).key;
+  check('Section 24 (home count): a purely-optional item does not count — burritos week tallies 2 (beans + lettuce), not 3 (jalapeno excluded)',
+    homeToBuyCount() === 2);
+  wk24.optionalPromoted = [{ key: jalKey, promotedAt: Date.now(), removedAt: null }];
+  check('Section 24 (home count): a promoted optional item counts — promoting the jalapeno brings the tally to 3',
+    homeToBuyCount() === 3);
+  wk24.optionalPromoted = [];
+  const beansIt = buildShoppingList().find(it => !it.optional && it.base.includes('bean'));
+  wk24.haveGenerated = [{ key: beansIt.key, session: 'test', at: Date.now(), qty: 0.5, unit: 'can' }];
+  check('Section 24 (home count): a partially-bought item counts its remainder line — half the beans marked have still leaves 2 (beans remainder + lettuce)',
+    homeToBuyCount() === 2);
+  wk24.haveGenerated = [];
+  check('Section 24 (home count): the card matches the shopping page To buy section exactly, by construction (same splitShopItems split)',
+    homeToBuyCount() === splitShopItems(buildShoppingList(), wk24).toBuy.length);
+
+  // Section 25. Shopping-list ⋮ menu on every generated row (Feature 2, Nov 15, 2026).
+  ['dismissShopKey', 'setPromoted', 'normalizePromotedList', 'mergePromoted',
+   'normalizeHaveMarks', 'mergeHaveMarks', 'mergeManualItems', 'mergeWeekState',
+   'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded']
+    .forEach(n => geval(extract(n)));
+  setPriceHistoryCache(null);
+
+  setMeta([
+    { id: 'burritos', title: 'Burritos', kosher_status: 'meat', categories: ['main'], banner_image: 'images/burritos.jpg' },
+    { id: 'taco-salad', title: 'Taco Salad', kosher_status: 'meat', categories: ['main'], banner_image: 'images/tacos.jpg' }
+  ]);
+  globalThis.byId = {
+    burritos: { id: 'burritos', title: 'Burritos', ingredients: [
+      { section: 'Beans', items: [
+        { qty: '2', unit: 'can', item: 'black or pinto beans (15 oz)' },
+        { qty: '1', unit: '', item: 'jalapeno', prep: 'diced', optional: true }
+      ] },
+      { section: 'Fresh', items: [
+        { qty: '1', unit: '', item: 'heart of romaine lettuce', prep: 'sliced thin' }
+      ] }
+    ] },
+    'taco-salad': { id: 'taco-salad', title: 'Taco Salad', ingredients: [
+      { section: 'Base', items: [
+        { qty: '1', unit: '', item: 'heart of romaine lettuce', prep: 'chopped' },
+        { qty: '1', unit: '', item: 'heart of romaine lettuce', prep: 'extra leaves' },
+        { qty: '1', unit: '', item: 'avocado', optional: true }
+      ] }
+    ] }
+  };
+  const wk25Days = blankDays();
+  wk25Days[0].dinner.dishes = [{ recipe: 'burritos', drafted: false }];
+  wk25Days[1].dinner.dishes = [{ recipe: 'taco-salad', drafted: false }];
+  setPlan({ [thisWeekKey()]: { days: wk25Days, shoppingDay: thisWeekKey() } });
+  const wk25 = getWeek(thisWeekKey());
+  const list25 = buildShoppingList();
+  const lettuce25 = list25.find(it => !it.optional && it.base.includes('romaine'));
+  const beans25 = list25.find(it => !it.optional && it.base.includes('bean'));
+  const jal25 = list25.find(it => it.optional && it.base.includes('jalapeno'));
+  check('Section 25 (sources): buildShoppingList tracks contributing recipe IDs in first-seen order without duplicates',
+    !!lettuce25 && JSON.stringify(lettuce25.sources) === JSON.stringify(['burritos', 'taco-salad']) &&
+    !!beans25 && JSON.stringify(beans25.sources) === JSON.stringify(['burritos']) &&
+    !!jal25 && JSON.stringify(jal25.sources) === JSON.stringify(['burritos']));
+
+  // Add one manual item and mark beans as Already have so all row types render
+  wk25.manualItems = [{ id: 'm1', text: 'Paper towels', have: false, updatedAt: 100 }];
+  wk25.haveGenerated = [{ key: beans25.key, session: 's1', at: 100 }];
+  const html25 = shoppingListHTML();
+  check('Section 25 (menu markup): To buy, Already have, and Optional generated rows render .shop-menu-btn (⋮) with From: <recipe> links, while manual rows have no ⋮ button',
+    html25.includes('data-shop-menu="' + lettuce25.key + '"') &&
+    html25.includes('data-shop-menu="' + beans25.key + '"') &&
+    html25.includes('data-shop-menu="' + jal25.key + '"') &&
+    !html25.includes('data-shop-menu="m1"') &&
+    html25.includes('data-mandel="m1"') &&
+    html25.includes('<a href="#/recipe/burritos">Burritos</a>, <a href="#/recipe/taco-salad">Taco Salad</a>'));
+  check('Section 25 (menu options by section): Optional row menu includes Move to to buy, while To buy and Already-have row menus do not',
+    html25.includes('data-shop-act="move-to-buy" data-shop-key="' + jal25.key + '"') &&
+    !html25.includes('data-shop-act="move-to-buy" data-shop-key="' + lettuce25.key + '"') &&
+    !html25.includes('data-shop-act="move-to-buy" data-shop-key="' + beans25.key + '"'));
+
+  // Move to to buy on optional item uses setPromoted(week, key, true)
+  wk25.manualItems = [];
+  wk25.haveGenerated = [];
+  setPromoted(wk25, jal25.key, true);
+  const splitAfterPromote = splitShopItems(buildShoppingList(), wk25);
+  check('Section 25 (Move to to buy): promoting an optional item moves it from optionalIts to toBuy and increments homeToBuyCount()',
+    splitAfterPromote.toBuy.some(it => it.key === jal25.key) &&
+    !splitAfterPromote.optionalIts.some(it => it.key === jal25.key) &&
+    homeToBuyCount() === 3);
+
+  // Dismissing a promoted optional item removes it from all sections while keeping its promotion record intact
+  dismissShopKey(wk25, jal25.key);
+  const splitAfterDismissPromoted = splitShopItems(buildShoppingList(), wk25);
+  check('Section 25 (Delete promoted optional): dismissing a promoted optional item removes it from toBuy/haveIts/optionalIts for the week and drops homeToBuyCount() back to 2',
+    !splitAfterDismissPromoted.toBuy.some(it => it.key === jal25.key) &&
+    !splitAfterDismissPromoted.haveIts.some(it => it.key === jal25.key) &&
+    !splitAfterDismissPromoted.optionalIts.some(it => it.key === jal25.key) &&
+    promotedKeySet(wk25).has(jal25.key) &&
+    homeToBuyCount() === 2);
+
+  // Dismissing a required To buy item removes it from To buy and drops homeToBuyCount; returns on a fresh week object
+  dismissShopKey(wk25, lettuce25.key);
+  const splitAfterDismissReq = splitShopItems(buildShoppingList(), wk25);
+  const freshWeekSplit = splitShopItems(buildShoppingList(), { days: wk25Days });
+  check('Section 25 (Delete required & fresh week reset): dismissing a required item drops it from To buy and homeToBuyCount() (to 1), and a fresh week object restores all items',
+    !splitAfterDismissReq.toBuy.some(it => it.key === lettuce25.key) &&
+    homeToBuyCount() === 1 &&
+    freshWeekSplit.toBuy.some(it => it.key === lettuce25.key) &&
+    freshWeekSplit.toBuy.length === 2 &&
+    freshWeekSplit.optionalIts.length === 2);
+
+  // Merge week state unions dismissedShopKeys across devices without duplicates
+  const mergedWk25 = mergeWeekState(
+    { haveGenerated: [], manualItems: [], optionalPromoted: [], dismissedShopKeys: [lettuce25.key, jal25.key] },
+    { haveGenerated: [], manualItems: [], optionalPromoted: [], dismissedShopKeys: [jal25.key, beans25.key] }
+  );
+  check('Section 25 (mergeWeekState): dismissedShopKeys merges as a deduplicated union across devices',
+    JSON.stringify(mergedWk25.dismissedShopKeys) === JSON.stringify([lettuce25.key, jal25.key, beans25.key]));
+
+  // Section 26. Receipt price history on the shopping list (Feature 3, Nov 15, 2026).
+  wk25.dismissedShopKeys = [];
+  wk25.optionalPromoted = [];
+  wk25.manualItems = [{ id: 'm1', text: 'Paper towels', have: false, updatedAt: 100 }];
+  wk25.haveGenerated = [{ key: beans25.key, session: 's1', at: 100 }];
+
+  const receiptsCandidates = [
+    path.join(__dirname, 'receipts.js'),
+    path.join(SITE_DIR, 'receipts.js'),
+    path.join(SITE_DIR, '..', 'bridge', 'receipts.js'),
+    path.join(__dirname, '..', 'receipts.js')
+  ];
+  const receiptsPath = receiptsCandidates.find(p => fs.existsSync(p));
+  const { pathToFileURL } = require('url');
+  const receiptsMod = await import(pathToFileURL(receiptsPath).href);
+
+  // 26(a) groupKey parity between app.js and receipts.js across -es/-ies plurals and the live recipe corpus
+  const recipeDir26 = path.join(SITE_DIR, 'data', 'recipes');
+  const recipeFiles26 = fs.existsSync(recipeDir26) ? fs.readdirSync(recipeDir26).filter(f => f.endsWith('.json')) : [];
+  let corpusMismatches = 0;
+  for (const rf of recipeFiles26) {
+    const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
+    for (const sec of (rj.ingredients || [])) {
+      for (const it of (sec.items || [])) {
+        if (it && it.item && groupKey(it.item) !== receiptsMod.groupKey(it.item)) corpusMismatches++;
+      }
+    }
+  }
+  check('Section 26 (groupKey parity): receipts.js groupKey matches app.js groupKey on -es/-ies plurals and across all ' + recipeFiles26.length + ' live recipes (0 mismatches)',
+    receiptsMod.groupKey('crushed san marzano tomatoes') === groupKey('crushed san marzano tomatoes') &&
+    receiptsMod.groupKey('basil leaves') === groupKey('basil leaves') &&
+    receiptsMod.groupKey('russet potatoes') === groupKey('russet potatoes') &&
+    receiptsMod.groupKey('cranberries') === groupKey('cranberries') &&
+    corpusMismatches === 0);
+
+  // 26(b) Worker GET /price-history endpoint: verified-only filtering, last-vs-12m-average math, privacy fields, and empty state
+  const mockReceiptRows = [
+    // Verified purchases for romaine lettuce (4 purchases: 3 within 12 months, 1 older than 12 months)
+    { status: 'verified', needs_review: 0, group_key: lettuce25.base, paid_price_cents: 299, store: 'Bingo', product_name: 'Romaine Hearts 3pk', raw_line: 'ROMAINE 3PK', receipt_date: '2026-11-10', receipt_id: 'r4', item_id: 40 },
+    { status: 'verified', needs_review: 0, group_key: lettuce25.base, paid_price_cents: 349, store: 'NPGS', product_name: 'Romaine Hearts', raw_line: 'ROMAINE', receipt_date: '2026-10-15', receipt_id: 'r3', item_id: 30 },
+    { status: 'verified', needs_review: 0, group_key: lettuce25.base, paid_price_cents: 319, store: 'Bingo', product_name: 'Romaine Hearts 3pk', raw_line: 'ROMAINE 3PK', receipt_date: '2026-08-01', receipt_id: 'r2', item_id: 20 },
+    { status: 'verified', needs_review: 0, group_key: lettuce25.base, paid_price_cents: 199, store: 'Evergreen', product_name: 'Romaine Hearts', raw_line: 'ROMAINE', receipt_date: '2025-05-01', receipt_id: 'r1', item_id: 10 },
+    // Single verified purchase for optional jalapeno (raw_line fallback when product_name is empty; avg12m_cents must be null)
+    { status: 'verified', needs_review: 0, group_key: jal25.base, paid_price_cents: 89, store: 'Bingo', product_name: '', raw_line: 'JALAPENO PEPPER', receipt_date: '2026-11-08', receipt_id: 'r4', item_id: 41 },
+    // Unverified receipt and needs_review item (must be excluded)
+    { status: 'review', needs_review: 0, group_key: 'avocado', paid_price_cents: 150, store: 'Bingo', product_name: 'Hass Avocado', raw_line: 'AVOCADO', receipt_date: '2026-11-12', receipt_id: 'r5', item_id: 50 },
+    { status: 'verified', needs_review: 1, group_key: 'avocado', paid_price_cents: 150, store: 'Bingo', product_name: 'Hass Avocado', raw_line: 'AVOCADO', receipt_date: '2026-11-12', receipt_id: 'r4', item_id: 42 }
+  ];
+  const makeMockEnv = rows => ({
+    RECEIPTS_DB: {
+      prepare() {
+        return {
+          all: async () => ({
+            results: rows.filter(r =>
+              r.status === 'verified' &&
+              (r.needs_review === 0 || r.needs_review === null) &&
+              r.paid_price_cents !== null &&
+              r.group_key
+            )
+          })
+        };
+      }
+    }
+  });
+  const phRes = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(mockReceiptRows),
+    { nowMs: new Date('2026-11-15T12:00:00Z').getTime() }
+  );
+  const phJson = await phRes.json();
+  const romPrice = phJson.prices[lettuce25.base];
+  const jalPrice = phJson.prices[jal25.base];
+  check('Section 26 (worker /price-history): filters to verified non-needs_review items, computes newest price + last3 + 12-mo mean (null on single purchase), and strips private fields',
+    phJson.ok === true &&
+    !('avocado' in phJson.prices) &&
+    !!romPrice &&
+    romPrice.price_cents === 299 &&
+    romPrice.store === 'Bingo' &&
+    romPrice.bought_name === 'Romaine Hearts 3pk' &&
+    romPrice.receipt_date === '2026-11-10' &&
+    romPrice.avg12m_cents === Math.round((299 + 349 + 319) / 3) &&
+    romPrice.last3.length === 3 &&
+    JSON.stringify(romPrice.last3.map(x => x.price_cents)) === JSON.stringify([299, 349, 319]) &&
+    Object.keys(romPrice).sort().join(',') === 'avg12m_cents,bought_name,last3,price_cents,receipt_date,store' &&
+    Object.keys(romPrice.last3[0]).sort().join(',') === 'price_cents,receipt_date,store' &&
+    !!jalPrice &&
+    jalPrice.price_cents === 89 &&
+    jalPrice.bought_name === 'JALAPENO PEPPER' &&
+    jalPrice.avg12m_cents === null &&
+    jalPrice.last3.length === 1);
+
+  const phEmptyRes = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv([]),
+    { nowMs: new Date('2026-11-15T12:00:00Z').getTime() }
+  );
+  const phEmptyJson = await phEmptyRes.json();
+  check('Section 26 (worker empty history): GET /price-history returns { ok: true, prices: {} } when no verified items exist',
+    phEmptyJson.ok === true && JSON.stringify(phEmptyJson.prices) === '{}');
+
+  // 26(c) Badge rendering, detail toggle markup, and estimated cart total in shoppingListHTML()
+  // Place beans back in To buy (qty 2 cans) alongside romaine lettuce, plus an unpriced required item (tortillas)
+  globalThis.byId.burritos.ingredients[0].items.push({ qty: '1', unit: 'pack', item: 'flour tortillas' });
+  // Plus a PRICED pantry staple (water): it hides in the staples section when
+  // the Hide-staples toggle is on, and must not count toward the cart total.
+  globalThis.byId.burritos.ingredients[1].items.push({ qty: '1', unit: 'cup', item: 'water' });
+  const water26 = buildShoppingList().find(it => it.base === 'water');
+  const savedLocal26 = globalThis.localStorage;
+  globalThis.localStorage = stubStorage({ 'recipe-hide-staples': '1' });
+  wk25.haveGenerated = [];
+  // Mark beans with a price too, and keep flour tortillas unpriced; add a manual item and mark a separate item have
+  const pricedMap26 = {
+    ...phJson.prices,
+    [beans25.base]: {
+      price_cents: 149,
+      store: 'Bingo',
+      bought_name: 'Goya Black Beans',
+      receipt_date: '2026-11-08',
+      avg12m_cents: null,
+      last3: [{ price_cents: 149, store: 'Bingo', receipt_date: '2026-11-08' }]
+    },
+    [water26.base]: {
+      price_cents: 100,
+      store: 'Bingo',
+      bought_name: 'Spring Water 1L',
+      receipt_date: '2026-11-09',
+      avg12m_cents: null,
+      last3: [{ price_cents: 100, store: 'Bingo', receipt_date: '2026-11-09' }]
+    }
+  };
+  setPriceHistoryCache(pricedMap26);
+  const html26 = shoppingListHTML();
+  check('Section 26 (badges & detail): badges render on matched To buy and Optional rows with bought_name · $X.XX · store · Mon D, detail shows last3 and conditional 12-mo avg, and unmatched/manual/Already-have rows get no badge',
+    html26.includes('Romaine Hearts 3pk · $2.99 · Bingo · Nov 10') &&
+    html26.includes('Goya Black Beans · $1.49 · Bingo · Nov 8') &&
+    html26.includes('JALAPENO PEPPER · $0.89 · Bingo · Nov 8') &&
+    html26.includes('12-mo avg $3.22') &&
+    !html26.includes('data-price-toggle="flour tortilla|pack"') &&
+    !html26.includes('data-price-toggle="m1"'));
+
+  // 26(d) Estimated cart total: 3 generated To buy lines (beans 2 cans @ $1.49, romaine @ $2.99, flour tortillas unpriced), plus 1 manual item (excluded from M) and 2 optional items (excluded from M)
+  // Sum = $1.49 + $2.99 = $4.48 (one unit per line, NOT multiplied by 2 cans of beans), 2 of 3 items priced.
+  // The priced water staple ($1.00) is hidden by the Hide-staples toggle: its badge still renders in the staples section, but it must NOT enter the sum or M — without the activeToBuy fix the total would read $5.48 · 3 of 4.
+  check('Section 26 (estimated cart total): sums one unit per matched To buy line ($4.48) and reports 2 of 3 items priced (manual and optional items excluded from N and M)',
+    html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
+  check('Section 26 (estimated cart total): a priced pantry staple hidden by the Hide-staples toggle shows its badge but is excluded from the total (still $4.48 · 2 of 3, not $5.48 · 3 of 4)',
+    html26.includes('Spring Water 1L · $1.00 · Bingo · Nov 9') &&
+    html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
+
+  // Move beans to Already have: Already-have rows get NO badge, and cart total updates to $2.99 · 1 of 2 items priced
+  wk25.haveGenerated = [{ key: beans25.key, session: 's1', at: 200 }];
+  const html26Have = shoppingListHTML();
+  check('Section 26 (Already have excluded): moving a priced item to Already have suppresses its badge and updates the cart total to $2.99 · 1 of 2 items priced',
+    !html26Have.includes('Goya Black Beans · $1.49 · Bingo · Nov 8') &&
+    html26Have.includes('Estimated total about $2.99 · 1 of 2 items priced'));
+
+  globalThis.localStorage = savedLocal26;   // restore the Hide-staples toggle state
+
+  // 26(e) Fetch failure renders cleanly without badges; one-shot session cache never refetches on subsequent calls
+  const savedFetch26 = globalThis.fetch;
+  let fetchCalls26 = 0;
+  resetPriceHistorySession();
+  globalThis.fetch = async () => { fetchCalls26++; throw new Error('network down'); };
+  await ensurePriceHistoryLoaded();
+  let htmlAfterFail = '';
+  let failErr = null;
+  try { htmlAfterFail = shoppingListHTML(); } catch (e) { failErr = e; }
+  check('Section 26 (fetch failure): when /price-history rejects, shoppingListHTML renders cleanly with no badges and no error',
+    !failErr && fetchCalls26 === 1 && !htmlAfterFail.includes('shop-price-badge') && !htmlAfterFail.includes('shop-est-total'));
+
+  resetPriceHistorySession();
+  fetchCalls26 = 0;
+  globalThis.fetch = async () => {
+    fetchCalls26++;
+    return { ok: true, json: async () => phJson };
+  };
+  await ensurePriceHistoryLoaded();
+  await ensurePriceHistoryLoaded();
+  const htmlAfterOnce = shoppingListHTML();
+  globalThis.fetch = savedFetch26;
+  check('Section 26 (one-shot cache): ensurePriceHistoryLoaded fetches /price-history at most once per session and reuses the cached prices',
+    fetchCalls26 === 1 && htmlAfterOnce.includes('Romaine Hearts 3pk · $2.99 · Bingo · Nov 10'));
+
+  // Section 27. Draft chips save when tapped (Nov 15, 2026): the chip
+  // bar used to write week.draftChips only inside runDraftWeek, so a
+  // toggle changed the page and nothing else — refresh re-read the saved
+  // chips and the box came back checked. Now every chip persists on tap
+  // via persistDraftChips (the same persistWeek path as the shopping-day
+  // change, no re-render). Fixture: week 2026-11-15 as the Nov 11 draft
+  // left it — hosting Friday on — with a burritos dinner standing.
+  const chipDOM = {
+    fri: { checked: true },
+    sat: { checked: false },
+    eatOutActive: [{ dataset: { eatout: '0' } }, { dataset: { eatout: '5' } }]
+  };
+  globalThis.$ = sel => sel === '#draft-hosting-fri' ? chipDOM.fri
+    : sel === '#draft-hosting-sat' ? chipDOM.sat : null;
+  globalThis.document = { querySelectorAll: sel =>
+    sel === '[data-eatout].active' ? chipDOM.eatOutActive : [] };
+  globalThis.draftUseUp = ['spinach'];
+  check('Section 27 (chips): readDraftChips reads the bar as shown — Friday on, Saturday off, eat-out days 0 and 5, use-up spinach',
+    JSON.stringify(readDraftChips()) ===
+    JSON.stringify({ hostingFri: true, hostingSat: false, eatOut: [0, 5], useUp: ['spinach'] }));
+  globalThis.$ = () => null;
+  globalThis.document = { querySelectorAll: () => [] };
+  globalThis.draftUseUp = [];
+  check('Section 27 (chips): readDraftChips with no chip bar present reads all-off instead of throwing',
+    JSON.stringify(readDraftChips()) ===
+    JSON.stringify({ hostingFri: false, hostingSat: false, eatOut: [], useUp: [] }));
+  // The regression: unchecking Friday must stick across a refresh.
+  const wk27Days = blankDays();
+  wk27Days[0].dinner.dishes = [{ recipe: 'burritos', drafted: true }];
+  setPlan({ '2026-11-15': { days: wk27Days,
+    draftChips: { hostingFri: true, hostingSat: false, eatOut: [], useUp: [] } } });
+  chipDOM.fri.checked = false;   // the user unchecks Friday
+  globalThis.$ = sel => sel === '#draft-hosting-fri' ? chipDOM.fri
+    : sel === '#draft-hosting-sat' ? chipDOM.sat : null;
+  globalThis.document = { querySelectorAll: () => [] };
+  globalThis.draftUseUp = [];
+  await persistDraftChips('2026-11-15');
+  check('Section 27 (chips): unchecking Friday persists — a fresh read of the saved week has hosting Friday off',
+    serverState.weeks['2026-11-15'].draftChips.hostingFri === false);
+  check('Section 27 (chips): the in-memory week agrees with the saved one',
+    getWeek('2026-11-15').draftChips.hostingFri === false);
+  check('Section 27 (chips): persisting chips does not clobber the week — the standing burritos dinner survives',
+    serverState.weeks['2026-11-15'].days[0].dinner.dishes[0].recipe === 'burritos');
+  // Eat-out and use-up chips persist the same way.
+  chipDOM.eatOutActive = [{ dataset: { eatout: '2' } }];
+  globalThis.document = { querySelectorAll: sel =>
+    sel === '[data-eatout].active' ? chipDOM.eatOutActive : [] };
+  await persistDraftChips('2026-11-15');
+  check('Section 27 (chips): an eat-out day tapped on persists as eatOut [2]',
+    JSON.stringify(serverState.weeks['2026-11-15'].draftChips.eatOut) === '[2]');
+  globalThis.draftUseUp = ['kale'];
+  await persistDraftChips('2026-11-15');
+  check('Section 27 (chips): a use-up item added persists as useUp ["kale"]',
+    JSON.stringify(serverState.weeks['2026-11-15'].draftChips.useUp) === '["kale"]');
+
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
   if (failed.length) process.exitCode = 1;
 }
 
 main().catch(e => { console.error('ERROR', e); process.exitCode = 1; });
+
