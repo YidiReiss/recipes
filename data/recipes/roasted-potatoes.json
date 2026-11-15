@@ -12,33 +12,63 @@
   ],
   "prep_minutes": 15,
   "cook_minutes": 30,
-  "servings": 6,
+  "servings": "6",
   "leftover_friendly": false,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/roasted-potatoes.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
-          "qty": null,
-          "unit": null,
-          "item": "potatoes (quantity not specified)"
+          "qty": "1.5",
+          "unit": "lb",
+          "item": "yellow potatoes (The Little Potato Company)"
         },
         {
-          "qty": null,
-          "unit": null,
-          "item": "onion soup mix (a good amount, sprinkled)"
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "onion soup mix"
         },
         {
-          "qty": null,
-          "unit": null,
-          "item": "garlic, hot paprika, Jerusalem spice, cumin, coriander, and black pepper (sprinkled to taste)"
+          "qty": "1",
+          "unit": "tsp",
+          "item": "garlic powder"
         },
         {
-          "qty": "2-3",
+          "qty": "3",
           "unit": "Tbsp",
-          "item": "oil"
+          "item": "avocado oil"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "hot paprika",
+          "prep": ""
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "jerusalem spice",
+          "prep": ""
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "cumin",
+          "prep": ""
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "coriander",
+          "prep": ""
+        },
+        {
+          "qty": "1/2",
+          "unit": "tsp",
+          "item": "black pepper",
+          "prep": ""
         }
       ]
     }
@@ -54,7 +84,7 @@
     "Roast for 30 minutes and check with a fork to see if done."
   ],
   "pairings": [],
-  "notes": null,
+  "notes": "",
   "source": "Kayla",
   "tags_need_review": false,
   "pdf": "pdfs/roasted-potatoes.pdf",
@@ -76,6 +106,58 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 15 min (base 5 + wash/cut ~2 lb potatoes + season) and servings 6 (side; quantity unspecified, estimated from 2-3 Tbsp oil / sheet pan) per Sous Chef estimation rules."
+    },
+    {
+      "ts": "2026-11-15T21:43:12.434Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "servings",
+          "from": 6,
+          "to": "6"
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 4 items])",
+          "to": "1 items ([section: 9 items])"
+        },
+        {
+          "field": "notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — 1.5 lb yellow potatoes, onion soup mix 2 tbsp, compound spice line split into 6 lines, avocado oil 3 tbsp."
     }
-  ]
+  ],
+  "needs_side": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
