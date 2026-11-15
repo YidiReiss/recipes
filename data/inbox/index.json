@@ -2290,5 +2290,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D2: '1 chicken' becomes qty 5-6 bone-in skin-on chicken legs and thighs (we buy 5 or 6 leg-and-thigh combos); prep updated to match.",
     "created_at": "2026-11-15T21:46:34.250Z"
+  },
+  {
+    "id": "edit-mwid7cot-kepp",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "osvo-babulas",
+    "recipe_id": "osvo-babulas",
+    "title": "Osvo - Babulas",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D3: 'dried tomato or small tomato' becomes just 'tomato'. No-qty spices (red pepper flakes, turmeric, paprika) left exactly as-is.",
+    "created_at": "2026-11-15T21:46:53.099Z"
   }
 ]
