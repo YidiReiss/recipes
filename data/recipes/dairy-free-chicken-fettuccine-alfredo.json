@@ -110,7 +110,7 @@
   "needs_side": false,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "history": [
     {
       "ts": "2026-11-15T21:45:06.278Z",
@@ -149,6 +149,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: chicken stock (not vegetable stock), fresh parsley optional (qty stays blank, prep 'minced, to taste' kept)."
+    },
+    {
+      "ts": "2026-11-15T22:00:16.664Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
