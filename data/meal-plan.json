@@ -1634,9 +1634,18 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": true,
+            "skipped": false,
             "note": "Eat out",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "christina-contis-pasta-caprese",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           }
         },
         {
@@ -1666,6 +1675,10 @@
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1676,9 +1689,7 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
