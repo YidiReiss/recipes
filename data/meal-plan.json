@@ -1790,19 +1790,9 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Beef version · Rated fine · Leftovers cover a lunch",
-                "variant": "beef"
-              }
-            ]
+            "skipped": true,
+            "note": "Eating out, sushi",
+            "dishes": []
           }
         },
         {
@@ -1811,17 +1801,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "burritos",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": "beef",
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -2013,7 +1993,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 1,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
       "haveGenerated": [
         {
           "key": "garlic|clove",
