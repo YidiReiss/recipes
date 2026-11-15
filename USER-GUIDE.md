@@ -345,6 +345,7 @@ Tap **Shopping List** in the top navigation bar to open this week's grocery list
    - Tap **+** to promote the item into **To buy** for this week. (If you change your mind later, tapping its **○** button in **To buy** sends it back to **Optional**.)
    - Tap **✓** to mark that you **Already have** it on hand.
    - Or tap **⋮** to open the item menu (see below).
+3. If an ingredient is required in one planned recipe and optional in another, both combine into a single row in **To buy** with an optional note—for example, `3 eggs (2 optional)`—so you see the full total while knowing which portion is optional.
 
 ### Using the Item Menu (`⋮`) on Recipe Ingredients
 Every shopping list line that came from a planned recipe—whether it is in **To buy**, **Pantry staples**, **Already have**, or **Optional**—has a **⋮** button on the right (manual items you typed yourself keep their simple **×** delete button instead):
