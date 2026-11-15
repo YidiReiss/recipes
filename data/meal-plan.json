@@ -2021,14 +2021,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "tomato-dip",
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              }
-            ]
+            "dishes": []
           }
         }
       ],
