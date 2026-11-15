@@ -753,6 +753,9 @@ const COUNT_TO_TSP = {
 function singularizeWord(w) {
   if (!w || w.length <= 2 || /ss$/.test(w)) return w;
   if (/^(series|species)$/.test(w)) return w;
+  if (/^(tomatoe|potatoe)$/.test(w)) return w.slice(0, -1);
+  if (/^leave$/.test(w)) return 'leaf';
+  if (/^(cranberrie|strawberrie|cherrie|blueberrie|raspberrie|blackberrie|anchovie)$/.test(w)) return w.slice(0, -2) + 'y';
   if (/ies$/.test(w) && !/^(cookies|brownies|veggies)$/.test(w)) return w.replace(/ies$/, 'y');
   if (/leaves$/.test(w)) return w.replace(/leaves$/, 'leaf');
   if (/oes$/.test(w) && !/^(shoes|aloes|hoes|toes|does)$/.test(w)) return w.replace(/es$/, '');
@@ -937,10 +940,12 @@ function partitionStaples(toBuy, week) {
    3 cups, Already Have shows the 1 cup and To Buy keeps a "2 cups" remainder
    line. Shared by the shopping page render and Copy list so they agree. */
 function splitShopItems(items, week) {
-  const marks = activeHaveMarks(week.haveGenerated);
+  const marks = activeHaveMarks(week && week.haveGenerated);
   const promoted = promotedKeySet(week);
+  const dismissed = new Set(Array.isArray(week && week.dismissedShopKeys) ? week.dismissedShopKeys.filter(Boolean) : []);
   const toBuy = [], haveIts = [], optionalIts = [];
   items.forEach(it => {
+    if (dismissed.has(it.key)) return;
     const mark = marks.find(m => m.key === it.key);
     if (it.optional && !mark && !promoted.has(it.key)) { optionalIts.push(it); return; }
     if (!mark) { toBuy.push(it); return; }
@@ -949,13 +954,18 @@ function splitShopItems(items, week) {
     if (markedQty !== null && curQty !== null && curQty > markedQty + 1e-9) {
       const base = it.key.split('|')[0];
       const remainder = Math.round((curQty - markedQty) * 100) / 100;
+      const srcs = Array.isArray(it.sources) ? it.sources.slice() : [];
       haveIts.push({
-        key: it.key, split: 'have',
-        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim()
+        key: it.key, base: it.base || base, split: 'have',
+        label: [fmtQty(markedQty), mark.unit || it.unit, pluralize(base, markedQty)].filter(Boolean).join(' ').trim(),
+        sources: srcs,
+        department: it.department, subcategory: it.subcategory, deptIndex: it.deptIndex
       });
       toBuy.push({
-        key: it.key, split: 'need',
-        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim()
+        key: it.key, base: it.base || base, split: 'need',
+        label: [fmtQty(remainder), it.unit, pluralize(base, remainder)].filter(Boolean).join(' ').trim(),
+        sources: srcs.slice(),
+        department: it.department, subcategory: it.subcategory, deptIndex: it.deptIndex
       });
     } else {
       haveIts.push(it);
@@ -1048,8 +1058,10 @@ function buildShoppingList() {
         const nkey = gkey + '|' + unitRaw.toLowerCase();
         let e = map.get(nkey);
         if (!e) {
-          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase, optional: !!it.optional };
+          e = { base: gkey, unit: unitRaw, qty: 0, hasNum: false, texts: [], isConv: !!convBase, optional: !!it.optional, sources: [en.id] };
           map.set(nkey, e);
+        } else if (!e.sources.includes(en.id)) {
+          e.sources.push(en.id);
         }
         // If any occurrence is required, the whole line is required.
         if (!it.optional) e.optional = false;
@@ -1090,6 +1102,7 @@ function buildShoppingList() {
       qty: e.hasNum ? qnum : null,
       unit: du,
       optional: !!e.optional,
+      sources: Array.isArray(e.sources) ? e.sources.slice() : [],
       department: sec.department,
       subcategory: sec.subcategory,
       deptIndex: sec.deptIndex
@@ -1221,6 +1234,74 @@ function shoppingFromLabel() {
     esc(new Date(from + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })) +
     ' onward</span>';
 }
+/* ---------------- Shopping list ⋮ menu + Receipt price history (Features 2 & 3) ---------------- */
+let _priceHistoryCache = null;
+let _priceHistoryInFlight = null;
+let _priceHistoryFetched = false;
+let _openPriceDetailKeys = new Set();
+
+function dismissShopKey(week, key) {
+  if (!week || !key) return;
+  if (!Array.isArray(week.dismissedShopKeys)) week.dismissedShopKeys = [];
+  if (!week.dismissedShopKeys.includes(key)) week.dismissedShopKeys.push(key);
+}
+
+function setPriceHistoryCache(pricesObj) {
+  if (pricesObj && typeof pricesObj === 'object') {
+    _priceHistoryCache = pricesObj;
+    _priceHistoryFetched = true;
+    _priceHistoryInFlight = Promise.resolve(_priceHistoryCache);
+  } else {
+    _priceHistoryCache = null;
+    _priceHistoryFetched = pricesObj !== undefined;
+    _priceHistoryInFlight = pricesObj !== undefined ? Promise.resolve(null) : null;
+  }
+  if (typeof globalThis !== 'undefined') globalThis.__priceHistoryCache = _priceHistoryCache;
+}
+
+function resetPriceHistorySession() {
+  _priceHistoryCache = null;
+  _priceHistoryInFlight = null;
+  _priceHistoryFetched = false;
+  _openPriceDetailKeys = new Set();
+  if (typeof globalThis !== 'undefined') delete globalThis.__priceHistoryCache;
+}
+
+function ensurePriceHistoryLoaded(onLoaded) {
+  if (_priceHistoryFetched) {
+    return _priceHistoryInFlight || Promise.resolve(_priceHistoryCache);
+  }
+  if (_priceHistoryInFlight) return _priceHistoryInFlight;
+  if (typeof fetch !== 'function') return Promise.resolve(null);
+  _priceHistoryFetched = true;
+  const baseUrl = (typeof BRIDGE === 'string' && BRIDGE) ? BRIDGE : 'https://recipe-bridge.leibreiss.workers.dev';
+  _priceHistoryInFlight = Promise.resolve()
+    .then(() => fetch(baseUrl + '/price-history'))
+    .then(async res => {
+      if (!res || !res.ok) {
+        _priceHistoryCache = null;
+        if (typeof globalThis !== 'undefined') globalThis.__priceHistoryCache = null;
+        return null;
+      }
+      const data = await res.json();
+      if (data && data.ok && data.prices && typeof data.prices === 'object') {
+        _priceHistoryCache = data.prices;
+        if (typeof globalThis !== 'undefined') globalThis.__priceHistoryCache = _priceHistoryCache;
+        if (typeof onLoaded === 'function') onLoaded(_priceHistoryCache);
+        return _priceHistoryCache;
+      }
+      _priceHistoryCache = null;
+      if (typeof globalThis !== 'undefined') globalThis.__priceHistoryCache = null;
+      return null;
+    })
+    .catch(() => {
+      _priceHistoryCache = null;
+      if (typeof globalThis !== 'undefined') globalThis.__priceHistoryCache = null;
+      return null;
+    });
+  return _priceHistoryInFlight;
+}
+
 function shoppingListHTML() {
   const week = getWeek(thisWeekKey());
   if (!Array.isArray(week.manualItems)) week.manualItems = [];
@@ -1257,6 +1338,97 @@ function shoppingListHTML() {
   const manToBuy = week.manualItems.filter(m => !m.deleted && !m.have);
   const manHave = week.manualItems.filter(m => !m.deleted && m.have);
 
+  const pricesMap = (typeof _priceHistoryCache === 'object' && _priceHistoryCache)
+    ? _priceHistoryCache
+    : ((typeof globalThis !== 'undefined' && globalThis.__priceHistoryCache && typeof globalThis.__priceHistoryCache === 'object')
+      ? globalThis.__priceHistoryCache
+      : null);
+  const openDetailSet = (typeof _openPriceDetailKeys !== 'undefined' && _openPriceDetailKeys instanceof Set)
+    ? _openPriceDetailKeys
+    : new Set();
+
+  const fmtDollars = cents => {
+    const n = Number(cents);
+    return Number.isFinite(n) ? ('$' + (n / 100).toFixed(2)) : '';
+  };
+  const fmtShortDate = ymdStr => {
+    const s = String(ymdStr || '').trim();
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+    if (!m) return s;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mIdx = parseInt(m[2], 10) - 1;
+    const day = parseInt(m[3], 10);
+    if (mIdx < 0 || mIdx > 11 || !day) return s;
+    return months[mIdx] + ' ' + day;
+  };
+  const resolveRecipeTitle = id => {
+    if (typeof byId !== 'undefined' && byId && byId[id] && byId[id].title) return byId[id].title;
+    if (typeof metaById !== 'undefined' && metaById && metaById[id] && metaById[id].title) return metaById[id].title;
+    if (typeof recipeMeta === 'function') {
+      const rm = recipeMeta(id);
+      if (rm && rm.title) return rm.title;
+    }
+    return String(id || '');
+  };
+  const itemBaseKey = it => {
+    if (it && it.base) return String(it.base).toLowerCase();
+    return String((it && it.key) || '').split('|')[0].toLowerCase();
+  };
+  const priceMatchFor = it => {
+    if (!pricesMap) return null;
+    const bk = itemBaseKey(it);
+    if (!bk) return null;
+    const entry = pricesMap[bk];
+    if (!entry || !Number.isFinite(Number(entry.price_cents))) return null;
+    return entry;
+  };
+  const renderPriceBadge = it => {
+    const p = priceMatchFor(it);
+    if (!p) return '';
+    const bk = itemBaseKey(it);
+    const bought = String(p.bought_name || bk).trim();
+    const priceStr = fmtDollars(p.price_cents);
+    const storeStr = String(p.store || '').trim();
+    const dateStr = fmtShortDate(p.receipt_date);
+    const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
+    const last3 = Array.isArray(p.last3) ? p.last3.slice(0, 3) : [];
+    const histParts = last3.map(h =>
+      '<span class="shop-price-hist-item">' +
+      esc([fmtShortDate(h.receipt_date), String(h.store || '').trim(), fmtDollars(h.price_cents)].filter(Boolean).join(' · ')) +
+      '</span>'
+    );
+    const hasAvg = p.avg12m_cents !== null && p.avg12m_cents !== undefined && Number.isFinite(Number(p.avg12m_cents));
+    if (hasAvg) {
+      histParts.push('<span class="shop-price-avg">12-mo avg ' + esc(fmtDollars(p.avg12m_cents)) + '</span>');
+    }
+    const isOpen = openDetailSet.has(it.key);
+    return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
+        esc(badgeText) +
+      '</button>' +
+      '<div class="shop-price-detail" data-price-detail="' + esc(it.key) + '"' + (isOpen ? '' : ' hidden') + '>' +
+        histParts.join(' · ') +
+      '</div>';
+  };
+  const renderMenuWrap = (it, section) => {
+    const srcs = Array.isArray(it && it.sources) ? it.sources : [];
+    const fromHTML = srcs.length
+      ? '<div class="shop-menu-sources">From: ' +
+        srcs.map(id => '<a href="#/recipe/' + encodeURIComponent(id) + '">' + esc(resolveRecipeTitle(id)) + '</a>').join(', ') +
+        '</div>'
+      : '';
+    const moveHTML = section === 'opt'
+      ? '<button type="button" class="shop-menu-item shop-menu-move" data-shop-act="move-to-buy" data-shop-key="' + esc(it.key) + '">Move to to buy</button>'
+      : '';
+    return '<div class="shop-menu-wrap">' +
+      '<button class="shop-menu-btn" type="button" data-shop-menu="' + esc(it.key) + '" aria-label="Item options" aria-expanded="false">⋮</button>' +
+      '<div class="shop-menu-card" data-shop-menu-card="' + esc(it.key) + '" hidden>' +
+        '<button type="button" class="shop-menu-item shop-menu-del" data-shop-act="delete" data-shop-key="' + esc(it.key) + '">Delete</button>' +
+        moveHTML +
+        fromHTML +
+      '</div>' +
+    '</div>';
+  };
+
   const conflictBadge = k =>
     conflictKeys.has(k)
       ? '<span class="shop-conflict">⚠️ Both grabbed this — check for duplicates ' +
@@ -1265,11 +1437,13 @@ function shoppingListHTML() {
   const renderGenToBuy = it =>
     '<div class="shop-item" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
-      '<span>' + esc(it.label) + '</span></div>';
+      '<span class="shop-item-main"><span class="shop-item-label">' + esc(it.label) + '</span>' + renderPriceBadge(it) + '</span>' +
+      renderMenuWrap(it, 'tobuy') + '</div>';
   const renderGenHave = it =>
     '<div class="shop-item have' + (conflictKeys.has(it.key) ? ' conflict' : '') + '" data-shop="' + esc(it.key) + '"' + (it.split ? ' data-shop-split="' + it.split + '"' : '') + '>' +
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
-      '<span>' + esc(it.label) + '</span>' + conflictBadge(it.key) + '</div>';
+      '<span class="shop-item-main"><span class="shop-item-label">' + esc(it.label) + '</span></span>' +
+      conflictBadge(it.key) + renderMenuWrap(it, 'have') + '</div>';
   // Staple rows reuse the exact To Buy row template (same keys, same split
   // attribute) so the delegated have-toggle handlers work unchanged.
   const stapleLis = stapleIts.map(renderGenToBuy).join('');
@@ -1283,12 +1457,13 @@ function shoppingListHTML() {
       '<button class="shop-have-btn" type="button" aria-label="Move back to buy">●</button>' +
       '<span>' + esc(m.text) + '</span>' + conflictBadge('m:' + m.id) +
       '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>';
-  // Optional items: two tap targets — "+" promotes to To Buy, "✓" marks Already Have.
+  // Optional items: two tap targets — "+" promotes to To Buy, "✓" marks Already Have, plus ⋮ menu.
   const renderOpt = it =>
     '<div class="shop-item optional" data-shop-opt="' + esc(it.key) + '">' +
-      '<span>' + esc(it.label) + ' <em class="opt-tag">optional</em></span>' +
+      '<span class="shop-item-main"><span class="shop-item-label">' + esc(it.label) + ' <em class="opt-tag">optional</em></span>' + renderPriceBadge(it) + '</span>' +
       '<button class="shop-opt-btn" data-opt-add="' + esc(it.key) + '" type="button" aria-label="Add to buy list" title="Add to buy list">+</button>' +
-      '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button></div>';
+      '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button>' +
+      renderMenuWrap(it, 'opt') + '</div>';
 
   // Helper to render items grouped by department (or flat if shoppingSections is null)
   const renderShopSections = (genItems, manItems, renderGen, renderMan, containerAttr) => {
@@ -1324,11 +1499,32 @@ function shoppingListHTML() {
     return groups.join('');
   };
 
+  let estTotalHTML = '';
+  // The total sums the DISPLAYED To buy lines (activeToBuy): pantry staples
+  // hidden by the Hide-staples toggle are not bought this week, so they must
+  // not count toward the total or M. When the toggle is off, activeToBuy is
+  // toBuy (partitionStaples is a no-op), so the total matches the list.
+  if (pricesMap && activeToBuy.length > 0) {
+    let pricedCount = 0;
+    let sumCents = 0;
+    activeToBuy.forEach(it => {
+      const p = priceMatchFor(it);
+      if (p) {
+        pricedCount++;
+        sumCents += Number(p.price_cents) || 0;
+      }
+    });
+    if (pricedCount > 0) {
+      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedCount + ' of ' + activeToBuy.length + ' items priced</p>';
+    }
+  }
+
   let html = '<div class="week-strip no-print">' + weekStripHTML() + '</div>';
   if (!items.length && !week.manualItems.some(m => !m.deleted)) {
     html += '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
+    html += estTotalHTML;
     const toBuyHTML = renderShopSections(activeToBuy, manToBuy, renderGenToBuy, renderManToBuy, 'data-gen="1"');
     if (toBuyHTML) {
       html += '<h3 class="shop-sub">To buy</h3>' + toBuyHTML;
@@ -1504,16 +1700,84 @@ async function renderShopping(app) {
   // Fetch full JSONs for planned recipes only (parallel).
   await ensurePlannedRecipes();
   renderShopWrap();
+  // One-time per-session price-history fetch (never refetches on re-render).
+  ensurePriceHistoryLoaded(() => {
+    if (typeof location === 'undefined' || (location.hash || '#/') === '#/shopping') {
+      renderShopWrap();
+    }
+  });
 
   const shopWrap = $('#shop-wrap');
   const saveShop = () => { markShopDirty(); };
   const rerender = () => renderShopWrap();
+  const closeAllShopMenus = () => {
+    if (!shopWrap || typeof shopWrap.querySelectorAll !== 'function') return;
+    shopWrap.querySelectorAll('.shop-menu-card').forEach(c => { c.hidden = true; });
+    shopWrap.querySelectorAll('.shop-menu-btn').forEach(b => { b.setAttribute('aria-expanded', 'false'); });
+  };
+  if (typeof document !== 'undefined' && typeof document.addEventListener === 'function' && !document._shopMenuOutsideWired) {
+    document._shopMenuOutsideWired = true;
+    document.addEventListener('click', ev => {
+      if (ev && ev.target && typeof ev.target.closest === 'function' && ev.target.closest('.shop-menu-wrap')) return;
+      if (typeof document.querySelectorAll === 'function') {
+        document.querySelectorAll('.shop-menu-card').forEach(c => { c.hidden = true; });
+        document.querySelectorAll('.shop-menu-btn').forEach(b => { b.setAttribute('aria-expanded', 'false'); });
+      }
+    });
+  }
   const stapleToggle = $('#shop-hide-staples');
   if (stapleToggle) stapleToggle.addEventListener('change', () => { setHideStaples(stapleToggle.checked); rerender(); });
   // Start 15s background sync while the shopping page is open
   startShopPoll();
 
   shopWrap.addEventListener('click', e => {
+    // 1. Row ⋮ menu toggle
+    const menuBtn = e.target.closest('[data-shop-menu]');
+    if (menuBtn) {
+      const wrap = menuBtn.closest('.shop-menu-wrap');
+      const card = wrap ? wrap.querySelector('.shop-menu-card') : null;
+      const wasOpen = !!(card && !card.hidden);
+      closeAllShopMenus();
+      if (card && !wasOpen) {
+        card.hidden = false;
+        menuBtn.setAttribute('aria-expanded', 'true');
+      }
+      return;
+    }
+    // 2. Row ⋮ menu actions (Delete / Move to to buy)
+    const menuAct = e.target.closest('[data-shop-act]');
+    if (menuAct) {
+      const act = menuAct.dataset.shopAct;
+      const k = menuAct.dataset.shopKey;
+      const week = getWeek(thisWeekKey());
+      closeAllShopMenus();
+      if (act === 'delete' && k) {
+        dismissShopKey(week, k);
+        markShopDirty(); rerender(); return;
+      }
+      if (act === 'move-to-buy' && k) {
+        setPromoted(week, k, true);
+        markShopDirty(); rerender(); return;
+      }
+      return;
+    }
+    // 3. Price badge tap: toggle inline detail line (last 3 purchases + 12-mo avg)
+    const priceBtn = e.target.closest('[data-price-toggle]');
+    if (priceBtn) {
+      closeAllShopMenus();
+      const k = priceBtn.dataset.priceToggle;
+      const mainEl = priceBtn.parentElement;
+      const detailEl = mainEl && typeof mainEl.querySelector === 'function'
+        ? mainEl.querySelector('.shop-price-detail')
+        : null;
+      const nextOpen = !_openPriceDetailKeys.has(k);
+      if (nextOpen) _openPriceDetailKeys.add(k);
+      else _openPriceDetailKeys.delete(k);
+      priceBtn.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+      if (detailEl) detailEl.hidden = !nextOpen;
+      return;
+    }
+    closeAllShopMenus();
     // Toggle have / to-buy (local-first: works offline, syncs in background)
     const haveBtn = e.target.closest('.shop-have-btn');
     if (haveBtn) {
@@ -1715,13 +1979,18 @@ async function renderShopping(app) {
 }
 
 /* ---------------- Landing page ---------------- */
-/* Home "items to buy" count, from the fully tallied shopping list — the same
-   buildShoppingList() the shopping page uses. (v20261112c) */
+/* Home "items to buy" count — the To buy section of the shopping list, not
+   the raw buildShoppingList() total: a purely-optional item (every occurrence
+   optional, not promoted) lives in the Optional section and is not needed
+   yet, so it doesn't count. Uses the same splitShopItems() the shopping page
+   uses, so the card and the page can never drift apart — a promoted optional
+   item counts, and a partially-bought item counts its remainder line.
+   (v20261112d; v20261112c counted the raw total, optional included.) */
 function homeToBuyCount() {
   const week = getWeek(thisWeekKey());
   const items = buildShoppingList();
-  const haveKeys = new Set(activeHaveMarks(week.haveGenerated).map(m => m.key));
-  return items.filter(it => !haveKeys.has(it.key)).length +
+  const { toBuy } = splitShopItems(items, week);
+  return toBuy.length +
     (week.manualItems || []).filter(m => !m.deleted && !m.have).length;
 }
 
@@ -5319,8 +5588,17 @@ function renderPlanner(app) {
   });
 
   // --- Draft Week chip bar wiring ---
+  // Every chip saves the moment it is tapped (persistDraftChips) — the
+  // chips live on the week record, and a toggle that only changed the
+  // page reverted on every refresh (the Nov 11 draft had hosting Friday
+  // on, so it kept coming back checked). No re-render here: a toggle
+  // must not rebuild the planner under the user's finger.
   app.querySelectorAll('[data-eatout]').forEach(b =>
-    b.addEventListener('click', () => b.classList.toggle('active')));
+    b.addEventListener('click', () => { b.classList.toggle('active'); persistDraftChips(key); }));
+  ['draft-hosting-fri', 'draft-hosting-sat'].forEach(id => {
+    const box = $('#' + id);
+    if (box) box.addEventListener('change', () => persistDraftChips(key));
+  });
   renderUseUpChips();
   const useUpHost = $('#draft-useup-chips');
   if (useUpHost) useUpHost.addEventListener('click', e => {
@@ -5328,6 +5606,7 @@ function renderPlanner(app) {
     if (!del) return;
     draftUseUp.splice(+del.dataset.useupDel, 1);
     renderUseUpChips();
+    persistDraftChips(key);
   });
   const addUseUp = () => {
     const inp = $('#draft-useup-input');
@@ -5337,6 +5616,7 @@ function renderPlanner(app) {
     draftUseUp.push(v);
     inp.value = '';
     renderUseUpChips();
+    persistDraftChips(key);
     inp.focus();
   };
   const useUpAdd = $('#draft-useup-add');
@@ -7007,16 +7287,33 @@ function renderUseUpChips() {
   ).join('');
 }
 
-/* Draft Week button flow: read the chip bar, remember the chips on
-   the week record (draftWeek persists the whole week, chips
-   included), run the generator, re-render. */
-async function runDraftWeek(key, app) {
-  const chips = {
+/* Read the Draft Week chip bar exactly as the user sees it. Shared by
+   runDraftWeek and persistDraftChips so a toggle and a draft can never
+   disagree about what the chips are. */
+function readDraftChips() {
+  return {
     hostingFri: !!($('#draft-hosting-fri') && $('#draft-hosting-fri').checked),
     hostingSat: !!($('#draft-hosting-sat') && $('#draft-hosting-sat').checked),
     eatOut: [...document.querySelectorAll('[data-eatout].active')].map(el => +el.dataset.eatout),
     useUp: draftUseUp.slice(0, 5)
   };
+}
+
+/* Save the chip bar the moment a chip is tapped — no Draft Week run
+   needed. The in-memory week gets the new chips first, then persistWeek
+   writes that week over the fresh server copy (mergeWeekState leaves
+   draftChips alone, so the toggle survives the merge). No re-render:
+   a toggle must not rebuild the planner under the user's finger. */
+async function persistDraftChips(key) {
+  getWeek(key).draftChips = readDraftChips();
+  await persistWeek(key, null, null);
+}
+
+/* Draft Week button flow: read the chip bar, remember the chips on
+   the week record (draftWeek persists the whole week, chips
+   included), run the generator, re-render. */
+async function runDraftWeek(key, app) {
+  const chips = readDraftChips();
   try {
     getWeek(key).draftChips = chips;
     draftUseUp = chips.useUp.slice();
@@ -7265,6 +7562,12 @@ function mergeWeekState(target, source) {
   }
   // Merge optional promotions (union) so a promotion isn't lost in sync.
   target.optionalPromoted = mergePromoted(target.optionalPromoted, source.optionalPromoted);
+  if (Array.isArray(target.dismissedShopKeys) || Array.isArray(source.dismissedShopKeys)) {
+    target.dismissedShopKeys = [...new Set([
+      ...(Array.isArray(target.dismissedShopKeys) ? target.dismissedShopKeys : []),
+      ...(Array.isArray(source.dismissedShopKeys) ? source.dismissedShopKeys : [])
+    ].filter(k => typeof k === 'string' && k))];
+  }
   return target;
 }
 // Fetch the meal plan from the live bridge API first (no Pages rebuild lag),

@@ -338,9 +338,31 @@ Tap **Shopping List** in the top navigation bar to open this week's grocery list
 
 ### Managing Optional Ingredients (`Optional (N)`)
 1. Recipe ingredients marked *`optional`* never clutter your main **To buy** list automatically; instead, they sit inside the collapsed **Optional (N)** section.
-2. Tap **Optional (N)** to expand it. Each optional item has two buttons on the right:
+2. Tap **Optional (N)** to expand it. Each optional item has buttons on the right:
    - Tap **+** to promote the item into **To buy** for this week. (If you change your mind later, tapping its **○** button in **To buy** sends it back to **Optional**.)
    - Tap **✓** to mark that you **Already have** it on hand.
+   - Or tap **⋮** to open the item menu (see below).
+
+### Using the Item Menu (`⋮`) on Recipe Ingredients
+Every shopping list line that came from a planned recipe—whether it is in **To buy**, **Pantry staples**, **Already have**, or **Optional**—has a **⋮** button on the right (manual items you typed yourself keep their simple **×** delete button instead):
+1. Tap **⋮** on any recipe ingredient row to open its pop-up menu (tap **⋮** again or tap anywhere else on the page to close it).
+2. Depending on which section the item is in, the menu gives you:
+   - **Delete** *(all sections)* — Removes the ingredient from your Shopping List for **this week only** (useful when you know you won't need an ingredient this week). If you plan the dish again in a future week, the ingredient comes back automatically.
+   - **Move to to buy** *(Optional section only)* — Promotes the optional ingredient into **To buy** for this week, just like tapping **+**.
+   - **From: \<Recipe Name\>** *(all sections)* — Shows which planned recipe (or recipes) put this item on your list. Tap any recipe name in the menu to jump straight to that recipe's page!
+
+### Viewing Past Receipt Prices and the Estimated Cart Total
+When an item on your **To buy** or **Optional** list matches a product from your verified grocery receipts, the Shopping List automatically shows what you paid last time:
+1. **Estimated Cart Total (Top of List):**
+   - At the top of your Shopping List, a quiet summary line shows:
+     > `Estimated total about $X.XX · N of M items priced`
+   - This adds up the most recent verified price for each priced **To buy** recipe item (counting one package per line), and tells you how many of your `M` recipe **To buy** items have a known price (`N`). Because unpriced items aren't included and recipe quantities aren't multiplied, it is always labeled **about** as a helpful ballpark estimate. Pantry staples hidden by the Hide-staples toggle aren't counted in the total (they still show their own price badge in the staples section).
+2. **Price Badges on Individual Items:**
+   - Directly beneath any matched **To buy** or **Optional** item, a small grey badge displays the last verified purchase:
+     > `<Product bought> · $X.XX · <Store> · <Date>` (for example, `Romaine Hearts 3pk · $2.99 · Bingo · Nov 10`)
+   - Items without a past receipt match—as well as items in **Already have** and manual items—show no badge at all.
+3. **Tap a Price Badge for Recent History & 12-Month Average:**
+   - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
 
 ### Hiding Pantry Staples (`Hide pantry staples`)
 1. Check **Hide pantry staples** at the top of the Shopping List to tuck everyday kitchen basics (water, salt, black pepper, olive and vegetable oil, standard ground spices, honey, flour, sugar, cornstarch, baking powder, and baking soda) out of **To buy**.
