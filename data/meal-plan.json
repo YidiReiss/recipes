@@ -2347,6 +2347,13 @@
           "key": "beef|",
           "session": "smwi7tm67j1bo6b",
           "at": 1794770930718
+        },
+        {
+          "key": "fettuccine pasta|lb",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794771049329,
+          "qty": 0.75,
+          "unit": "lb"
         }
       ],
       "manualItems": [],
