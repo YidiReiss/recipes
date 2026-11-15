@@ -269,7 +269,7 @@ Above the day cards is the **Draft Week** bar, which lets you tell the planner a
 2. **↻ Swap:** On any drafted, unlocked non-leftover dish, tap **↻ Swap** to replace it with the next best dish of the same kind (cycling through the top 5 matches without re-drafting the rest of your week). Swapping a dinner automatically updates your week's leftover lunch coverage.
 3. **🔒 Lock / 🔓 Unlock:** Tap **🔒 Lock** on a drafted dish you want to keep; it gains a `🔒` icon and **Draft Week ✨** will leave it untouched if you re-draft the week. Tap **🔓 Unlock** to allow it to be re-drafted again.
 4. **Needs a side badge:** If a planned main dish is flagged as needing a side dish and is the only dish in that slot, a yellow **Needs a side** badge appears next to it. Tap **+ Add dish** on that slot to add a side dish, and the badge disappears automatically.
-5. **Lunch Coverage Warnings:** If Monday–Friday lunches cannot be fully covered by leftovers from your planned dinners, a yellow banner appears above the week (`⚠ Tuesday lunch isn’t covered by leftovers` or `⚠ Wednesday lunch only has ~1 leftover serving (needs 2)`), along with a **Not covered** or **Only 1 of 2 servings** badge on that lunch slot. Tap **✕** on the banner to dismiss the warning.
+5. **Lunch Coverage Warnings:** If Monday–Friday lunches cannot be fully covered by leftovers from your planned dinners, a yellow banner appears above the week (`⚠ Tuesday lunch isn’t covered by leftovers` or `⚠ Wednesday lunch only has ~1 leftover serving (needs 2)`), along with a **Not covered** or **Only 1 of 2 servings** badge on that lunch slot. Tap **✕** on the banner to dismiss the warning. If a locked (or hand-added) lunch holds leftovers whose dinner was cleared, the banner instead shows `⚠ Wednesday lunch: Burritos · Beef leftovers have no dinner to come from` and the lunch itself carries a `⚠ No dinner to come from` badge — the lunch is flagged, never deleted. Remove the dish from the lunch slot to clear the flag.
 
 [SCREENSHOT: Shot 15 — Planner day card showing a drafted dinner with its reason line, Edit / ↻ Swap / 🔒 Lock buttons, a "Needs a side" badge, and a lunch coverage warning banner above]
 
@@ -323,6 +323,9 @@ Tap **Shopping List** in the top navigation bar to open this week's grocery list
    - If a dish was scaled in the planner (such as `2×`), its ingredient amounts are multiplied automatically.
    - If a recipe has versions (such as Beef vs. Chicken), only the shared ingredients and the chosen version's ingredients are included.
    - Measurements in teaspoons, tablespoons, and cups of the same ingredient are combined into a single line, and size words (like `"large"` in `"1 large egg"`) are merged so you don't see separate lines for `"eggs"` and `"large eggs"`.
+   - One ingredient is always one line, even when recipes write it differently: `"fresh lemon juice"` and `"lemon juice"` become one `"lemon juice"` line, and `"salt"` and `"kosher salt"` become one `"kosher salt"` line (you only use kosher salt). Amounts stay in real kitchen amounts — `3½ tsp` stays teaspoons instead of becoming `1⅛ tbsp`, and a big amount reads like `½ cup + 1 tsp` instead of `25 tsp`.
+   - If a recipe gives a range (like `"2–4 tsp"`), the Shopping List always buys the **high end** (`4 tsp`) so you have enough. The recipe itself keeps the range.
+   - **Water never appears on the Shopping List.** It is a pantry staple you always have, so it is left off entirely — no department, no row.
 2. **Department Sections:** Items are grouped in store-aisle order under department headers (such as Produce, Meat & Poultry, Dairy, Bakery, Pantry, etc.), with a count badge on the right of each department header.
 
 [SCREENSHOT: Shot 20 — Shopping List (#/shopping) with generic sample items grouped under store department headers, showing the ○ circle buttons, Optional (N) collapsed section, Pantry staples (N) collapsed section, Already have (N) collapsed section, Add your own item box, and Copy list button]
@@ -365,7 +368,7 @@ When an item on your **To buy** or **Optional** list matches a product from your
    - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
 
 ### Hiding Pantry Staples (`Hide pantry staples`)
-1. Check **Hide pantry staples** at the top of the Shopping List to tuck everyday kitchen basics (water, salt, black pepper, olive and vegetable oil, standard ground spices, honey, flour, sugar, cornstarch, baking powder, and baking soda) out of **To buy**.
+1. Check **Hide pantry staples** at the top of the Shopping List to tuck everyday kitchen basics (salt, black pepper, olive and vegetable oil, standard ground spices, honey, flour, sugar, cornstarch, baking powder, and baking soda) out of **To buy**. (Water is not in this list because it never appears on the Shopping List at all.)
 2. Hidden staples move into a collapsed **Pantry staples (N)** section below **To buy**, where you can still expand and check them if you happen to be out of one.
    - **Note:** Your toggle choice is remembered on your device. Any staple you explicitly promoted from **Optional** with **+**, as well as any manual items you typed yourself, always stay visible in **To buy**.
 
