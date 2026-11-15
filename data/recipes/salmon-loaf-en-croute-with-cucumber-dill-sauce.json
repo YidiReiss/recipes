@@ -13,9 +13,9 @@
   ],
   "prep_minutes": 30,
   "cook_minutes": 45,
-  "servings": 6,
+  "servings": "6",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/salmon-loaf-en-croute-with-cucumber-dill-sauce.jpg",
   "ingredients": [
     {
@@ -38,8 +38,8 @@
           "item": "mayonnaise"
         },
         {
-          "qty": "½",
-          "unit": "cup",
+          "qty": "1",
+          "unit": "",
           "item": "onion",
           "prep": "chopped"
         },
@@ -82,8 +82,8 @@
           "item": "mayonnaise"
         },
         {
-          "qty": "3",
-          "unit": "tbsp",
+          "qty": "⅓",
+          "unit": "",
           "item": "onion",
           "prep": "chopped"
         },
@@ -110,8 +110,8 @@
     "Cucumber dill sauce: Combine cucumber, mayonnaise, onion and dill. Gradually add enough water to desired consistency; cover and chill. Serve in a small dish or in a fresh lemon basket."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
+  "notes": "",
+  "source": "",
   "tags_need_review": true,
   "history": [
     {
@@ -158,7 +158,64 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-15T21:49:54.028Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "servings",
+          "from": 6,
+          "to": "6"
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 8 items]; [section: 5 items])",
+          "to": "2 items ([section: 8 items]; [section: 5 items])"
+        },
+        {
+          "field": "notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "source",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup onion becomes 1 onion; 3 tbsp onion becomes 1/3 onion (APPROXIMATION: 3 tbsp = 9 tsp = 3/8 onion; 1/3 is the closest kitchen fraction, per approved spec"
     }
   ],
-  "pdf_stale": false
+  "pdf_stale": true,
+  "pdf": null,
+  "needs_side": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": ""
 }
