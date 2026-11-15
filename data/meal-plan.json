@@ -1793,6 +1793,10 @@
       "days": [
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "cucumber-salad",
@@ -1800,9 +1804,7 @@
                 "reason": null,
                 "locked": false
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -2017,7 +2019,7 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
+            "skipped": true,
             "note": "",
             "dishes": []
           }
