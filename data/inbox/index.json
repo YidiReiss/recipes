@@ -2183,5 +2183,13 @@
     "actor": "site-editor (Yidi)",
     "note": "Changed ingredients, pairings, needs_side, needs_kosher_review, kosher_review_notes",
     "created_at": "2026-11-15T15:50:51.514Z"
+  },
+  {
+    "id": "inbox-mwi0qwdw-zjis",
+    "status": "pending",
+    "type": "edit",
+    "edit_target": "burritos",
+    "created_at": "2026-11-15T15:58:11.061Z",
+    "text": "No side needed and no kosher issues"
   }
 ]
