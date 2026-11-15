@@ -223,10 +223,19 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — soy sauce on both tamari lines, water instead of vegetable broth, regular breadcrumbs, garlic = 2 cloves. Honey line left exactly as-is (D5 on hold)."
+    },
+    {
+      "ts": "2026-11-15T22:00:10.875Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": true,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true
+  "pdf_stale": false
 }
