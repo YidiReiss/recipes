@@ -1947,6 +1947,12 @@
                 "drafted": true,
                 "locked": false,
                 "reason": "Shabbat dinner · Favorite · Never made — worth a try · Serves a crowd"
+              },
+              {
+                "recipe": "makie-fray-grilled-chicken",
+                "drafted": false,
+                "reason": null,
+                "locked": false
               }
             ]
           }
