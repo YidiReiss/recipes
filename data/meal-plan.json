@@ -1667,9 +1667,11 @@
             ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Spirgel made us salmon bowls"
+            "note": "Spirgel made us salmon bowls",
+            "dishes": []
           }
         },
         {
@@ -1709,10 +1711,6 @@
         },
         {
           "lunch": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": "",
             "dishes": [
               {
                 "recipe": "coca-cola-meatballs",
@@ -1723,7 +1721,9 @@
                 "variant": null,
                 "reason": "Leftovers from Shabbat"
               }
-            ]
+            ],
+            "skipped": false,
+            "note": ""
           },
           "dinner": {
             "recipe": null,
