@@ -208,7 +208,7 @@
   "source": "",
   "tags_need_review": false,
   "pdf": "pdfs/burritos.pdf",
-  "needs_kosher_review": true,
+  "needs_kosher_review": false,
   "kosher_review_notes": "",
   "pdf_stale": false,
   "photo_generated": true,
@@ -409,7 +409,25 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-15T16:10:16.025Z",
+      "actor": "sous-chef",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "needs_kosher_review",
+          "from": true,
+          "to": false
+        },
+        {
+          "field": "needs_side",
+          "from": true,
+          "to": false
+        }
+      ],
+      "reasoning": "Inbox edit inbox-mwi0qwdw-zjis: Yidi adjudicated 'No side needed and no kosher issues' — set needs_side false and cleared needs_kosher_review. No ingredient/photo change; kosher_status left untouched."
     }
   ],
-  "needs_side": true
+  "needs_side": false
 }
