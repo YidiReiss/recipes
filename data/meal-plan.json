@@ -1941,7 +1941,9 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "makie-fray-grilled-chicken",
+                "recipe": "crispy-chicken",
+                "leftovers": false,
+                "cookDate": null,
                 "drafted": false,
                 "reason": null,
                 "locked": false
