@@ -210,7 +210,7 @@
   "pdf": "pdfs/burritos.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "variants": [
     {
@@ -445,6 +445,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — black beans, white vinegar 1/2 cup, lemon juice 1 tbsp beans / 1 tsp sauce, salt 1 tsp x2, crushed red pepper 1/2 tsp, sugar 1/2 tsp, pan oil = avoca"
+    },
+    {
+      "ts": "2026-11-15T22:00:29.308Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
