@@ -2367,5 +2367,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 2 cup onions becomes 4 onions.",
     "created_at": "2026-11-15T21:50:26.428Z"
+  },
+  {
+    "id": "edit-mwidcohi-0dd0",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "potato-kugel",
+    "recipe_id": "potato-kugel",
+    "title": "Potato Kugel",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: unit 'small-medium' is a size descriptor, not a unit — moved into the item ('small-medium onion', qty 1, no unit) so the shopping list shows …",
+    "created_at": "2026-11-15T21:51:01.578Z"
   }
 ]
