@@ -2019,9 +2019,16 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": true,
+            "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "tomato-dip",
+                "drafted": false,
+                "reason": null,
+                "locked": false
+              }
+            ]
           }
         }
       ],
