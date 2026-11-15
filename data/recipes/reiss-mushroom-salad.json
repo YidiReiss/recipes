@@ -7,6 +7,7 @@
   "id": "reiss-mushroom-salad",
   "ingredients": [
     {
+      "section": "Salad",
       "items": [
         {
           "item": "spring mix",
@@ -35,8 +36,8 @@
         {
           "item": "purple onion",
           "prep": "sliced",
-          "qty": "¼",
-          "unit": "cup"
+          "qty": "½",
+          "unit": ""
         },
         {
           "item": "mushrooms",
@@ -56,10 +57,10 @@
           "qty": "2",
           "unit": "bag"
         }
-      ],
-      "section": "Salad"
+      ]
     },
     {
+      "section": "Dressing",
       "items": [
         {
           "item": "garlic",
@@ -103,8 +104,7 @@
           "qty": "¼",
           "unit": "cup"
         }
-      ],
-      "section": "Dressing"
+      ]
     }
   ],
   "instructions": [
@@ -119,7 +119,7 @@
   "pdf": "pdfs/reiss-mushroom-salad.pdf",
   "photo_generated": true,
   "prep_minutes": 20,
-  "servings": 8,
+  "servings": "8",
   "source": "Yidi Reiss",
   "tags": [
     "salad",
@@ -141,6 +141,66 @@
         }
       ],
       "reasoning": "Category cleanup: \"Salad\" is not a standard category - normalized to \"salad\" (fixes the duplicate dessert tile / category list)."
+    },
+    {
+      "ts": "2026-11-15T21:49:19.356Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 8 items]; [section: 7 items])",
+          "to": "2 items ([section: 8 items]; [section: 7 items])"
+        },
+        {
+          "field": "servings",
+          "from": 8,
+          "to": "8"
+        },
+        {
+          "field": "pairings",
+          "from": null,
+          "to": "[]"
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "leftover_friendly",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/4 cup purple onion becomes 1/2 purple onion."
     }
-  ]
+  ],
+  "pairings": [],
+  "needs_side": false,
+  "leftover_friendly": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "leftover_note": "",
+  "pdf_stale": true
 }
