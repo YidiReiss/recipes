@@ -108,7 +108,7 @@
   "pdf": "pdfs/omelet.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "tips": [],
   "history": [
@@ -148,6 +148,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 2 tbsp onion becomes 1/4 onion (optional stays)."
+    },
+    {
+      "ts": "2026-11-15T22:00:26.252Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
