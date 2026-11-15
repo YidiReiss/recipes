@@ -1797,14 +1797,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "cucumber-salad",
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
