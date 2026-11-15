@@ -1935,9 +1935,18 @@
             "dishes": []
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": [
+              {
+                "recipe": "makie-fray-grilled-chicken",
+                "drafted": false,
+                "reason": null,
+                "locked": false
+              }
+            ]
           }
         },
         {
