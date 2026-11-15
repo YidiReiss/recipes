@@ -15,7 +15,7 @@
   ],
   "prep_minutes": 15,
   "cook_minutes": 7,
-  "servings": 1,
+  "servings": "1",
   "leftover_friendly": false,
   "leftover_note": "",
   "banner_image": "assets/images/omelet.jpg",
@@ -58,8 +58,8 @@
           "optional": true
         },
         {
-          "qty": "2",
-          "unit": "tbsp",
+          "qty": "1/4",
+          "unit": "",
           "item": "onion",
           "prep": "diced",
           "optional": true
@@ -108,7 +108,7 @@
   "pdf": "pdfs/omelet.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false,
+  "pdf_stale": true,
   "photo_generated": true,
   "tips": [],
   "history": [
@@ -120,6 +120,35 @@
         "Created recipe"
       ],
       "reasoning": "Intake of Yidi's 'Omelet' text submission. prep = 5 base + 1 (measure oil) + 1 (whisk eggs) + 3 (dice onion) + 3 (dice tomato) = 13 -> round up 15 -> 15 min floor = 15. cook = 3 (saute fillings, upper bound of stated 2-3) + 4 (eggs) = 7. servings = 1 stated (3 eggs). Fillings all optional ingredients; cheese omitted or added determines pareve vs dairy (noted). Banner AI-generated."
+    },
+    {
+      "ts": "2026-11-15T21:48:42.040Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "servings",
+          "from": 1,
+          "to": "1"
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 11 items])",
+          "to": "1 items ([section: 11 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 2 tbsp onion becomes 1/4 onion (optional stays)."
     }
-  ]
+  ],
+  "needs_side": false
 }
