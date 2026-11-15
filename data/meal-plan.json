@@ -2026,7 +2026,11 @@
           "removedAt": 1794757460325
         }
       ],
-      "shoppingDay": "2026-11-11"
+      "shoppingDay": "2026-11-11",
+      "dismissedWarnings": [
+        "1|uncovered|0|2",
+        "5|uncovered|0|1"
+      ]
     }
   },
   "recipePrefs": {
