@@ -72,7 +72,7 @@
   "pdf": "pdfs/cucumber-salad.pdf",
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "needs_side": false,
   "history": [
     {
@@ -97,6 +97,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup red onion becomes 1 red onion."
+    },
+    {
+      "ts": "2026-11-15T21:59:58.725Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ]
 }
