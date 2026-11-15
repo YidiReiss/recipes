@@ -192,9 +192,18 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 2 cup onions becomes 4 onions."
+    },
+    {
+      "ts": "2026-11-15T22:00:01.823Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true,
+  "pdf_stale": false,
   "pdf": null,
   "needs_side": false,
   "kosher_review_notes": ""
