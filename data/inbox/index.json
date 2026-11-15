@@ -2312,5 +2312,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup red onion becomes 1 red onion.",
     "created_at": "2026-11-15T21:47:29.372Z"
+  },
+  {
+    "id": "edit-mwid8yuz-d9gz",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "curried-chick-pea-casserole",
+    "recipe_id": "curried-chick-pea-casserole",
+    "title": "Curried Chick Pea Casserole",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1 1/2 cup onions becomes 3 onions.",
+    "created_at": "2026-11-15T21:48:08.428Z"
   }
 ]
