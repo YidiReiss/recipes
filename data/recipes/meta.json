@@ -1820,9 +1820,9 @@
     "needs_side": true,
     "tags_need_review": false,
     "photo_generated": true,
-    "pdf_stale": false,
-    "search_text": "extra firm tofu tamari or soy sauce cornstarch gluten free breadcrumbs (or regular breadcrumbs) low sodium tamari or soy sauce gochujang (Korean red chili paste); check label if gluten free matters tomato paste vegetable broth or water honey (use maple syrup to make it fully vegan) toasted sesame oil rice vinegar garlic fresh ginger cornstarch water Source page bills it as vegan and gluten free; the listed version uses honey (pareve; swap maple syrup for a fully vegan version) and is gluten free only if GF-certified tamari and breadcrumbs are used.",
-    "ingredients_text": "extra firm tofu tamari or soy sauce cornstarch gluten free breadcrumbs (or regular breadcrumbs) low sodium tamari or soy sauce gochujang (Korean red chili paste); check label if gluten free matters tomato paste vegetable broth or water honey (use maple syrup to make it fully vegan) toasted sesame oil rice vinegar garlic fresh ginger cornstarch water"
+    "pdf_stale": true,
+    "search_text": "extra firm tofu soy sauce cornstarch breadcrumbs soy sauce gochujang (Korean red chili paste); check label if gluten free matters tomato paste water honey (use maple syrup to make it fully vegan) toasted sesame oil rice vinegar garlic fresh ginger cornstarch water Source page bills it as vegan and gluten free; the listed version uses honey (pareve; swap maple syrup for a fully vegan version) and is gluten free only if GF-certified tamari and breadcrumbs are used.",
+    "ingredients_text": "extra firm tofu soy sauce cornstarch breadcrumbs soy sauce gochujang (Korean red chili paste); check label if gluten free matters tomato paste water honey (use maple syrup to make it fully vegan) toasted sesame oil rice vinegar garlic fresh ginger cornstarch water"
   },
   {
     "id": "deli-roll",
