@@ -2235,5 +2235,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — 1.5 lb yellow potatoes, onion soup mix 2 tbsp, compound spice line split into 6 lines, avocado oil 3 tbsp.",
     "created_at": "2026-11-15T21:43:12.434Z"
+  },
+  {
+    "id": "edit-mwid3wh7-zj7q",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "burritos",
+    "recipe_id": "burritos",
+    "title": "Burritos",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — black beans, white vinegar 1/2 cup, lemon juice 1 tbsp beans / 1 tsp sauce, salt 1 tsp x2, crushed red pep…",
+    "created_at": "2026-11-15T21:44:11.918Z"
   }
 ]
