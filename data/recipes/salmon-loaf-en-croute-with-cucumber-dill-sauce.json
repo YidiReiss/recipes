@@ -211,9 +211,18 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup onion becomes 1 onion; 3 tbsp onion becomes 1/3 onion (APPROXIMATION: 3 tbsp = 9 tsp = 3/8 onion; 1/3 is the closest kitchen fraction, per approved spec"
+    },
+    {
+      "ts": "2026-11-15T22:00:04.786Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
-  "pdf_stale": true,
+  "pdf_stale": false,
   "pdf": null,
   "needs_side": false,
   "needs_kosher_review": false,
