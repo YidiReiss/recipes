@@ -80,7 +80,7 @@
   "notes": "Honey: card says 1/4 C, amended in blue ink to 2 1/2 tbsp — used the amended amount (flagged for review). Mustard's 'grey poupon-mild or coarse…' is cut off in the photo.",
   "pairings": [],
   "pdf": "pdfs/makie-fray-grilled-chicken.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "prep_minutes": 20,
   "servings": "4",
   "source": "Handwritten recipe card (Makie/Fray), submitted via inbox photo 2026-10-21",
@@ -156,6 +156,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: parsley is DRIED (item 'dried parsley', qty 1 tbsp unchanged); form must be explicit in the recipe."
+    },
+    {
+      "ts": "2026-11-15T22:00:23.115Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
