@@ -13,13 +13,13 @@
   ],
   "prep_minutes": 30,
   "cook_minutes": 195,
-  "servings": 12,
+  "servings": "12",
   "leftover_friendly": true,
-  "leftover_note": null,
+  "leftover_note": "",
   "banner_image": "assets/images/potato-kugel.jpg",
   "ingredients": [
     {
-      "section": null,
+      "section": "",
       "items": [
         {
           "qty": "4.5",
@@ -38,8 +38,8 @@
         },
         {
           "qty": "1",
-          "unit": "small-medium",
-          "item": "onion"
+          "unit": "",
+          "item": "small-medium onion"
         },
         {
           "qty": "2 ¼",
@@ -77,8 +77,8 @@
     "Switch oven to bake 350 and let it bake for 3 ¼ hours."
   ],
   "pairings": [],
-  "notes": null,
-  "source": null,
+  "notes": "",
+  "source": "",
   "tags_need_review": false,
   "history": [
     {
@@ -98,6 +98,64 @@
         }
       ],
       "reasoning": "Backfill: estimated prep 30 min (base 5 + food processor 3 batches + setup penalty + peel potatoes + mix) and servings 12 (side, 9x13 pan) per Sous Chef estimation rules."
+    },
+    {
+      "ts": "2026-11-15T21:51:01.578Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "servings",
+          "from": 12,
+          "to": "12"
+        },
+        {
+          "field": "leftover_note",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "ingredients",
+          "from": "1 items ([section: 8 items])",
+          "to": "1 items ([section: 8 items])"
+        },
+        {
+          "field": "notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "source",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "needs_side",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "needs_kosher_review",
+          "from": null,
+          "to": false
+        },
+        {
+          "field": "kosher_review_notes",
+          "from": null,
+          "to": ""
+        },
+        {
+          "field": "pdf_stale",
+          "from": null,
+          "to": true
+        }
+      ],
+      "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: unit 'small-medium' is a size descriptor, not a unit — moved into the item ('small-medium onion', qty 1, no unit) so the shopping list shows 1 onion."
     }
-  ]
+  ],
+  "pdf": null,
+  "needs_side": false,
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": true
 }
