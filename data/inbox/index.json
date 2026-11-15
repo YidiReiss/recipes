@@ -2301,5 +2301,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D3: 'dried tomato or small tomato' becomes just 'tomato'. No-qty spices (red pepper flakes, turmeric, paprika) left exactly as-is.",
     "created_at": "2026-11-15T21:46:53.099Z"
+  },
+  {
+    "id": "edit-mwid84py-kwu6",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "cucumber-salad",
+    "recipe_id": "cucumber-salad",
+    "title": "Cucumber Salad",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: onion in whole units — 1/2 cup red onion becomes 1 red onion.",
+    "created_at": "2026-11-15T21:47:29.372Z"
   }
 ]
