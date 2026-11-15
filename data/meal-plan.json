@@ -2037,6 +2037,13 @@
           "at": 1794758454127,
           "qty": 1,
           "unit": "clove"
+        },
+        {
+          "key": "parsley|tbsp",
+          "session": "smwi0rpb9p8c03b",
+          "at": 1794758507434,
+          "qty": 1,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
