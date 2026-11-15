@@ -2302,6 +2302,13 @@
           "at": 1794770761553,
           "qty": 1,
           "unit": ""
+        },
+        {
+          "key": "olcha|tsp",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794770764337,
+          "qty": 2.25,
+          "unit": "tsp"
         }
       ],
       "manualItems": [],
