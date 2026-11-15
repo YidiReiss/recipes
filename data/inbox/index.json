@@ -2246,5 +2246,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — black beans, white vinegar 1/2 cup, lemon juice 1 tbsp beans / 1 tsp sauce, salt 1 tsp x2, crushed red pep…",
     "created_at": "2026-11-15T21:44:11.918Z"
+  },
+  {
+    "id": "edit-mwid4j1n-s3a3",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "gochujang-korean-tofu",
+    "recipe_id": "gochujang-korean-tofu",
+    "title": "Crispy Gochujang Korean Tofu",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — soy sauce on both tamari lines, water instead of vegetable broth, regular breadcrumbs, garlic = 2 cloves. …",
+    "created_at": "2026-11-15T21:44:41.259Z"
   }
 ]
