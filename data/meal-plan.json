@@ -2241,6 +2241,13 @@
           "at": 1794770515879,
           "qty": 2,
           "unit": "tsp"
+        },
+        {
+          "key": "lemon juice|tbsp",
+          "session": "smwi7tm67j1bo6b",
+          "at": 1794770516790,
+          "qty": 2,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
