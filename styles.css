@@ -1892,6 +1892,107 @@ footer.site-footer {
   padding: 0.5rem 1.05rem;
   font-weight: 700;
 }
+.add-planner-btn {
+  font-size: 0.96rem;
+  padding: 0.48rem 0.95rem;
+  font-weight: 600;
+}
+.cook-launch-btn:disabled,
+.add-planner-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.add-planner-btn.active {
+  background: var(--cream-dark);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+.add-planner-host {
+  width: 100%;
+}
+.add-planner-panel {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin: 0.3rem 0 0.75rem;
+  box-shadow: 0 2px 10px rgba(60, 40, 20, 0.07);
+}
+.ap-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+.ap-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+  min-width: 3.3rem;
+  color: var(--ink);
+}
+.ap-date-input {
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  flex: 1 1 150px;
+  max-width: 100%;
+}
+.ap-meal-seg .seg-btn {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.92rem;
+}
+.ap-variant-line {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.65rem;
+  padding: 0.32rem 0.6rem;
+  background: var(--cream);
+  border-radius: 6px;
+}
+.ap-variant-line strong {
+  color: var(--ink);
+}
+.ap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.ap-confirm-bar {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 0.75rem;
+  max-width: 420px;
+  background: #f2f8ef;
+  border: 1px solid #bfd8b5;
+  color: #264a1d;
+  border-radius: var(--radius);
+  padding: 0.55rem 0.85rem;
+  margin: 0.3rem 0 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.ap-confirm-bar.is-dup {
+  background: var(--cream-dark);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.ap-view-planner {
+  font-weight: 700;
+  white-space: nowrap;
+}
 .wake-pill {
   padding: 0.38rem 0.85rem;
   font-size: 0.9rem;

@@ -102,6 +102,7 @@ Tap any recipe card in the grid to open its detail page (`#/recipe/<id>`).
      - Tap the currently highlighted button a second time to clear the rating back to unrated.
    - **Cook Mode & Screen Awake Bar:**
      - **🍳 Cook Mode** opens the full-screen kitchen view (covered in [Section 4](#4-cook-mode-kitchen-timers-voice-alarm-and-read-aloud)).
+     - **📅 Add to Planner** puts this recipe onto the Meal Planner for a day you pick (covered below in [Adding a Recipe to the Meal Planner](#adding-a-recipe-to-the-meal-planner--add-to-planner)).
      - **☀ Keep screen awake** prevents your phone or tablet screen from dimming or locking while you read the recipe (`☀ Screen awake: On`). Tap it again to turn it off. (If your browser does not support screen wake locks, a small note says `Screen wake lock not supported on this browser`.)
    - **Kosher Review Banner (when applicable):** If a recipe was imported from an outside source with an ingredient that needs checking, a yellow banner appears: `⚠️ Potential kosher issues — review needed.` along with a note describing what to check.
    - **Time & Yield Strip:** Shows **Prep**, **Cook**, **Total** time, and **Serves**.
@@ -123,6 +124,19 @@ Some recipes can be made in more than one version (for example, a dish with a **
 2. Tap the version you want to make:
    - The ingredients list updates immediately to show the shared ingredients (used in every version) plus only the ingredients for your selected version.
    - Any active serving scale (`2x`, etc.) applies automatically to the selected version.
+
+### Adding a Recipe to the Meal Planner (📅 Add to Planner)
+From any recipe's detail page, you can put the dish straight onto the Meal Planner for a day you choose — no need to open the planner first.
+1. Tap **📅 Add to Planner** in the bar next to **🍳 Cook Mode**. A small panel opens right under the bar.
+2. Pick the date: tap the date field (it starts on today) and choose the day you want to make this dish. Any date works — if that week isn't on the planner yet, it is created for you.
+3. Pick **Lunch** or **Dinner** (Dinner is selected by default).
+4. If the recipe has more than one version, the panel shows which version will be added (for example, `Version: Beef`) — it matches the version pill you currently have selected on the page. To add a different version, tap that version's pill first, then open the panel.
+5. Tap **Add**. The panel closes and a green note appears — for example, `Added to Friday, Nov 20 dinner` — with a **View planner** link.
+   - Tap **View planner** to jump straight to the Meal Planner open on that week, where you will see the dish in place.
+   - The dish is added as a confirmed dish (not a draft), so it shows up in the planner as a meal you chose, and its ingredients go onto the shopping list. The serving scale stays at 1x — adjust servings from the planner if you need a different amount.
+   - If that exact dish (and version) is already on that day's meal, the site tells you `Already on <day> <lunch/dinner>` instead of adding it twice.
+   - If the day was marked "Eat out" (skipped), adding the dish un-skips it and clears the note.
+6. Tap **Cancel** at any time to close the panel without adding anything.
 
 ### Instructions, Pairings, Leftovers, PDFs, and Sharing
 1. **Instructions:** Numbered steps appear below the ingredients. Any cooking duration mentioned in a step is turned into a tappable **⏱ timer pill** (covered in [Section 4](#4-cook-mode-kitchen-timers-voice-alarm-and-read-aloud)).

@@ -743,19 +743,66 @@ const COUNT_TO_TSP = {
   'onion': 24,   // 1 medium onion ≈ ½ cup chopped
   'lemon': 9,    // 1 lemon ≈ 3 tbsp juice
 };
+/* Singularize one word: tomatoes->tomato, leaves->leaf, potatoes->potato,
+   cherries->cherry, bunches->bunch, boxes->box, dishes->dish, eggs->egg.
+   The old rule blindly stripped a trailing "s", which mangled -es plurals
+   ("tomatoes"->"tomatoe", "leaves"->"leave", "cranberries"->"cranberrie")
+   both on screen and in the lookup key. Exceptions are words whose -ies
+   ending is not a plural ("cookies" is already singular-ish; "series" /
+   "species" never pluralize this way). */
+function singularizeWord(w) {
+  if (!w || w.length <= 2 || /ss$/.test(w)) return w;
+  if (/^(series|species)$/.test(w)) return w;
+  if (/ies$/.test(w) && !/^(cookies|brownies|veggies)$/.test(w)) return w.replace(/ies$/, 'y');
+  if (/leaves$/.test(w)) return w.replace(/leaves$/, 'leaf');
+  if (/oes$/.test(w) && !/^(shoes|aloes|hoes|toes|does)$/.test(w)) return w.replace(/es$/, '');
+  if (/([sxz]|[cs]h)es$/.test(w)) return w.replace(/es$/, '');
+  if (/s$/.test(w)) return w.slice(0, -1);
+  return w;
+}
 /* Canonical grouping key: lowercase, no size words, singular-ish. */
 function groupKey(item) {
   let s = stripSize(item);
   // singularize last word for grouping ("eggs"->"egg") so plurals merge
-  s = s.replace(/\b(\w+)s$/, (m, w) => {
-    if (w.length <= 2 || /ss$/.test(w)) return m;
-    return w;
-  });
+  s = s.replace(/\b(\w+)$/, (m, w) => singularizeWord(w));
   return s;
 }
+/* Words that carry no identifying power in a shopping lookup ("fresh",
+   "dried", "or", "cup", ...). The fallback only counts distinctive words,
+   so "fresh salmon" matches "salmon" and not "fresh basil leaf". */
+const SECTION_GENERIC_WORDS = new Set([
+  'a', 'an', 'the', 'of', 'or', 'and', 'for', 'to', 'with', 'plus', 'more', 'other', 'optional',
+  'as', 'needed', 'if', 'desired', 'about', 'per', 'from', 'in', 'on', 'at', 'by', 'into',
+  'lot', 'little', 'few', 'maybe', 'too', 'plain', 'freshly', 'mom',
+  'fresh', 'dried', 'chopped', 'sliced', 'diced', 'minced', 'grated', 'shredded', 'ground',
+  'whole', 'large', 'medium', 'small', 'extra', 'any', 'type', 'taste',
+  'cup', 'cups', 'tbsp', 'tsp', 'oz', 'lb', 'lbs', 'g', 'kg', 'ml', 'l', 'pinch', 'dash',
+  'bunch', 'sprig', 'sprigs', 'clove', 'cloves', 'slice', 'slices', 'piece', 'pieces',
+  'cube', 'cubes',
+  'can', 'cans', 'package', 'packages', 'jar', 'jars', 'bottle', 'bottles', 'box', 'boxes',
+  'bag', 'bags', 'squeeze'
+]);
+/* Split a lookup key into distinctive, singularized words for the fallback
+   match. Parentheticals are usually notes, not the item ("black pepper
+   (plus 1/4 tsp more for the fish)" counts as black pepper, not fish) —
+   except ones naming an alternative ("or dry red wine", "parsley, chives,
+   or dill"), whose words are real ingredients and are kept. Numbers and
+   units don't identify anything. */
+function sectionMatchWords(key) {
+  return String(key || '').toLowerCase()
+    .replace(/\(([^)]*)\)/g, (m, inner) => /(^|\s)or(\s|$)/i.test(inner) ? ' ' + inner + ' ' : ' ')
+    .replace(/[^a-z0-9½¼¾⅓⅔⅛]+/g, ' ')
+    .split(' ')
+    .map(w => singularizeWord(w))
+    .filter(w => w && !SECTION_GENERIC_WORDS.has(w) && !/^[\d½¼¾⅓⅔⅛\/\.]+$/.test(w));
+}
 /* Look up department and subcategory for a normalized groupKey in shoppingSections.
-   Gracefully falls back to { department: 'Unsorted', subcategory: null, deptIndex: 17 }
-   if shoppingSections is missing or the key is not mapped. */
+   Exact match first; then a word-overlap fallback — the entry sharing the
+   most distinctive words with the item wins (longest key breaks ties), so
+   "fusilli or other corkscrew pasta" lands on "pasta" and "basil leaf" on
+   "basil" instead of Unsorted. Gracefully falls back to
+   { department: 'Unsorted', subcategory: null, deptIndex: 17 } if
+   shoppingSections is missing or nothing matches. */
 function lookupShoppingSection(baseKey) {
   if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
     return { department: 'Unsorted', subcategory: null, deptIndex: 17 };
@@ -767,16 +814,47 @@ function lookupShoppingSection(baseKey) {
   }
   const k = String(baseKey).trim().toLowerCase();
   const entry = shoppingSections.items[k];
-  if (!entry || !entry.department) {
-    return { department: fallback, subcategory: null, deptIndex: fallbackIdx };
+  if (entry && entry.department) {
+    let dIdx = shoppingSections.departments.indexOf(entry.department);
+    if (dIdx === -1) dIdx = fallbackIdx;
+    return {
+      department: entry.department,
+      subcategory: entry.subcategory || null,
+      deptIndex: dIdx
+    };
   }
-  let dIdx = shoppingSections.departments.indexOf(entry.department);
-  if (dIdx === -1) dIdx = fallbackIdx;
-  return {
-    department: entry.department,
-    subcategory: entry.subcategory || null,
-    deptIndex: dIdx
-  };
+  const words = sectionMatchWords(k);
+  if (words.length) {
+    const wordSet = new Set(words);
+    let best = null, bestScore = 0, bestCov = 0, bestParens = true, bestLen = Infinity;
+    for (const entryKey of Object.keys(shoppingSections.items)) {
+      const cand = shoppingSections.items[entryKey];
+      if (!cand || !cand.department) continue;
+      const eWords = [...new Set(sectionMatchWords(entryKey))];
+      if (!eWords.length) continue;
+      let score = 0;
+      for (const w of eWords) if (wordSet.has(w)) score++;
+      if (!score) continue;
+      const cov = score / eWords.length;
+      const hasParens = entryKey.includes('(');
+      if (score > bestScore ||
+          (score === bestScore && cov > bestCov) ||
+          (score === bestScore && cov === bestCov && bestParens && !hasParens) ||
+          (score === bestScore && cov === bestCov && bestParens === hasParens && entryKey.length < bestLen)) {
+        best = cand; bestScore = score; bestCov = cov; bestParens = hasParens; bestLen = entryKey.length;
+      }
+    }
+    if (best) {
+      let dIdx = shoppingSections.departments.indexOf(best.department);
+      if (dIdx === -1) dIdx = fallbackIdx;
+      return {
+        department: best.department,
+        subcategory: best.subcategory || null,
+        deptIndex: dIdx
+      };
+    }
+  }
+  return { department: fallback, subcategory: null, deptIndex: fallbackIdx };
 }
 /* Pluralize units for display: "2 cups", but "2 tbsp" stays. */
 function pluralizeUnit(unit, qty) {
@@ -810,7 +888,7 @@ function normalizeSlot(slot) {
 const PANTRY_STAPLES = new Set([
   // water
   'water', 'cold water', 'warm water', 'hot water', 'ice water', 'boiling water',
-  'lukewarm water', 'room temperature water', 'tap water',
+  'lukewarm water', 'room temperature water', 'tap water', 'plain water',
   // salt & pepper
   'salt', 'kosher salt', 'coarse kosher salt', 'coarse salt', 'himalayan salt', 'sea salt', 'fine sea salt', 'table salt',
   'black pepper', 'ground black pepper', 'freshly ground black pepper',
@@ -1637,13 +1715,20 @@ async function renderShopping(app) {
 }
 
 /* ---------------- Landing page ---------------- */
-function renderLanding(app) {
-  document.title = 'Reiss Family Recipes';
+/* Home "items to buy" count, from the fully tallied shopping list — the same
+   buildShoppingList() the shopping page uses. (v20261112c) */
+function homeToBuyCount() {
   const week = getWeek(thisWeekKey());
   const items = buildShoppingList();
   const haveKeys = new Set(activeHaveMarks(week.haveGenerated).map(m => m.key));
-  const toBuyCount = items.filter(it => !haveKeys.has(it.key)).length +
+  return items.filter(it => !haveKeys.has(it.key)).length +
     (week.manualItems || []).filter(m => !m.deleted && !m.have).length;
+}
+
+function renderLanding(app) {
+  document.title = 'Reiss Family Recipes';
+  const week = getWeek(thisWeekKey());
+  const toBuyCount = homeToBuyCount();
   const plannedCount = week.days.reduce((n, d) =>
     n + normalizeSlot(d.lunch).dishes.length + normalizeSlot(d.dinner).dishes.length, 0);
 
@@ -1674,6 +1759,16 @@ function renderLanding(app) {
       '<a class="link-btn" href="#/planner">Open planner →</a></div>' +
       '<div class="plan-carousel">' + planCarouselHTML() + '</div>' +
     '</section>';
+
+  // v20261112c: on a fresh load the full recipe cache (byId) is still empty
+  // when this first renders, so buildShoppingList() tallies nothing and the
+  // counter reads 0. Fetch this week's recipes, then re-render only if the
+  // count changed — the re-render sees the warmed cache and stops there.
+  ensurePlannedRecipes().then(() => {
+    const h = location.hash || '#/';
+    if (h !== '#/' && h !== '') return;
+    if (homeToBuyCount() !== toBuyCount) renderLanding(app);
+  });
 }
 
 function planCarouselHTML() {
@@ -2118,10 +2213,157 @@ function recipeRatingRowHTML(curRating) {
 function recipeCookBarHTML(wlSupported, wanted, disabled) {
   return '<div class="cook-entry-bar no-print">' +
     '<button type="button" class="btn cook-launch-btn" id="open-cook-mode-btn"' + (disabled ? ' disabled' : '') + '>🍳 Cook Mode</button>' +
+    '<button type="button" class="btn secondary add-planner-btn" id="add-to-planner-btn"' + (disabled ? ' disabled' : '') + '>📅 Add to Planner</button>' +
     (wlSupported
       ? '<button type="button" class="pill wake-pill' + (wanted ? ' active' : '') + '" id="detail-wake-btn" aria-pressed="' + (wanted ? 'true' : 'false') + '">☀ ' + (wanted ? 'Screen awake: On' : 'Keep screen awake') + '</button>'
       : '<span class="wake-unsupported" id="detail-wake-unsupported">Screen wake lock not supported on this browser</span>') +
+  '</div>' +
+  '<div class="add-planner-host no-print" id="add-planner-host"></div>';
+}
+
+/* Convert a 'YYYY-MM-DD' date string to its planner week key (Sunday 'YYYY-MM-DD')
+   and day index (0 = Sunday .. 6 = Saturday). Returns null for invalid input. */
+function plannerDateToWeekAndDay(dateStr) {
+  const s = String(dateStr || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  const d = weekKeyDate(s);
+  if (!d || isNaN(d.getTime())) return null;
+  const dayIdx = d.getDay();
+  const sun = new Date(d);
+  sun.setDate(d.getDate() - dayIdx);
+  return { weekKey: ymd(sun), dayIdx, date: d };
+}
+
+/* Week offset relative to thisWeekKey() (sundayOf(0)) for a given weekKey,
+   so "View planner" can set plannerOffset before routing to #/planner. */
+function plannerOffsetForWeekKey(weekKey) {
+  if (!weekKey) return 0;
+  return Math.round(daysBetweenKeys(thisWeekKey(), weekKey) / 7);
+}
+
+/* Format 'YYYY-MM-DD' as "Friday, Nov 20" for the post-add confirmation. */
+function formatPlannerConfirmDate(dateStr) {
+  const parsed = plannerDateToWeekAndDay(dateStr);
+  if (!parsed) return String(dateStr || '');
+  return PLAN_DAY_NAMES[parsed.dayIdx] + ', ' + prettyDate(parsed.date);
+}
+
+/* Resolve the effective variant { key, label } for a recipe when adding to
+   the planner. Returns { key: null, label: '' } when the recipe has no variants. */
+function resolveAddPlannerVariant(recipe, selectedVariantKey) {
+  const vars = (recipe && Array.isArray(recipe.variants) && recipe.variants.length)
+    ? recipe.variants
+    : (recipe && recipe.id ? recipeVariantsFor(recipe.id) : []);
+  if (!vars.length) return { key: null, label: '' };
+  const defKey = variantDefaultKey(vars) || (vars.find(v => v && v.isDefault) || vars[0]).key;
+  const targetKey = (selectedVariantKey && vars.some(v => v && v.key === selectedVariantKey))
+    ? selectedVariantKey
+    : defKey;
+  const match = vars.find(v => v && v.key === targetKey) || vars[0];
+  return {
+    key: match ? match.key : null,
+    label: match ? (match.label || match.key) : ''
+  };
+}
+
+function addToPlannerPanelHTML(recipe, selectedVariantKey, dateVal, mealVal) {
+  const curDate = dateVal || ymd(new Date());
+  const curMeal = mealVal === 'lunch' ? 'lunch' : 'dinner';
+  const vInfo = resolveAddPlannerVariant(recipe, selectedVariantKey);
+  return '<div class="add-planner-panel no-print" id="add-planner-panel" role="region" aria-label="Add to Meal Planner">' +
+    '<div class="ap-row">' +
+      '<label class="ap-label" for="ap-date">Date</label>' +
+      '<input type="date" id="ap-date" class="ap-date-input" value="' + esc(curDate) + '">' +
+    '</div>' +
+    '<div class="ap-row">' +
+      '<span class="ap-label">Meal</span>' +
+      '<span class="seg-control ap-meal-seg" id="ap-meal-seg" role="group" aria-label="Meal">' +
+        '<button type="button" class="seg-btn' + (curMeal === 'lunch' ? ' active' : '') + '" data-ap-meal="lunch" aria-pressed="' + (curMeal === 'lunch' ? 'true' : 'false') + '">Lunch</button>' +
+        '<button type="button" class="seg-btn' + (curMeal === 'dinner' ? ' active' : '') + '" data-ap-meal="dinner" aria-pressed="' + (curMeal === 'dinner' ? 'true' : 'false') + '">Dinner</button>' +
+      '</span>' +
+    '</div>' +
+    (vInfo.key
+      ? '<div class="ap-variant-line" id="ap-variant-line" data-ap-variant="' + esc(vInfo.key) + '">Version: <strong id="ap-variant-label">' + esc(vInfo.label) + '</strong></div>'
+      : '') +
+    '<div class="ap-actions">' +
+      '<button type="button" class="btn" id="ap-add-btn">Add</button>' +
+      '<button type="button" class="btn secondary" id="ap-cancel-btn">Cancel</button>' +
+    '</div>' +
+    '<div class="form-status" id="ap-status"></div>' +
   '</div>';
+}
+
+function addToPlannerConfirmHTML(message, weekKey, isDuplicate) {
+  return '<div class="ap-confirm-bar no-print' + (isDuplicate ? ' is-dup' : '') + '" id="ap-confirm-bar" role="status">' +
+    '<span class="ap-confirm-msg" id="ap-confirm-msg">' + esc(message) + '</span>' +
+    (weekKey
+      ? ' <a href="#/planner" class="link-btn ap-view-planner" id="ap-view-planner" data-ap-week="' + esc(weekKey) + '">View planner</a>'
+      : '') +
+  '</div>';
+}
+
+/* Append a recipe (with optional variant) as a confirmed manual dish to the
+   chosen date + meal slot. Never replaces existing dishes; un-skips a skipped
+   slot; skips duplicate recipe+variant in the same slot; recomputes week
+   lunches and persists the week via persistWeek(). */
+async function addRecipeToPlannerSlot(recipe, dateStr, meal, variantKey, statusEl, done) {
+  const r = (typeof recipe === 'string') ? (byId[recipe] || recipeMeta(recipe) || { id: recipe }) : recipe;
+  if (!r || !r.id) throw new Error('Invalid recipe');
+  const parsed = plannerDateToWeekAndDay(dateStr);
+  if (!parsed) throw new Error('Please choose a valid date.');
+  const { weekKey, dayIdx } = parsed;
+  const mealKey = meal === 'lunch' ? 'lunch' : 'dinner';
+  const vInfo = resolveAddPlannerVariant(r, variantKey);
+  const effVariant = vInfo.key || null;
+
+  const week = getWeek(weekKey);
+  const slot = normalizeSlot(week.days[dayIdx][mealKey]);
+  const dayLabel = PLAN_DAY_NAMES[dayIdx];
+
+  // Dedupe: if the exact same recipe + variant is already in that slot, do NOT add a duplicate.
+  const isDup = slot.dishes.some(d => d && d.recipe === r.id && (d.variant || null) === effVariant);
+  if (isDup) {
+    const dupMsg = 'Already on ' + dayLabel + ' ' + mealKey;
+    return {
+      added: false,
+      duplicate: true,
+      persisted: false,
+      weekKey,
+      dayIdx,
+      meal: mealKey,
+      dish: null,
+      message: dupMsg
+    };
+  }
+
+  const dish = effVariant
+    ? { recipe: r.id, variant: effVariant, drafted: false, reason: null, locked: false }
+    : { recipe: r.id, drafted: false, reason: null, locked: false };
+  slot.dishes.push(dish);
+  if (slot.skipped) {
+    slot.skipped = false;
+    slot.note = '';
+  }
+  week.days[dayIdx][mealKey] = slot;
+  recomputeWeekLunches(weekKey);
+
+  let persisted = false;
+  await persistWeek(weekKey, statusEl || null, () => {
+    persisted = true;
+    if (typeof done === 'function') done();
+  });
+
+  const confirmMsg = 'Added to ' + formatPlannerConfirmDate(dateStr) + ' ' + mealKey;
+  return {
+    added: true,
+    duplicate: false,
+    persisted,
+    weekKey,
+    dayIdx,
+    meal: mealKey,
+    dish,
+    message: confirmMsg
+  };
 }
 
 function recipeHeroHeaderHTML(card, ratingRowHTML, cookBarHTML) {
@@ -2405,6 +2647,17 @@ async function renderRecipe(app, id) {
       applyScale();
     });
   });
+  const syncAddPlannerVariantLine = () => {
+    const vLine = app.querySelector ? app.querySelector('#ap-variant-line') : null;
+    if (!vLine) return;
+    const vInfo = resolveAddPlannerVariant(r, selectedVariant);
+    if (vInfo.key) {
+      if (vLine.dataset) vLine.dataset.apVariant = vInfo.key;
+      const vLbl = app.querySelector('#ap-variant-label');
+      if (vLbl) vLbl.textContent = vInfo.label;
+      else vLine.innerHTML = 'Version: <strong id="ap-variant-label">' + esc(vInfo.label) + '</strong>';
+    }
+  };
   // Variant toggle: swap the ingredient list to the chosen version and
   // re-run the scaler over the new nodes.
   app.querySelectorAll('[data-variant]').forEach(btn => {
@@ -2415,6 +2668,7 @@ async function renderRecipe(app, id) {
       const wrap = app.querySelector('#ing-wrap');
       if (wrap) wrap.innerHTML = ingListHTML(filterIngredientsForVariant(r.ingredients, selectedVariant));
       applyScale();
+      syncAddPlannerVariantLine();
     });
   });
   // Family rating: tap to set; tap the active one again to clear.
@@ -2474,8 +2728,100 @@ async function renderRecipe(app, id) {
           const wrap = app.querySelector('#ing-wrap');
           if (wrap) wrap.innerHTML = ingListHTML(filterIngredientsForVariant(r.ingredients, selectedVariant));
           applyScale();
+          syncAddPlannerVariantLine();
         }
       });
+    });
+  }
+  // Add to Planner button + inline picker panel.
+  const addPlannerBtn = app.querySelector('#add-to-planner-btn');
+  const addPlannerHost = app.querySelector('#add-planner-host');
+  if (addPlannerBtn) {
+    addPlannerBtn.disabled = false;
+    let apMeal = 'dinner';
+    const closeAddPlannerPanel = () => {
+      if (addPlannerHost) addPlannerHost.innerHTML = '';
+      addPlannerBtn.classList.remove('active');
+      addPlannerBtn.setAttribute('aria-expanded', 'false');
+    };
+    const showConfirmBanner = (msg, weekKey, isDup) => {
+      if (!addPlannerHost) return;
+      addPlannerBtn.classList.remove('active');
+      addPlannerBtn.setAttribute('aria-expanded', 'false');
+      addPlannerHost.innerHTML = addToPlannerConfirmHTML(msg, weekKey, isDup);
+      const viewLink = addPlannerHost.querySelector ? addPlannerHost.querySelector('#ap-view-planner') : $('#ap-view-planner');
+      if (viewLink) {
+        viewLink.addEventListener('click', e => {
+          if (e && typeof e.preventDefault === 'function') e.preventDefault();
+          plannerOffset = plannerOffsetForWeekKey(weekKey);
+          if (typeof location !== 'undefined') location.hash = '#/planner';
+        });
+      }
+    };
+    addPlannerBtn.addEventListener('click', () => {
+      if (!addPlannerHost) return;
+      const existingPanel = addPlannerHost.querySelector
+        ? addPlannerHost.querySelector('#add-planner-panel')
+        : (addPlannerHost.innerHTML.includes('id="add-planner-panel"') ? true : null);
+      if (existingPanel) {
+        closeAddPlannerPanel();
+        return;
+      }
+      apMeal = 'dinner';
+      addPlannerBtn.classList.add('active');
+      addPlannerBtn.setAttribute('aria-expanded', 'true');
+      addPlannerHost.innerHTML = addToPlannerPanelHTML(r, selectedVariant, ymd(new Date()), apMeal);
+      const q = sel => (addPlannerHost.querySelector && addPlannerHost.querySelector(sel)) || (app.querySelector && app.querySelector(sel)) || $(sel);
+      const qa = sel => (addPlannerHost.querySelectorAll ? addPlannerHost.querySelectorAll(sel) : (app.querySelectorAll ? app.querySelectorAll(sel) : []));
+      qa('[data-ap-meal]').forEach(mb => {
+        mb.addEventListener('click', () => {
+          apMeal = mb.dataset.apMeal === 'lunch' ? 'lunch' : 'dinner';
+          qa('[data-ap-meal]').forEach(b => {
+            const on = b.dataset.apMeal === apMeal;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        });
+      });
+      const cancelBtn = q('#ap-cancel-btn');
+      if (cancelBtn) cancelBtn.addEventListener('click', closeAddPlannerPanel);
+      const submitBtn = q('#ap-add-btn');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', async () => {
+          const dateInput = q('#ap-date');
+          const statusEl = q('#ap-status');
+          const dateVal = dateInput ? String(dateInput.value || '').trim() : ymd(new Date());
+          if (!plannerDateToWeekAndDay(dateVal)) {
+            if (statusEl) {
+              statusEl.className = 'form-status error';
+              statusEl.textContent = 'Please choose a valid date.';
+            }
+            return;
+          }
+          submitBtn.disabled = true;
+          try {
+            const res = await addRecipeToPlannerSlot(r, dateVal, apMeal, selectedVariant, statusEl);
+            if (res.duplicate) {
+              toast(res.message);
+              showConfirmBanner(res.message, res.weekKey, true);
+              return;
+            }
+            if (res.persisted) {
+              showConfirmBanner(res.message, res.weekKey, false);
+            } else {
+              submitBtn.disabled = false;
+            }
+          } catch (err) {
+            submitBtn.disabled = false;
+            if (statusEl) {
+              statusEl.className = 'form-status error';
+              statusEl.textContent = err.message || 'Could not add to planner.';
+            } else {
+              toast(err.message || 'Could not add to planner.');
+            }
+          }
+        });
+      }
     });
   }
   // Normalize initial render (e.g. "1 cups" in stored data → "1 cup").
