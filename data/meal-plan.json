@@ -1935,8 +1935,7 @@
             "dishes": []
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [],
             "skipped": false,
             "note": ""
           }
