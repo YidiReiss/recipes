@@ -1963,6 +1963,12 @@
                 "drafted": true,
                 "locked": false,
                 "reason": "Shabbat lunch · Rated fine"
+              },
+              {
+                "recipe": "roasted-brussel-sprouts-with-sriracha-aioli",
+                "drafted": false,
+                "reason": null,
+                "locked": false
               }
             ]
           },
