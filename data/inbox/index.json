@@ -2257,5 +2257,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: exact quantities (STEP2 answers) — soy sauce on both tamari lines, water instead of vegetable broth, regular breadcrumbs, garlic = 2 cloves. …",
     "created_at": "2026-11-15T21:44:41.259Z"
+  },
+  {
+    "id": "edit-mwid52e2-if0e",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "dairy-free-chicken-fettuccine-alfredo",
+    "recipe_id": "dairy-free-chicken-fettuccine-alfredo",
+    "title": "Dairy-Free Chicken Fettuccine Alfredo",
+    "actor": "site-editor (Anonymous)",
+    "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D1: chicken stock (not vegetable stock), fresh parsley optional (qty stays blank, prep 'minced, to taste' kept).",
+    "created_at": "2026-11-15T21:45:06.278Z"
   }
 ]
