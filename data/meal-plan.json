@@ -1810,12 +1810,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "burritos",
                 "leftovers": false,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Favorite · Not made in 4 wks · Leftovers cover a lunch"
+                "variant": "beef",
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
@@ -1828,12 +1829,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "burritos",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "variant": null,
+                "variant": "beef",
                 "reason": "Leftovers from a dinner this week"
               }
             ]
@@ -1898,7 +1899,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "simple-sesame-noodles",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -1931,17 +1932,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "simple-sesame-noodles",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -1999,6 +1990,12 @@
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [
