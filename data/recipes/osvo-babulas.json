@@ -131,7 +131,7 @@
   "notes": "Babula's osvo. Potatoes (2 golden) and eggs (2) are optional, per Yidi (Nov 15, 2026); crock pot on low about 20 hours, then keep warm until lunch. Instructions as submitted, in shorthand.",
   "pairings": [],
   "pdf": "pdfs/osvo-babulas.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "prep_minutes": 30,
   "servings": "4",
@@ -177,6 +177,15 @@
         }
       ],
       "reasoning": "Approved by Yidi Nov 15, 2026 — shopping-list build D3: 'dried tomato or small tomato' becomes just 'tomato'. No-qty spices (red pepper flakes, turmeric, paprika) left exactly as-is."
+    },
+    {
+      "ts": "2026-11-15T22:00:32.276Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
