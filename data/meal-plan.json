@@ -2018,9 +2018,10 @@
         {
           "key": "garlic|clove",
           "session": "smwi093dx8q78cg",
-          "at": 1794757506190,
+          "at": 1794757525277,
           "qty": 1,
-          "unit": "clove"
+          "unit": "clove",
+          "removed": true
         }
       ],
       "manualItems": [],
