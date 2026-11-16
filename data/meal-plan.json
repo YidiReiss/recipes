@@ -2039,14 +2039,16 @@
           "session": "smwi0rpb9p8c03b",
           "at": 1794758332789,
           "qty": 3,
-          "unit": "tbsp"
+          "unit": "tbsp",
+          "removed": true
         },
         {
           "key": "garlic|clove",
           "session": "smwi0rpb9p8c03b",
-          "at": 1794758454127,
+          "at": 1794787972570,
           "qty": 1,
-          "unit": "clove"
+          "unit": "clove",
+          "removed": true
         },
         {
           "key": "parsley|tbsp",
@@ -2060,7 +2062,8 @@
           "session": "smwi0rpb9p8c03b",
           "at": 1794758607945,
           "qty": 1,
-          "unit": "can"
+          "unit": "can",
+          "removed": true
         },
         {
           "key": "mayonnaise|cup",
@@ -2260,9 +2263,10 @@
         {
           "key": "garlic|clove",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770568328,
+          "at": 1794787972570,
           "qty": 7,
-          "unit": "cloves"
+          "unit": "cloves",
+          "removed": true
         },
         {
           "key": "dried parsley|tsp",
@@ -2371,6 +2375,13 @@
           "qty": 1,
           "unit": "can",
           "removed": true
+        },
+        {
+          "key": "garlic|clove",
+          "session": "smwiif2sbzpv4if",
+          "at": 1794787972571,
+          "qty": 9,
+          "unit": "clove"
         }
       ],
       "manualItems": [],
