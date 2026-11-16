@@ -2378,5 +2378,16 @@
     "actor": "site-editor (Anonymous)",
     "note": "Approved by Yidi Nov 15, 2026 — shopping-list build D4: unit 'small-medium' is a size descriptor, not a unit — moved into the item ('small-medium onion', qty 1, no unit) so the shopping list shows …",
     "created_at": "2026-11-15T21:51:01.578Z"
+  },
+  {
+    "id": "edit-mwikexlk-lehl",
+    "status": "done",
+    "type": "direct-edit",
+    "edit_target": "gochujang-korean-tofu",
+    "recipe_id": "gochujang-korean-tofu",
+    "title": "Crispy Gochujang Korean Tofu",
+    "actor": "site-editor (Anonymous)",
+    "note": "Changed ingredients",
+    "created_at": "2026-11-16T01:08:43.902Z"
   }
 ]
