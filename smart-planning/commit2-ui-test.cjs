@@ -96,7 +96,7 @@ geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       extract('saveMealPlan'));
 extract('parseQty', true).forEach(src => geval(src));
 ['qtyToNum', 'parseQtyBounds', 'decomposeTsp', 'fmtQty', 'pluralize', 'pluralizeUnit', 'stripSize', 'stripSizeKeepCase',
- 'singularizeWord', 'groupKey', 'canonicalUnit', 'canonicalShopKey',
+ 'singularizeWord', 'groupKey', 'canonicalUnit', 'canonicalShopKey', 'markMatchesShopKey',
  'parseSingleValue', 'parseFractionOrDecimal',
  'fromTsp', 'parseServings', 'normalizeSlot', 'sundayOf', 'weekDayYmd',
  'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'sectionMatchWords', 'lookupShoppingSection', 'buildShoppingList',
@@ -1980,6 +1980,8 @@ async function main() {
   geval(extract('isPantryStaple'));
   check('Section 23 (staples): plain water is a pantry staple, and water with a note still is (parenthetical stripped); coconut water is not',
     isPantryStaple('plain water') && isPantryStaple('water (maybe a little more)') && !isPantryStaple('coconut water'));
+  check('Section 23 (staples): jerusalem mix and jerusalem spice are pantry staples (v20261115c)',
+    isPantryStaple('jerusalem mix') && isPantryStaple('jerusalem spice'));
 
   // Section 24. Home counter counts only what is needed (v20261112d, Nov 15, 2026):
   // homeToBuyCount() is the To buy section (splitShopItems), not the raw
@@ -2136,6 +2138,13 @@ async function main() {
   const recipeDir26 = path.join(SITE_DIR, 'data', 'recipes');
   const recipeFiles26 = fs.existsSync(recipeDir26) ? fs.readdirSync(recipeDir26).filter(f => f.endsWith('.json')) : [];
   let corpusMismatches = 0;
+  const legacyStripSize26 = s => {
+    let out = ' ' + String(s || '').toLowerCase() + ' ';
+    SIZE_WORDS.forEach(w => {
+      out = out.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
+    });
+    return out.trim().replace(/^to\s+/i, '').replace(/\s+/g, ' ');
+  };
   for (const rf of recipeFiles26) {
     const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
     for (const sec of (rj.ingredients || [])) {
@@ -2144,9 +2153,12 @@ async function main() {
         const bk = groupKey(it.item);
         const rk = receiptsMod.groupKey(it.item);
         const gkFromRk = groupKey(rk);
+        const bkTailSing = bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+        const rkTailSing = gkFromRk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
         if (bk !== rk &&
             bk !== gkFromRk &&
-            bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w)) !== gkFromRk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w))) {
+            bkTailSing !== rkTailSing &&
+            legacyStripSize26(bkTailSing) !== legacyStripSize26(rkTailSing)) {
           corpusMismatches++;
         }
       }
@@ -2608,10 +2620,10 @@ async function main() {
   const list30Units = buildShoppingList();
   const unitLabels30 = list30Units.map(it => it.label);
   const ft16 = fromTsp(16);
-  check('Section 30 (fromTsp clean units): renders "3½ tsp kosher salt", "4 tsp cornstarch", "15 tbsp olive oil" (never "1 cup"), "½ cup + 1 tsp milk" and "⅓ cup + 1½ tsp honey" for non-clean totals, and 16 tsp -> "⅓ cup"',
+  check('Section 30 (fromTsp clean units): renders "3½ tsp kosher salt", "4 tsp cornstarch", "¾ cup + 3 tbsp olive oil" (45 tsp decomposed), "½ cup + 1 tsp milk" and "⅓ cup + 1½ tsp honey" for non-clean totals, and 16 tsp -> "⅓ cup"',
     unitLabels30.includes('3½ tsp kosher salt') &&
     unitLabels30.includes('4 tsp cornstarch') &&
-    unitLabels30.includes('15 tbsp olive oil') &&
+    unitLabels30.includes('¾ cup + 3 tbsp olive oil') &&
     unitLabels30.includes('½ cup + 1 tsp milk') &&
     unitLabels30.includes('⅓ cup + 1½ tsp honey') &&
     Math.abs(ft16.qty - 16 / 48) < 1e-6 && ft16.unit === 'cup' && fmtQty(ft16.qty) === '⅓');
@@ -2715,6 +2727,241 @@ async function main() {
   check('Section 30 (water exclusion): water and plain water never appear on the shopping list, while other items still build',
     !list30Water.some(it => it.base === 'water' || it.base === 'plain water') &&
     list30Water.some(it => it.base === 'kosher salt'));
+
+  // ---------------------------------------------------------------------------
+  // 31. Shopping-list fixes v20261115c+ (Nov 15, 2026): L1–L7
+  // ---------------------------------------------------------------------------
+  // 31(1) L1 — Replay exact live marks across 3 sessions (garlic 3 marks, mayo cup+tbsp,
+  // sriracha tbsp mark vs tsp row, beans plural mark vs singular row, gochujang matter vs matters)
+  const live36Marks = [
+    { key: 'garlic|clove', session: 'smwi093dx8q78cg', at: 1794757525277, qty: 1, unit: 'clove', removed: true },
+    { key: 'flour tortilla|', session: 'smwi0rpb9p8c03b', at: 1794758328549, qty: 4, unit: '' },
+    { key: 'gluten free breadcrumbs (or regular breadcrumbs)|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758332789, qty: 3, unit: 'tbsp' },
+    { key: 'garlic|clove', session: 'smwi0rpb9p8c03b', at: 1794758454127, qty: 1, unit: 'clove' },
+    { key: 'parsley|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758507434, qty: 1, unit: 'tbsp' },
+    { key: 'black or pinto beans (15 oz)|can', session: 'smwi0rpb9p8c03b', at: 1794758607945, qty: 1, unit: 'can' },
+    { key: 'mayonnaise|cup', session: 'smwi0rpb9p8c03b', at: 1794758608673, qty: 1, unit: 'cup' },
+    { key: 'hot sauce|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758609282, qty: 1, unit: 'tbsp' },
+    { key: 'mustard (grey poupon dijon)|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758610907, qty: 1, unit: 'tbsp' },
+    { key: 'ortega taco seasoning|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758612042, qty: 1, unit: 'tbsp' },
+    { key: 'rice vinegar|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758612814, qty: 1, unit: 'tbsp' },
+    { key: 'tamari or soy sauce|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758614849, qty: 1, unit: 'tbsp' },
+    { key: 'toasted sesame oil|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758615940, qty: 1, unit: 'tbsp' },
+    { key: 'tomato paste|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758618254, qty: 1, unit: 'tbsp' },
+    { key: 'vinegar|cup', session: 'smwi0rpb9p8c03b', at: 1794758622109, qty: 0.5, unit: 'cup' },
+    { key: 'gochujang (korean red chili paste); check label if gluten free matter|cup', session: 'smwi0rpb9p8c03b', at: 1794758623255, qty: 0.25, unit: 'cup' },
+    { key: 'low sodium tamari or soy sauce|cup', session: 'smwi0rpb9p8c03b', at: 1794758628797, qty: 0.25, unit: 'cup' },
+    { key: 'cumin seed|tsp', session: 'smwi0rpb9p8c03b', at: 1794758629834, qty: 0.25, unit: 'tsp' },
+    { key: 'sriracha chili sauce|tbsp', session: 'smwi0rpb9p8c03b', at: 1794758631234, qty: 1.33, unit: 'tbsp' },
+    { key: 'heart of romaine lettuce|', session: 'smwi7tm67j1bo6b', at: 1794770175103, qty: 1, unit: '' },
+    { key: 'chicken stock or vegetable stock|cup', session: 'smwi7tm67j1bo6b', at: 1794770217943, qty: 1, unit: 'cup' },
+    { key: 'onion soup mix (a good amount, sprinkled)|', session: 'smwi7tm67j1bo6b', at: 1794770225404 },
+    { key: 'ground beef|lb', session: 'smwi7tm67j1bo6b', at: 1794770230879, qty: 1, unit: 'lb' },
+    { key: 'cornflake crumb|cup', session: 'smwi7tm67j1bo6b', at: 1794770301144, qty: 0.25, unit: 'cup' },
+    { key: 'purple onion|', session: 'smwi7tm67j1bo6b', at: 1794770383645, qty: 1, unit: '' },
+    { key: 'shallot|', session: 'smwi7tm67j1bo6b', at: 1794770384695, qty: 1, unit: '' },
+    { key: 'carrot|', session: 'smwi7tm67j1bo6b', at: 1794770462018, qty: 2, unit: '' },
+    { key: 'tomato|', session: 'smwi7tm67j1bo6b', at: 1794770480124, qty: 2, unit: '' },
+    { key: 'dried tomato or tomato|', session: 'smwi7tm67j1bo6b', at: 1794770496908, qty: 1, unit: '' },
+    { key: 'fresh ginger|tsp', session: 'smwi7tm67j1bo6b', at: 1794770508322, qty: 1, unit: 'tsp' },
+    { key: 'dried plum (prunes)|', session: 'smwi7tm67j1bo6b', at: 1794770513579, qty: 3, unit: '' },
+    { key: 'lime juice|tsp', session: 'smwi7tm67j1bo6b', at: 1794770515879, qty: 2, unit: 'tsp' },
+    { key: 'lemon juice|tbsp', session: 'smwi7tm67j1bo6b', at: 1794770516790, qty: 2, unit: 'tbsp' },
+    { key: 'onion|cup', session: 'smwi7tm67j1bo6b', at: 1794770548350, qty: 0.5, unit: 'cup' },
+    { key: 'garlic|clove', session: 'smwi7tm67j1bo6b', at: 1794770568328, qty: 7, unit: 'cloves' },
+    { key: 'dried parsley|tsp', session: 'smwi7tm67j1bo6b', at: 1794770565981, qty: 0.5, unit: 'tsp' }
+  ];
+  globalThis.byId = {
+    'r31-a': {
+      id: 'r31-a', title: 'Live Replay Fixture', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1', unit: 'clove', item: 'garlic' },
+        { qty: '6', unit: 'cloves', item: 'garlic' },
+        { qty: '2', unit: 'tsp', item: 'garlic' },
+        { qty: '1/2', unit: 'cup', item: 'mayonnaise' },
+        { qty: '1/2', unit: 'cup', item: 'mayonnaise' },
+        { qty: '1', unit: 'tbsp', item: 'mayonnaise' },
+        { qty: '2-4', unit: 'tsp', item: 'Sriracha chili sauce' },
+        { qty: '1', unit: 'can', item: 'black or pinto beans (15 oz)' },
+        { qty: '1/4', unit: 'cup', item: 'gochujang (Korean red chili paste); check label if gluten free matters' },
+        { qty: '1', unit: null, item: 'onion' }
+      ] }]
+    }
+  };
+  const days31 = blankDays();
+  days31[0].dinner.dishes = [{ recipe: 'r31-a', drafted: false }];
+  // Pre-tap state: garlic only has session A tombstone + session B qty:1 mark (so garlic is split 1 clove have / 6 cloves + 2 tsp need)
+  const preTapMarks = live36Marks.filter(m => !(m.key === 'garlic|clove' && m.session === 'smwi7tm67j1bo6b'));
+  setPlan({ [K30]: { days: days31, shoppingDay: K30, haveGenerated: JSON.parse(JSON.stringify(preTapMarks)) } });
+  const preSplit31 = splitShopItems(buildShoppingList(), getWeek(K30));
+  // Check mayo partial split with only the mayonnaise|cup (1 cup = 16 tbsp) mark present: 16 tbsp have / 1 tbsp need
+  const mayoPreHave = preSplit31.haveIts.find(it => it.base === 'mayonnaise');
+  const mayoPreNeed = preSplit31.toBuy.find(it => it.base === 'mayonnaise');
+  check('Section 31 (L1 iv — mayo cup-mark partial split): mayonnaise|cup (qty 1) matches 1 cup + 1 tbsp mayonnaise and splits into "16 tbsp mayonnaise" (have) and "1 tbsp mayonnaise" (need)',
+    !!mayoPreHave && mayoPreHave.label === '16 tbsp mayonnaise' &&
+    !!mayoPreNeed && mayoPreNeed.label === '1 tbsp mayonnaise');
+
+  // Now simulate tapping the garlic need-row in session smwi7tm67j1bo6b via the real renderShopping click listener
+  ['activeHaveMarks', 'getSessionId', 'renderShopWrap', 'shoppingFromLabel', 'renderShopping']
+    .forEach(n => geval(extract(n)));
+  globalThis.helpLinkHTML = () => '';
+  globalThis.ensurePlannedRecipes = async () => {};
+  globalThis.startShopPoll = () => {};
+  globalThis.stopShopPoll = () => {};
+  globalThis.markShopDirty = () => { saveShopLocal(); };
+  const savedSession31 = globalThis.sessionStorage;
+  const savedDollar31 = globalThis.$;
+  globalThis.sessionStorage = stubStorage({ 'shop-session': 'smwi7tm67j1bo6b' });
+  let shopClickHandler31 = null;
+  const shopWrap31 = {
+    innerHTML: '',
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    addEventListener(ev, fn) { if (ev === 'click') shopClickHandler31 = fn; }
+  };
+  const shopApp31 = {
+    innerHTML: '',
+    querySelector() { return null; },
+    querySelectorAll() { return []; }
+  };
+  globalThis.$ = sel => (sel === '#shop-wrap' ? shopWrap31 : null);
+  await renderShopping(shopApp31);
+  const tapShopRow = (shopKey, splitAttr) => {
+    const expectedAttr = 'data-shop="' + shopKey + '"' + (splitAttr ? ' data-shop-split="' + splitAttr + '"' : '');
+    if (!shopWrap31.innerHTML.includes(expectedAttr)) return false;
+    const itemNode = {
+      dataset: Object.assign({ shop: shopKey }, splitAttr ? { shopSplit: splitAttr } : {}),
+      closest(s) { return s === '[data-shop]' ? itemNode : null; }
+    };
+    const btnNode = {
+      closest(s) {
+        if (s === '.shop-have-btn') return btnNode;
+        if (s === '[data-shop]') return itemNode;
+        return null;
+      }
+    };
+    shopClickHandler31({ target: btnNode });
+    return true;
+  };
+  const tappedNeed = tapShopRow('garlic|clove', 'need');
+  const postNeedSplit31 = splitShopItems(buildShoppingList(), getWeek(K30));
+  check('Section 31 (L1 i — need-row tap on garlic): tapping need-row clears garlic from To Buy and places full row in Already Have (newest mark beats stale session B qty-1 mark)',
+    tappedNeed &&
+    !postNeedSplit31.toBuy.some(it => it.base === 'garlic') &&
+    postNeedSplit31.haveIts.filter(it => it.base === 'garlic').length === 1 &&
+    postNeedSplit31.haveIts.find(it => it.base === 'garlic').label === '7 cloves + 2 tsp garlic');
+
+  // Now tap the garlic have-row to move it back to To Buy
+  const tappedHave = tapShopRow('garlic|clove', null);
+  const postUncheckSplit31 = splitShopItems(buildShoppingList(), getWeek(K30));
+  check('Section 31 (L1 ii — have-row tap on garlic): tapping have-row tombstones all sessions and moves full garlic row back to To Buy',
+    tappedHave &&
+    postUncheckSplit31.toBuy.filter(it => it.base === 'garlic').length === 1 &&
+    !postUncheckSplit31.haveIts.some(it => it.base === 'garlic'));
+
+  // Simulate a late-arriving remote mark from another session (older timestamp than the uncheck tombstone)
+  const uncheckTs = Math.max(...getWeek(K30).haveGenerated.filter(m => m.key === 'garlic|clove' && m.removed).map(m => m.at || 0));
+  const lateRemoteMarks = [{ key: 'garlic|clove', session: 'nava-phone-late', at: uncheckTs - 5000, qty: 7, unit: 'cloves' }];
+  getWeek(K30).haveGenerated = mergeHaveMarks(getWeek(K30).haveGenerated, lateRemoteMarks);
+  const afterLateSyncSplit31 = splitShopItems(buildShoppingList(), getWeek(K30));
+  check('Section 31 (L1 iii — key-level uncheck survives late remote sync): a remote mark with older timestamp arriving after uncheck is suppressed and does NOT resurrect garlic',
+    afterLateSyncSplit31.toBuy.filter(it => it.base === 'garlic').length === 1 &&
+    !afterLateSyncSplit31.haveIts.some(it => it.base === 'garlic'));
+
+  // Test L1(v): unchecking rows whose mark key differs (sriracha|tbsp vs sriracha|tsp, beans plural vs singular, gochujang matter vs matters)
+  renderShopWrap();
+  const tappedSriracha = tapShopRow('sriracha chili sauce|tsp', null);
+  const tappedBeans = tapShopRow('black or pinto bean (15 oz)|can', null);
+  const tappedGoch = tapShopRow('gochujang (korean red chili paste); check label if gluten free matters|cup', null);
+  globalThis.sessionStorage = savedSession31;
+  globalThis.$ = savedDollar31;
+  const afterMismatchUncheck31 = splitShopItems(buildShoppingList(), getWeek(K30));
+  check('Section 31 (L1 v — unchecking mismatched legacy mark keys): tapping have-row on Sriracha (tbsp mark vs tsp row), beans (plural mark), and gochujang (matter mark) unchecks each in one tap',
+    tappedSriracha && tappedBeans && tappedGoch &&
+    afterMismatchUncheck31.toBuy.some(it => it.base === 'sriracha chili sauce') &&
+    !afterMismatchUncheck31.haveIts.some(it => it.base === 'sriracha chili sauce') &&
+    afterMismatchUncheck31.toBuy.some(it => it.base === 'black or pinto bean (15 oz)') &&
+    !afterMismatchUncheck31.haveIts.some(it => it.base === 'black or pinto bean (15 oz)') &&
+    afterMismatchUncheck31.toBuy.some(it => it.base.startsWith('gochujang')) &&
+    !afterMismatchUncheck31.haveIts.some(it => it.base.startsWith('gochujang')));
+
+  // 31(2) L2 — Onion in whole units + legacy {onion|cup, qty 0.5} mark migration
+  const onionHave31 = preSplit31.haveIts.find(it => it.base === 'onion');
+  const onionNeed31 = preSplit31.toBuy.find(it => it.base === 'onion');
+  check('Section 31 (L2 — whole onion + legacy cup mark migration): 1 onion stays "1 onion" (COUNT_TO_TSP.onion === undefined) and legacy {onion|cup, qty 0.5} mark covers it as one checked "1 onion" row without splitting',
+    COUNT_TO_TSP.onion === undefined &&
+    COUNT_TO_TSP.lemon === 9 &&
+    !!onionHave31 && onionHave31.label === '1 onion' &&
+    !onionNeed31);
+
+  // 31(3) L3 + L6 + L7 — Decompose tbsp/tsp totals (17 tbsp mayo -> 1 cup + 1 tbsp; 10 tsp cornstarch -> 3 tbsp + 1 tsp),
+  // eggs optional flag ("3 eggs (2 optional)" + split remainder), and flour alias ("½ cup + 3 tbsp all purpose flour")
+  globalThis.byId = {
+    'r31-b': {
+      id: 'r31-b', title: 'L3/L6/L7 Fixture A', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1/2', unit: 'cup', item: 'mayonnaise' },
+        { qty: '1', unit: 'tbsp', item: 'cornstarch' },
+        { qty: '1', unit: 'tsp', item: 'cornstarch' },
+        { qty: '1/2', unit: 'cup', item: 'flour' },
+        { qty: '1', unit: null, item: 'egg' },
+        { qty: '1', unit: 'tsp', item: 'vanilla extract' },
+        { qty: '1', unit: null, item: 'dried tomato or small tomato' }
+      ] }]
+    },
+    'r31-c': {
+      id: 'r31-c', title: 'L3/L6/L7 Fixture B', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1/2', unit: 'cup', item: 'mayonnaise' },
+        { qty: '1', unit: 'tbsp', item: 'mayonnaise' },
+        { qty: '2', unit: 'tbsp', item: 'cornstarch' },
+        { qty: '3', unit: 'tbsp', item: 'all purpose flour' },
+        { qty: '2', unit: null, item: 'eggs', optional: true },
+        { qty: '1', unit: 'tbsp', item: 'vanilla extract', optional: true }
+      ] }]
+    }
+  };
+  const days31b = blankDays();
+  days31b[0].dinner.dishes = [{ recipe: 'r31-b', drafted: false }, { recipe: 'r31-c', drafted: false }];
+  setPlan({ [K30]: { days: days31b, shoppingDay: K30, haveGenerated: [] } });
+  const list31b = buildShoppingList();
+  const labels31b = list31b.map(it => it.label);
+  check('Section 31 (L3 — decompose tbsp & tsp): 17 tbsp mayo -> "1 cup + 1 tbsp mayonnaise", 10 tsp cornstarch -> "3 tbsp + 1 tsp cornstarch"',
+    labels31b.includes('1 cup + 1 tbsp mayonnaise') &&
+    labels31b.includes('3 tbsp + 1 tsp cornstarch'));
+  check('Section 31 (L4 — stripSize at start only): "dried tomato or small tomato" keeps "small", while leading "medium to large cherry tomatoes" strips size range',
+    labels31b.includes('1 dried tomato or small tomato') &&
+    stripSize('medium to large cherry tomatoes, stemmed (about 4 cups)') === 'cherry tomatoes, stemmed (about 4 cups)' &&
+    stripSize('large flour tortillas') === 'flour tortillas');
+  check('Section 31 (L6 — eggs optional flag & volume optional flag): required 1 egg + optional 2 eggs -> "3 eggs (2 optional)", and required 1 tsp + optional 1 tbsp vanilla -> "4 tsp vanilla extract (1 tbsp optional)"',
+    labels31b.includes('3 eggs (2 optional)') &&
+    labels31b.includes('4 tsp vanilla extract (1 tbsp optional)'));
+  const eggsSplit1 = splitShopItems(list31b, { haveGenerated: [{ key: 'egg|', qty: 1, unit: '', session: 's1', at: 100 }] });
+  const eggsSplit2 = splitShopItems(list31b, { haveGenerated: [{ key: 'egg|', qty: 2, unit: '', session: 's1', at: 100 }] });
+  check('Section 31 (L6 Edge Case B — split flagged row): marking 1 of 3 eggs (2 optional) have leaves "1 egg" (have, no flag) + "2 eggs (2 optional)" (need); marking 2 have leaves "2 eggs" (have) + "1 egg (1 optional)" (need)',
+    eggsSplit1.haveIts.find(it => it.base === 'egg').label === '1 egg' &&
+    eggsSplit1.toBuy.find(it => it.base === 'egg').label === '2 eggs (2 optional)' &&
+    eggsSplit2.haveIts.find(it => it.base === 'egg').label === '2 eggs' &&
+    eggsSplit2.toBuy.find(it => it.base === 'egg').label === '1 egg (1 optional)');
+  check('Section 31 (L7 — flour = all purpose flour): ½ cup flour + 3 tbsp all purpose flour merge into "½ cup + 3 tbsp all purpose flour"',
+    labels31b.includes('½ cup + 3 tbsp all purpose flour') &&
+    !list31b.some(it => it.base === 'flour'));
+
+  // 31(4) L5 — Aisle map entries (butternut squash, orange squash, apple, cornmeal, olcha)
+  const savedSec31 = globalThis.shoppingSections;
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  const secButternut = lookupShoppingSection('butternut squash');
+  const secOrangeSq = lookupShoppingSection('orange squash');
+  const secApple = lookupShoppingSection('apple');
+  const secCornmeal = lookupShoppingSection('cornmeal');
+  const secOlcha = lookupShoppingSection('olcha');
+  globalThis.shoppingSections = savedSec31;
+  check('Section 31 (L5 — shopping-sections.json): butternut squash & orange squash -> Fresh Produce > Fresh Vegetables, apple -> Fresh Produce > Fresh Fruit, cornmeal -> Grocery > Baking Needs, olcha stays Unsorted',
+    secButternut.department === 'Fresh Produce' && secButternut.subcategory === 'Fresh Vegetables' &&
+    secOrangeSq.department === 'Fresh Produce' && secOrangeSq.subcategory === 'Fresh Vegetables' &&
+    secApple.department === 'Fresh Produce' && secApple.subcategory === 'Fresh Fruit' &&
+    secCornmeal.department === 'Grocery' && secCornmeal.subcategory === 'Baking Needs' &&
+    secOlcha.department === 'Unsorted');
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
