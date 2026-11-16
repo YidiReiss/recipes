@@ -56,7 +56,7 @@
           "unit": "tbsp"
         },
         {
-          "item": "honey (use maple syrup to make it fully vegan)",
+          "item": "honey",
           "qty": "3",
           "unit": "tbsp"
         },
@@ -232,10 +232,28 @@
         "PDF regenerated"
       ],
       "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
+    },
+    {
+      "ts": "2026-11-16T01:08:43.902Z",
+      "actor": "site-editor (Anonymous)",
+      "action": "edit",
+      "changes": [
+        {
+          "field": "ingredients",
+          "from": "2 items ([section: 4 items]; [section: 11 items])",
+          "to": "2 items ([section: 4 items]; [section: 11 items])"
+        },
+        {
+          "field": "pdf_stale",
+          "from": false,
+          "to": true
+        }
+      ],
+      "reasoning": null
     }
   ],
   "needs_side": true,
   "needs_kosher_review": false,
   "kosher_review_notes": "",
-  "pdf_stale": false
+  "pdf_stale": true
 }
