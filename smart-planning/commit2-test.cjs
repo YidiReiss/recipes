@@ -991,8 +991,8 @@ async function main() {
       !isPantryStaple('salted butter') && !isPantryStaple('unsalted butter') &&
       !isPantryStaple('garlic') && !isPantryStaple('fresh garlic') &&
       !isPantryStaple('granulated garlic'));
-    check('garlic: COUNT_TO_TSP has no garlic conversion (onion/lemon stay)',
-      COUNT_TO_TSP.garlic === undefined && COUNT_TO_TSP.onion === 24 && COUNT_TO_TSP.lemon === 9);
+    check('garlic & onion: COUNT_TO_TSP has no garlic or onion conversion (lemon stays)',
+      COUNT_TO_TSP.garlic === undefined && COUNT_TO_TSP.onion === undefined && COUNT_TO_TSP.lemon === 9);
     setMeta([{ id: 'g1', title: 'Garlic Dish', kosher_status: 'pareve', categories: ['main'], tags: [],
       prep_minutes: 5, cook_minutes: 10, servings: '4', leftover_friendly: false, search_text: 'garlic onion' }]);
     globalThis.byId = { g1: { id: 'g1', title: 'Garlic Dish',
@@ -1009,8 +1009,8 @@ async function main() {
     check('garlic: cloves display as cloves, never as tbsp/cup (3+3 cloves merge)',
       glist.some(i => /6 cloves garlic/.test(i.label)) &&
       !glist.some(i => /garlic/.test(i.label) && /(tbsp|cup|tsp)/.test(i.label)), glabels);
-    check('onion: count-to-volume conversion still merges counts (2+2 onions = 2 cups)',
-      glist.some(i => /2 cups? onion/.test(i.label)), glabels);
+    check('onion: whole-onion counts stay as whole onions (2+2 onions = 4 onions, never cups)',
+      glist.some(i => /^4 onions$/.test(i.label)), glabels);
     globalThis.byId = {};
   }
 

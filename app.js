@@ -726,17 +726,17 @@ function shoppingFromYmd() {
    for grouping so "1 egg" + "1 large egg" merge. Never applied to display alone. */
 const SIZE_WORDS = ['extra-large', 'extra large', 'jumbo', 'large', 'medium', 'small'];
 function stripSize(item) {
-  let s = ' ' + String(item || '').toLowerCase() + ' ';
-  SIZE_WORDS.forEach(w => {
-    s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
-  });
+  let s = String(item || '').toLowerCase().trim();
+  const alt = '(?:' + SIZE_WORDS.map(w => w.replace(/-/g, '[- ]').replace(/ /g, '\\s+')).join('|') + ')';
+  const re = new RegExp('^\\s*' + alt + '(?:\\s+to\\s+' + alt + ')?\\s+', 'i');
+  while (re.test(s)) s = s.replace(re, '');
   return s.trim().replace(/\s+/g, ' ');
 }
 function stripSizeKeepCase(item) {
-  let s = ' ' + String(item || '') + ' ';
-  SIZE_WORDS.forEach(w => {
-    s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'gi'), ' ');
-  });
+  let s = String(item || '').trim();
+  const alt = '(?:' + SIZE_WORDS.map(w => w.replace(/-/g, '[- ]').replace(/ /g, '\\s+')).join('|') + ')';
+  const re = new RegExp('^\\s*' + alt + '(?:\\s+to\\s+' + alt + ')?\\s+', 'i');
+  while (re.test(s)) s = s.replace(re, '');
   return s.trim().replace(/\s+/g, ' ');
 }
 /* Convert tsp/tbsp/cup to a common base so "½ cup + 3 tbsp" merges to one line. */
@@ -765,35 +765,52 @@ function fromTsp(total) {
   }
   return { qty: total, unit: 'tsp' };
 }
-/* Decompose a non-clean tsp total (>= 12) into the largest clean cup chunk
-   plus a remainder, so quantities read like real kitchen amounts instead of
-   an absurd tsp count (Yidi, Nov 15, 2026: "17 teaspoons is absurd").
-   The remainder renders through fromTsp itself (tbsp only on exact
-   half-steps at >= 3 tsp, else tsp), so 25 tsp -> 1/2 cup + 1 tsp and
-   17.5 tsp -> 1/3 cup + 1 1/2 tsp. Returns null when the total is already
-   clean (a cup mark or whole/half tbsp) — callers fall back to fromTsp. */
+/* Decompose a non-clean tsp total into the largest clean cup chunk (>= 12 tsp)
+   or whole tbsp chunk (6–11 tsp) plus a remainder, so quantities read like real
+   kitchen amounts instead of an absurd tsp/tbsp count (Yidi, Nov 15, 2026:
+   "17 teaspoons is absurd"; 17 tbsp -> 1 cup + 1 tbsp; 10 tsp -> 3 tbsp + 1 tsp).
+   Returns null when the total is already clean (a cup mark at >= 12 tsp, a
+   whole/half tbsp at 6–11 tsp, or < 6 tsp) — callers fall back to fromTsp. */
 function decomposeTsp(total) {
-  if (!(total >= 12)) return null;
-  const cups = total / 48;
-  const whole = Math.floor(cups + 1e-9);
-  const frac = cups - whole;
-  const MARKS = [1, 0.75, 2 / 3, 0.5, 1 / 3, 0.25, 0];
-  if (MARKS.some(m => Math.abs(frac - m) <= 0.015)) return null;
-  let mark = 0;
-  for (const m of MARKS) {
-    if (frac - m > 0.015) { mark = m; break; }
+  const isHalfStep = x => Math.abs(x * 2 - Math.round(x * 2)) < 1e-6;
+  if (total >= 12) {
+    const cups = total / 48;
+    const whole = Math.floor(cups + 1e-9);
+    const frac = cups - whole;
+    const MARKS = [1, 0.75, 2 / 3, 0.5, 1 / 3, 0.25, 0];
+    if (MARKS.some(m => Math.abs(frac - m) <= 0.015)) return null;
+    const chunkMarks = isHalfStep(total / 3) ? [1, 0.75, 0.5, 0.25, 0] : MARKS;
+    let mark = 0;
+    for (const m of chunkMarks) {
+      if (frac - m > 0.015) { mark = m; break; }
+    }
+    const chunkTsp = (whole + mark) * 48;
+    if (!(chunkTsp > 0) || !(chunkTsp < total - 1e-9)) return null;
+    const remTotal = Math.round((total - chunkTsp) * 100) / 100;
+    const sub = (remTotal >= 6 && remTotal < 12) ? decomposeTsp(remTotal) : null;
+    if (sub) {
+      const fFn = typeof fmtQty === 'function' ? fmtQty : (n => String(n));
+      const pFn = typeof pluralizeUnit === 'function' ? pluralizeUnit : (u => u);
+      const remText = fFn(sub.chunkQty) + ' ' + pFn(sub.chunkUnit, sub.chunkQty) + ' + ' + fFn(sub.remQty) + ' ' + sub.remUnit;
+      return { chunkQty: whole + mark, chunkUnit: 'cup', remQty: sub.chunkQty, remUnit: sub.chunkUnit, remText };
+    }
+    const r = fromTsp(remTotal);
+    return { chunkQty: whole + mark, chunkUnit: 'cup', remQty: r.qty, remUnit: r.unit };
   }
-  const chunkTsp = (whole + mark) * 48;
-  if (!(chunkTsp > 0) || !(chunkTsp < total - 1e-9)) return null;
-  const r = fromTsp(total - chunkTsp);
-  return { chunkQty: whole + mark, chunkUnit: 'cup', remQty: r.qty, remUnit: r.unit };
+  if (total >= 6) {
+    const tbsp = total / 3;
+    if (isHalfStep(tbsp)) return null;
+    const tbspWhole = Math.floor((total + 1e-9) / 3);
+    const remTsp = Math.round((total - tbspWhole * 3) * 100) / 100;
+    if (!(tbspWhole > 0) || !(remTsp > 0)) return null;
+    return { chunkQty: tbspWhole, chunkUnit: 'tbsp', remQty: remTsp, remUnit: 'tsp' };
+  }
+  return null;
 }
-/* Count-to-volume for common produce, so "1 onion" + "½ cup chopped onion"
-   merge. Conservative: only these two, widely-agreed conversions.
-   (Garlic was removed 2026-11-01: cloves must display as cloves, not as
-   tsp/tbsp/cup of garlic.) */
+/* Count-to-volume for common produce.
+   (Garlic was removed 2026-11-01; onion was removed 2026-11-15 so onions
+   always display as whole onions.) */
 const COUNT_TO_TSP = {
-  'onion': 24,   // 1 medium onion ≈ ½ cup chopped
   'lemon': 9,    // 1 lemon ≈ 3 tbsp juice
 };
 /* Singularize one word: tomatoes->tomato, leaves->leaf, potatoes->potato,
@@ -817,14 +834,16 @@ function singularizeWord(w) {
   return w;
 }
 /* Unambiguous head-noun aliases for canonical grouping.
-   'salt' -> 'kosher salt' (Yidi, Nov 15, 2026: "we basically only use kosher salt"). */
+   'salt' -> 'kosher salt' (Yidi, Nov 15, 2026: "we basically only use kosher salt").
+   'flour' -> 'all purpose flour' (Yidi, Nov 15, 2026: bare flour is AP flour). */
 const ITEM_ALIASES = {
   'fresh lemon juice': 'lemon juice',
   'fresh lime juice': 'lime juice',
   'freshly ground black pepper': 'black pepper',
   'ground black pepper': 'black pepper',
   'freshly cracked black pepper': 'black pepper',
-  'salt': 'kosher salt'
+  'salt': 'kosher salt',
+  'flour': 'all purpose flour'
 };
 /* Canonical grouping key: lowercase, no size words, singularized head noun,
    with parentheticals/comma/semicolon notes preserved in the tail. */
@@ -840,7 +859,8 @@ function groupKey(item) {
     'freshly ground black pepper': 'black pepper',
     'ground black pepper': 'black pepper',
     'freshly cracked black pepper': 'black pepper',
-    'salt': 'kosher salt'
+    'salt': 'kosher salt',
+    'flour': 'all purpose flour'
   };
   const canonHead = aliases[singHead] || singHead;
   return canonHead + tail;
@@ -1008,6 +1028,7 @@ const PANTRY_STAPLES = new Set([
   'cinnamon', 'ground cinnamon', 'cumin', 'ground cumin', 'coriander', 'ground coriander',
   'turmeric', 'ground turmeric', 'chili powder', 'cayenne', 'cayenne pepper', 'ground cayenne',
   'red pepper flake', 'crushed red pepper', 'crushed red pepper flake', 'taco seasoning',
+  'jerusalem mix', 'jerusalem spice',
   'bay leaf', 'bay leave',
   // honey (Yidi stocks it — added 2026-11-01)
   'honey',
@@ -1037,6 +1058,23 @@ function canonicalShopKey(oldKey) {
   const cu = typeof canonicalUnit === 'function' ? canonicalUnit(rawUnit) : String(rawUnit || '').trim().toLowerCase();
   return groupKey(rawBase).toLowerCase() + '|' + cu;
 }
+/* Shared 4-tier shopping key matcher (exact key, canonicalShopKey, canonical
+   base, and tail-singularized base) used by splitShopItems, the .shop-have-btn
+   check/uncheck handler, and mergeHaveMarks. */
+function markMatchesShopKey(markKey, rowKey) {
+  if (!markKey || !rowKey) return false;
+  if (markKey === rowKey) return true;
+  const canonFn = typeof canonicalShopKey === 'function' ? canonicalShopKey : (k => String(k || '').toLowerCase());
+  const tailSing = s => String(s || '').replace(/\b(\w+)$/, (_, w) => typeof singularizeWord === 'function' ? singularizeWord(w) : w);
+  const mkCanon = canonFn(markKey);
+  const rkCanon = canonFn(rowKey);
+  if (mkCanon && mkCanon === rkCanon) return true;
+  const mkBase = mkCanon.split('|')[0];
+  const rkBase = rkCanon.split('|')[0];
+  if (mkBase && mkBase === rkBase) return true;
+  if (mkBase && rkBase && tailSing(mkBase) === tailSing(rkBase)) return true;
+  return false;
+}
 function partitionStaples(toBuy, week) {
   if (!getHideStaples()) return { active: toBuy, staples: [] };
   const promoted = promotedKeySet(week);
@@ -1063,6 +1101,19 @@ function splitShopItems(items, week) {
   const canonFn = typeof canonicalShopKey === 'function' ? canonicalShopKey : (k => String(k || '').toLowerCase());
   const cuFn = typeof canonicalUnit === 'function' ? canonicalUnit : (u => String(u || '').trim().toLowerCase());
   const tailSing = s => String(s || '').replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((mk, rk) => {
+    if (!mk || !rk) return false;
+    if (mk === rk) return true;
+    const mc = canonFn(mk), rc = canonFn(rk);
+    if (mc && mc === rc) return true;
+    const mb = mc.split('|')[0], rb = rc.split('|')[0];
+    return (!!mb && mb === rb) || (!!mb && !!rb && tailSing(mb) === tailSing(rb));
+  });
+  const markQtyTsp = m => {
+    const q = (m && m.qty !== null && m.qty !== undefined && Number.isFinite(Number(m.qty))) ? Number(m.qty) : 0;
+    const u = cuFn(m && (m.unit || (m.key || '').split('|')[1] || ''));
+    return TSP_PER[u] ? q * TSP_PER[u] : q;
+  };
   const promotedCanon = new Set([...promoted].map(canonFn));
   const promotedBases = new Set([...promotedCanon].map(k => k.split('|')[0]).filter(Boolean));
   const promotedTailBases = new Set([...promotedBases].map(tailSing));
@@ -1077,10 +1128,14 @@ function splitShopItems(items, week) {
     const base = (it.base || (it.key || '').split('|')[0]).toLowerCase();
     const baseTS = tailSing(base);
     if (dismissed.has(it.key) || dismissedCanon.has(itCanonKey) || dismissedBases.has(base) || dismissedTailBases.has(baseTS)) return;
-    const mark = marks.find(m => m.key === it.key) ||
-      marks.find(m => canonFn(m.key) === itCanonKey) ||
-      marks.find(m => canonFn(m.key).split('|')[0] === base) ||
-      marks.find(m => tailSing(canonFn(m.key).split('|')[0]) === baseTS);
+    const matchingMarks = marks.filter(m => m && matchKeyFn(m.key, it.key));
+    const mark = matchingMarks.length
+      ? matchingMarks.reduce((best, cur) => {
+          const bAt = best.at || 0, cAt = cur.at || 0;
+          if (cAt !== bAt) return cAt > bAt ? cur : best;
+          return markQtyTsp(cur) > markQtyTsp(best) ? cur : best;
+        })
+      : null;
     const isPromoted = promoted.has(it.key) || promotedCanon.has(itCanonKey) || promotedBases.has(base) || promotedTailBases.has(baseTS);
     if (it.optional && !mark && !isPromoted) { optionalIts.push(it); return; }
     if (!mark) { toBuy.push(it); return; }
@@ -1096,8 +1151,9 @@ function splitShopItems(items, week) {
       markedQty = (markedQty * TSP_PER[markRawUnit]) / TSP_PER[rawItemUnit];
       unitConverted = true;
     }
+    const unitsCompatible = (markRawUnit === rawItemUnit) || unitConverted;
     const tol = unitConverted ? 0.025 : 1e-9;
-    if (markedQty !== null && curQty !== null && curQty > markedQty + tol) {
+    if (unitsCompatible && markedQty !== null && curQty !== null && curQty > markedQty + tol) {
       const snappedMark = unitConverted && Math.abs(markedQty * 8 - Math.round(markedQty * 8)) < 0.025
         ? Math.round(markedQty * 8) / 8
         : markedQty;
@@ -1113,6 +1169,20 @@ function splitShopItems(items, week) {
       const fullNeedQtyUnit = it.extraBucketsText
         ? [firstNeedQtyUnit, it.extraBucketsText].filter(Boolean).join(' + ')
         : firstNeedQtyUnit;
+      const remOpt = (it.optionalQty && it.optionalQty > 0)
+        ? Math.round(Math.min(it.optionalQty, remainder) * 100) / 100
+        : 0;
+      let remOptText = '';
+      if (remOpt > 0) {
+        if (TSP_PER[rawItemUnit]) {
+          const cOpt = fromTsp(Math.round(remOpt * TSP_PER[rawItemUnit] * 100) / 100);
+          const oUnit = cOpt.unit ? ' ' + pluralizeUnit(cOpt.unit, cOpt.qty) : '';
+          remOptText = '(' + fmtQty(Math.round(cOpt.qty * 100) / 100) + oUnit + ' optional)';
+        } else {
+          const oUnit = rawItemUnit ? ' ' + pluralizeUnit(rawItemUnit, remOpt) : '';
+          remOptText = '(' + fmtQty(remOpt) + oUnit + ' optional)';
+        }
+      }
       haveIts.push({
         key: it.key, base: it.base || base, displayHead: dispBase, split: 'have',
         qty: markedClean, unit: haveUnit, rawUnit: rawItemUnit,
@@ -1123,7 +1193,8 @@ function splitShopItems(items, week) {
       toBuy.push({
         key: it.key, base: it.base || base, displayHead: dispBase, split: 'need',
         qty: remainder, unit: needUnit, rawUnit: rawItemUnit,
-        label: [fullNeedQtyUnit, needNoun].filter(Boolean).join(' ').trim(),
+        optionalQty: remOpt,
+        label: [fullNeedQtyUnit, needNoun, remOptText].filter(Boolean).join(' ').trim(),
         sources: srcs.slice(),
         department: it.department, subcategory: it.subcategory, deptIndex: it.deptIndex
       });
@@ -1187,10 +1258,10 @@ function buildShoppingList() {
     return m[low] || low;
   });
   const keepCaseFn = typeof stripSizeKeepCase === 'function' ? stripSizeKeepCase : (item => {
-    let s = ' ' + String(item || '') + ' ';
-    SIZE_WORDS.forEach(w => {
-      s = s.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'gi'), ' ');
-    });
+    let s = String(item || '').trim();
+    const alt = '(?:' + SIZE_WORDS.map(w => w.replace(/-/g, '[- ]').replace(/ /g, '\\s+')).join('|') + ')';
+    const re = new RegExp('^\\s*' + alt + '(?:\\s+to\\s+' + alt + ')?\\s+', 'i');
+    while (re.test(s)) s = s.replace(re, '');
     return s.trim().replace(/\s+/g, ' ');
   });
   const boundsFn = typeof parseQtyBounds === 'function' ? parseQtyBounds : (qtyStr => {
@@ -1211,7 +1282,8 @@ function buildShoppingList() {
     'freshly ground black pepper': 'black pepper',
     'ground black pepper': 'black pepper',
     'freshly cracked black pepper': 'black pepper',
-    'salt': 'kosher salt'
+    'salt': 'kosher salt',
+    'flour': 'all purpose flour'
   };
   const computeDisplayHead = raw => {
     const kept = keepCaseFn(raw);
@@ -1289,11 +1361,12 @@ function buildShoppingList() {
           }
           let b = e.buckets.get(bKey);
           if (!b) {
-            b = { unit: bKey, qtyLow: 0, qtyHigh: 0, isConv };
+            b = { unit: bKey, qtyLow: 0, qtyHigh: 0, qtyOptHigh: 0, isConv };
             e.buckets.set(bKey, b);
           }
           b.qtyLow += lowAdd;
           b.qtyHigh += highAdd;
+          if (it.optional) b.qtyOptHigh += highAdd;
         } else if (it.qty && String(it.qty).trim()) {
           e.texts.push(String(it.qty).trim());
         } else {
@@ -1302,7 +1375,7 @@ function buildShoppingList() {
       });
     });
   });
-  const formatBucket = b => {
+  const formatBucket = (b, isEntireRowOptional) => {
     let q = '', qnum = 0, dispUnit = b.unit, mixed = null;
     if (b.isConv) {
       const highTsp = Math.round(b.qtyHigh * 100) / 100;
@@ -1312,16 +1385,18 @@ function buildShoppingList() {
       // Ranges show the HIGH end only (Yidi, Nov 15, 2026: "the shopping list
       // should take the higher end of the range just so that we're ready") —
       // the low end is tracked but never rendered. Non-clean totals >= 12 tsp
-      // decompose into the largest clean cup chunk + remainder (see
-      // decomposeTsp) instead of an absurd tsp count.
-      if (cHigh.unit === 'tsp' && highTsp >= 12) {
+      // (regardless of returned unit) decompose into largest clean cup chunk +
+      // remainder, and 6–11 tsp non-half-step totals decompose into tbsp + tsp.
+      if (highTsp >= 6) {
         mixed = (typeof decomposeTsp === 'function') ? decomposeTsp(highTsp) : null;
       }
       if (mixed) {
-        q = fmtQty(mixed.chunkQty) + ' ' + pluralizeUnit(mixed.chunkUnit, mixed.chunkQty) + ' + ' +
-            fmtQty(mixed.remQty) + ' ' + mixed.remUnit;
-        qnum = highTsp;
-        dispUnit = 'tsp';
+        const remStr = mixed.remText || (fmtQty(mixed.remQty) + ' ' + mixed.remUnit);
+        q = fmtQty(mixed.chunkQty) + ' ' + pluralizeUnit(mixed.chunkUnit, mixed.chunkQty) + ' + ' + remStr;
+        if (cHigh.unit !== 'tbsp') {
+          qnum = highTsp;
+          dispUnit = 'tsp';
+        }
       } else {
         q = fmtQty(qnum);
       }
@@ -1331,7 +1406,21 @@ function buildShoppingList() {
     }
     const rawDu = dispUnit === '__tspbase__' ? '' : dispUnit;
     const du = mixed ? '' : (rawDu ? pluralizeUnit(rawDu, qnum) : '');
-    return { q, qnum, rawDu, du };
+    let optQty = 0, optText = '';
+    if (!isEntireRowOptional && b.qtyOptHigh > 0) {
+      if (b.isConv) {
+        const optTsp = Math.round(b.qtyOptHigh * 100) / 100;
+        const cOpt = fromTsp(optTsp);
+        const oUnit = cOpt.unit ? ' ' + pluralizeUnit(cOpt.unit, cOpt.qty) : '';
+        optText = '(' + fmtQty(Math.round(cOpt.qty * 100) / 100) + oUnit + ' optional)';
+        optQty = TSP_PER[rawDu] ? Math.round((optTsp / TSP_PER[rawDu]) * 100) / 100 : optTsp;
+      } else {
+        optQty = Math.round(b.qtyOptHigh * 100) / 100;
+        const oUnit = rawDu ? ' ' + pluralizeUnit(rawDu, optQty) : '';
+        optText = '(' + fmtQty(optQty) + oUnit + ' optional)';
+      }
+    }
+    return { q, qnum, rawDu, du, optQty, optText };
   };
   return [...map.values()].map(e => {
     const sec = typeof lookupShoppingSection === 'function'
@@ -1340,7 +1429,7 @@ function buildShoppingList() {
     const bucketArr = [...e.buckets.values()];
     let q = '', qnum = null, rawDu = '', du = '', name = '';
     if (bucketArr.length === 1) {
-      const fb = formatBucket(bucketArr[0]);
+      const fb = formatBucket(bucketArr[0], !!e.optional);
       q = fb.q;
       qnum = fb.qnum;
       rawDu = fb.rawDu;
@@ -1351,18 +1440,19 @@ function buildShoppingList() {
         key: e.base + '|' + rawDu.toLowerCase(),
         base: e.base,
         displayHead: e.displayHead,
-        label: [q, du, name].filter(Boolean).join(' ').trim(),
+        label: [q, du, name, fb.optText].filter(Boolean).join(' ').trim(),
         qty: qnum,
         unit: du,
         rawUnit: rawDu,
         optional: !!e.optional,
+        optionalQty: fb.optQty || 0,
         sources: Array.isArray(e.sources) ? e.sources.slice() : [],
         department: sec.department,
         subcategory: sec.subcategory,
         deptIndex: sec.deptIndex
       };
     } else if (bucketArr.length > 1) {
-      const fbs = bucketArr.map(formatBucket);
+      const fbs = bucketArr.map(b => formatBucket(b, !!e.optional));
       const parts = fbs.map(fb => [fb.q, fb.du].filter(Boolean).join(' ').trim()).filter(Boolean);
       if (e.texts.length) parts.push(...e.texts);
       const fb0 = fbs[0];
@@ -1372,16 +1462,18 @@ function buildShoppingList() {
       const anyUnit = fbs.some(fb => !!fb.rawDu);
       name = anyUnit ? e.displayHead : pluralize(e.displayHead, qnum);
       const extraBucketsText = parts.slice(1).join(' + ');
+      const optTexts = fbs.map(fb => fb.optText).filter(Boolean).join(' ');
       return {
         key: e.base + '|' + rawDu.toLowerCase(),
         base: e.base,
         displayHead: e.displayHead,
         extraBucketsText,
-        label: [parts.join(' + '), name].filter(Boolean).join(' ').trim(),
+        label: [parts.join(' + '), name, optTexts].filter(Boolean).join(' ').trim(),
         qty: qnum,
         unit: du,
         rawUnit: rawDu,
         optional: !!e.optional,
+        optionalQty: fb0.optQty || 0,
         sources: Array.isArray(e.sources) ? e.sources.slice() : [],
         department: sec.department,
         subcategory: sec.subcategory,
@@ -1399,6 +1491,7 @@ function buildShoppingList() {
         unit: '',
         rawUnit: '',
         optional: !!e.optional,
+        optionalQty: 0,
         sources: Array.isArray(e.sources) ? e.sources.slice() : [],
         department: sec.department,
         subcategory: sec.subcategory,
@@ -1678,10 +1771,19 @@ function shoppingListHTML() {
     if (!bk) return null;
     let entry = pricesMap[bk];
     if (!entry) {
+      const legacyStrip = s => {
+        let out = ' ' + String(s || '').toLowerCase() + ' ';
+        SIZE_WORDS.forEach(w => {
+          out = out.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
+        });
+        return out.trim().replace(/^to\s+/i, '').replace(/\s+/g, ' ');
+      };
       const bkTailSing = bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+      const bkLegacy = legacyStrip(bkTailSing);
       for (const k of Object.keys(pricesMap)) {
         const gk = groupKey(k).toLowerCase();
-        if (gk === bk || gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w)) === bkTailSing) {
+        const gkTailSing = gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+        if (gk === bk || gkTailSing === bkTailSing || legacyStrip(gkTailSing) === bkLegacy) {
           entry = pricesMap[k];
           break;
         }
@@ -2097,14 +2199,15 @@ async function renderShopping(app) {
         week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
         const k = genItem.dataset.shop;
         const split = genItem.dataset.shopSplit || null;
-        const existing = week.haveGenerated.find(x => x.key === k && x.session === sid);
+        const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
+        const existing = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
         // "Have" belongs to the item, not to the session that checked it:
         // sessions live in sessionStorage, so every new tab or device is a
         // new session. Unchecking must therefore work from ANY session —
         // keying it to the checking session made cross-session items
         // impossible to uncheck and added the tapper as a false second
         // checker instead (Argon QA, 2026-10-20).
-        const anyHave = week.haveGenerated.some(x => x.key === k && !x.removed);
+        const anyHave = week.haveGenerated.some(x => !x.removed && matchKeyFn(x.key, k));
         // Promoted optional item: tapping "○" sends it back to Optional.
         const isPromoted = promotedKeySet(week).has(k);
         if (isPromoted && !anyHave && split !== 'need') {
@@ -2112,19 +2215,36 @@ async function renderShopping(app) {
           markShopDirty(); rerender(); return;
         }
         if (anyHave && split !== 'need') {
-          // Uncheck: tombstone EVERY active mark for this key (any session's)
-          // so no checked copy in sync can resurrect it.
-          week.haveGenerated.forEach(x => { if (x.key === k && !x.removed) { x.removed = true; x.at = now; } });
+          // Uncheck: tombstone EVERY active mark for this key (any session,
+          // any canonical/legacy key) and ensure a tombstone for the current
+          // session exists so late-arriving remote marks are suppressed.
+          let hadCurrentSession = false;
+          week.haveGenerated.forEach(x => {
+            if (matchKeyFn(x.key, k)) {
+              if (x.session === sid) hadCurrentSession = true;
+              if (!x.removed || (x.at || 0) < now) { x.removed = true; x.at = now; }
+            }
+          });
+          if (!hadCurrentSession) {
+            week.haveGenerated.push({ key: k, session: sid, at: now, removed: true });
+          }
         } else {
           // Check: capture the quantity on the line at check time, so later additions
           // of the same ingredient split into a separate unchecked line.
-          // Tapping a split "need" line checks the full current quantity.
-          const line = buildShoppingList().find(it => it.key === k);
+          // Tapping a split "need" line checks the full current quantity and
+          // supersedes/tombstones all older marks for the item across all sessions.
+          const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
           const mark = { key: k, session: sid, at: now };
           if (line && line.qty !== null && line.qty !== undefined) {
             mark.qty = line.qty;
-            mark.unit = line.unit || '';
+            mark.unit = line.rawUnit || line.unit || '';
           }
+          week.haveGenerated.forEach(x => {
+            if (x !== existing && !x.removed && matchKeyFn(x.key, k)) {
+              x.removed = true;
+              x.at = now - 1;
+            }
+          });
           if (existing) {
             // Update existing mark (split "need" tap, or re-check after an
             // uncheck) instead of duplicating.
@@ -2167,16 +2287,23 @@ async function renderShopping(app) {
       const week = getWeek(thisWeekKey());
       const sid = getSessionId(), now = Date.now();
       const k = optHave.dataset.optHave;
+      const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
       week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
       // Remove from promoted if it was there.
       setPromoted(week, k, false);
-      const line = buildShoppingList().find(it => it.key === k);
+      const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
       const mark = { key: k, session: sid, at: now };
       if (line && line.qty !== null && line.qty !== undefined) {
         mark.qty = line.qty;
-        mark.unit = line.unit || '';
+        mark.unit = line.rawUnit || line.unit || '';
       }
-      const exMark = week.haveGenerated.find(x => x.key === k && x.session === sid);
+      const exMark = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
+      week.haveGenerated.forEach(x => {
+        if (x !== exMark && !x.removed && matchKeyFn(x.key, k)) {
+          x.removed = true;
+          x.at = now - 1;
+        }
+      });
       if (exMark) { Object.assign(exMark, mark); delete exMark.removed; }
       else week.haveGenerated.push(mark);
       markShopDirty(); rerender(); return;
@@ -7842,17 +7969,40 @@ function activeHaveMarks(arr) {
   return mergeHaveMarks(arr, []).filter(m => !m.removed);
 }
 // Merge have-marks by (key, session): the entry with the newest `at` wins,
-// so unchecks (removed tombstones) survive older checked copies, while
-// concurrent checks from two sessions still union (different sessions).
+// and in a second pass any tombstone (removed: true) suppresses older live
+// checks for the same canonical key across ALL sessions so late-arriving
+// remote marks cannot resurrect an unchecked item, while concurrent live
+// checks from two sessions still union when no newer tombstone exists.
 function mergeHaveMarks(localArr, serverArr) {
   const byId = new Map();
   [...normalizeHaveMarks(localArr), ...normalizeHaveMarks(serverArr)].forEach(m => {
     if (!m || !m.key) return;
     const id = m.key + '|' + m.session;
     const cur = byId.get(id);
-    if (!cur || (m.at || 0) >= (cur.at || 0)) byId.set(id, m);
+    if (!cur || (m.at || 0) >= (cur.at || 0)) byId.set(id, { ...m });
   });
-  return [...byId.values()];
+  const merged = [...byId.values()];
+  const tombstones = merged.filter(m => m.removed);
+  if (tombstones.length) {
+    const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((mk, rk) => {
+      if (!mk || !rk) return false;
+      if (mk === rk) return true;
+      const canonFn = typeof canonicalShopKey === 'function' ? canonicalShopKey : (k => String(k || '').toLowerCase());
+      const tailSing = s => String(s || '').replace(/\b(\w+)$/, (_, w) => typeof singularizeWord === 'function' ? singularizeWord(w) : w);
+      const mc = canonFn(mk), rc = canonFn(rk);
+      if (mc && mc === rc) return true;
+      const mb = mc.split('|')[0], rb = rc.split('|')[0];
+      return (!!mb && mb === rb) || (!!mb && !!rb && tailSing(mb) === tailSing(rb));
+    });
+    merged.forEach(m => {
+      if (m.removed) return;
+      const mAt = m.at || 0;
+      if (tombstones.some(t => (t.at || 0) > mAt && matchKeyFn(m.key, t.key))) {
+        m.removed = true;
+      }
+    });
+  }
+  return merged;
 }
 // Merge manual items by id. A tombstone (deleted: true) always wins over a
 // live copy; otherwise the copy with the newest updatedAt decides the have
