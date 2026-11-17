@@ -356,18 +356,18 @@ Every shopping list line that came from a planned recipe—whether it is in **To
    - **From: \<Recipe Name\>** *(all sections)* — Shows which planned recipe (or recipes) put this item on your list. Tap any recipe name in the menu to jump straight to that recipe's page!
 
 ### Viewing Past Receipt Prices and the Estimated Cart Total
-When an item on your **To buy** or **Optional** list matches a product from your verified grocery receipts, the Shopping List automatically shows what you paid last time:
+When an item on your **To buy** or **Optional** list matches a product from your verified grocery receipts, the Shopping List automatically shows the rate you paid last time and estimates what your recipe quantity will cost:
 1. **Estimated Cart Total (Top of List):**
    - At the top of your Shopping List, a quiet summary line shows:
      > `Estimated total about $X.XX · N of M items priced`
-   - This adds up the most recent verified price for each priced **To buy** recipe item (counting one package per line), and tells you how many of your `M` recipe **To buy** items have a known price (`N`). Because unpriced items aren't included and recipe quantities aren't multiplied, it is always labeled **about** as a helpful ballpark estimate. Pantry staples hidden by the Hide-staples toggle aren't counted in the total (they still show their own price badge in the staples section).
+   - For each priced **To buy** recipe item, the estimate converts your recipe quantity into the unit the item is sold by and multiplies by the receipt rate (`converted quantity × rate`—for example, `1½ lb yellow potatoes` at `$3.46/lb` estimates `$5.19`, `1 tomato` at `0.29 lb` × `$5.03/lb` estimates `$1.46`, `2 cloves garlic` at `$0.80/head` estimates `$0.16`, and `3 eggs` at `$1.99/dozen` estimates `$0.50`). If a weighed item on your list uses a recipe unit that can't be converted to pounds, its price badge still shows on the row, its cost is left out of the sum, and the summary line notes `· N item(s) not estimated`. Pantry staples hidden by the Hide-staples toggle aren't counted in the total (they still show their own price badge in the staples section).
 2. **Price Badges on Individual Items:**
-   - Directly beneath any matched **To buy** or **Optional** item, a small grey badge displays the last verified purchase:
-     > `<Product bought> · $X.XX · <Store> · <Date>` (for example, `Romaine Hearts 3pk · $2.99 · Bingo · Nov 10`)
-   - When a receipt line was for multiple units of a counted item (such as 4 cartons of broth), the badge and estimated total show the **per-unit price** (weighed produce sold by the pound continues to show the line total for that purchase).
+   - Directly beneath any matched **To buy** or **Optional** item, a small grey badge displays the last verified purchase rate and its basis (`/lb`, `/head`, `/dozen`, `/bag`, or `each`):
+     > `<Product bought> · $X.XX/<basis> · <Store> · <Date>` (for example, `Potato Yukon Gold Large - Loose · $3.46/lb · Aron's · Nov 6`, `Garlic Sleeve · $0.80/head · Aron's · Nov 6`, `X-Large Eggs · $1.99/dozen · Aron's · Nov 6`, or `Broth Chicken · $2.50 each · Aron's · Nov 6`)
+   - Weighed items sold by the pound show the **per-pound rate** (`$X.XX/lb`), multi-unit counted lines show the **per-unit price** (`$X.XX each`), and multi-pack items like a 5-head garlic sleeve or a dozen eggs show the per-head or per-dozen rate.
    - Items without a past receipt match—as well as items in **Already have** and manual items—show no badge at all.
 3. **Tap a Price Badge for Recent History & 12-Month Average:**
-   - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
+   - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX/<basis>`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
 
 ### Choosing a Store (`Shopping at:`)
 Near the top of the Shopping List (just below the week strip) is the **Shopping at:** store picker:

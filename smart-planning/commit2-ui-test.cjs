@@ -83,13 +83,14 @@ globalThis.fetch = async () => {
 globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse(text); return { ok: true }; };
 
 /* ---------------- load the real code ---------------- */
-['totalTime', 'ymd', 'blankSlot', 'SHOP_STORE_KEY', 'STORE_NOTES_LOCAL_KEY'].forEach(n => geval(extractDeclSemi(n)));
+['totalTime', 'ymd', 'blankSlot', 'SHOP_STORE_KEY', 'STORE_NOTES_LOCAL_KEY', 'PRICE_PROCESSED_QUALIFIERS'].forEach(n => geval(extractDeclSemi(n)));
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
  'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS',
   'ITEM_ALIASES', 'UNIT_ALIASES',
   'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_QUALIFIED_HEADS', 'PRICE_VARIETY_WORDS'].forEach(n => geval(extractDecl(n)));
 globalThis.priceDirectMatches = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
+globalThis.priceConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-conversions.json'), 'utf8'));
 globalThis._priceHistoryCache = null;
 globalThis._priceHistoryInFlight = null;
 globalThis._priceHistoryFetched = false;
@@ -120,7 +121,10 @@ extract('parseQty', true).forEach(src => geval(src));
  'setStoreNotesCache', 'resetStoreNotesSession', 'bridgeReadStoreNotes',
  'ensureStoreNotesLoaded', 'saveStoreNotes', 'getStoreNoteStatus', 'toggleStoreNote',
  'priceVarietyGroups', 'priceMatchWords', 'priceHeadNoun', 'mergePriceHistoryEntryPair',
- 'entryPriceAtStore', 'entryPriceElsewhere', 'priceMatchFor', 'collectKnownStores',
+ 'entryPriceAtStore', 'entryPriceElsewhere', 'priceMatchFor',
+ 'getPriceConversionsMap', 'lookupPriceConversion', 'formatPriceWithBasis',
+ 'normalizeRecipeEstimateUnit', 'parseExtraBucketsFromItem', 'convertBucketToPounds', 'estimateShopItemCents',
+ 'collectKnownStores',
  'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded',
  'slugify',
  'weekKeyDate', 'addDaysToKey', 'daysBetweenKeys', 'prevWeekKeyOf',
@@ -3640,6 +3644,321 @@ async function main() {
     !!fallThroughEgg33 &&
     fallThroughEgg33.bought_name === 'X-Large Eggs' &&
     fallThroughEgg33.price_cents === 199);
+
+  // =========================================================================
+  // Section 34. Per-lb / per-unit pricing + conversion tables (v20261117a + Bridge git-v15).
+  // =========================================================================
+
+  // 34(a) Bridge git-v15 worker.js /health literal + receipts.js per-lb division & basis/qty/pack_size
+  const workerV15Path = path.join(SITE_DIR, 'bridge-git-v15', 'worker.js');
+  const workerV15Mod = await import(pathToFileURL(workerV15Path).href);
+  const healthRes34 = await workerV15Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/health', { method: 'GET' }),
+    {}
+  );
+  const healthJson34 = await healthRes34.json();
+  check('Section 34(a) (worker git-v15 /health): bridge-git-v15/worker.js /health reports version "git-v15"',
+    healthRes34.status === 200 &&
+    healthJson34.ok === true &&
+    healthJson34.version === 'git-v15');
+
+  const rows34 = [
+    // Weighed Yukon Gold potatoes: 2.00 lb @ $3.46 line total -> $1.73/lb (173 cents), basis: 'lb', qty: 2
+    { status: 'verified', needs_review: 0, group_key: 'potato yukon gold loose', paid_price_cents: 346, qty_or_weight: 2.0, unit: 'lb', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Potato Yukon Gold Large - Loose', raw_line: 'POTATO YUKON GOLD', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 1, id: 3401 },
+    // Weighed Tomato Stem: 1.45 lb @ $5.03 line total -> Math.round(503 / 1.45) = 347 cents ($3.47/lb), basis: 'lb', qty: 1.45
+    { status: 'verified', needs_review: 0, group_key: 'tomato stem', paid_price_cents: 503, qty_or_weight: 1.45, unit: 'lb', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Tomato Stem', raw_line: 'TOMATO STEM', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 2, id: 3402 },
+    // Weighed Garlic Loose: 0.15 lb @ $0.45 line total -> 300 cents ($3.00/lb), basis: 'lb', qty: 0.15
+    { status: 'verified', needs_review: 0, group_key: 'garlic loose', paid_price_cents: 45, qty_or_weight: 0.15, unit: 'lb', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Garlic Loose', raw_line: 'GARLIC LOOSE', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 3, id: 3403 },
+    // Garlic Sleeve: 1 sleeve @ $3.99 (unit='ea', qty=1, pack_size=null -> inferred 'sleeve' from bought_name) -> basis: 'pack', pack_size: 'sleeve'
+    { status: 'verified', needs_review: 0, group_key: 'garlic sleeve', paid_price_cents: 399, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Garlic Sleeve', raw_line: 'GARLIC SLEEVE', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 4, id: 3404 },
+    // Eggs: 1 carton @ $1.99 (unit='ea', qty=1, pack_size='dozen') -> basis: 'pack', pack_size: 'dozen'
+    { status: 'verified', needs_review: 0, group_key: 'jacks f x-large egg', paid_price_cents: 199, qty_or_weight: 1, unit: 'ea', pack_size: 'dozen', store: "Aron's Kissena Farms", product_name: 'X-Large Eggs', raw_line: 'JACKS F X-LARGE EGGS', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 5, id: 3405 },
+    // Multi-unit 'ea' broth: 4 cartons @ $10.00 -> 250 cents each, basis: 'each', qty: 4
+    { status: 'verified', needs_review: 0, group_key: 'tabatchnick broth chicken', paid_price_cents: 1000, qty_or_weight: 4, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Broth Chicken', raw_line: 'TABATCHNICK BROTH CHICKEN', receipt_date: '2026-11-15', receipt_id: 'r34_1', line_no: 6, id: 3406 }
+  ];
+  const phRes34 = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(rows34),
+    { nowMs: new Date('2026-11-17T12:00:00Z').getTime() }
+  );
+  const phJson34 = await phRes34.json();
+  const pPotato34 = phJson34.prices['potato yukon gold loose'];
+  const pTomato34 = phJson34.prices['tomato stem'];
+  const pGarlicLoose34 = phJson34.prices['garlic loose'];
+  const pGarlicSleeve34 = phJson34.prices['garlic sleeve'];
+  const pEgg34 = phJson34.prices['jacks f x-large egg'];
+  const pBroth34 = phJson34.prices['tabatchnick broth chicken'];
+  check('Section 34(a) (Bridge git-v15 /price-history per-lb division & basis fields): divides "lb" line totals by qty_or_weight into per-lb rates, preserves "ea" per-unit division, and attaches basis ("lb" | "pack" | "each"), qty, and pack_size',
+    !!pPotato34 && pPotato34.price_cents === 173 && pPotato34.basis === 'lb' && pPotato34.qty === 2 &&
+    !!pTomato34 && pTomato34.price_cents === 347 && pTomato34.basis === 'lb' && pTomato34.qty === 1.45 &&
+    !!pGarlicLoose34 && pGarlicLoose34.price_cents === 300 && pGarlicLoose34.basis === 'lb' && pGarlicLoose34.qty === 0.15 &&
+    !!pGarlicSleeve34 && pGarlicSleeve34.price_cents === 399 && pGarlicSleeve34.basis === 'pack' && pGarlicSleeve34.pack_size === 'sleeve' && pGarlicSleeve34.qty === 1 &&
+    !!pEgg34 && pEgg34.price_cents === 199 && pEgg34.basis === 'pack' && pEgg34.pack_size === 'dozen' && pEgg34.qty === 1 &&
+    !!pBroth34 && pBroth34.price_cents === 250 && pBroth34.basis === 'each' && pBroth34.qty === 4);
+
+  // 34(b) Conversion table values (Yidi-measured precedence + USDA standard coverage) & lookupPriceConversion
+  const convTable34 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-conversions.json'), 'utf8'));
+  globalThis.priceConversions = convTable34;
+  const convKeys34 = Object.keys(convTable34).filter(k => k !== '_meta');
+  check('Section 34(b) (data/price-conversions.json schema & Yidi-measured values): comprehensive table (>= 100 entries) with Yidi-measured tomato (0.29 lb), onion (0.72 lb), avocado (0.44 lb), garlic (5 heads/sleeve, 10 cloves/head, 1 tsp/clove, 0.1 lb/head), egg (12/dozen), and chicken cutlet serving (1.25 lb)',
+    convKeys34.length >= 100 &&
+    convTable34['tomato']?.lb_per_unit === 0.29 &&
+    convTable34['onion']?.lb_per_unit === 0.72 &&
+    convTable34['red onion']?.lb_per_unit === 0.72 &&
+    convTable34['purple onion']?.lb_per_unit === 0.72 &&
+    convTable34['yellow onion']?.lb_per_unit === 0.72 &&
+    convTable34['avocado']?.lb_per_unit === 0.44 &&
+    convTable34['garlic']?.units_per_pack === 5 &&
+    convTable34['garlic']?.pack_name === 'sleeve' &&
+    convTable34['garlic']?.pack_unit === 'head' &&
+    convTable34['garlic']?.cloves_per_head === 10 &&
+    convTable34['garlic']?.tsp_per_clove === 1 &&
+    convTable34['garlic']?.lb_per_head === 0.1 &&
+    convTable34['egg']?.units_per_pack === 12 &&
+    convTable34['egg']?.pack_name === 'dozen' &&
+    convTable34['butterfly chicken cutlet']?.lb_per_serving === 1.25 &&
+    convTable34['chicken breast']?.lb_per_serving === 1.25 &&
+    convKeys34.every(k => typeof convTable34[k].source === 'string' && convTable34[k].source.length > 0));
+
+  check('Section 34(b) (lookupPriceConversion resolution & processed-item guard): resolves produce/meat variants and parenthetical brands while rejecting processed pantry items (garlic powder, apple cider vinegar, tomato paste, lemon juice)',
+    lookupPriceConversion('yellow potato (the little potato company)')?.lb_per_bag === 5.0 &&
+    lookupPriceConversion('fresh brussel sprout')?.lb_per_cup === 0.35 &&
+    lookupPriceConversion('heart of romaine lettuce')?.lb_per_unit === 0.5 &&
+    lookupPriceConversion('purple onion')?.lb_per_unit === 0.72 &&
+    lookupPriceConversion('garlic powder') === null &&
+    lookupPriceConversion('apple cider vinegar') === null &&
+    lookupPriceConversion('tomato paste') === null &&
+    lookupPriceConversion('lemon juice') === null);
+
+  // 34(c) Garlic sleeve preference vs loose fallback + Badge rate + basis formatting
+  const garlicMapBoth34 = {
+    'garlic sleeve': pGarlicSleeve34,
+    'garlic loose': pGarlicLoose34
+  };
+  const garlicMapLooseOnly34 = {
+    'garlic loose': pGarlicLoose34
+  };
+  const matchedGarlicPref34 = priceMatchFor('garlic', garlicMapBoth34);
+  const matchedFreshGarlicPref34 = priceMatchFor('fresh garlic', garlicMapBoth34);
+  const matchedGarlicFallback34 = priceMatchFor('garlic', garlicMapLooseOnly34);
+  check('Section 34(c) (Garlic sleeve preference & loose fallback): priceMatchFor("garlic") prefers "garlic sleeve" ($3.99 sleeve -> $0.80/head) when present with basis, and falls back to "garlic loose" ($3.00/lb) when sleeve is absent',
+    !!matchedGarlicPref34 && matchedGarlicPref34.bought_name === 'Garlic Sleeve' &&
+    !!matchedFreshGarlicPref34 && matchedFreshGarlicPref34.bought_name === 'Garlic Sleeve' &&
+    !!matchedGarlicFallback34 && matchedGarlicFallback34.bought_name === 'Garlic Loose' &&
+    formatPriceWithBasis(matchedGarlicPref34.price_cents, matchedGarlicPref34, 'garlic') === '$0.80/head' &&
+    formatPriceWithBasis(matchedGarlicFallback34.price_cents, matchedGarlicFallback34, 'garlic') === '$3.00/lb');
+
+  const bagEntry34 = { price_cents: 499, basis: 'pack', pack_size: 'bag', bought_name: 'Potato Yukon Gold Bag', store: 'Bingo', receipt_date: '2026-11-15' };
+  const lbEntry34 = { price_cents: 346, basis: 'lb', qty: 1, bought_name: 'Potato Yukon Gold Large - Loose', store: "Aron's Kissena Farms", receipt_date: '2026-11-15' };
+  check('Section 34(c) (Badge rate + basis labels): formatPriceWithBasis produces "$3.46/lb", "$0.80/head", "$1.99/dozen", "$2.50 each", and "$4.99/bag"',
+    formatPriceWithBasis(lbEntry34.price_cents, lbEntry34, 'yellow potato') === '$3.46/lb' &&
+    formatPriceWithBasis(pGarlicSleeve34.price_cents, pGarlicSleeve34, 'garlic') === '$0.80/head' &&
+    formatPriceWithBasis(pEgg34.price_cents, pEgg34, 'egg') === '$1.99/dozen' &&
+    formatPriceWithBasis(pBroth34.price_cents, pBroth34, 'chicken stock') === '$2.50 each' &&
+    formatPriceWithBasis(bagEntry34.price_cents, bagEntry34, 'potato') === '$4.99/bag');
+
+  // 34(d) Estimate multiplication (converted_qty × rate)
+  const estPotatoes34 = estimateShopItemCents(
+    { base: 'yellow potato', key: 'yellow potato|lb', qty: 1.5, rawUnit: 'lb', unit: 'lb' },
+    { price_cents: 346, basis: 'lb', bought_name: 'Potato Yukon Gold Large - Loose' }
+  );
+  const estTomato34 = estimateShopItemCents(
+    { base: 'tomato', key: 'tomato|', qty: 1, rawUnit: '', unit: '' },
+    { price_cents: 347, basis: 'lb', bought_name: 'Tomato Stem' }
+  );
+  const estOnion34 = estimateShopItemCents(
+    { base: 'red onion', key: 'red onion|', qty: 1, rawUnit: '', unit: '' },
+    { price_cents: 100, basis: 'lb', bought_name: 'Onion Red' }
+  );
+  const estAvocado34 = estimateShopItemCents(
+    { base: 'avocado', key: 'avocado|', qty: 2, rawUnit: '', unit: '' },
+    { price_cents: 250, basis: 'lb', bought_name: 'Avocado' }
+  );
+  const estEggs34 = estimateShopItemCents(
+    { base: 'egg', key: 'egg|', qty: 3, rawUnit: '', unit: '' },
+    pEgg34
+  );
+  const estGarlicSleeve2Cloves34 = estimateShopItemCents(
+    { base: 'garlic', key: 'garlic|clove', qty: 2, rawUnit: 'clove', unit: 'cloves' },
+    pGarlicSleeve34
+  );
+  const estGarlicSleeveMultiBucket34 = estimateShopItemCents(
+    {
+      base: 'garlic',
+      key: 'garlic|clove',
+      qty: 2,
+      rawUnit: 'clove',
+      unit: 'cloves',
+      buckets: [
+        { qty: 2, rawUnit: 'clove', unit: 'cloves' },
+        { qty: 1, rawUnit: 'tbsp', unit: 'tbsp' }
+      ]
+    },
+    pGarlicSleeve34
+  );
+  const estGarlicLoose2Cloves34 = estimateShopItemCents(
+    { base: 'garlic', key: 'garlic|clove', qty: 2, rawUnit: 'clove', unit: 'cloves' },
+    pGarlicLoose34
+  );
+  const estChickenServing34 = estimateShopItemCents(
+    { base: 'butterfly chicken cutlet', key: 'butterfly chicken cutlet|serving', qty: 1, rawUnit: 'serving', unit: 'serving' },
+    { price_cents: 699, basis: 'lb', bought_name: 'Butterfly Chicken Cutlets' }
+  );
+  check('Section 34(d) (Estimate multiplication — converted_qty × rate): potatoes 1.5 lb × $3.46/lb = $5.19 (519¢); tomato 1 × 0.29 lb × $3.47/lb = $1.01 (101¢); onion 1 × 0.72 lb × $1.00/lb = $0.72 (72¢); avocado 2 × 0.44 lb × $2.50/lb = $2.20 (220¢); eggs 3 × ($1.99/12) = $0.50 (50¢); garlic 2 cloves = 0.2 heads × $0.80 = $0.16 (16¢); garlic 2 cloves + 1 tbsp = 0.5 heads × $0.80 = $0.40 (40¢); garlic 2 cloves loose = 0.02 lb × $3.00/lb = $0.06 (6¢); chicken cutlet 1 serving = 1.25 lb × $6.99/lb = $8.74 (874¢)',
+    estPotatoes34.convertible && estPotatoes34.cents === 519 &&
+    estTomato34.convertible && estTomato34.cents === 101 &&
+    estOnion34.convertible && estOnion34.cents === 72 &&
+    estAvocado34.convertible && estAvocado34.cents === 220 &&
+    estEggs34.convertible && estEggs34.cents === 50 &&
+    estGarlicSleeve2Cloves34.convertible && estGarlicSleeve2Cloves34.cents === 16 &&
+    estGarlicSleeveMultiBucket34.convertible && estGarlicSleeveMultiBucket34.cents === 40 &&
+    estGarlicLoose2Cloves34.convertible && estGarlicLoose2Cloves34.cents === 6 &&
+    estChickenServing34.convertible && estChickenServing34.cents === 874);
+
+  // 34(e) Unconvertible fallback (badge still shows rate + basis, row excluded from total, total line notes "N items not estimated")
+  const unconvMissingTable34 = estimateShopItemCents(
+    { base: 'dragonfruit', key: 'dragonfruit|', qty: 2, rawUnit: '', unit: '' },
+    { price_cents: 499, basis: 'lb', bought_name: 'Dragonfruit Loose' }
+  );
+  const unconvVolumeNoCup34 = estimateShopItemCents(
+    { base: 'lemon', key: 'lemon|tbsp', qty: 2, rawUnit: 'tbsp', unit: 'tbsp' },
+    { price_cents: 199, basis: 'lb', bought_name: 'Lemon Loose' }
+  );
+  check('Section 34(e) (estimateShopItemCents unconvertible guard): returns { convertible: false, cents: 0 } when a per-lb item has no conversion entry or has a volume unit without lb_per_cup',
+    unconvMissingTable34.convertible === false && unconvMissingTable34.cents === 0 &&
+    unconvVolumeNoCup34.convertible === false && unconvVolumeNoCup34.cents === 0);
+
+  // Render shoppingListHTML with 1 convertible item (1.5 lb yellow potatoes @ $3.46/lb = $5.19) + 1 unconvertible item (2 dragonfruit @ $4.99/lb)
+  const savedPlan34e = globalThis.mealPlan;
+  const savedRecipes34e = globalThis.recipes;
+  const savedMetaById34e = globalThis.metaById;
+  const savedById34e = globalThis.byId;
+  const savedSec34e = globalThis.shoppingSections;
+  const savedStore34e = getShopStore();
+  setShopStore('all');
+  setMeta([{ id: 'test-unconv-34', title: 'Test Unconvertible Dish', kosher_status: 'pareve', categories: ['main'] }]);
+  globalThis.byId = {
+    'test-unconv-34': {
+      id: 'test-unconv-34',
+      title: 'Test Unconvertible Dish',
+      ingredients: [{
+        section: 'Main',
+        items: [
+          { qty: '1.5', unit: 'lb', item: 'yellow potatoes' },
+          { qty: '2', unit: '', item: 'dragonfruit' }
+        ]
+      }]
+    }
+  };
+  globalThis.shoppingSections = { departments: ['Fresh Produce'], fallbackDepartment: 'Unsorted' };
+  const wkDays34e = blankDays();
+  wkDays34e[0].dinner.dishes = [{ recipe: 'test-unconv-34', drafted: false }];
+  setPlan({ [thisWeekKey()]: { days: wkDays34e, shoppingDay: thisWeekKey() } });
+  setPriceHistoryCache({
+    'potato yukon gold loose': { price_cents: 346, basis: 'lb', qty: 1, store: "Aron's", bought_name: 'Potato Yukon Gold Large - Loose', receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] },
+    'dragonfruit': { price_cents: 499, basis: 'lb', qty: 1, store: "Aron's", bought_name: 'Dragonfruit Loose', receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] }
+  });
+  const htmlUnconv34 = shoppingListHTML();
+  check('Section 34(e) (shoppingListHTML unconvertible fallback): unconvertible row still renders its "$4.99/lb" badge, is excluded from the $5.19 estimated total, and the total line notes "1 item not estimated"',
+    htmlUnconv34.includes('Potato Yukon Gold Large - Loose · $3.46/lb') &&
+    htmlUnconv34.includes('Dragonfruit Loose · $4.99/lb') &&
+    htmlUnconv34.includes('Estimated total about $5.19 · 1 of 2 items priced · 1 item not estimated'));
+
+  // 34(f) Full-corpus live-week (2026-11-15) before/after verification with basis-aware 101-key fixture
+  const parsedFixture34 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'smart-planning', 'price-history-fixture-20261117.json'), 'utf8'));
+  const rawFixture34 = parsedFixture34.prices || parsedFixture34;
+  // Enrich the 101-key fixture with git-v15 basis + pack_size fields (matching receipts.js rules)
+  const fixturePrices34 = {};
+  for (const [k, orig] of Object.entries(rawFixture34)) {
+    const e = JSON.parse(JSON.stringify(orig));
+    const bn = String(e.bought_name || '') + ' ' + k;
+    const isLooseProduce = /\b(loose|tomato stem|onion red|onion shallots|apple gala|apple granny|banana|cucumber|avocado|lemon|lime|yam sweet|grape red|plum red|brussel sprouts|parsley italian|cilantro|dill|garlic loose|Cutlets|neck bones|beef patina)\b/i.test(bn) &&
+      !/\b(sleeve|bag|box|3pk|pack|egg|juice|vinegar|broth|beans|milk|fettuccine|chips|oil|sugar|salt|flour|sauce|paste|cereal|cookie|cracker|pretzel|cake|bread|roll|pita|bagel|cheese|butter|yogurt|cream|mayo|mustard|ketchup|relish|pickle|olive|tuna|salmon|sardine|gef|herring|choc|cocoa|vanilla|baking|spice|pepper|paprika|cumin|cinnamon|turmeric|oregano|basil|thyme|rosemary|bay|parsley flake|garlic powder|onion powder|soup|noodle|rice|barley|oats|quinoa|lentil|split pea)\b/i.test(bn);
+    const packMatch = bn.match(/\b(sleeve|bag|carton|box|bunch|dozen|doz|\d+\s*(?:pk|pack))\b/i);
+    const isEgg = /\beggs?\b/i.test(bn) && !/\b(noodle|pasta|roll|wrap|eggplant)\b/i.test(bn);
+    if (isLooseProduce) {
+      e.basis = 'lb';
+      e.qty = 1;
+    } else if (packMatch || isEgg) {
+      e.basis = 'pack';
+      e.qty = 1;
+      e.pack_size = packMatch ? packMatch[1].toLowerCase().replace(/\s+/g, '') : 'dozen';
+    } else {
+      e.basis = 'each';
+      e.qty = 1;
+    }
+    fixturePrices34[k] = e;
+  }
+
+  const savedThisWeekKey34 = globalThis.thisWeekKey;
+  globalThis.mealPlan = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'meal-plan.json'), 'utf8'));
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  globalThis.recipes = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'recipes', 'meta.json'), 'utf8'));
+  globalThis.metaById = {};
+  globalThis.recipes.forEach(m => { globalThis.metaById[m.id] = m; });
+  globalThis.byId = {};
+  for (const rf of recipeFiles26) {
+    if (rf === 'index.json' || rf === 'meta.json') continue;
+    const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
+    if (rj && rj.id) globalThis.byId[rj.id] = rj;
+  }
+  globalThis.thisWeekKey = () => '2026-11-15';
+  setPriceHistoryCache(fixturePrices34);
+  const liveWeekList34 = buildShoppingList();
+  const split34 = splitShopItems(liveWeekList34, getWeek('2026-11-15'));
+  const activeToBuy34 = partitionStaples(split34.toBuy, getWeek('2026-11-15')).active;
+  const toBuyBreakdown34 = activeToBuy34
+    .map(it => {
+      const m = priceMatchFor(it, fixturePrices34);
+      if (!m) return null;
+      const est = estimateShopItemCents(it, m);
+      return {
+        base: it.base,
+        label: it.label,
+        bought_name: m.bought_name,
+        basis: m.basis,
+        badgeRate: formatPriceWithBasis(m.price_cents, m, it),
+        beforeCents: m.price_cents,
+        afterCents: est.cents,
+        convertible: est.convertible
+      };
+    })
+    .filter(Boolean);
+  const liveShopHTML34 = shoppingListHTML();
+
+  // Verify the 7 active To-buy matched items on live week 2026-11-15:
+  // 1. white vinegar (½ cup) -> Distilled White Vinegar 5% Acidity ($2.00 each) -> 200¢ ($2.00)
+  // 2. yellow potato (1½ lb) -> Potato Yukon Gold Large - Loose ($3.46/lb) -> 519¢ ($5.19)
+  // 3. tomato (1) -> Tomato Stem ($5.03/lb * 0.29 lb) -> 146¢ ($1.46)
+  // 4. garlic (2 cloves = 0.2 heads) -> Garlic Sleeve ($0.80/head) -> 16¢ ($0.16)
+  // 5. egg (3) -> X-Large Eggs ($1.99/dozen) -> 50¢ ($0.50)
+  // 6. black bean (15 oz) (1 can) -> Black Beans ($0.99 each) -> 99¢ ($0.99)
+  // 7. chicken stock (1 cup) -> Broth Chicken ($2.50 each) -> 250¢ ($2.50)
+  // Sum after = 200 + 519 + 146 + 16 + 50 + 99 + 250 = 1280¢ ($12.80) vs v20261116a sum = 1642¢ ($16.42)
+  const sumAfter34 = toBuyBreakdown34.reduce((s, x) => s + x.afterCents, 0);
+  check('Section 34(f) (Live-week 2026-11-15 full-corpus before/after check): all 7 priced To-buy items convert cleanly (0 unconvertible), garlic switches from Garlic Loose to Garlic Sleeve ($0.80/head, $0.16 for 2 cloves), eggs scale to 3/12 dozen ($0.50), potatoes scale to 1.5 lb ($5.19), tomato scales by 0.29 lb ($1.46), and rendered total updates from $16.42 to $12.80 (7 of 33 items priced)',
+    toBuyBreakdown34.length === 7 &&
+    toBuyBreakdown34.every(x => x.convertible) &&
+    toBuyBreakdown34.find(x => x.base === 'garlic')?.bought_name === 'Garlic Sleeve' &&
+    toBuyBreakdown34.find(x => x.base === 'garlic')?.badgeRate === '$0.80/head' &&
+    toBuyBreakdown34.find(x => x.base === 'garlic')?.afterCents === 16 &&
+    toBuyBreakdown34.find(x => x.base === 'egg')?.badgeRate === '$1.99/dozen' &&
+    toBuyBreakdown34.find(x => x.base === 'egg')?.afterCents === 50 &&
+    toBuyBreakdown34.find(x => x.base === 'tomato')?.afterCents === 146 &&
+    toBuyBreakdown34.find(x => x.base === 'yellow potato (the little potato company)')?.afterCents === 519 &&
+    sumAfter34 === 1280 &&
+    liveShopHTML34.includes('Estimated total about $12.80 · 7 of 33 items priced') &&
+    !liveShopHTML34.includes('items not estimated'));
+
+  // Restore state after Section 34
+  globalThis.thisWeekKey = savedThisWeekKey34;
+  globalThis.mealPlan = savedPlan34e;
+  globalThis.recipes = savedRecipes34e;
+  globalThis.metaById = savedMetaById34e;
+  globalThis.byId = savedById34e;
+  globalThis.shoppingSections = savedSec34e;
+  setShopStore(savedStore34e);
+  resetPriceHistorySession();
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
