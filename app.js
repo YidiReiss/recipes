@@ -30,6 +30,7 @@ let recipes = [];          // recipe metadata, in manifest order (list/search/fi
 let byId = {};             // id -> FULL recipe (on-demand cache via ensureRecipe)
 let metaById = {};         // id -> lightweight metadata (loaded at boot)
 let shoppingSections = null; // shopping sections taxonomy loaded at boot
+let priceDirectMatches = null; // direct price-matching lookup (data/price-direct-matches.json) loaded at boot
 // Fetch a full recipe JSON on demand; cached in byId after first load.
 async function ensureRecipe(id) {
   if (byId[id]) return byId[id];
@@ -234,9 +235,10 @@ async function boot() {
   const livePlanPromise = Promise.resolve().then(() => fetchLiveMealPlan()).catch(() => null);
   try {
     const cb = '?v=' + Date.now();
-    const [metaResSettled, secResSettled] = await Promise.allSettled([
+    const [metaResSettled, secResSettled, directResSettled] = await Promise.allSettled([
       fetch('data/recipes/meta.json' + cb),
-      fetch('data/shopping-sections.json' + cb)
+      fetch('data/shopping-sections.json' + cb),
+      fetch('data/price-direct-matches.json' + cb)
     ]);
     const meta = (metaResSettled.status === 'fulfilled' && metaResSettled.value.ok)
       ? await metaResSettled.value.json()
@@ -251,6 +253,11 @@ async function boot() {
       shoppingSections = await secResSettled.value.json();
     } else {
       shoppingSections = null;
+    }
+    if (directResSettled.status === 'fulfilled' && directResSettled.value.ok) {
+      priceDirectMatches = await directResSettled.value.json();
+    } else {
+      priceDirectMatches = null;
     }
   } catch (e) { loadError(); return; }
 
@@ -1942,8 +1949,77 @@ const PRICE_MODIFIER_WORDS = new Set([
 const PRICE_QUALIFIED_HEADS = new Set([
   'vinegar', 'oil', 'milk', 'cheese', 'sauce', 'paste', 'powder',
   'broth', 'stock', 'juice', 'cream', 'butter', 'flour', 'sugar',
-  'salt', 'pasta'
+  'salt', 'pasta', 'honey'
 ]);
+
+// Per-head-noun variety vocabulary (Part 2b, v20261116a).
+// Maps variety tokens to canonical variety groups per head noun so synonymous
+// varieties (e.g. russet == idaho, yellow/golden == yukon/gold, red == purple)
+// agree while conflicting varieties (e.g. yellow vs idaho potato) reject.
+const PRICE_VARIETY_WORDS = {
+  potato: {
+    yellow: 'yellow',
+    yukon: 'yellow',
+    gold: 'yellow',
+    golden: 'yellow',
+    idaho: 'idaho',
+    russet: 'idaho',
+    red: 'red',
+    sweet: 'sweet',
+    white: 'white'
+  },
+  onion: {
+    red: 'red',
+    purple: 'red',
+    yellow: 'yellow',
+    white: 'white',
+    sweet: 'sweet',
+    shallot: 'shallot'
+  },
+  apple: {
+    gala: 'gala',
+    granny: 'granny_smith',
+    smith: 'granny_smith',
+    fuji: 'fuji',
+    honeycrisp: 'honeycrisp'
+  },
+  tomato: {
+    stem: 'stem',
+    vine: 'vine',
+    cherry: 'cherry',
+    grape: 'grape',
+    plum: 'plum',
+    roma: 'plum',
+    medley: 'medley'
+  },
+  cucumber: {
+    persian: 'persian',
+    english: 'english',
+    hothouse: 'english',
+    kirby: 'kirby'
+  },
+  vinegar: {
+    white: 'white',
+    distilled: 'white',
+    apple: 'apple_cider',
+    cider: 'apple_cider',
+    rice: 'rice',
+    balsamic: 'balsamic',
+    red: 'red_wine',
+    wine: 'red_wine'
+  }
+};
+
+function priceVarietyGroups(words, headNoun) {
+  const vmap = headNoun ? PRICE_VARIETY_WORDS[headNoun] : null;
+  if (!vmap || !Array.isArray(words)) return [];
+  const groups = [];
+  for (let i = 0; i < words.length; i++) {
+    const g = vmap[words[i]];
+    if (g && !groups.includes(g)) groups.push(g);
+  }
+  return groups;
+}
 
 function priceMatchWords(key) {
   let s = String(key || '').toLowerCase();
@@ -2146,6 +2222,38 @@ function priceMatchFor(it, pricesMapOverride) {
     }
   }
 
+  // Step 0: direct-match lookup (data/price-direct-matches.json)
+  // If the mapped receipt key is present in rawMap/canonEntries, return it;
+  // if not present in the price map, fall through to Steps 1-2.
+  const directMap = (typeof priceDirectMatches === 'object' && priceDirectMatches)
+    ? priceDirectMatches
+    : ((typeof globalThis !== 'undefined' && globalThis.priceDirectMatches && typeof globalThis.priceDirectMatches === 'object')
+      ? globalThis.priceDirectMatches
+      : null);
+  if (directMap) {
+    const directTarget = directMap[bk] || directMap[bkClean] || directMap[bkTailSing];
+    if (directTarget) {
+      const targets = Array.isArray(directTarget) ? directTarget : [directTarget];
+      for (let i = 0; i < targets.length; i++) {
+        const t = String(targets[i] || '').trim();
+        if (!t) continue;
+        if (rawMap[t] && Number.isFinite(Number(rawMap[t].price_cents))) {
+          const tGk = groupKey(t.replace(/-/g, ' ')).toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+          return (canonEntries.get(tGk) || { entry: rawMap[t] }).entry;
+        }
+        const tClean = t.replace(/-/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+        const tGk = groupKey(tClean).toLowerCase();
+        const tTailSing = tGk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+        if (canonEntries.has(tTailSing)) return canonEntries.get(tTailSing).entry;
+        for (const cand of canonEntries.values()) {
+          if (cand.key.toLowerCase() === t.toLowerCase() || cand.gk === tGk || cand.gkTailSing === tTailSing) {
+            return cand.entry;
+          }
+        }
+      }
+    }
+  }
+
   // Step 1: exact / canonical / legacy-strip lookup
   if (rawMap[bk] && Number.isFinite(Number(rawMap[bk].price_cents))) {
     const gk = groupKey(bk.replace(/-/g, ' ')).toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
@@ -2165,6 +2273,7 @@ function priceMatchFor(it, pricesMapOverride) {
   const isStockLike = s => /\b(stock|broth|bouillon|consomme|consommé)\b/i.test(String(s || ''));
   const qStock = isStockLike(bk);
   const headRequiresQualifier = headNoun ? PRICE_QUALIFIED_HEADS.has(headNoun) : false;
+  const qVarieties = priceVarietyGroups(qWords, headNoun);
 
   let bestEntry = null;
   let bestTuple = null;
@@ -2175,22 +2284,39 @@ function priceMatchFor(it, pricesMapOverride) {
     if (isStockLike(k) !== qStock) continue;
     const cWords = priceMatchWords(k);
     if (!cWords.length) continue;
+
+    // Variety-conflict rule (Part 2b): when both query and candidate carry a
+    // variety word for the same head noun and their varieties differ, no match.
+    const cVarieties = priceVarietyGroups(cWords, headNoun);
+    const hasSharedVariety = qVarieties.length > 0 && cVarieties.length > 0 &&
+      qVarieties.some(v => cVarieties.includes(v));
+    if (qVarieties.length > 0 && cVarieties.length > 0 && !hasSharedVariety) continue;
+
     const shared = cWords.filter(w => qSet.has(w));
-    const score = shared.length;
+    let score = shared.length;
     if (!score) continue;
 
     // Never match on modifier/color/cut adjectives alone
-    if (shared.every(w => PRICE_MODIFIER_WORDS.has(w))) continue;
+    if (shared.every(w => PRICE_MODIFIER_WORDS.has(w)) && !hasSharedVariety) continue;
+
+    if (hasSharedVariety && headNoun && shared.includes(headNoun) && score === 1) {
+      score = 2;
+    }
 
     const qCov = score / qWords.length;
     const cCov = score / cWords.length;
     const headAtCandEdge = headNoun
       ? (cWords[0] === headNoun || cWords[cWords.length - 1] === headNoun)
       : false;
+    // Single-word distinctive head at the candidate edge (Part 2a): allow match
+    // when cCov < 1/3 (up to 4 candidate words, e.g. 'jacks f x-large egg'),
+    // keeping PRICE_QUALIFIED_HEADS (oil, milk, sugar, salt, vinegar, etc.).
+    const singleWordEdgeHead = qWords.length === 1 && score === 1 && headAtCandEdge &&
+      !headRequiresQualifier && cWords.length <= 4;
     const hasHead = Boolean(
       headNoun &&
       shared.includes(headNoun) &&
-      cCov >= 1 / 3 - 1e-9 &&
+      (cCov >= 1 / 3 - 1e-9 || singleWordEdgeHead) &&
       (!headRequiresQualifier || score >= 2) &&
       (score >= 2 || headAtCandEdge)
     );
