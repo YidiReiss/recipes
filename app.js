@@ -31,6 +31,7 @@ let byId = {};             // id -> FULL recipe (on-demand cache via ensureRecip
 let metaById = {};         // id -> lightweight metadata (loaded at boot)
 let shoppingSections = null; // shopping sections taxonomy loaded at boot
 let priceDirectMatches = null; // direct price-matching lookup (data/price-direct-matches.json) loaded at boot
+let priceConversions = null; // per-lb / per-unit kitchen conversions (data/price-conversions.json) loaded at boot
 // Fetch a full recipe JSON on demand; cached in byId after first load.
 async function ensureRecipe(id) {
   if (byId[id]) return byId[id];
@@ -235,10 +236,11 @@ async function boot() {
   const livePlanPromise = Promise.resolve().then(() => fetchLiveMealPlan()).catch(() => null);
   try {
     const cb = '?v=' + Date.now();
-    const [metaResSettled, secResSettled, directResSettled] = await Promise.allSettled([
+    const [metaResSettled, secResSettled, directResSettled, convResSettled] = await Promise.allSettled([
       fetch('data/recipes/meta.json' + cb),
       fetch('data/shopping-sections.json' + cb),
-      fetch('data/price-direct-matches.json' + cb)
+      fetch('data/price-direct-matches.json' + cb),
+      fetch('data/price-conversions.json' + cb)
     ]);
     const meta = (metaResSettled.status === 'fulfilled' && metaResSettled.value.ok)
       ? await metaResSettled.value.json()
@@ -258,6 +260,15 @@ async function boot() {
       priceDirectMatches = await directResSettled.value.json();
     } else {
       priceDirectMatches = null;
+    }
+    if (convResSettled.status === 'fulfilled' && convResSettled.value.ok) {
+      const convJson = await convResSettled.value.json();
+      if (convJson && typeof convJson === 'object' && !Array.isArray(convJson) && (convJson._meta || convJson.tomato)) {
+        priceConversions = convJson;
+        if (typeof globalThis !== 'undefined') globalThis.priceConversions = priceConversions;
+      }
+    } else if (!priceConversions && !(typeof globalThis !== 'undefined' && globalThis.priceConversions)) {
+      priceConversions = null;
     }
   } catch (e) { loadError(); return; }
 
@@ -1475,6 +1486,7 @@ function buildShoppingList() {
         base: e.base,
         displayHead: e.displayHead,
         extraBucketsText,
+        buckets: fbs.map(fb => ({ qty: fb.qnum, rawUnit: fb.rawDu, unit: fb.du })),
         label: [parts.join(' + '), name, optTexts].filter(Boolean).join(' ').trim(),
         qty: qnum,
         unit: du,
@@ -2130,7 +2142,11 @@ function entryPriceAtStore(p, storeKey) {
   }
   if (!cands.length) return null;
   cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
-  return cands[0];
+  const win = { ...cands[0] };
+  if (p.basis !== undefined && win.basis === undefined) win.basis = p.basis;
+  if (p.qty !== undefined && win.qty === undefined) win.qty = p.qty;
+  if (p.pack_size !== undefined && win.pack_size === undefined) win.pack_size = p.pack_size;
+  return win;
 }
 
 function entryPriceElsewhere(p, storeKey) {
@@ -2170,7 +2186,11 @@ function entryPriceElsewhere(p, storeKey) {
   }
   if (!cands.length) return null;
   cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
-  return cands[0];
+  const win = { ...cands[0] };
+  if (p.basis !== undefined && win.basis === undefined) win.basis = p.basis;
+  if (p.qty !== undefined && win.qty === undefined) win.qty = p.qty;
+  if (p.pack_size !== undefined && win.pack_size === undefined) win.pack_size = p.pack_size;
+  return win;
 }
 
 function priceMatchFor(it, pricesMapOverride) {
@@ -2219,6 +2239,16 @@ function priceMatchFor(it, pricesMapOverride) {
         cur.key = k;
         cur.gk = gk;
       }
+    }
+  }
+
+  // Garlic preference (v20261117a): when a basis-aware 'garlic sleeve' entry
+  // exists in the price map, garlic / fresh garlic prefers the sleeve basis
+  // ($3.99 ÷ 5 = $0.80/head); per-lb 'garlic loose' is the fallback.
+  if (bkClean === 'garlic' || bkClean === 'fresh garlic' || bkTailSing === 'garlic' || bkTailSing === 'fresh garlic') {
+    const sleeveCand = canonEntries.get('garlic sleeve') || (rawMap['garlic sleeve'] ? { entry: rawMap['garlic sleeve'] } : null);
+    if (sleeveCand && sleeveCand.entry && sleeveCand.entry.basis && Number.isFinite(Number(sleeveCand.entry.price_cents))) {
+      return sleeveCand.entry;
     }
   }
 
@@ -2349,6 +2379,402 @@ function priceMatchFor(it, pricesMapOverride) {
 
   if (!bestEntry || isTie) return null;
   return bestEntry;
+}
+
+const PRICE_PROCESSED_QUALIFIERS = /\b(powder|paste|sauce|soup|mix|juice|oil|vinegar|extract|salt|flakes|flake|granulated|dried|canned|crushed|puree|ketchup|jam|jelly|butter|milk|cream|broth|stock|chip|chips|puff|puffs|syrup|noodle|noodles|roll|rolls|wrap|wraps|crumb|crumbs|flour|starch|meal)\b/i;
+
+function getPriceConversionsMap(convMapOverride) {
+  if (convMapOverride && typeof convMapOverride === 'object') return convMapOverride;
+  if (typeof priceConversions === 'object' && priceConversions) return priceConversions;
+  if (typeof globalThis !== 'undefined' && globalThis.priceConversions && typeof globalThis.priceConversions === 'object') {
+    return globalThis.priceConversions;
+  }
+  return null;
+}
+
+function lookupPriceConversion(itOrBase, convMapOverride) {
+  const convMap = getPriceConversionsMap(convMapOverride);
+  if (!convMap || typeof convMap !== 'object') return null;
+  const rawBase = typeof itOrBase === 'string'
+    ? groupKey(itOrBase).toLowerCase()
+    : (itOrBase && itOrBase.base
+      ? String(itOrBase.base).toLowerCase()
+      : String((itOrBase && itOrBase.key) || '').split('|')[0].toLowerCase());
+  if (!rawBase || rawBase === '_meta') return null;
+
+  const clean = rawBase.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  const tailSing = clean.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const allSing = clean.split(' ').map(w => singularizeWord(w)).join(' ');
+  const stripSizes = s => {
+    let out = ' ' + String(s || '').toLowerCase() + ' ';
+    SIZE_WORDS.forEach(w => {
+      out = out.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
+    });
+    return out.trim().replace(/^to\s+/i, '').replace(/\s+/g, ' ');
+  };
+  const stripped = stripSizes(tailSing);
+
+  const directKeys = [rawBase, clean, tailSing, allSing, stripped];
+  for (let i = 0; i < directKeys.length; i++) {
+    const k = directKeys[i];
+    if (k && k !== '_meta' && convMap[k] && typeof convMap[k] === 'object') {
+      return convMap[k];
+    }
+  }
+
+  if (PRICE_PROCESSED_QUALIFIERS.test(clean)) return null;
+
+  const words = stripped.split(' ').filter(Boolean);
+  if (words.length >= 2) {
+    const tail2 = words.slice(-2).join(' ');
+    if (convMap[tail2] && typeof convMap[tail2] === 'object') return convMap[tail2];
+    const head2 = words.slice(0, 2).join(' ');
+    if (convMap[head2] && typeof convMap[head2] === 'object') return convMap[head2];
+  }
+  const headNoun = priceHeadNoun(stripped);
+  if (headNoun && headNoun !== '_meta' && convMap[headNoun] && typeof convMap[headNoun] === 'object') {
+    return convMap[headNoun];
+  }
+  return null;
+}
+
+function formatPriceWithBasis(priceCents, p, it, convMapOverride) {
+  const n = Number(priceCents);
+  if (!Number.isFinite(n)) return '';
+  const baseDollars = '$' + (n / 100).toFixed(2);
+  if (!p || !p.basis) return baseDollars;
+
+  const conv = lookupPriceConversion(it, convMapOverride);
+  const basis = String(p.basis || '').toLowerCase();
+  const packTag = String(p.pack_size || '').toLowerCase().trim();
+  const bought = String(p.bought_name || '').toLowerCase();
+
+  if (basis === 'lb') {
+    return baseDollars + '/lb';
+  }
+  if (basis === 'head') {
+    return baseDollars + '/head';
+  }
+  if (basis === 'dozen') {
+    return baseDollars + '/dozen';
+  }
+  if (basis === 'bag' || basis === 'bunch' || basis === 'box' || basis === 'carton') {
+    return baseDollars + '/' + basis;
+  }
+
+  // Garlic sleeve (or pack with pack_unit === 'head'): display per-head rate ($3.99 ÷ 5 = $0.80/head)
+  const isSleeve = packTag === 'sleeve' || /\bsleeve\b/i.test(bought) ||
+    (basis === 'pack' && conv && conv.pack_name === 'sleeve');
+  if (isSleeve && conv && Number(conv.units_per_pack) > 1 && conv.pack_unit === 'head') {
+    const headCents = Math.round(n / Number(conv.units_per_pack));
+    return '$' + (headCents / 100).toFixed(2) + '/head';
+  }
+
+  // Dozen eggs
+  const isDozen = packTag === 'dozen' || packTag === 'doz' || /\b(dozen|doz)\b/i.test(bought) ||
+    (conv && conv.pack_name === 'dozen' && Number(conv.units_per_pack) === 12);
+  if (isDozen) {
+    return baseDollars + '/dozen';
+  }
+
+  if (basis === 'pack') {
+    if (packTag === 'bag' || /\bbag\b/i.test(bought)) return baseDollars + '/bag';
+    if (packTag === 'bunch' || /\bbunch\b/i.test(bought)) return baseDollars + '/bunch';
+    if (packTag === 'box' || /\bbox\b/i.test(bought)) return baseDollars + '/box';
+    if (packTag === 'carton' || /\bcarton\b/i.test(bought)) return baseDollars + '/carton';
+    if (packTag === 'pint' || /\bpint\b/i.test(bought)) return baseDollars + '/pint';
+    if (packTag === 'clamshell' || /\bclamshell\b/i.test(bought)) return baseDollars + '/clamshell';
+    if (packTag) return baseDollars + '/' + packTag;
+    if (conv && conv.pack_name) return baseDollars + '/' + String(conv.pack_name).toLowerCase();
+    return baseDollars + '/pack';
+  }
+
+  if (/\bbag\b/i.test(bought)) return baseDollars + '/bag';
+  return baseDollars + ' each';
+}
+
+function normalizeRecipeEstimateUnit(u) {
+  const low = String(u || '').trim().toLowerCase().replace(/\.$/, '');
+  const map = {
+    lb: 'lb', lbs: 'lb', pound: 'lb', pounds: 'lb',
+    oz: 'oz', ounce: 'oz', ounces: 'oz',
+    g: 'g', gram: 'g', grams: 'g',
+    kg: 'kg', kilogram: 'kg', kilograms: 'kg',
+    cup: 'cup', cups: 'cup', c: 'cup',
+    tbsp: 'tbsp', tablespoon: 'tbsp', tablespoons: 'tbsp', tbsps: 'tbsp', tbs: 'tbsp',
+    tsp: 'tsp', teaspoon: 'tsp', teaspoons: 'tsp', tsps: 'tsp',
+    'fl oz': 'fl_oz', floz: 'fl_oz',
+    pint: 'pint', pints: 'pint', pt: 'pint',
+    quart: 'quart', quarts: 'quart', qt: 'quart',
+    clove: 'clove', cloves: 'clove',
+    head: 'head', heads: 'head', bulb: 'head', bulbs: 'head',
+    bunch: 'bunch', bunches: 'bunch',
+    stalk: 'stalk', stalks: 'stalk', rib: 'stalk', ribs: 'stalk',
+    sprig: 'sprig', sprigs: 'sprig',
+    bag: 'bag', bags: 'bag',
+    box: 'box', boxes: 'box',
+    pack: 'pack', packs: 'pack', pkg: 'pack', pkgs: 'pack', package: 'pack', packages: 'pack',
+    sleeve: 'sleeve', sleeves: 'sleeve',
+    dozen: 'dozen', doz: 'dozen',
+    carton: 'carton', cartons: 'carton',
+    container: 'container', containers: 'container', clamshell: 'container',
+    can: 'can', cans: 'can',
+    jar: 'jar', jars: 'jar',
+    bottle: 'bottle', bottles: 'bottle',
+    stick: 'stick', sticks: 'stick',
+    block: 'block', blocks: 'block',
+    serving: 'serving', servings: 'serving', portion: 'serving', portions: 'serving',
+    ea: 'unit', each: 'unit', whole: 'unit', medium: 'unit', large: 'unit', small: 'unit',
+    piece: 'unit', pieces: 'unit', pc: 'unit', pcs: 'unit',
+    fillet: 'unit', fillets: 'unit', cutlet: 'unit', cutlets: 'unit',
+    breast: 'unit', breasts: 'unit', thigh: 'unit', thighs: 'unit',
+    drumstick: 'unit', drumsticks: 'unit', leg: 'unit', legs: 'unit',
+    wing: 'unit', wings: 'unit', slice: 'unit', slices: 'unit',
+    strip: 'unit', strips: 'unit', ear: 'unit', ears: 'unit',
+    spear: 'unit', spears: 'unit', egg: 'unit', eggs: 'unit',
+    '': 'unit'
+  };
+  return Object.prototype.hasOwnProperty.call(map, low) ? map[low] : low;
+}
+
+function parseExtraBucketsFromItem(it) {
+  if (!it) return [];
+  if (Array.isArray(it.buckets) && it.buckets.length > 0) {
+    return it.buckets.map(b => ({
+      qty: (b.qty !== null && b.qty !== undefined && b.qty !== '') ? Number(b.qty) : NaN,
+      unit: normalizeRecipeEstimateUnit(b.rawUnit !== undefined ? b.rawUnit : b.unit)
+    }));
+  }
+  const primaryUnitRaw = it.rawUnit !== undefined
+    ? it.rawUnit
+    : (it.unit !== undefined ? it.unit : (String(it.key || '').split('|')[1] || ''));
+  const primaryQty = (it.qty !== null && it.qty !== undefined && it.qty !== '')
+    ? Number(it.qty)
+    : NaN;
+  const list = [{ qty: primaryQty, unit: normalizeRecipeEstimateUnit(primaryUnitRaw) }];
+  if (it.extraBucketsText && typeof it.extraBucketsText === 'string') {
+    const parts = it.extraBucketsText.split('+').map(s => s.trim()).filter(Boolean);
+    for (let i = 0; i < parts.length; i++) {
+      const m = parts[i].match(/^([\d./\s\u00BC-\u00BE\u2150-\u215E-]+?)(?:\s+([a-zA-Z]+))?$/);
+      if (m) {
+        const pQty = typeof parseQty === 'function' ? parseQty(m[1].trim()) : Number(m[1].trim());
+        const qVal = Array.isArray(pQty) ? Math.max(...pQty) : Number(pQty);
+        list.push({
+          qty: Number.isFinite(qVal) ? qVal : NaN,
+          unit: normalizeRecipeEstimateUnit(m[2] || '')
+        });
+      }
+    }
+  }
+  return list;
+}
+
+function convertBucketToPounds(bucket, conv) {
+  const q = Number(bucket && bucket.qty);
+  if (!Number.isFinite(q) || q <= 0) return null;
+  const u = bucket.unit;
+  if (u === 'lb') return q;
+  if (u === 'oz') return q / 16;
+  if (u === 'g') return q / 453.59237;
+  if (u === 'kg') return q * 2.2046226;
+
+  if (!conv || typeof conv !== 'object') return null;
+
+  if (u === 'unit') {
+    return Number.isFinite(Number(conv.lb_per_unit)) ? q * Number(conv.lb_per_unit) : null;
+  }
+  if (u === 'head') {
+    const lph = Number.isFinite(Number(conv.lb_per_head)) ? Number(conv.lb_per_head) : Number(conv.lb_per_unit);
+    return Number.isFinite(lph) ? q * lph : null;
+  }
+  if (u === 'clove') {
+    if (Number.isFinite(Number(conv.lb_per_clove))) return q * Number(conv.lb_per_clove);
+    if (Number.isFinite(Number(conv.lb_per_head)) && Number.isFinite(Number(conv.cloves_per_head)) && Number(conv.cloves_per_head) > 0) {
+      return (q / Number(conv.cloves_per_head)) * Number(conv.lb_per_head);
+    }
+    return null;
+  }
+  if (u === 'bunch') {
+    return Number.isFinite(Number(conv.lb_per_bunch)) ? q * Number(conv.lb_per_bunch) : null;
+  }
+  if (u === 'stalk') {
+    const lps = Number.isFinite(Number(conv.lb_per_stalk)) ? Number(conv.lb_per_stalk) : Number(conv.lb_per_unit);
+    return Number.isFinite(lps) ? q * lps : null;
+  }
+  if (u === 'sprig') {
+    return Number.isFinite(Number(conv.lb_per_sprig)) ? q * Number(conv.lb_per_sprig) : null;
+  }
+  if (u === 'bag' || u === 'box' || u === 'pack' || u === 'container' || u === 'pint') {
+    return Number.isFinite(Number(conv.lb_per_bag)) ? q * Number(conv.lb_per_bag) : null;
+  }
+  if (u === 'serving') {
+    return Number.isFinite(Number(conv.lb_per_serving)) ? q * Number(conv.lb_per_serving) : null;
+  }
+  if (u === 'tsp' || u === 'tbsp' || u === 'cup' || u === 'fl_oz' || u === 'quart') {
+    const tspMap = { tsp: 1, tbsp: 3, fl_oz: 6, cup: 48, pint: 96, quart: 192 };
+    const totalTsp = q * (tspMap[u] || 0);
+    if (totalTsp > 0 && Number.isFinite(Number(conv.tsp_per_clove)) && Number(conv.tsp_per_clove) > 0) {
+      const cloves = totalTsp / Number(conv.tsp_per_clove);
+      if (Number.isFinite(Number(conv.lb_per_clove))) return cloves * Number(conv.lb_per_clove);
+      if (Number.isFinite(Number(conv.lb_per_head)) && Number.isFinite(Number(conv.cloves_per_head)) && Number(conv.cloves_per_head) > 0) {
+        return (cloves / Number(conv.cloves_per_head)) * Number(conv.lb_per_head);
+      }
+    }
+    if (Number.isFinite(Number(conv.lb_per_cup)) && totalTsp > 0) {
+      const cups = totalTsp / 48;
+      return cups * Number(conv.lb_per_cup);
+    }
+    return null;
+  }
+  return null;
+}
+
+function estimateShopItemCents(it, p, convMapOverride) {
+  if (!p || !Number.isFinite(Number(p.price_cents))) {
+    return { convertible: false, cents: 0 };
+  }
+  const priceCents = Number(p.price_cents);
+  // Legacy fixtures (no basis field): preserve 1x price_cents sum
+  if (!p.basis) {
+    return { convertible: true, cents: priceCents };
+  }
+
+  const conv = lookupPriceConversion(it, convMapOverride);
+  const basis = String(p.basis || '').toLowerCase();
+  const packTag = String(p.pack_size || '').toLowerCase().trim();
+  const bought = String(p.bought_name || '').toLowerCase();
+  const buckets = parseExtraBucketsFromItem(it);
+  if (!buckets.length) return { convertible: false, cents: 0 };
+
+  // Case 1: Priced per pound ('lb')
+  if (basis === 'lb') {
+    let totalLb = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      const lb = convertBucketToPounds(buckets[i], conv);
+      if (lb === null || !Number.isFinite(lb) || lb <= 0) {
+        return { convertible: false, cents: 0 };
+      }
+      totalLb += lb;
+    }
+    return { convertible: true, cents: Math.round(totalLb * priceCents) };
+  }
+
+  // Case 2: Garlic sleeve or head-based pack (conv.pack_unit === 'head')
+  const isSleeve = basis === 'head' || packTag === 'sleeve' || /\bsleeve\b/i.test(bought) ||
+    (basis === 'pack' && conv && conv.pack_name === 'sleeve');
+  if (isSleeve && conv && conv.pack_unit === 'head') {
+    const unitsPerPack = Number(conv.units_per_pack) || 5;
+    const headRateCents = basis === 'head' ? priceCents : Math.round(priceCents / unitsPerPack);
+    const clovesPerHead = Number(conv.cloves_per_head) || 10;
+    const tspPerClove = Number(conv.tsp_per_clove) || 1;
+    let totalHeads = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      const b = buckets[i];
+      const q = Number(b.qty);
+      if (!Number.isFinite(q) || q <= 0) return { convertible: false, cents: 0 };
+      const u = b.unit;
+      if (u === 'head' || u === 'unit') {
+        totalHeads += q;
+      } else if (u === 'clove') {
+        totalHeads += q / clovesPerHead;
+      } else if (u === 'tsp' || u === 'tbsp' || u === 'cup' || u === 'fl_oz') {
+        const tspMap = { tsp: 1, tbsp: 3, fl_oz: 6, cup: 48 };
+        const cloves = (q * tspMap[u]) / tspPerClove;
+        totalHeads += cloves / clovesPerHead;
+      } else if (u === 'lb' && Number.isFinite(Number(conv.lb_per_head)) && Number(conv.lb_per_head) > 0) {
+        totalHeads += q / Number(conv.lb_per_head);
+      } else if (u === 'oz' && Number.isFinite(Number(conv.lb_per_head)) && Number(conv.lb_per_head) > 0) {
+        totalHeads += (q / 16) / Number(conv.lb_per_head);
+      } else if (u === 'sleeve' || u === 'pack') {
+        totalHeads += q * unitsPerPack;
+      } else {
+        return { convertible: false, cents: 0 };
+      }
+    }
+    return { convertible: true, cents: Math.round(totalHeads * headRateCents) };
+  }
+
+  // Case 3: Dozen eggs (conv.pack_unit === 'egg', units_per_pack === 12)
+  const isDozen = basis === 'dozen' || packTag === 'dozen' || packTag === 'doz' || /\b(dozen|doz)\b/i.test(bought) ||
+    (conv && conv.pack_name === 'dozen' && Number(conv.units_per_pack) === 12);
+  if (isDozen && conv && Number(conv.units_per_pack) > 1) {
+    const unitsPerPack = Number(conv.units_per_pack) || 12;
+    let totalUnits = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      const b = buckets[i];
+      const q = Number(b.qty);
+      if (!Number.isFinite(q) || q <= 0) return { convertible: false, cents: 0 };
+      const u = b.unit;
+      if (u === 'unit') {
+        totalUnits += q;
+      } else if (u === 'dozen' || u === 'carton' || u === 'pack' || u === 'box') {
+        totalUnits += q * unitsPerPack;
+      } else if (u === 'lb' && Number.isFinite(Number(conv.lb_per_unit)) && Number(conv.lb_per_unit) > 0) {
+        totalUnits += q / Number(conv.lb_per_unit);
+      } else {
+        return { convertible: false, cents: 0 };
+      }
+    }
+    return { convertible: true, cents: Math.round((totalUnits / unitsPerPack) * priceCents) };
+  }
+
+  // Case 4: Other produce/weight items in price-conversions.json with basis 'pack' or 'each'
+  if (conv) {
+    if (basis === 'pack') {
+      let totalPacks = 0;
+      const packLb = (packTag === 'bunch' || conv.pack_name === 'bunch')
+        ? (Number(conv.lb_per_bunch) || Number(conv.lb_per_bag))
+        : (Number(conv.lb_per_bag) || Number(conv.lb_per_bunch));
+      const unitsPerPack = Number(conv.units_per_pack) || 0;
+      for (let i = 0; i < buckets.length; i++) {
+        const b = buckets[i];
+        const q = Number(b.qty);
+        if (!Number.isFinite(q) || q <= 0) return { convertible: false, cents: 0 };
+        const u = b.unit;
+        if (u === 'bag' || u === 'box' || u === 'pack' || u === 'bunch' || u === 'container' || u === 'pint') {
+          totalPacks += q;
+        } else if (unitsPerPack > 1 && (u === 'unit' || u === 'head')) {
+          totalPacks += q / unitsPerPack;
+        } else if (Number.isFinite(packLb) && packLb > 0) {
+          const lb = convertBucketToPounds(b, conv);
+          if (lb === null || !Number.isFinite(lb) || lb <= 0) return { convertible: false, cents: 0 };
+          totalPacks += lb / packLb;
+        } else {
+          return { convertible: false, cents: 0 };
+        }
+      }
+      return { convertible: true, cents: Math.round(totalPacks * priceCents) };
+    }
+    // basis === 'each' for a produce/meat item in conv
+    let totalUnits = 0;
+    const lbPerUnit = Number(conv.lb_per_unit) || Number(conv.lb_per_head) || Number(conv.lb_per_bunch) || 0;
+    for (let i = 0; i < buckets.length; i++) {
+      const b = buckets[i];
+      const q = Number(b.qty);
+      if (!Number.isFinite(q) || q <= 0) return { convertible: false, cents: 0 };
+      const u = b.unit;
+      if (u === 'unit' || u === 'head' || u === 'bunch' || u === 'bag' || u === 'box' || u === 'pack') {
+        totalUnits += q;
+      } else if (lbPerUnit > 0) {
+        const lb = convertBucketToPounds(b, conv);
+        if (lb === null || !Number.isFinite(lb) || lb <= 0) return { convertible: false, cents: 0 };
+        totalUnits += lb / lbPerUnit;
+      } else {
+        return { convertible: false, cents: 0 };
+      }
+    }
+    return { convertible: true, cents: Math.round(totalUnits * priceCents) };
+  }
+
+  // Case 5: Non-produce pantry/dairy staples (not in price-conversions.json) with basis 'each' or 'pack'
+  // Per plan: "Non-produce (broth, beans, vinegar, milk, etc.): basis 'each'/'pack', no conversion —
+  // badge labels the basis, estimate = rate × packs needed (usually 1)."
+  const b0 = buckets[0];
+  const packageUnits = new Set(['can', 'pack', 'box', 'jar', 'bottle', 'carton', 'bag', 'container', 'stick', 'block']);
+  if (b0 && packageUnits.has(b0.unit) && Number.isFinite(b0.qty) && b0.qty > 0) {
+    return { convertible: true, cents: Math.round(b0.qty * priceCents) };
+  }
+  return { convertible: true, cents: priceCents };
 }
 
 function collectKnownStores(pricesMap, storeNotesObj, selectedStore) {
@@ -2571,7 +2997,7 @@ function shoppingListHTML() {
     const isOpen = openDetailSet.has(it.key);
     if (!isStorePicked) {
       const bought = String(p.bought_name || bk).trim();
-      const priceStr = fmtDollars(p.price_cents);
+      const priceStr = formatPriceWithBasis(p.price_cents, p, it);
       const storeStr = String(p.store || '').trim();
       const dateStr = fmtShortDate(p.receipt_date);
       const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
@@ -2583,7 +3009,7 @@ function shoppingListHTML() {
     const hereHit = entryPriceAtStore(p, pickedStore);
     if (hereHit) {
       const bought = String(hereHit.bought_name || p.bought_name || bk).trim();
-      const priceStr = fmtDollars(hereHit.price_cents);
+      const priceStr = formatPriceWithBasis(hereHit.price_cents, hereHit, it);
       const storeStr = displayStoreName(hereHit.store || pickedStore) || String(hereHit.store || '').trim();
       const dateStr = fmtShortDate(hereHit.receipt_date);
       const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
@@ -2596,7 +3022,7 @@ function shoppingListHTML() {
     const elseHit = entryPriceElsewhere(p, pickedStore);
     if (elseHit) {
       const otherStore = displayStoreName(elseHit.store) || String(elseHit.store || '').trim();
-      const priceStr = fmtDollars(elseHit.price_cents);
+      const priceStr = formatPriceWithBasis(elseHit.price_cents, elseHit, it);
       const dateStr = fmtShortDate(elseHit.receipt_date);
       const flagText = 'last bought at ' + otherStore + ' ' + priceStr +
         (dateStr ? ' · ' + dateStr : '') + ' — no ' + pickedDisplay + ' price yet';
@@ -2750,6 +3176,8 @@ function shoppingListHTML() {
     const elseByStore = new Map();
     let sumCents = 0;
 
+    let unconvertibleAtStore = 0;
+
     activeToBuy.forEach(it => {
       const bk = itemBaseKey(it);
       const noteSt = getStoreNoteStatus(bk, pickedStore);
@@ -2761,7 +3189,12 @@ function shoppingListHTML() {
         notCarried.push(it);
       } else if (hereHit) {
         pricedAtStore.push(it);
-        sumCents += Number(hereHit.price_cents) || 0;
+        const est = estimateShopItemCents(it, hereHit);
+        if (est.convertible) {
+          sumCents += est.cents;
+        } else {
+          unconvertibleAtStore++;
+        }
       } else if (noteSt === 'carries') {
         notedCarriesOnly.push(it);
       } else if (elseHit) {
@@ -2824,23 +3257,32 @@ function shoppingListHTML() {
       '<p class="' + verdictClass + '">' + esc(verdictText) + '</p>';
 
     if (pricedAtStore.length > 0) {
-      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedAtStore.length + ' of ' + activeToBuy.length + ' items priced</p>';
+      const estCountAtStore = pricedAtStore.length - unconvertibleAtStore;
+      const notEstSuffix = unconvertibleAtStore > 0 ? (' · ' + unconvertibleAtStore + (unconvertibleAtStore === 1 ? ' item' : ' items') + ' not estimated') : '';
+      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + estCountAtStore + ' of ' + activeToBuy.length + ' items priced' + notEstSuffix + '</p>';
     }
   } else if (!isStorePicked && pricesMap && activeToBuy.length > 0) {
     // All-stores mode: sums the DISPLAYED To buy lines (activeToBuy). Pantry
     // staples hidden by the Hide-staples toggle are not bought this week, so
     // they must not count toward the total or M.
     let pricedCount = 0;
+    let unconvertibleCount = 0;
     let sumCents = 0;
     activeToBuy.forEach(it => {
       const p = priceMatchFor(it, pricesMap);
       if (p) {
-        pricedCount++;
-        sumCents += Number(p.price_cents) || 0;
+        const est = estimateShopItemCents(it, p);
+        if (est.convertible) {
+          pricedCount++;
+          sumCents += est.cents;
+        } else {
+          unconvertibleCount++;
+        }
       }
     });
-    if (pricedCount > 0) {
-      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedCount + ' of ' + activeToBuy.length + ' items priced</p>';
+    if (pricedCount > 0 || unconvertibleCount > 0) {
+      const notEstSuffix = unconvertibleCount > 0 ? (' · ' + unconvertibleCount + (unconvertibleCount === 1 ? ' item' : ' items') + ' not estimated') : '';
+      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedCount + ' of ' + activeToBuy.length + ' items priced' + notEstSuffix + '</p>';
     }
   }
 
