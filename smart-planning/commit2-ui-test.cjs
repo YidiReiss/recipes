@@ -87,8 +87,9 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
  'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS',
- 'ITEM_ALIASES', 'UNIT_ALIASES',
- 'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_QUALIFIED_HEADS'].forEach(n => geval(extractDecl(n)));
+  'ITEM_ALIASES', 'UNIT_ALIASES',
+  'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_QUALIFIED_HEADS', 'PRICE_VARIETY_WORDS'].forEach(n => geval(extractDecl(n)));
+globalThis.priceDirectMatches = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
 globalThis._priceHistoryCache = null;
 globalThis._priceHistoryInFlight = null;
 globalThis._priceHistoryFetched = false;
@@ -118,7 +119,7 @@ extract('parseQty', true).forEach(src => geval(src));
  'normalizeStoreNotes', 'mergeStoreNotes', 'saveStoreNotesLocal', 'loadStoreNotesLocal',
  'setStoreNotesCache', 'resetStoreNotesSession', 'bridgeReadStoreNotes',
  'ensureStoreNotesLoaded', 'saveStoreNotes', 'getStoreNoteStatus', 'toggleStoreNote',
- 'priceMatchWords', 'priceHeadNoun', 'mergePriceHistoryEntryPair',
+ 'priceVarietyGroups', 'priceMatchWords', 'priceHeadNoun', 'mergePriceHistoryEntryPair',
  'entryPriceAtStore', 'entryPriceElsewhere', 'priceMatchFor', 'collectKnownStores',
  'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded',
  'slugify',
@@ -3425,6 +3426,220 @@ async function main() {
     romMulti32.by_store['arons'].bought_name === "Aron's Romaine Hearts" &&
     romMulti32.by_store['arons'].receipt_date === '2026-09-29' &&
     Object.keys(romMulti32.by_store['arons']).sort().join(',') === 'bought_name,price_cents,receipt_date,store');
+
+  // ---------------------------------------------------------------------------
+  // 33. Price-matching comprehensive fix (v20261116a + Bridge git-v14, Nov 16, 2026):
+  //     Part 1 direct-match layer (data/price-direct-matches.json), Part 2 fuzzy
+  //     guard fixes (single-word distinctive head at candidate edge + variety-conflict
+  //     rule), Part 3 per-unit prices for count ('ea', qty > 1) receipt lines while
+  //     keeping weighed ('lb') lines line-total, and 101-key live corpus verification.
+  // ---------------------------------------------------------------------------
+  const fixtureCandidates33 = [
+    path.join(SITE_DIR, 'price-history-fixture-20261116.json'),
+    path.join(__dirname, '..', 'price-history-fixture-20261116.json'),
+    path.join(__dirname, 'price-history-fixture-20261116.json')
+  ];
+  const fixturePath33 = fixtureCandidates33.find(p => fs.existsSync(p));
+  const fixtureJson33 = JSON.parse(fs.readFileSync(fixturePath33, 'utf8'));
+  const fixturePrices33 = fixtureJson33.prices || fixtureJson33;
+  globalThis.priceDirectMatches = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
+
+  // 33(a) Three reported cases: Eggs, Potatoes, and Per-unit Chicken Broth (plus weighed 'lb' line-total)
+  const matchEggDirect33 = priceMatchFor('egg', fixturePrices33);
+  const savedDirect33 = globalThis.priceDirectMatches;
+  globalThis.priceDirectMatches = null;
+  const matchEggFuzzy33 = priceMatchFor('egg', fixturePrices33);
+  globalThis.priceDirectMatches = savedDirect33;
+  check('Section 33(a) (Case 1 — Eggs): priceMatchFor("egg", fixture101) matches "jacks f x-large egg" ($1.99, X-Large Eggs) via both Step 0 direct map and Step 2(a) single-word edge head rule',
+    !!matchEggDirect33 &&
+    matchEggDirect33.bought_name === 'X-Large Eggs' &&
+    matchEggDirect33.price_cents === 199 &&
+    !!matchEggFuzzy33 &&
+    matchEggFuzzy33.bought_name === 'X-Large Eggs' &&
+    matchEggFuzzy33.price_cents === 199);
+
+  const matchYellowPotato33 = priceMatchFor('yellow potato (the little potato company)', fixturePrices33);
+  const matchGoldenPotato33 = priceMatchFor('golden potato', fixturePrices33);
+  const idahoOnlyFixture33 = { 'potato idaho loose': fixturePrices33['potato idaho loose'] };
+  globalThis.priceDirectMatches = null;
+  const yellowVsIdahoNoDirect33 = priceMatchFor('yellow potato (the little potato company)', idahoOnlyFixture33);
+  const goldenVsIdahoNoDirect33 = priceMatchFor('golden potato', idahoOnlyFixture33);
+  globalThis.priceDirectMatches = savedDirect33;
+  const yellowVsIdahoWithDirect33 = priceMatchFor('yellow potato (the little potato company)', idahoOnlyFixture33);
+  check('Section 33(a) (Case 2 — Potatoes): "yellow potato (the little potato company)" and "golden potato" match "potato yukon gold loose" ($3.46, Potato Yukon Gold Large - Loose) and never match "potato idaho loose" (blocked by variety-conflict guard even when direct target is absent)',
+    !!matchYellowPotato33 &&
+    matchYellowPotato33.bought_name === 'Potato Yukon Gold Large - Loose' &&
+    matchYellowPotato33.price_cents === 346 &&
+    !!matchGoldenPotato33 &&
+    matchGoldenPotato33.bought_name === 'Potato Yukon Gold Large - Loose' &&
+    matchGoldenPotato33.price_cents === 346 &&
+    yellowVsIdahoNoDirect33 === null &&
+    goldenVsIdahoNoDirect33 === null &&
+    yellowVsIdahoWithDirect33 === null);
+
+  const unitPriceRows33 = [
+    // 4 cartons of Tabatchnick Chicken Broth @ $10.00 line total (unit='ea', qty_or_weight=4) -> $2.50 (250 cents) per carton
+    { status: 'verified', needs_review: 0, group_key: 'tabatchnick broth chicken', paid_price_cents: 1000, qty_or_weight: 4, unit: 'ea', store: "Aron's Kissena Farms", product_name: 'Broth Chicken', raw_line: 'TABATCHNICK BROTH CHICKEN', receipt_date: '2026-09-29', receipt_id: 'r10', line_no: 1, id: 101 },
+    // Older 2 cartons of Tabatchnick Chicken Broth @ $5.20 line total (unit='ea', qty_or_weight=2) -> $2.60 (260 cents) per carton
+    { status: 'verified', needs_review: 0, group_key: 'tabatchnick broth chicken', paid_price_cents: 520, qty_or_weight: 2, unit: 'ea', store: 'Bingo', product_name: 'Broth Chicken', raw_line: 'TABATCHNICK BROTH CHICKEN', receipt_date: '2026-08-15', receipt_id: 'r9', line_no: 2, id: 102 },
+    // Weighed produce line (unit='lb', qty_or_weight=2.31, paid_price_cents=346) -> stays line-total 346 cents
+    { status: 'verified', needs_review: 0, group_key: 'potato yukon gold loose', paid_price_cents: 346, qty_or_weight: 2.31, unit: 'lb', store: "Aron's Kissena Farms", product_name: 'Potato Yukon Gold Large - Loose', raw_line: 'POTATO YUKON GOLD', receipt_date: '2026-11-15', receipt_id: 'r11', line_no: 3, id: 103 },
+    // Weighed tomato stem line (unit='lb', qty_or_weight=1.68, paid_price_cents=503) -> stays line-total 503 cents
+    { status: 'verified', needs_review: 0, group_key: 'tomato stem', paid_price_cents: 503, qty_or_weight: 1.68, unit: 'lb', store: "Aron's Kissena Farms", product_name: 'Tomato Stem', raw_line: 'TOMATO STEM', receipt_date: '2026-11-15', receipt_id: 'r11', line_no: 4, id: 104 }
+  ];
+  const phUnitRes33 = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(unitPriceRows33),
+    { nowMs: new Date('2026-11-16T12:00:00Z').getTime() }
+  );
+  const phUnitJson33 = await phUnitRes33.json();
+  const brothEntry33 = phUnitJson33.prices['tabatchnick broth chicken'];
+  const weighedPotato33 = phUnitJson33.prices['potato yukon gold loose'];
+  const weighedTomato33 = phUnitJson33.prices['tomato stem'];
+  check('Section 33(a) (Case 3 — Bridge git-v14 per-unit prices): 4x $10.00 "ea" broth line yields 250 cents ($2.50) across top-level, by_store, last3, and avg12m_cents, while weighed "lb" lines stay line-total (346 and 503 cents)',
+    !!brothEntry33 &&
+    brothEntry33.price_cents === 250 &&
+    brothEntry33.by_store['arons'].price_cents === 250 &&
+    brothEntry33.by_store['bingo'].price_cents === 260 &&
+    JSON.stringify(brothEntry33.last3.map(x => x.price_cents)) === JSON.stringify([250, 260]) &&
+    brothEntry33.avg12m_cents === 255 &&
+    !!weighedPotato33 &&
+    weighedPotato33.price_cents === 346 &&
+    weighedPotato33.by_store['arons'].price_cents === 346 &&
+    !!weighedTomato33 &&
+    weighedTomato33.price_cents === 503);
+
+  // 33(b) Full-corpus before/after check: 66 live-week items (2026-11-15) x 101-key fixture
+  const savedPlan33 = globalThis.mealPlan;
+  const savedRecipes33 = globalThis.recipes;
+  const savedMetaById33 = globalThis.metaById;
+  const savedById33 = globalThis.byId;
+  const savedSec33 = globalThis.shoppingSections;
+  const savedThisWeekKey33 = globalThis.thisWeekKey;
+  globalThis.mealPlan = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'meal-plan.json'), 'utf8'));
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  globalThis.recipes = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'recipes', 'meta.json'), 'utf8'));
+  globalThis.metaById = {};
+  globalThis.recipes.forEach(m => { globalThis.metaById[m.id] = m; });
+  globalThis.byId = {};
+  for (const rf of recipeFiles26) {
+    if (rf === 'index.json' || rf === 'meta.json') continue;
+    const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
+    if (rj && rj.id) globalThis.byId[rj.id] = rj;
+  }
+  globalThis.thisWeekKey = () => '2026-11-15';
+  const liveWeekList33 = buildShoppingList();
+  const split33 = splitShopItems(liveWeekList33, getWeek('2026-11-15'));
+  const matchedPairs33 = liveWeekList33
+    .map(it => {
+      const m = priceMatchFor(it, fixturePrices33);
+      return m ? { base: it.base, bought_name: m.bought_name, price_cents: m.price_cents } : null;
+    })
+    .filter(Boolean);
+  const matchedToBuy33 = split33.toBuy.filter(it => !!priceMatchFor(it, fixturePrices33));
+  const expectedPairs33 = [
+    ['apple', 'Apple Gala Small'],
+    ['heart of romaine lettuce', 'Romaine Hearts'],
+    ['fresh brussel sprout', 'Brussel Sprouts'],
+    ['onion', 'Onion Red'],
+    ['purple onion', 'Onion Red'],
+    ['shallot', 'Onion Shallots'],
+    ['white vinegar', 'Distilled White Vinegar 5% Acidity'],
+    ['dried parsley', 'Parsley Italian'],
+    ['yellow potato (the little potato company)', 'Potato Yukon Gold Large - Loose'],
+    ['carrot', 'Carrots Cut & Peeled'],
+    ['golden potato', 'Potato Yukon Gold Large - Loose'],
+    ['tomato', 'Tomato Stem'],
+    ['garlic', 'Garlic Loose'],
+    ['fresh parsley', 'Parsley Italian'],
+    ['egg', 'X-Large Eggs'],
+    ['black bean (15 oz)', 'Black Beans'],
+    ['chicken stock', 'Broth Chicken'],
+    ['coconut milk', 'Coconut Milk'],
+    ['fettuccine pasta', 'Fettuccine']
+  ];
+  check('Section 33(b) (101-key full-corpus check): 101-key fixture matches 19 of 66 live-week items (7 of 33 To-buy rows, up from 6 with 0 wrong Idaho potato matches) with exact expected bought_name pairs',
+    Object.keys(fixturePrices33).length === 101 &&
+    liveWeekList33.length === 66 &&
+    split33.toBuy.length === 33 &&
+    matchedPairs33.length === 19 &&
+    matchedToBuy33.length === 7 &&
+    JSON.stringify(matchedPairs33.map(p => [p.base, p.bought_name])) === JSON.stringify(expectedPairs33));
+  globalThis.thisWeekKey = savedThisWeekKey33;
+  globalThis.mealPlan = savedPlan33;
+  globalThis.recipes = savedRecipes33;
+  globalThis.metaById = savedMetaById33;
+  globalThis.byId = savedById33;
+  globalThis.shoppingSections = savedSec33;
+
+  // 33(c) Guard checks (no false-positive regressions + variety-conflict vocabulary checks)
+  const fixtureWithoutChoco33 = { ...fixturePrices33 };
+  delete fixtureWithoutChoco33['liebers semi sweet real choco chip'];
+  const lemonJuiceMap33 = {
+    'lemon juice': { price_cents: 249, store: 'Bingo', bought_name: 'Lemon Juice', receipt_date: '2026-11-10', avg12m_cents: null, last3: [] }
+  };
+  check('Section 33(c) (false-positive & single-word guards): bare oil/sugar/honey/vinegar/sauce/pasta match nothing; bare chicken != butterfly chicken cutlet; chicken breast != chicken broth; apple cider vinegar != apple; red pepper != red onion; chocolate chip != potato chip; shredded mozzarella -> Part Skim Mozzarella Cheese; lemon -> Lemon Juice',
+    priceMatchFor('oil', fixturePrices33) === null &&
+    priceMatchFor('sugar', fixturePrices33) === null &&
+    priceMatchFor('honey', fixturePrices33) === null &&
+    priceMatchFor('vinegar', fixturePrices33) === null &&
+    priceMatchFor('sauce', fixturePrices33) === null &&
+    priceMatchFor('pasta', fixturePrices33) === null &&
+    priceMatchFor('chicken', fixturePrices33) === null &&
+    priceMatchFor('beef', fixturePrices33) === null &&
+    priceMatchFor('chicken breast', fixturePrices33) === null &&
+    priceMatchFor('boneless skinless chicken breast', fixturePrices33) === null &&
+    priceMatchFor('apple cider vinegar', fixturePrices33) === null &&
+    priceMatchFor('red pepper', fixturePrices33) === null &&
+    priceMatchFor('red bell pepper', fixturePrices33) === null &&
+    priceMatchFor('chocolate chip', fixtureWithoutChoco33) === null &&
+    priceMatchFor('olive oil', fixturePrices33) === null &&
+    priceMatchFor('kosher salt', fixturePrices33) === null &&
+    priceMatchFor('shredded mozzarella', fixturePrices33)?.bought_name === 'Part Skim Mozzarella Cheese' &&
+    priceMatchFor('lemon', lemonJuiceMap33)?.bought_name === 'Lemon Juice');
+
+  check('Section 33(c) (variety-conflict vocabulary across head nouns): conflicting varieties on potato, onion, apple, tomato, cucumber, and vinegar reject while synonymous varieties (russet==idaho, purple==red) and bare heads still match',
+    priceMatchFor('red potato', {
+      'potato idaho loose': fixturePrices33['potato idaho loose'],
+      'potato yukon gold loose': fixturePrices33['potato yukon gold loose']
+    }) === null &&
+    priceMatchFor('yellow onion', { 'onion red': fixturePrices33['onion red'] }) === null &&
+    priceMatchFor('fuji apple', {
+      'apple gala': fixturePrices33['apple gala'],
+      'apple granny smith': fixturePrices33['apple granny smith']
+    }) === null &&
+    priceMatchFor('cherry tomato', { 'tomato stem': fixturePrices33['tomato stem'] }) === null &&
+    priceMatchFor('kirby cucumber', {
+      'cucumber persian': fixturePrices33['cucumber persian'],
+      'cucumber hothouse english': fixturePrices33['cucumber hothouse english']
+    }) === null &&
+    priceMatchFor('rice vinegar', {
+      'boulb distilled white vinegar': fixturePrices33['boulb distilled white vinegar']
+    }) === null &&
+    priceMatchFor('russet potato', { 'potato idaho loose': fixturePrices33['potato idaho loose'] })?.bought_name === 'Potato Idaho - Loose' &&
+    priceMatchFor('purple onion', { 'onion red': fixturePrices33['onion red'] })?.bought_name === 'Onion Red' &&
+    priceMatchFor('potato', { 'potato idaho loose': fixturePrices33['potato idaho loose'] })?.bought_name === 'Potato Idaho - Loose');
+
+  // 33(d) Direct-map staleness guard & missing-key fall-through check
+  const directMapFile33 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
+  const directKeys33 = Object.keys(directMapFile33);
+  const allDirectValuesInFixture33 = directKeys33.every(k => {
+    const v = directMapFile33[k];
+    const targets = Array.isArray(v) ? v : [v];
+    return targets.length > 0 && targets.every(t => Object.prototype.hasOwnProperty.call(fixturePrices33, t));
+  });
+  globalThis.priceDirectMatches = { egg: 'stale-missing-egg-key' };
+  const fallThroughEgg33 = priceMatchFor('egg', fixturePrices33);
+  globalThis.priceDirectMatches = directMapFile33;
+  check('Section 33(d) (direct-map staleness & fall-through guard): data/price-direct-matches.json contains the 3 seed entries, every mapped value exists in the 101-key fixture, and a direct entry absent from the price map falls through to fuzzy matching instead of returning null',
+    directKeys33.length >= 3 &&
+    directMapFile33['egg'] === 'jacks f x-large egg' &&
+    directMapFile33['yellow potato (the little potato company)'] === 'potato yukon gold loose' &&
+    directMapFile33['chicken stock'] === 'tabatchnick broth chicken' &&
+    allDirectValuesInFixture33 &&
+    !!fallThroughEgg33 &&
+    fallThroughEgg33.bought_name === 'X-Large Eggs' &&
+    fallThroughEgg33.price_cents === 199);
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
