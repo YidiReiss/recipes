@@ -368,6 +368,23 @@ When an item on your **To buy** or **Optional** list matches a product from your
 3. **Tap a Price Badge for Recent History & 12-Month Average:**
    - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
 
+### Choosing a Store (`Shopping at:`)
+Near the top of the Shopping List (just below the week strip) is the **Shopping at:** store picker:
+1. **Pick a Store (`All stores`, `Aron's`, `Bingo`, `Trader Joe's`, …):**
+   - Leave it on **All stores** (the default) to see the most recent purchase across every store where you shop.
+   - Or choose a specific store (such as **Aron's** or **Bingo**) before you head out—your choice is remembered on your device.
+2. **What Changes When You Pick a Store:**
+   - **Store Coverage Summary & Verdict:** At the top of the list, a summary line shows how many of your **To buy** items have a verified receipt price at that store (plus how many you've noted the store carries, how many were only bought at another store, and how many have no price yet). Right below it, a verdict line tells you either **`You only need <Store> this week.`** (when every **To buy** item is either priced at that store or noted as carried there) or how many items are still unconfirmed at that store (naming the items when there are 3 or fewer).
+   - **Store-Specific Price Badges & "No Price Yet" Flags:**
+     - Items with a past receipt from your chosen store show that store's latest price (`<Product bought> · $X.XX · <Store> · <Date>`) and sort to the top of their department section.
+     - Items that have only been bought on receipts from *another* store show a quiet note—for example, `last bought at Bingo $1.29 · Nov 2 — no Aron's price yet`—and sort right below the items priced at your chosen store. (This simply means we don't have a receipt for that item from your chosen store yet, not that the store doesn't sell it.)
+     - **Estimated Total:** The `Estimated total about $X.XX · N of M items priced` line adds up only the **To buy** items with a known price at your chosen store.
+3. **Noting What a Store Carries (`⋮` Menu):**
+   - While a store is selected in **Shopping at:**, tap **⋮** on any recipe ingredient row to see two store-note options:
+     - **`<Store> carries this`** — Marks the item with a green **`✓ at <Store>`** badge so the list knows you can get it there even before you have a receipt for it (counting it as covered in the **`You only need <Store> this week.`** verdict).
+     - **`<Store> doesn't carry this`** — Marks the item with a red **`✗ not at <Store>`** badge so the list always warns you that you'll need another stop for it.
+   - Tap the same option a second time in the **⋮** menu to clear the note. Store notes are saved for future weeks across your devices.
+
 ### Hiding Pantry Staples (`Hide pantry staples`)
 1. Check **Hide pantry staples** at the top of the Shopping List to tuck everyday kitchen basics (salt, black pepper, olive and vegetable oil, standard ground spices, honey, flour, sugar, cornstarch, baking powder, and baking soda) out of **To buy**. (Water is not in this list because it never appears on the Shopping List at all.)
 2. Hidden staples move into a collapsed **Pantry staples (N)** section below **To buy**, where you can still expand and check them if you happen to be out of one.
