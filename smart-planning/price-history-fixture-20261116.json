@@ -1,0 +1,2385 @@
+{
+  "3-pk-crispy-rice-milk-ch": {
+    "avg12m_cents": null,
+    "bought_name": "3 Pk Crispy Rice Milk Ch",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "3 Pk Crispy Rice Milk Ch",
+        "price_cents": 279,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "3 Pk Crispy Rice Milk Ch",
+        "price_cents": 279,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 279,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "apple gala": {
+    "avg12m_cents": null,
+    "bought_name": "Apple Gala Small",
+    "by_store": {
+      "arons": {
+        "bought_name": "Apple Gala Small",
+        "price_cents": 123,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Apple Gala Small",
+        "price_cents": 123,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 123,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "apple granny smith": {
+    "avg12m_cents": null,
+    "bought_name": "Apple Granny Smith Large",
+    "by_store": {
+      "arons": {
+        "bought_name": "Apple Granny Smith Large",
+        "price_cents": 215,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Apple Granny Smith Large",
+        "price_cents": 215,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 215,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "avocado ha": {
+    "avg12m_cents": null,
+    "bought_name": "Avocado Hass Large",
+    "by_store": {
+      "arons": {
+        "bought_name": "Avocado Hass Large",
+        "price_cents": 297,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Avocado Hass Large",
+        "price_cents": 297,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 297,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "banana-organic": {
+    "avg12m_cents": null,
+    "bought_name": "Banana Organic",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Banana Organic",
+        "price_cents": 145,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Banana Organic",
+        "price_cents": 145,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 145,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "black-bean": {
+    "avg12m_cents": 99,
+    "bought_name": "Black Beans",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Black Beans",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Black Beans",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      },
+      {
+        "bought_name": "Black Beans",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 99,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "blueberry-and-vanilla-go": {
+    "avg12m_cents": null,
+    "bought_name": "Blueberry And Vanilla Go",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Blueberry And Vanilla Go",
+        "price_cents": 599,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Blueberry And Vanilla Go",
+        "price_cents": 599,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 599,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "bottle-deposit": {
+    "avg12m_cents": 9,
+    "bought_name": "Bottle Deposit",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Bottle Deposit",
+        "price_cents": 20,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Bottle Deposit",
+        "price_cents": 20,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      },
+      {
+        "bought_name": "Bottle Deposit",
+        "price_cents": 5,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      },
+      {
+        "bought_name": "Bottle Deposit",
+        "price_cents": 5,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 20,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "boulb distilled white vinegar": {
+    "avg12m_cents": null,
+    "bought_name": "Distilled White Vinegar 5% Acidity",
+    "by_store": {
+      "arons": {
+        "bought_name": "Distilled White Vinegar 5% Acidity",
+        "price_cents": 200,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Distilled White Vinegar 5% Acidity",
+        "price_cents": 200,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 200,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "boulb graham crackers sugar honey": {
+    "avg12m_cents": null,
+    "bought_name": "Graham Crackers L/F Sugar Honey",
+    "by_store": {
+      "arons": {
+        "bought_name": "Graham Crackers L/F Sugar Honey",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Graham Crackers L/F Sugar Honey",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "bowl basket fettuccine": {
+    "avg12m_cents": null,
+    "bought_name": "Fettuccine",
+    "by_store": {
+      "arons": {
+        "bought_name": "Fettuccine",
+        "price_cents": 150,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Fettuccine",
+        "price_cents": 150,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 150,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "breakfast-overnight-oats-ap": {
+    "avg12m_cents": null,
+    "bought_name": "Breakfast Overnight Oats Ap",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Breakfast Overnight Oats Ap",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Breakfast Overnight Oats Ap",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "breakfast-overnight-oats-va": {
+    "avg12m_cents": null,
+    "bought_name": "Breakfast Overnight Oats Va",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Breakfast Overnight Oats Va",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Breakfast Overnight Oats Va",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "brussel sprout": {
+    "avg12m_cents": null,
+    "bought_name": "Brussel Sprouts",
+    "by_store": {
+      "arons": {
+        "bought_name": "Brussel Sprouts",
+        "price_cents": 635,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Brussel Sprouts",
+        "price_cents": 635,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 635,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "butterfly chicken cutlet": {
+    "avg12m_cents": null,
+    "bought_name": "Butterfly Chicken Cutlets",
+    "by_store": {
+      "arons": {
+        "bought_name": "Butterfly Chicken Cutlets",
+        "price_cents": 3004,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Butterfly Chicken Cutlets",
+        "price_cents": 3004,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 3004,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "carrots-cut-peeled": {
+    "avg12m_cents": null,
+    "bought_name": "Carrots Cut & Peeled",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Carrots Cut & Peeled",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Carrots Cut & Peeled",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "cream cheese whipped": {
+    "avg12m_cents": null,
+    "bought_name": "Cream Cheese Whipped",
+    "by_store": {
+      "arons": {
+        "bought_name": "Cream Cheese Whipped",
+        "price_cents": 299,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Cream Cheese Whipped",
+        "price_cents": 299,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 299,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "cucumber hothouse english": {
+    "avg12m_cents": 325,
+    "bought_name": "Cucumber Hothouse (English)",
+    "by_store": {
+      "arons": {
+        "bought_name": "Cucumber Hothouse (English)",
+        "price_cents": 150,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Cucumber Hothouse (English)",
+        "price_cents": 150,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Cucumber Hothouse (English)",
+        "price_cents": 500,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 150,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "cucumber persian": {
+    "avg12m_cents": null,
+    "bought_name": "Cucumber Persian",
+    "by_store": {
+      "arons": {
+        "bought_name": "Cucumber Persian",
+        "price_cents": 263,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Cucumber Persian",
+        "price_cents": 263,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 263,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "dyna sea imitation crab stick": {
+    "avg12m_cents": null,
+    "bought_name": "Imitation Crab Stick",
+    "by_store": {
+      "arons": {
+        "bought_name": "Imitation Crab Stick",
+        "price_cents": 699,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Imitation Crab Stick",
+        "price_cents": 699,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 699,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "farms creamery margarine unsalted": {
+    "avg12m_cents": null,
+    "bought_name": "Margarine Unsalted",
+    "by_store": {
+      "arons": {
+        "bought_name": "Margarine Unsalted",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Margarine Unsalted",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "feta cheese": {
+    "avg12m_cents": null,
+    "bought_name": "Feta Cheese 100% Sheep's Milk",
+    "by_store": {
+      "arons": {
+        "bought_name": "Feta Cheese 100% Sheep's Milk",
+        "price_cents": 979,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Feta Cheese 100% Sheep's Milk",
+        "price_cents": 979,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 979,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "first-field-crushed": {
+    "avg12m_cents": null,
+    "bought_name": "First Field Crushed",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "First Field Crushed",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "First Field Crushed",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 349,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "flaum smoked nova lox": {
+    "avg12m_cents": null,
+    "bought_name": "Smoked Nova Lox",
+    "by_store": {
+      "arons": {
+        "bought_name": "Smoked Nova Lox",
+        "price_cents": 899,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Smoked Nova Lox",
+        "price_cents": 899,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 899,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "freeze-dried-raspberry": {
+    "avg12m_cents": null,
+    "bought_name": "Freeze Dried Raspberries",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Freeze Dried Raspberries",
+        "price_cents": 798,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Freeze Dried Raspberries",
+        "price_cents": 798,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 798,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "freeze-dried-strawberry": {
+    "avg12m_cents": null,
+    "bought_name": "Freeze Dried Strawberrie",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Freeze Dried Strawberrie",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Freeze Dried Strawberrie",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 349,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "galil mushrooms pieces stem": {
+    "avg12m_cents": null,
+    "bought_name": "Mushrooms Pieces & Stems",
+    "by_store": {
+      "arons": {
+        "bought_name": "Mushrooms Pieces & Stems",
+        "price_cents": 200,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Mushrooms Pieces & Stems",
+        "price_cents": 200,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 200,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "garlic loose": {
+    "avg12m_cents": 148,
+    "bought_name": "Garlic Loose",
+    "by_store": {
+      "arons": {
+        "bought_name": "Garlic Loose",
+        "price_cents": 45,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Garlic Loose",
+        "price_cents": 45,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Garlic Loose",
+        "price_cents": 250,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 45,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "garlic sleeve": {
+    "avg12m_cents": null,
+    "bought_name": "Garlic Sleeve",
+    "by_store": {
+      "arons": {
+        "bought_name": "Garlic Sleeve",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Garlic Sleeve",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "grapes seedless green": {
+    "avg12m_cents": null,
+    "bought_name": "Grapes Seedless Green",
+    "by_store": {
+      "arons": {
+        "bought_name": "Grapes Seedless Green",
+        "price_cents": 575,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Grapes Seedless Green",
+        "price_cents": 575,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 575,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "hearts-of-palm": {
+    "avg12m_cents": null,
+    "bought_name": "Hearts Of Palm",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Hearts Of Palm",
+        "price_cents": 249,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Hearts Of Palm",
+        "price_cents": 249,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 249,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "herb-basil": {
+    "avg12m_cents": null,
+    "bought_name": "Herb Basil",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Herb Basil",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Herb Basil",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 349,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "holiday-sparkling-cranberry": {
+    "avg12m_cents": null,
+    "bought_name": "Holiday Sparkling Cranberry",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Holiday Sparkling Cranberry",
+        "price_cents": 499,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Holiday Sparkling Cranberry",
+        "price_cents": 499,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 499,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "hot-honey-mustard": {
+    "avg12m_cents": null,
+    "bought_name": "Hot Honey Mustard",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Hot Honey Mustard",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Hot Honey Mustard",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "hummus-chili-onion-crunc": {
+    "avg12m_cents": null,
+    "bought_name": "Hummus Chili Onion Crunc",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Hummus Chili Onion Crunc",
+        "price_cents": 399,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Hummus Chili Onion Crunc",
+        "price_cents": 399,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "jacks f x-large egg": {
+    "avg12m_cents": null,
+    "bought_name": "X-Large Eggs",
+    "by_store": {
+      "arons": {
+        "bought_name": "X-Large Eggs",
+        "price_cents": 199,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "X-Large Eggs",
+        "price_cents": 199,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "jj cassone bagels assorted": {
+    "avg12m_cents": null,
+    "bought_name": "Bagels Assorted",
+    "by_store": {
+      "arons": {
+        "bought_name": "Bagels Assorted",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Bagels Assorted",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "kosher'us pelmeni homestyle beef": {
+    "avg12m_cents": null,
+    "bought_name": "Pelmeni Homestyle Beef",
+    "by_store": {
+      "arons": {
+        "bought_name": "Pelmeni Homestyle Beef",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pelmeni Homestyle Beef",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 799,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "kravy sour green apple candy": {
+    "avg12m_cents": null,
+    "bought_name": "Sour Green Apple Candy",
+    "by_store": {
+      "arons": {
+        "bought_name": "Sour Green Apple Candy",
+        "price_cents": 199,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sour Green Apple Candy",
+        "price_cents": 199,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "la flor oregano whole": {
+    "avg12m_cents": null,
+    "bought_name": "Oregano Whole",
+    "by_store": {
+      "arons": {
+        "bought_name": "Oregano Whole",
+        "price_cents": 849,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Oregano Whole",
+        "price_cents": 849,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 849,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "lemon": {
+    "avg12m_cents": null,
+    "bought_name": "Lemon Small",
+    "by_store": {
+      "arons": {
+        "bought_name": "Lemon Small",
+        "price_cents": 90,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Lemon Small",
+        "price_cents": 90,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 90,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "liebers semi sweet real choco chip": {
+    "avg12m_cents": null,
+    "bought_name": "Semi Sweet Real Choco Chips",
+    "by_store": {
+      "arons": {
+        "bought_name": "Semi Sweet Real Choco Chips",
+        "price_cents": 898,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Semi Sweet Real Choco Chips",
+        "price_cents": 898,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 898,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "lime": {
+    "avg12m_cents": null,
+    "bought_name": "Limes",
+    "by_store": {
+      "arons": {
+        "bought_name": "Limes",
+        "price_cents": 60,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Limes",
+        "price_cents": 60,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 60,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "mandarin bag": {
+    "avg12m_cents": null,
+    "bought_name": "Mandarin Bag",
+    "by_store": {
+      "arons": {
+        "bought_name": "Mandarin Bag",
+        "price_cents": 500,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Mandarin Bag",
+        "price_cents": 500,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 500,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "medley tomato": {
+    "avg12m_cents": null,
+    "bought_name": "Medley Tomatoes",
+    "by_store": {
+      "arons": {
+        "bought_name": "Medley Tomatoes",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Medley Tomatoes",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "milk-half-gallon-low-fat": {
+    "avg12m_cents": null,
+    "bought_name": "Milk Half Gallon Low Fat",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Milk Half Gallon Low Fat",
+        "price_cents": 299,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Milk Half Gallon Low Fat",
+        "price_cents": 299,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 299,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "millers sliced orange muenster": {
+    "avg12m_cents": null,
+    "bought_name": "Sliced Orange Muenster",
+    "by_store": {
+      "arons": {
+        "bought_name": "Sliced Orange Muenster",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sliced Orange Muenster",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 300,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "mr b feastables sour strikes assorted": {
+    "avg12m_cents": null,
+    "bought_name": "Sour Strikes Assorted",
+    "by_store": {
+      "arons": {
+        "bought_name": "Sour Strikes Assorted",
+        "price_cents": 549,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sour Strikes Assorted",
+        "price_cents": 549,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 549,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "mushrooms sliced white": {
+    "avg12m_cents": null,
+    "bought_name": "Mushrooms Sliced White",
+    "by_store": {
+      "arons": {
+        "bought_name": "Mushrooms Sliced White",
+        "price_cents": 250,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Mushrooms Sliced White",
+        "price_cents": 250,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "oat-bites-peanut-butter": {
+    "avg12m_cents": null,
+    "bought_name": "Oat Bites Peanut Butter",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Oat Bites Peanut Butter",
+        "price_cents": 798,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Oat Bites Peanut Butter",
+        "price_cents": 798,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 798,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "onion red": {
+    "avg12m_cents": 115,
+    "bought_name": "Onion Red",
+    "by_store": {
+      "arons": {
+        "bought_name": "Onion Red",
+        "price_cents": 59,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Onion Red",
+        "price_cents": 59,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Onion Red",
+        "price_cents": 171,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 59,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "onion shallot": {
+    "avg12m_cents": null,
+    "bought_name": "Onion Shallots",
+    "by_store": {
+      "arons": {
+        "bought_name": "Onion Shallots",
+        "price_cents": 160,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Onion Shallots",
+        "price_cents": 160,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 160,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "onion yellow globe loose": {
+    "avg12m_cents": 205,
+    "bought_name": "Onion Yellow Globe - Loose",
+    "by_store": {
+      "arons": {
+        "bought_name": "Onion Yellow Globe - Loose",
+        "price_cents": 288,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Onion Yellow Globe - Loose",
+        "price_cents": 288,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Onion Yellow Globe - Loose",
+        "price_cents": 122,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 288,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "osem bamba hazelnut cream": {
+    "avg12m_cents": null,
+    "bought_name": "Bamba Hazelnut Cream",
+    "by_store": {
+      "arons": {
+        "bought_name": "Bamba Hazelnut Cream",
+        "price_cents": 400,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Bamba Hazelnut Cream",
+        "price_cents": 400,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 400,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "pardes farms broccoli floret": {
+    "avg12m_cents": null,
+    "bought_name": "Broccoli Florets",
+    "by_store": {
+      "arons": {
+        "bought_name": "Broccoli Florets",
+        "price_cents": 499,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Broccoli Florets",
+        "price_cents": 499,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 499,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "parsley italian": {
+    "avg12m_cents": null,
+    "bought_name": "Parsley Italian",
+    "by_store": {
+      "arons": {
+        "bought_name": "Parsley Italian",
+        "price_cents": 125,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Parsley Italian",
+        "price_cents": 125,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 125,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "part-skim-mozzarella": {
+    "avg12m_cents": null,
+    "bought_name": "Part Skim Mozzarella Cheese",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Part Skim Mozzarella Cheese",
+        "price_cents": 549,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Part Skim Mozzarella Cheese",
+        "price_cents": 549,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 549,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "paskesz mini marshmallows white": {
+    "avg12m_cents": null,
+    "bought_name": "Mini Marshmallows White",
+    "by_store": {
+      "arons": {
+        "bought_name": "Mini Marshmallows White",
+        "price_cents": 479,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Mini Marshmallows White",
+        "price_cents": 479,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 479,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "pasta-hearts-of-palm": {
+    "avg12m_cents": null,
+    "bought_name": "Pasta Hearts Of Palm",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Pasta Hearts Of Palm",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pasta Hearts Of Palm",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 349,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "pear-asian": {
+    "avg12m_cents": null,
+    "bought_name": "Pear Asian",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Pear Asian",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pear Asian",
+        "price_cents": 199,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 199,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "perfection aluminum pan": {
+    "avg12m_cents": null,
+    "bought_name": "Aluminum Pan",
+    "by_store": {
+      "arons": {
+        "bought_name": "Aluminum Pan",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Aluminum Pan",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 300,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "perfection bowls white": {
+    "avg12m_cents": null,
+    "bought_name": "Bowls White",
+    "by_store": {
+      "arons": {
+        "bought_name": "Bowls White",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Bowls White",
+        "price_cents": 300,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 300,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "perfection plates white": {
+    "avg12m_cents": null,
+    "bought_name": "Plates 9\" White",
+    "by_store": {
+      "arons": {
+        "bought_name": "Plates 9\" White",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Plates 9\" White",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "philly cream cheese cup strawberry": {
+    "avg12m_cents": null,
+    "bought_name": "Cream Cheese Cup Strawberry",
+    "by_store": {
+      "arons": {
+        "bought_name": "Cream Cheese Cup Strawberry",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Cream Cheese Cup Strawberry",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "pickles sour": {
+    "avg12m_cents": null,
+    "bought_name": "Pickles Sour",
+    "by_store": {
+      "arons": {
+        "bought_name": "Pickles Sour",
+        "price_cents": 899,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pickles Sour",
+        "price_cents": 899,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 899,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "pizza ball": {
+    "avg12m_cents": null,
+    "bought_name": "Pizza Balls",
+    "by_store": {
+      "arons": {
+        "bought_name": "Pizza Balls",
+        "price_cents": 799,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pizza Balls",
+        "price_cents": 799,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 799,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "plain-pizza-dough": {
+    "avg12m_cents": null,
+    "bought_name": "Plain Pizza Dough",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Plain Pizza Dough",
+        "price_cents": 169,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Plain Pizza Dough",
+        "price_cents": 169,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 169,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "polly-o twist cheese mozzarella cheddar": {
+    "avg12m_cents": null,
+    "bought_name": "Twist Cheese Mozzarella & Cheddar",
+    "by_store": {
+      "arons": {
+        "bought_name": "Twist Cheese Mozzarella & Cheddar",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Twist Cheese Mozzarella & Cheddar",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "potato bag yukon gold": {
+    "avg12m_cents": null,
+    "bought_name": "Potato Bag Yukon Gold",
+    "by_store": {
+      "arons": {
+        "bought_name": "Potato Bag Yukon Gold",
+        "price_cents": 499,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Potato Bag Yukon Gold",
+        "price_cents": 499,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 499,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "potato idaho loose": {
+    "avg12m_cents": null,
+    "bought_name": "Potato Idaho - Loose",
+    "by_store": {
+      "arons": {
+        "bought_name": "Potato Idaho - Loose",
+        "price_cents": 150,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Potato Idaho - Loose",
+        "price_cents": 150,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 150,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "potato yukon gold loose": {
+    "avg12m_cents": null,
+    "bought_name": "Potato Yukon Gold Large - Loose",
+    "by_store": {
+      "arons": {
+        "bought_name": "Potato Yukon Gold Large - Loose",
+        "price_cents": 346,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Potato Yukon Gold Large - Loose",
+        "price_cents": 346,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 346,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "puff pastry sheet": {
+    "avg12m_cents": null,
+    "bought_name": "Puff Pastry Sheets",
+    "by_store": {
+      "arons": {
+        "bought_name": "Puff Pastry Sheets",
+        "price_cents": 499,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Puff Pastry Sheets",
+        "price_cents": 499,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 499,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "raw pecan": {
+    "avg12m_cents": null,
+    "bought_name": "Raw Pecans",
+    "by_store": {
+      "arons": {
+        "bought_name": "Raw Pecans",
+        "price_cents": 1201,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Raw Pecans",
+        "price_cents": 1201,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 1201,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "roland coconut milk": {
+    "avg12m_cents": null,
+    "bought_name": "Coconut Milk",
+    "by_store": {
+      "arons": {
+        "bought_name": "Coconut Milk",
+        "price_cents": 339,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Coconut Milk",
+        "price_cents": 339,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 339,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "romaine heart": {
+    "avg12m_cents": null,
+    "bought_name": "Romaine Hearts",
+    "by_store": {
+      "arons": {
+        "bought_name": "Romaine Hearts",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Romaine Hearts",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "romaine-heart": {
+    "avg12m_cents": null,
+    "bought_name": "Romaine Hearts",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Romaine Hearts",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Romaine Hearts",
+        "price_cents": 349,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 349,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "solomons sliced beef pastrami": {
+    "avg12m_cents": null,
+    "bought_name": "Sliced Beef Pastrami",
+    "by_store": {
+      "arons": {
+        "bought_name": "Sliced Beef Pastrami",
+        "price_cents": 1598,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sliced Beef Pastrami",
+        "price_cents": 1598,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 1598,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "sorbet": {
+    "avg12m_cents": null,
+    "bought_name": "Sorbet",
+    "by_store": {
+      "arons": {
+        "bought_name": "Sorbet",
+        "price_cents": 300,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sorbet",
+        "price_cents": 300,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 300,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "sparkling-water-cran-cle": {
+    "avg12m_cents": null,
+    "bought_name": "Sparkling Water Cran Cle",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Sparkling Water Cran Cle",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sparkling Water Cran Cle",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 99,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "sparkling-water-lemon-1": {
+    "avg12m_cents": null,
+    "bought_name": "Sparkling Water Lemon 1",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Sparkling Water Lemon 1",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sparkling Water Lemon 1",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 99,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "sparkling-water-raspber": {
+    "avg12m_cents": null,
+    "bought_name": "Sparkling Water Raspber",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Sparkling Water Raspber",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sparkling Water Raspber",
+        "price_cents": 99,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 99,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "starbucks iced coffee vanilla sweet cream": {
+    "avg12m_cents": null,
+    "bought_name": "Iced Coffee C/B Vanilla Sweet Cream",
+    "by_store": {
+      "arons": {
+        "bought_name": "Iced Coffee C/B Vanilla Sweet Cream",
+        "price_cents": 599,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Iced Coffee C/B Vanilla Sweet Cream",
+        "price_cents": 599,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 599,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "starbucks iced coffee white choco mocha": {
+    "avg12m_cents": null,
+    "bought_name": "Iced Coffee White Choco Mocha",
+    "by_store": {
+      "arons": {
+        "bought_name": "Iced Coffee White Choco Mocha",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Iced Coffee White Choco Mocha",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 799,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "strawberry": {
+    "avg12m_cents": null,
+    "bought_name": "Strawberries",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Strawberries",
+        "price_cents": 549,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Strawberries",
+        "price_cents": 549,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 549,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "string cheese mozzarella": {
+    "avg12m_cents": null,
+    "bought_name": "String Cheese Mozzarella",
+    "by_store": {
+      "arons": {
+        "bought_name": "String Cheese Mozzarella",
+        "price_cents": 1199,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "String Cheese Mozzarella",
+        "price_cents": 1199,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 1199,
+    "receipt_date": "2026-11-01",
+    "store": "Aron's Kissena Farms"
+  },
+  "sunscreen-spf-30": {
+    "avg12m_cents": null,
+    "bought_name": "Sunscreen SPF 30",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Sunscreen SPF 30",
+        "price_cents": 599,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Sunscreen SPF 30",
+        "price_cents": 599,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 599,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "tabatchnick broth beef": {
+    "avg12m_cents": null,
+    "bought_name": "Broth Beef",
+    "by_store": {
+      "arons": {
+        "bought_name": "Broth Beef",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Broth Beef",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "tabatchnick broth chicken": {
+    "avg12m_cents": null,
+    "bought_name": "Broth Chicken",
+    "by_store": {
+      "arons": {
+        "bought_name": "Broth Chicken",
+        "price_cents": 1000,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Broth Chicken",
+        "price_cents": 1000,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 1000,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "tabatchnick broth vegetable": {
+    "avg12m_cents": null,
+    "bought_name": "Broth Vegetable",
+    "by_store": {
+      "arons": {
+        "bought_name": "Broth Vegetable",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Broth Vegetable",
+        "price_cents": 250,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "tirat zvi turkey breast smoked": {
+    "avg12m_cents": null,
+    "bought_name": "Turkey Breast Smoked (KP)",
+    "by_store": {
+      "arons": {
+        "bought_name": "Turkey Breast Smoked (KP)",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Turkey Breast Smoked (KP)",
+        "price_cents": 799,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 799,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "tomato stem": {
+    "avg12m_cents": 274,
+    "bought_name": "Tomato Stem",
+    "by_store": {
+      "arons": {
+        "bought_name": "Tomato Stem",
+        "price_cents": 503,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Tomato Stem",
+        "price_cents": 503,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Tomato Stem",
+        "price_cents": 157,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Tomato Stem",
+        "price_cents": 161,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 503,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "tomatoes-on-the-vine": {
+    "avg12m_cents": null,
+    "bought_name": "Tomatoes On The Vine",
+    "by_store": {
+      "trader joes": {
+        "bought_name": "Tomatoes On The Vine",
+        "price_cents": 299,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Tomatoes On The Vine",
+        "price_cents": 299,
+        "receipt_date": "2026-11-08",
+        "store": "Trader Joe's"
+      }
+    ],
+    "price_cents": 299,
+    "receipt_date": "2026-11-08",
+    "store": "Trader Joe's"
+  },
+  "tonnelli marinara sauce": {
+    "avg12m_cents": null,
+    "bought_name": "Marinara Sauce",
+    "by_store": {
+      "arons": {
+        "bought_name": "Marinara Sauce",
+        "price_cents": 250,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Marinara Sauce",
+        "price_cents": 250,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 250,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "tropicana prem oj w calcium": {
+    "avg12m_cents": null,
+    "bought_name": "Prem OJ w/Calcium",
+    "by_store": {
+      "arons": {
+        "bought_name": "Prem OJ w/Calcium",
+        "price_cents": 350,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Prem OJ w/Calcium",
+        "price_cents": 350,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 350,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "turkey hill fdd double du": {
+    "avg12m_cents": null,
+    "bought_name": "FDD Double Dunk",
+    "by_store": {
+      "arons": {
+        "bought_name": "FDD Double Dunk",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "FDD Double Dunk",
+        "price_cents": 399,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "tuscan milk plain 2%": {
+    "avg12m_cents": null,
+    "bought_name": "Milk Plain 2%",
+    "by_store": {
+      "arons": {
+        "bought_name": "Milk Plain 2%",
+        "price_cents": 350,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Milk Plain 2%",
+        "price_cents": 350,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 350,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "tuscanini capers in brine": {
+    "avg12m_cents": null,
+    "bought_name": "Capers in Brine",
+    "by_store": {
+      "arons": {
+        "bought_name": "Capers in Brine",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Capers in Brine",
+        "price_cents": 399,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 399,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "tuscanini potato chips olive oil salt vinegar": {
+    "avg12m_cents": null,
+    "bought_name": "Potato Chips Olive Oil Salt&Vinegar",
+    "by_store": {
+      "arons": {
+        "bought_name": "Potato Chips Olive Oil Salt&Vinegar",
+        "price_cents": 375,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Potato Chips Olive Oil Salt&Vinegar",
+        "price_cents": 375,
+        "receipt_date": "2026-09-29",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 375,
+    "receipt_date": "2026-09-29",
+    "store": "Aron's Kissena Farms"
+  },
+  "ungers pie crusts deep dish": {
+    "avg12m_cents": null,
+    "bought_name": "Pie Crusts 9\" Deep Dish",
+    "by_store": {
+      "arons": {
+        "bought_name": "Pie Crusts 9\" Deep Dish",
+        "price_cents": 599,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Pie Crusts 9\" Deep Dish",
+        "price_cents": 599,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 599,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "veal neck bone": {
+    "avg12m_cents": null,
+    "bought_name": "Veal Neck Bones",
+    "by_store": {
+      "arons": {
+        "bought_name": "Veal Neck Bones",
+        "price_cents": 347,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Veal Neck Bones",
+        "price_cents": 347,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 347,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  },
+  "yam sweet": {
+    "avg12m_cents": 98,
+    "bought_name": "Yam Sweet",
+    "by_store": {
+      "arons": {
+        "bought_name": "Yam Sweet",
+        "price_cents": 116,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      }
+    },
+    "last3": [
+      {
+        "bought_name": "Yam Sweet",
+        "price_cents": 116,
+        "receipt_date": "2026-11-15",
+        "store": "Aron's Kissena Farms"
+      },
+      {
+        "bought_name": "Yam Sweet",
+        "price_cents": 80,
+        "receipt_date": "2026-11-01",
+        "store": "Aron's Kissena Farms"
+      }
+    ],
+    "price_cents": 116,
+    "receipt_date": "2026-11-15",
+    "store": "Aron's Kissena Farms"
+  }
+}

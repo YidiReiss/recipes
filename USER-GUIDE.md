@@ -364,6 +364,7 @@ When an item on your **To buy** or **Optional** list matches a product from your
 2. **Price Badges on Individual Items:**
    - Directly beneath any matched **To buy** or **Optional** item, a small grey badge displays the last verified purchase:
      > `<Product bought> · $X.XX · <Store> · <Date>` (for example, `Romaine Hearts 3pk · $2.99 · Bingo · Nov 10`)
+   - When a receipt line was for multiple units of a counted item (such as 4 cartons of broth), the badge and estimated total show the **per-unit price** (weighed produce sold by the pound continues to show the line total for that purchase).
    - Items without a past receipt match—as well as items in **Already have** and manual items—show no badge at all.
 3. **Tap a Price Badge for Recent History & 12-Month Average:**
    - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
