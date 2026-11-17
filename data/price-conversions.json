@@ -1,0 +1,1142 @@
+{
+  "_meta": {
+    "version": "20261117a",
+    "description": "Per-unit and per-pound kitchen weight and pack conversions for Shopping List price badges and cart estimates. Yidi-measured/confirmed values take precedence; all other entries use USDA standard kitchen weights."
+  },
+  "tomato": {
+    "lb_per_unit": 0.29,
+    "lb_per_cup": 0.4,
+    "source": "Yidi-measured (4.7 oz / 0.29 lb per medium-large tomato); USDA standard 0.40 lb/cup chopped"
+  },
+  "plum tomato": {
+    "lb_per_unit": 0.14,
+    "lb_per_cup": 0.4,
+    "source": "USDA standard (2.2 oz / 0.14 lb per Roma/plum tomato)"
+  },
+  "roma tomato": {
+    "lb_per_unit": 0.14,
+    "lb_per_cup": 0.4,
+    "source": "USDA standard (2.2 oz / 0.14 lb per Roma tomato)"
+  },
+  "cherry tomato": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 0.63,
+    "pack_name": "pint",
+    "source": "USDA standard (0.6 oz each, 5.3 oz / 0.33 lb per cup, 10 oz pint container)"
+  },
+  "grape tomato": {
+    "lb_per_unit": 0.03,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 0.63,
+    "pack_name": "pint",
+    "source": "USDA standard (0.5 oz each, 5.3 oz / 0.33 lb per cup, 10 oz pint container)"
+  },
+  "onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "lb_per_bag": 3.0,
+    "source": "Yidi-measured (big Spanish/Vidalia onion, 11-12 oz / 0.72 lb); USDA standard 0.35 lb/cup chopped"
+  },
+  "red onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (11-12 oz / 0.72 lb per onion); USDA standard 0.35 lb/cup chopped"
+  },
+  "purple onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (11-12 oz / 0.72 lb per onion); USDA standard 0.35 lb/cup chopped"
+  },
+  "yellow onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "lb_per_bag": 3.0,
+    "source": "Yidi-measured (big Spanish/Vidalia onion, 11-12 oz / 0.72 lb); USDA standard 0.35 lb/cup chopped"
+  },
+  "white onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (11-12 oz / 0.72 lb per onion); USDA standard 0.35 lb/cup chopped"
+  },
+  "sweet onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (big Vidalia/Spanish onion, 11-12 oz / 0.72 lb); USDA standard 0.35 lb/cup chopped"
+  },
+  "spanish onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (big Spanish onion, 11-12 oz / 0.72 lb); USDA standard 0.35 lb/cup chopped"
+  },
+  "vidalia onion": {
+    "lb_per_unit": 0.72,
+    "lb_per_cup": 0.35,
+    "source": "Yidi-measured (big Vidalia onion, 11-12 oz / 0.72 lb); USDA standard 0.35 lb/cup chopped"
+  },
+  "shallot": {
+    "lb_per_unit": 0.1,
+    "lb_per_cup": 0.35,
+    "source": "USDA standard (1.6 oz / 0.10 lb per medium shallot bulb)"
+  },
+  "scallion": {
+    "lb_per_unit": 0.03,
+    "lb_per_bunch": 0.25,
+    "lb_per_cup": 0.22,
+    "pack_name": "bunch",
+    "source": "USDA standard (0.5 oz / 0.03 lb per stalk, ~8 stalks / 0.25 lb per bunch, 3.5 oz per cup)"
+  },
+  "green onion": {
+    "lb_per_unit": 0.03,
+    "lb_per_bunch": 0.25,
+    "lb_per_cup": 0.22,
+    "pack_name": "bunch",
+    "source": "USDA standard (0.5 oz / 0.03 lb per stalk, 0.25 lb per bunch)"
+  },
+  "leek": {
+    "lb_per_unit": 0.2,
+    "lb_per_bunch": 0.6,
+    "lb_per_cup": 0.2,
+    "source": "USDA standard (3.2 oz / 0.20 lb trimmed per medium leek, 3 leeks per bunch)"
+  },
+  "avocado": {
+    "lb_per_unit": 0.44,
+    "lb_per_cup": 0.33,
+    "source": "Yidi-measured (7 oz / 0.44 lb per whole avocado); USDA standard 0.33 lb/cup cubed"
+  },
+  "ripe avocado": {
+    "lb_per_unit": 0.44,
+    "lb_per_cup": 0.33,
+    "source": "Yidi-measured (7 oz / 0.44 lb per whole avocado); USDA standard 0.33 lb/cup cubed"
+  },
+  "garlic": {
+    "units_per_pack": 5,
+    "pack_name": "sleeve",
+    "pack_unit": "head",
+    "cloves_per_head": 10,
+    "tsp_per_clove": 1,
+    "lb_per_head": 0.1,
+    "lb_per_unit": 0.1,
+    "lb_per_clove": 0.01,
+    "source": "Yidi-measured (5 heads per sleeve, 10 cloves per head); USDA standard (0.10 lb per head, 1 tsp minced per clove)"
+  },
+  "fresh garlic": {
+    "units_per_pack": 5,
+    "pack_name": "sleeve",
+    "pack_unit": "head",
+    "cloves_per_head": 10,
+    "tsp_per_clove": 1,
+    "lb_per_head": 0.1,
+    "lb_per_unit": 0.1,
+    "lb_per_clove": 0.01,
+    "source": "Yidi-measured (5 heads per sleeve, 10 cloves per head); USDA standard (0.10 lb per head, 1 tsp minced per clove)"
+  },
+  "egg": {
+    "units_per_pack": 12,
+    "pack_name": "dozen",
+    "pack_unit": "egg",
+    "lb_per_unit": 0.11,
+    "source": "Yidi-measured (12 eggs per dozen carton); USDA standard (1.75 oz / 0.11 lb per large egg)"
+  },
+  "egg white": {
+    "units_per_pack": 12,
+    "pack_name": "dozen",
+    "pack_unit": "egg",
+    "lb_per_unit": 0.07,
+    "source": "USDA standard (1.15 oz / 0.07 lb per large egg white; 12 per dozen carton)"
+  },
+  "egg yolk": {
+    "units_per_pack": 12,
+    "pack_name": "dozen",
+    "pack_unit": "egg",
+    "lb_per_unit": 0.04,
+    "source": "USDA standard (0.6 oz / 0.04 lb per large egg yolk; 12 per dozen carton)"
+  },
+  "potato": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium potato, 0.33 lb/cup diced, 5 lb standard bag)"
+  },
+  "yellow potato": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium yellow/Yukon Gold potato, 5 lb bag)"
+  },
+  "yukon gold potato": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium Yukon Gold potato, 0.33 lb/cup diced, 5 lb bag)"
+  },
+  "russet potato": {
+    "lb_per_unit": 0.47,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (7.5 oz / 0.47 lb per medium baking/russet potato, 5 lb bag)"
+  },
+  "baking potato": {
+    "lb_per_unit": 0.47,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (7.5 oz / 0.47 lb per medium baking potato, 5 lb bag)"
+  },
+  "idaho potato": {
+    "lb_per_unit": 0.47,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (7.5 oz / 0.47 lb per medium Idaho potato, 5 lb bag)"
+  },
+  "red potato": {
+    "lb_per_unit": 0.38,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 5.0,
+    "pack_name": "bag",
+    "source": "USDA standard (6 oz / 0.38 lb per medium red potato, 5 lb bag)"
+  },
+  "baby potato": {
+    "lb_per_unit": 0.1,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 1.5,
+    "pack_name": "bag",
+    "source": "USDA standard (1.6 oz / 0.10 lb per baby potato, 1.5 lb bag)"
+  },
+  "sweet potato": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.3,
+    "source": "USDA standard (8 oz / 0.50 lb per medium sweet potato/yam, 0.30 lb/cup cubed)"
+  },
+  "yam": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.3,
+    "source": "USDA standard (8 oz / 0.50 lb per medium yam/sweet potato)"
+  },
+  "carrot": {
+    "lb_per_unit": 0.16,
+    "lb_per_cup": 0.28,
+    "lb_per_bunch": 1.0,
+    "lb_per_bag": 1.0,
+    "pack_name": "bag",
+    "source": "USDA standard (2.5 oz / 0.16 lb per medium carrot, 0.28 lb/cup chopped, 1 lb bag)"
+  },
+  "baby carrot": {
+    "lb_per_unit": 0.02,
+    "lb_per_cup": 0.3,
+    "lb_per_bag": 1.0,
+    "pack_name": "bag",
+    "source": "USDA standard (0.35 oz each, 0.30 lb/cup, 1 lb bag)"
+  },
+  "celery": {
+    "lb_per_unit": 0.09,
+    "lb_per_stalk": 0.09,
+    "lb_per_head": 1.0,
+    "lb_per_bunch": 1.0,
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (1.4 oz / 0.09 lb per medium stalk/rib, 1.0 lb per bunch/head, 0.22 lb/cup diced)"
+  },
+  "celery stalk": {
+    "lb_per_unit": 0.09,
+    "lb_per_stalk": 0.09,
+    "lb_per_bunch": 1.0,
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (1.4 oz / 0.09 lb per medium celery stalk)"
+  },
+  "celery rib": {
+    "lb_per_unit": 0.09,
+    "lb_per_stalk": 0.09,
+    "lb_per_bunch": 1.0,
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (1.4 oz / 0.09 lb per medium celery rib)"
+  },
+  "cucumber": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.26,
+    "source": "USDA standard (8 oz / 0.50 lb per hothouse/medium cucumber, 0.26 lb/cup sliced)"
+  },
+  "hothouse cucumber": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.26,
+    "source": "USDA standard (8 oz / 0.50 lb per hothouse cucumber)"
+  },
+  "english cucumber": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.26,
+    "source": "USDA standard (8 oz / 0.50 lb per English/hothouse cucumber)"
+  },
+  "persian cucumber": {
+    "lb_per_unit": 0.15,
+    "lb_per_cup": 0.26,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (2.4 oz / 0.15 lb per Persian/mini cucumber, 1 lb bag)"
+  },
+  "kirby cucumber": {
+    "lb_per_unit": 0.22,
+    "lb_per_cup": 0.26,
+    "source": "USDA standard (3.5 oz / 0.22 lb per Kirby cucumber)"
+  },
+  "zucchini": {
+    "lb_per_unit": 0.43,
+    "lb_per_cup": 0.27,
+    "source": "USDA standard (6.9 oz / 0.43 lb per medium zucchini, 0.27 lb/cup chopped/sliced)"
+  },
+  "yellow squash": {
+    "lb_per_unit": 0.43,
+    "lb_per_cup": 0.27,
+    "source": "USDA standard (6.9 oz / 0.43 lb per medium yellow summer squash, 0.27 lb/cup sliced)"
+  },
+  "summer squash": {
+    "lb_per_unit": 0.43,
+    "lb_per_cup": 0.27,
+    "source": "USDA standard (6.9 oz / 0.43 lb per medium summer squash)"
+  },
+  "butternut squash": {
+    "lb_per_unit": 2.5,
+    "lb_per_cup": 0.31,
+    "source": "USDA standard (2.5 lb per medium whole butternut squash, 0.31 lb/cup cubed)"
+  },
+  "acorn squash": {
+    "lb_per_unit": 1.25,
+    "lb_per_cup": 0.31,
+    "source": "USDA standard (1.25 lb per medium acorn squash)"
+  },
+  "spaghetti squash": {
+    "lb_per_unit": 3.0,
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (3.0 lb per medium spaghetti squash)"
+  },
+  "eggplant": {
+    "lb_per_unit": 1.15,
+    "lb_per_cup": 0.18,
+    "source": "USDA standard (18.4 oz / 1.15 lb per medium globe eggplant, 0.18 lb/cup cubed)"
+  },
+  "bell pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium bell pepper, 0.33 lb/cup chopped)"
+  },
+  "red bell pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium red bell pepper, 0.33 lb/cup chopped)"
+  },
+  "red pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium red bell pepper)"
+  },
+  "green bell pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium green bell pepper)"
+  },
+  "green pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium green bell pepper)"
+  },
+  "yellow bell pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium yellow bell pepper)"
+  },
+  "yellow pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium yellow bell pepper)"
+  },
+  "orange bell pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium orange bell pepper)"
+  },
+  "orange pepper": {
+    "lb_per_unit": 0.37,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (5.9 oz / 0.37 lb per medium orange bell pepper)"
+  },
+  "jalapeno": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.2,
+    "source": "USDA standard (0.65 oz / 0.04 lb per medium jalapeno pepper, 0.20 lb/cup sliced)"
+  },
+  "jalapeno pepper": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.2,
+    "source": "USDA standard (0.65 oz / 0.04 lb per medium jalapeno pepper)"
+  },
+  "serrano pepper": {
+    "lb_per_unit": 0.02,
+    "source": "USDA standard (0.3 oz / 0.02 lb per serrano pepper)"
+  },
+  "poblano pepper": {
+    "lb_per_unit": 0.18,
+    "source": "USDA standard (2.8 oz / 0.18 lb per poblano pepper)"
+  },
+  "cabbage": {
+    "lb_per_unit": 2.0,
+    "lb_per_head": 2.0,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (2.0 lb per medium head of cabbage, 0.20 lb/cup shredded, 16 oz slaw bag)"
+  },
+  "green cabbage": {
+    "lb_per_unit": 2.0,
+    "lb_per_head": 2.0,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (2.0 lb per medium head of green cabbage, 0.20 lb/cup shredded)"
+  },
+  "red cabbage": {
+    "lb_per_unit": 2.0,
+    "lb_per_head": 2.0,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (2.0 lb per medium head of red/purple cabbage, 0.20 lb/cup shredded)"
+  },
+  "purple cabbage": {
+    "lb_per_unit": 2.0,
+    "lb_per_head": 2.0,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (2.0 lb per medium head of purple cabbage, 0.20 lb/cup shredded)"
+  },
+  "napa cabbage": {
+    "lb_per_unit": 2.0,
+    "lb_per_head": 2.0,
+    "lb_per_cup": 0.17,
+    "source": "USDA standard (2.0 lb per medium head of Napa cabbage)"
+  },
+  "cauliflower": {
+    "lb_per_unit": 1.9,
+    "lb_per_head": 1.9,
+    "lb_per_cup": 0.24,
+    "lb_per_bag": 1.5,
+    "source": "USDA standard (1.9 lb per medium head of cauliflower, 0.24 lb/cup florets, 24 oz bag)"
+  },
+  "broccoli": {
+    "lb_per_unit": 0.9,
+    "lb_per_head": 0.9,
+    "lb_per_bunch": 1.25,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "pack_name": "bag",
+    "source": "USDA standard (0.90 lb per medium crown/head, 1.25 lb per bunch, 0.20 lb/cup florets, 1 lb bag)"
+  },
+  "broccoli floret": {
+    "lb_per_unit": 0.05,
+    "lb_per_head": 0.9,
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 1.0,
+    "pack_name": "bag",
+    "source": "USDA standard (0.20 lb/cup broccoli florets, 0.90 lb per crown, 1 lb bag)"
+  },
+  "brussels sprout": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.35,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (0.35 lb per cup brussels sprouts, 1 lb bag)"
+  },
+  "brussel sprout": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.35,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (0.35 lb per cup brussel sprouts, 1 lb bag)"
+  },
+  "romaine lettuce": {
+    "units_per_pack": 3,
+    "pack_name": "3-pack",
+    "pack_unit": "head",
+    "lb_per_unit": 0.5,
+    "lb_per_head": 0.5,
+    "lb_per_cup": 0.1,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (8 oz / 0.50 lb per romaine heart, 3 hearts per 3-pack, 0.10 lb/cup shredded)"
+  },
+  "romaine heart": {
+    "units_per_pack": 3,
+    "pack_name": "3-pack",
+    "pack_unit": "head",
+    "lb_per_unit": 0.5,
+    "lb_per_head": 0.5,
+    "lb_per_cup": 0.1,
+    "source": "USDA standard (8 oz / 0.50 lb per romaine heart, 3 hearts per 3-pack)"
+  },
+  "lettuce": {
+    "lb_per_unit": 1.0,
+    "lb_per_head": 1.0,
+    "lb_per_cup": 0.12,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (1.0 lb per medium head of lettuce, 0.12 lb/cup shredded)"
+  },
+  "iceberg lettuce": {
+    "lb_per_unit": 1.2,
+    "lb_per_head": 1.2,
+    "lb_per_cup": 0.12,
+    "source": "USDA standard (1.2 lb per medium head of iceberg lettuce)"
+  },
+  "spinach": {
+    "lb_per_bunch": 0.65,
+    "lb_per_bag": 0.63,
+    "lb_per_cup": 0.07,
+    "pack_name": "bag",
+    "source": "USDA standard (10 oz / 0.63 lb per standard spinach bag/bunch, 1.1 oz / 0.07 lb per cup raw leaves)"
+  },
+  "baby spinach": {
+    "lb_per_bunch": 0.65,
+    "lb_per_bag": 0.63,
+    "lb_per_cup": 0.07,
+    "pack_name": "bag",
+    "source": "USDA standard (10 oz / 0.63 lb per standard bag, 0.07 lb/cup raw leaves)"
+  },
+  "kale": {
+    "lb_per_bunch": 0.65,
+    "lb_per_bag": 0.63,
+    "lb_per_cup": 0.05,
+    "source": "USDA standard (10 oz / 0.65 lb per bunch, 0.05 lb/cup chopped raw)"
+  },
+  "arugula": {
+    "lb_per_bunch": 0.35,
+    "lb_per_bag": 0.31,
+    "lb_per_cup": 0.04,
+    "source": "USDA standard (5 oz / 0.31 lb per clamshell/bag, 0.04 lb/cup raw)"
+  },
+  "mushroom": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.15,
+    "lb_per_bag": 0.5,
+    "pack_name": "box",
+    "source": "USDA standard (0.65 oz / 0.04 lb per medium mushroom, 0.15 lb/cup sliced, 8 oz / 0.50 lb standard pack/box)"
+  },
+  "white mushroom": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.15,
+    "lb_per_bag": 0.5,
+    "pack_name": "box",
+    "source": "USDA standard (0.65 oz / 0.04 lb per medium white mushroom, 8 oz / 0.50 lb box)"
+  },
+  "cremini mushroom": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.15,
+    "lb_per_bag": 0.5,
+    "pack_name": "box",
+    "source": "USDA standard (0.65 oz / 0.04 lb per cremini/baby bella mushroom, 8 oz / 0.50 lb box)"
+  },
+  "baby bella mushroom": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.15,
+    "lb_per_bag": 0.5,
+    "pack_name": "box",
+    "source": "USDA standard (0.65 oz / 0.04 lb per baby bella mushroom, 8 oz / 0.50 lb box)"
+  },
+  "portobello mushroom": {
+    "lb_per_unit": 0.19,
+    "lb_per_cup": 0.19,
+    "lb_per_bag": 0.38,
+    "source": "USDA standard (3 oz / 0.19 lb per portobello cap)"
+  },
+  "green bean": {
+    "lb_per_unit": 0.015,
+    "lb_per_cup": 0.22,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (3.5 oz / 0.22 lb per cup trimmed green beans, 1 lb bag)"
+  },
+  "string bean": {
+    "lb_per_unit": 0.015,
+    "lb_per_cup": 0.22,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (3.5 oz / 0.22 lb per cup string beans, 1 lb bag)"
+  },
+  "asparagus": {
+    "lb_per_unit": 0.04,
+    "lb_per_bunch": 1.0,
+    "lb_per_cup": 0.3,
+    "source": "USDA standard (0.6 oz / 0.04 lb per spear, 1.0 lb per bunch)"
+  },
+  "corn": {
+    "lb_per_unit": 0.5,
+    "lb_per_cup": 0.34,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (0.50 lb per unhusked ear of corn, 0.34 lb/cup kernels)"
+  },
+  "beet": {
+    "lb_per_unit": 0.18,
+    "lb_per_bunch": 1.0,
+    "lb_per_cup": 0.3,
+    "source": "USDA standard (2.9 oz / 0.18 lb per medium beet root, 1.0 lb per bunch)"
+  },
+  "radish": {
+    "lb_per_unit": 0.02,
+    "lb_per_bunch": 0.5,
+    "lb_per_cup": 0.26,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (0.3 oz / 0.02 lb per radish, 0.50 lb per bunch)"
+  },
+  "turnip": {
+    "lb_per_unit": 0.27,
+    "lb_per_cup": 0.29,
+    "source": "USDA standard (4.3 oz / 0.27 lb per medium turnip)"
+  },
+  "parsnip": {
+    "lb_per_unit": 0.29,
+    "lb_per_cup": 0.29,
+    "source": "USDA standard (4.7 oz / 0.29 lb per medium parsnip)"
+  },
+  "fennel": {
+    "lb_per_unit": 0.52,
+    "lb_per_head": 0.52,
+    "lb_per_cup": 0.19,
+    "source": "USDA standard (8.3 oz / 0.52 lb per medium fennel bulb)"
+  },
+  "ginger": {
+    "lb_per_unit": 0.15,
+    "lb_per_cup": 0.21,
+    "source": "USDA standard (2.4 oz / 0.15 lb per medium piece/hand of fresh ginger root, 0.21 lb/cup grated)"
+  },
+  "fresh ginger": {
+    "lb_per_unit": 0.15,
+    "lb_per_cup": 0.21,
+    "source": "USDA standard (2.4 oz / 0.15 lb per medium piece of fresh ginger, 0.21 lb/cup grated)"
+  },
+  "lemon": {
+    "lb_per_unit": 0.15,
+    "lb_per_bag": 2.0,
+    "source": "USDA standard (2.4 oz / 0.15 lb per medium lemon, 2 lb bag)"
+  },
+  "lime": {
+    "lb_per_unit": 0.1,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (1.6 oz / 0.10 lb per medium lime)"
+  },
+  "orange": {
+    "lb_per_unit": 0.35,
+    "lb_per_bag": 4.0,
+    "source": "USDA standard (5.6 oz / 0.35 lb per medium orange)"
+  },
+  "grapefruit": {
+    "lb_per_unit": 0.65,
+    "source": "USDA standard (10.4 oz / 0.65 lb per medium grapefruit)"
+  },
+  "apple": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.28,
+    "lb_per_bag": 3.0,
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium apple, 0.28 lb/cup chopped/sliced)"
+  },
+  "gala apple": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.28,
+    "lb_per_bag": 3.0,
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium Gala apple)"
+  },
+  "granny smith apple": {
+    "lb_per_unit": 0.4,
+    "lb_per_cup": 0.28,
+    "lb_per_bag": 3.0,
+    "source": "USDA standard (6.4 oz / 0.40 lb per medium Granny Smith apple)"
+  },
+  "pear": {
+    "lb_per_unit": 0.39,
+    "lb_per_cup": 0.31,
+    "source": "USDA standard (6.3 oz / 0.39 lb per medium pear)"
+  },
+  "banana": {
+    "lb_per_unit": 0.25,
+    "lb_per_bunch": 1.5,
+    "lb_per_cup": 0.33,
+    "source": "USDA standard (4 oz / 0.25 lb per medium banana, ~6 per bunch)"
+  },
+  "peach": {
+    "lb_per_unit": 0.33,
+    "lb_per_cup": 0.34,
+    "source": "USDA standard (5.3 oz / 0.33 lb per medium peach)"
+  },
+  "nectarine": {
+    "lb_per_unit": 0.31,
+    "lb_per_cup": 0.32,
+    "source": "USDA standard (5.0 oz / 0.31 lb per medium nectarine)"
+  },
+  "plum": {
+    "lb_per_unit": 0.15,
+    "lb_per_cup": 0.36,
+    "source": "USDA standard (2.3 oz / 0.15 lb per medium plum)"
+  },
+  "mango": {
+    "lb_per_unit": 0.75,
+    "lb_per_cup": 0.36,
+    "source": "USDA standard (12 oz / 0.75 lb per whole mango, 0.36 lb/cup pieces)"
+  },
+  "pineapple": {
+    "lb_per_unit": 3.5,
+    "lb_per_cup": 0.36,
+    "source": "USDA standard (3.5 lb per whole pineapple, 0.36 lb/cup chunks)"
+  },
+  "strawberry": {
+    "lb_per_unit": 0.04,
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 1.0,
+    "pack_name": "box",
+    "source": "USDA standard (0.6 oz per medium strawberry, 0.33 lb/cup sliced, 1 lb box/clamshell)"
+  },
+  "blueberry": {
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 0.38,
+    "pack_name": "pint",
+    "source": "USDA standard (5.2 oz / 0.33 lb per cup, 6 oz pint clamshell)"
+  },
+  "cranberry": {
+    "lb_per_cup": 0.22,
+    "lb_per_bag": 0.75,
+    "pack_name": "bag",
+    "source": "USDA standard (3.5 oz / 0.22 lb per cup whole cranberries, 12 oz / 0.75 lb bag)"
+  },
+  "grape": {
+    "lb_per_cup": 0.35,
+    "lb_per_bag": 2.0,
+    "source": "USDA standard (5.6 oz / 0.35 lb per cup seedless grapes, 2 lb bag)"
+  },
+  "pomegranate": {
+    "lb_per_unit": 0.62,
+    "lb_per_cup": 0.38,
+    "source": "USDA standard (10 oz / 0.62 lb per whole pomegranate, 0.38 lb/cup arils)"
+  },
+  "parsley": {
+    "lb_per_bunch": 0.15,
+    "lb_per_cup": 0.13,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (2.4 oz / 0.15 lb per bunch of fresh parsley, 0.13 lb/cup chopped)"
+  },
+  "fresh parsley": {
+    "lb_per_bunch": 0.15,
+    "lb_per_cup": 0.13,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (2.4 oz / 0.15 lb per bunch of fresh parsley)"
+  },
+  "flat-leaf parsley": {
+    "lb_per_bunch": 0.15,
+    "lb_per_cup": 0.13,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (2.4 oz / 0.15 lb per bunch of flat-leaf parsley)"
+  },
+  "cilantro": {
+    "lb_per_bunch": 0.15,
+    "lb_per_cup": 0.04,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (2.4 oz / 0.15 lb per bunch of cilantro, 0.04 lb/cup leaves)"
+  },
+  "fresh cilantro": {
+    "lb_per_bunch": 0.15,
+    "lb_per_cup": 0.04,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (2.4 oz / 0.15 lb per bunch of fresh cilantro)"
+  },
+  "dill": {
+    "lb_per_bunch": 0.1,
+    "lb_per_cup": 0.02,
+    "lb_per_sprig": 0.004,
+    "pack_name": "bunch",
+    "source": "USDA standard (1.6 oz / 0.10 lb per bunch of fresh dill)"
+  },
+  "fresh dill": {
+    "lb_per_bunch": 0.1,
+    "lb_per_cup": 0.02,
+    "lb_per_sprig": 0.004,
+    "pack_name": "bunch",
+    "source": "USDA standard (1.6 oz / 0.10 lb per bunch of fresh dill)"
+  },
+  "basil": {
+    "lb_per_bunch": 0.06,
+    "lb_per_cup": 0.05,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (1 oz / 0.06 lb per bunch/clamshell of fresh basil, 0.85 oz / 0.05 lb per cup leaves)"
+  },
+  "fresh basil": {
+    "lb_per_bunch": 0.06,
+    "lb_per_cup": 0.05,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (1 oz / 0.06 lb per bunch/clamshell of fresh basil)"
+  },
+  "mint": {
+    "lb_per_bunch": 0.06,
+    "lb_per_cup": 0.05,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (1 oz / 0.06 lb per bunch of fresh mint)"
+  },
+  "fresh mint": {
+    "lb_per_bunch": 0.06,
+    "lb_per_cup": 0.05,
+    "lb_per_sprig": 0.005,
+    "pack_name": "bunch",
+    "source": "USDA standard (1 oz / 0.06 lb per bunch of fresh mint)"
+  },
+  "rosemary": {
+    "lb_per_bunch": 0.05,
+    "lb_per_sprig": 0.005,
+    "lb_per_cup": 0.12,
+    "source": "USDA standard (0.8 oz / 0.05 lb per pack/bunch, 0.005 lb per sprig)"
+  },
+  "fresh rosemary": {
+    "lb_per_bunch": 0.05,
+    "lb_per_sprig": 0.005,
+    "lb_per_cup": 0.12,
+    "source": "USDA standard (0.8 oz / 0.05 lb per pack/bunch, 0.005 lb per sprig)"
+  },
+  "thyme": {
+    "lb_per_bunch": 0.05,
+    "lb_per_sprig": 0.003,
+    "lb_per_cup": 0.09,
+    "source": "USDA standard (0.8 oz / 0.05 lb per pack/bunch, 0.003 lb per sprig)"
+  },
+  "fresh thyme": {
+    "lb_per_bunch": 0.05,
+    "lb_per_sprig": 0.003,
+    "lb_per_cup": 0.09,
+    "source": "USDA standard (0.8 oz / 0.05 lb per pack/bunch, 0.003 lb per sprig)"
+  },
+  "chive": {
+    "lb_per_bunch": 0.05,
+    "lb_per_cup": 0.11,
+    "source": "USDA standard (0.8 oz / 0.05 lb per bunch of chives)"
+  },
+  "butterfly chicken cutlet": {
+    "lb_per_serving": 1.25,
+    "lb_per_unit": 0.5,
+    "source": "Yidi-measured (1-1.25 lb per 2-person serving; using high end 1.25 lb/serving, 0.50 lb per single cutlet)"
+  },
+  "chicken cutlet": {
+    "lb_per_serving": 1.25,
+    "lb_per_unit": 0.5,
+    "source": "Yidi-measured (1.25 lb per serving, 0.50 lb per single chicken cutlet)"
+  },
+  "chicken breast": {
+    "lb_per_serving": 1.25,
+    "lb_per_unit": 0.5,
+    "source": "Yidi-measured (1.25 lb per serving); USDA standard (8 oz / 0.50 lb per boneless skinless breast half)"
+  },
+  "boneless skinless chicken breast": {
+    "lb_per_serving": 1.25,
+    "lb_per_unit": 0.5,
+    "source": "Yidi-measured (1.25 lb per serving); USDA standard (8 oz / 0.50 lb per boneless skinless breast half)"
+  },
+  "chicken thigh": {
+    "lb_per_unit": 0.35,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (5.6 oz / 0.35 lb per bone-in chicken thigh)"
+  },
+  "boneless skinless chicken thigh": {
+    "lb_per_unit": 0.25,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (4 oz / 0.25 lb per boneless skinless chicken thigh)"
+  },
+  "chicken leg": {
+    "lb_per_unit": 0.55,
+    "lb_per_serving": 1.1,
+    "source": "USDA standard (8.8 oz / 0.55 lb per whole chicken leg quarter)"
+  },
+  "chicken drumstick": {
+    "lb_per_unit": 0.28,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (4.5 oz / 0.28 lb per chicken drumstick)"
+  },
+  "chicken wing": {
+    "lb_per_unit": 0.2,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (3.2 oz / 0.20 lb per whole chicken wing)"
+  },
+  "whole chicken": {
+    "lb_per_unit": 4.0,
+    "source": "USDA standard (4.0 lb per medium whole broiler/fryer chicken)"
+  },
+  "chicken": {
+    "lb_per_unit": 3.5,
+    "lb_per_serving": 1.25,
+    "source": "USDA standard (3.5 lb per cut-up/whole chicken, 1.25 lb per serving)"
+  },
+  "chicken tender": {
+    "lb_per_unit": 0.15,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (2.4 oz / 0.15 lb per chicken tenderloin)"
+  },
+  "ground beef": {
+    "lb_per_serving": 1.0,
+    "lb_per_cup": 0.5,
+    "source": "USDA standard (8 oz / 0.50 lb per cup raw ground beef)"
+  },
+  "ground turkey": {
+    "lb_per_serving": 1.0,
+    "lb_per_cup": 0.5,
+    "source": "USDA standard (8 oz / 0.50 lb per cup raw ground turkey)"
+  },
+  "ground chicken": {
+    "lb_per_serving": 1.0,
+    "lb_per_cup": 0.5,
+    "source": "USDA standard (8 oz / 0.50 lb per cup raw ground chicken)"
+  },
+  "minute steak": {
+    "lb_per_unit": 0.35,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (5.6 oz / 0.35 lb per minute/cube steak)"
+  },
+  "beef brisket": {
+    "lb_per_unit": 4.0,
+    "lb_per_serving": 0.5,
+    "source": "USDA standard (4.0 lb per medium trimmed brisket roast)"
+  },
+  "chuck roast": {
+    "lb_per_unit": 3.5,
+    "lb_per_serving": 0.5,
+    "source": "USDA standard (3.5 lb per medium chuck roast)"
+  },
+  "flanken": {
+    "lb_per_unit": 0.5,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (8 oz / 0.50 lb per strip of bone-in flanken/short ribs)"
+  },
+  "short rib": {
+    "lb_per_unit": 0.5,
+    "lb_per_serving": 1.0,
+    "source": "USDA standard (8 oz / 0.50 lb per bone-in beef short rib)"
+  },
+  "salmon": {
+    "lb_per_unit": 0.38,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (6 oz / 0.38 lb per salmon fillet/portion)"
+  },
+  "salmon fillet": {
+    "lb_per_unit": 0.38,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (6 oz / 0.38 lb per salmon fillet)"
+  },
+  "tilapia": {
+    "lb_per_unit": 0.31,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (5 oz / 0.31 lb per tilapia fillet)"
+  },
+  "tilapia fillet": {
+    "lb_per_unit": 0.31,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (5 oz / 0.31 lb per tilapia fillet)"
+  },
+  "flounder": {
+    "lb_per_unit": 0.31,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (5 oz / 0.31 lb per flounder fillet)"
+  },
+  "flounder fillet": {
+    "lb_per_unit": 0.31,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (5 oz / 0.31 lb per flounder fillet)"
+  },
+  "cod": {
+    "lb_per_unit": 0.38,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (6 oz / 0.38 lb per cod fillet)"
+  },
+  "halibut": {
+    "lb_per_unit": 0.38,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (6 oz / 0.38 lb per halibut fillet)"
+  },
+  "sea bass": {
+    "lb_per_unit": 0.38,
+    "lb_per_serving": 0.38,
+    "source": "USDA standard (6 oz / 0.38 lb per sea bass fillet)"
+  },
+  "branzino": {
+    "lb_per_unit": 0.75,
+    "lb_per_serving": 0.5,
+    "source": "USDA standard (12 oz / 0.75 lb per dressed branzino)"
+  },
+  "walnut": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4 oz / 0.25 lb per cup chopped/halves walnuts)"
+  },
+  "pecan": {
+    "lb_per_cup": 0.24,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (3.8 oz / 0.24 lb per cup pecan halves/chopped)"
+  },
+  "almond": {
+    "lb_per_cup": 0.31,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (5 oz / 0.31 lb per cup whole almonds)"
+  },
+  "sliced almond": {
+    "lb_per_cup": 0.2,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (3.2 oz / 0.20 lb per cup sliced/slivered almonds)"
+  },
+  "cashew": {
+    "lb_per_cup": 0.3,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4.8 oz / 0.30 lb per cup cashews)"
+  },
+  "pine nut": {
+    "lb_per_cup": 0.3,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (4.7 oz / 0.30 lb per cup pine nuts)"
+  },
+  "peanut": {
+    "lb_per_cup": 0.32,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (5.1 oz / 0.32 lb per cup peanuts)"
+  },
+  "pistachio": {
+    "lb_per_cup": 0.27,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4.3 oz / 0.27 lb per cup shelled pistachios)"
+  },
+  "shredded mozzarella": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4 oz / 0.25 lb per cup shredded mozzarella cheese)"
+  },
+  "mozzarella": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4 oz / 0.25 lb per cup shredded mozzarella cheese)"
+  },
+  "mozzarella cheese": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (4 oz / 0.25 lb per cup shredded mozzarella cheese)"
+  },
+  "cheddar cheese": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (4 oz / 0.25 lb per cup shredded cheddar cheese)"
+  },
+  "shredded cheddar": {
+    "lb_per_cup": 0.25,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (4 oz / 0.25 lb per cup shredded cheddar cheese)"
+  },
+  "muenster cheese": {
+    "lb_per_unit": 0.06,
+    "lb_per_cup": 0.25,
+    "source": "USDA standard (1 oz / 0.06 lb per deli slice of muenster cheese)"
+  },
+  "american cheese": {
+    "lb_per_unit": 0.06,
+    "lb_per_cup": 0.25,
+    "source": "USDA standard (1 oz / 0.06 lb per slice of American cheese)"
+  },
+  "swiss cheese": {
+    "lb_per_unit": 0.06,
+    "lb_per_cup": 0.24,
+    "source": "USDA standard (1 oz / 0.06 lb per deli slice of Swiss cheese)"
+  },
+  "parmesan cheese": {
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (3.5 oz / 0.22 lb per cup grated Parmesan cheese)"
+  },
+  "parmesan": {
+    "lb_per_cup": 0.22,
+    "source": "USDA standard (3.5 oz / 0.22 lb per cup grated Parmesan cheese)"
+  },
+  "feta cheese": {
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (5.3 oz / 0.33 lb per cup crumbled feta, 8 oz block/tub)"
+  },
+  "feta": {
+    "lb_per_cup": 0.33,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (5.3 oz / 0.33 lb per cup crumbled feta)"
+  },
+  "pastrami": {
+    "lb_per_unit": 0.06,
+    "lb_per_serving": 0.25,
+    "source": "USDA standard (1 oz / 0.06 lb per deli slice, 4 oz / 0.25 lb per serving)"
+  },
+  "beef fry": {
+    "lb_per_unit": 0.06,
+    "lb_per_bag": 0.5,
+    "source": "USDA standard (1 oz / 0.06 lb per strip, 8 oz / 0.50 lb package)"
+  },
+  "rice": {
+    "lb_per_cup": 0.41,
+    "lb_per_bag": 5.0,
+    "source": "USDA standard (6.5 oz / 0.41 lb per cup dry white/jasmine/basmati rice)"
+  },
+  "white rice": {
+    "lb_per_cup": 0.41,
+    "lb_per_bag": 5.0,
+    "source": "USDA standard (6.5 oz / 0.41 lb per cup dry white rice)"
+  },
+  "brown rice": {
+    "lb_per_cup": 0.42,
+    "lb_per_bag": 2.0,
+    "source": "USDA standard (6.7 oz / 0.42 lb per cup dry brown rice)"
+  },
+  "barley": {
+    "lb_per_cup": 0.44,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (7 oz / 0.44 lb per cup dry pearl barley)"
+  },
+  "pearl barley": {
+    "lb_per_cup": 0.44,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (7 oz / 0.44 lb per cup dry pearl barley)"
+  },
+  "lentil": {
+    "lb_per_cup": 0.42,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (6.8 oz / 0.42 lb per cup dry lentils)"
+  },
+  "split pea": {
+    "lb_per_cup": 0.43,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (6.9 oz / 0.43 lb per cup dry split peas)"
+  },
+  "chickpea": {
+    "lb_per_cup": 0.44,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (7 oz / 0.44 lb per cup dry chickpeas)"
+  },
+  "white bean": {
+    "lb_per_cup": 0.44,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (7 oz / 0.44 lb per cup dry white beans)"
+  },
+  "quinoa": {
+    "lb_per_cup": 0.37,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (6 oz / 0.37 lb per cup dry quinoa)"
+  },
+  "rolled oat": {
+    "lb_per_cup": 0.18,
+    "lb_per_bag": 1.13,
+    "source": "USDA standard (2.8 oz / 0.18 lb per cup rolled oats)"
+  },
+  "oat": {
+    "lb_per_cup": 0.18,
+    "lb_per_bag": 1.13,
+    "source": "USDA standard (2.8 oz / 0.18 lb per cup oats)"
+  },
+  "raisin": {
+    "lb_per_cup": 0.32,
+    "lb_per_bag": 1.0,
+    "source": "USDA standard (5.1 oz / 0.32 lb per cup raisins)"
+  },
+  "dried cranberry": {
+    "lb_per_cup": 0.26,
+    "lb_per_bag": 0.38,
+    "source": "USDA standard (4.2 oz / 0.26 lb per cup dried cranberries / Craisins)"
+  }
+}
