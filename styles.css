@@ -1458,6 +1458,76 @@ footer.site-footer {
   color: var(--ink-soft);
   font-size: 0.86rem;
 }
+.shop-store-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.65rem 0 0.35rem;
+}
+.shop-store-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.shop-store-select {
+  font-size: 0.88rem;
+  padding: 0.28rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.shop-store-summary {
+  margin: 0.35rem 0 0.15rem;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.38;
+}
+.shop-store-verdict {
+  margin: 0.15rem 0 0.35rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  line-height: 1.38;
+}
+.shop-store-verdict.shop-store-verdict-ok {
+  color: var(--pareve);
+}
+.shop-price-flag {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  font-style: italic;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.shop-store-note {
+  display: inline-block;
+  margin-top: 0.14rem;
+  margin-right: 0.35rem;
+  padding: 0.08rem 0.42rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.shop-store-note-carries {
+  background: #e9f5ec;
+  color: #1f5f32;
+  border: 1px solid #b8dec2;
+}
+.shop-store-note-not-carried {
+  background: #fbeeea;
+  color: var(--meat);
+  border: 1px solid #e6bfb3;
+}
+.shop-menu-item.shop-menu-note.active {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
 .shop-staples-section { margin: 1rem 0; }
 .shop-staples-section summary {
   cursor: pointer; font-weight: 700; padding: 0.5rem 0; color: var(--ink-soft);

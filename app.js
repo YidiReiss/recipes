@@ -1625,11 +1625,647 @@ function shoppingFromLabel() {
     esc(new Date(from + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })) +
     ' onward</span>';
 }
-/* ---------------- Shopping list ⋮ menu + Receipt price history (Features 2 & 3) ---------------- */
+/* ---------------- Shopping list ⋮ menu + Receipt price history + Store picker (Features 2, 3 & v20261115e) ---------------- */
 let _priceHistoryCache = null;
 let _priceHistoryInFlight = null;
 let _priceHistoryFetched = false;
 let _openPriceDetailKeys = new Set();
+
+const SHOP_STORE_KEY = 'recipe-shop-store';
+const STORE_NOTES_LOCAL_KEY = 'recipe-store-notes-local';
+let _storeNotesCache = {};
+let _storeNotesInFlight = null;
+let _storeNotesFetched = false;
+let _saveStoreNotesChain = Promise.resolve();
+let _saveStoreNotesInFlight = 0;
+
+function normalizeStore(store) {
+  return String(store || '')
+    .toLowerCase()
+    .replace(/['\u2019`]/g, '')
+    .replace(/\bkissena\s+farms?\b/g, ' ')
+    .replace(/\bfarms?\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function displayStoreName(store) {
+  const norm = normalizeStore(store);
+  if (!norm) return '';
+  if (norm === 'arons') return "Aron's";
+  if (norm === 'trader joes') return "Trader Joe's";
+  if (norm === 'bingo') return 'Bingo';
+  const cleaned = String(store || '')
+    .replace(/\bKissena\s+Farms?\b/gi, '')
+    .replace(/\bFarms?\b/gi, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+  if (cleaned && cleaned.toLowerCase() !== norm) return cleaned;
+  return norm.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : '').join(' ');
+}
+
+function getShopStore() {
+  try {
+    if (typeof localStorage !== 'undefined' && localStorage) {
+      const raw = localStorage.getItem(SHOP_STORE_KEY);
+      if (!raw || raw === 'all') return 'all';
+      const norm = normalizeStore(raw);
+      return norm || 'all';
+    }
+  } catch (e) {}
+  return 'all';
+}
+
+function setShopStore(storeVal) {
+  const raw = String(storeVal || '').trim();
+  const next = (!raw || raw === 'all') ? 'all' : (normalizeStore(raw) || 'all');
+  try {
+    if (typeof localStorage !== 'undefined' && localStorage) {
+      localStorage.setItem(SHOP_STORE_KEY, next);
+    }
+  } catch (e) {}
+  return next;
+}
+
+function normalizeStoreNotes(obj) {
+  const out = {};
+  if (!obj || typeof obj !== 'object') return out;
+  const srcItems = (obj.items && typeof obj.items === 'object' && !Array.isArray(obj.items))
+    ? obj.items
+    : obj;
+  Object.keys(srcItems).forEach(rawKey => {
+    const perStore = srcItems[rawKey];
+    if (!perStore || typeof perStore !== 'object' || Array.isArray(perStore)) return;
+    const bk = groupKey(String(rawKey || '').replace(/-/g, ' ')).toLowerCase() || String(rawKey || '').toLowerCase();
+    if (!bk) return;
+    Object.keys(perStore).forEach(rawStore => {
+      const entry = perStore[rawStore];
+      if (!entry || typeof entry !== 'object') return;
+      const sk = normalizeStore(rawStore);
+      if (!sk) return;
+      const status = (entry.status === 'carries' || entry.status === 'not-carried') ? entry.status : null;
+      const updatedAt = Number(entry.updatedAt) || 0;
+      if (!out[bk]) out[bk] = {};
+      const cur = out[bk][sk];
+      if (!cur || updatedAt > (cur.updatedAt || 0)) {
+        out[bk][sk] = { status, updatedAt };
+      }
+    });
+  });
+  return out;
+}
+
+function mergeStoreNotes(fresh, local) {
+  const f = normalizeStoreNotes(fresh);
+  const l = normalizeStoreNotes(local);
+  const merged = {};
+  const allItemKeys = new Set([...Object.keys(f), ...Object.keys(l)]);
+  allItemKeys.forEach(bk => {
+    const fStores = f[bk] || {};
+    const lStores = l[bk] || {};
+    const allStores = new Set([...Object.keys(fStores), ...Object.keys(lStores)]);
+    allStores.forEach(sk => {
+      const fe = fStores[sk] || null;
+      const le = lStores[sk] || null;
+      if (fe && le) {
+        const fAt = Number(fe.updatedAt) || 0;
+        const lAt = Number(le.updatedAt) || 0;
+        // Larger updatedAt wins; ties go to fresh (server). Tombstones (status: null) are preserved.
+        const win = lAt > fAt ? le : fe;
+        if (!merged[bk]) merged[bk] = {};
+        merged[bk][sk] = {
+          status: (win.status === 'carries' || win.status === 'not-carried') ? win.status : null,
+          updatedAt: Math.max(fAt, lAt)
+        };
+      } else {
+        const only = fe || le;
+        if (only) {
+          if (!merged[bk]) merged[bk] = {};
+          merged[bk][sk] = {
+            status: (only.status === 'carries' || only.status === 'not-carried') ? only.status : null,
+            updatedAt: Number(only.updatedAt) || 0
+          };
+        }
+      }
+    });
+  });
+  return merged;
+}
+
+function saveStoreNotesLocal() {
+  try {
+    if (typeof localStorage !== 'undefined' && localStorage) {
+      localStorage.setItem(STORE_NOTES_LOCAL_KEY, JSON.stringify(_storeNotesCache));
+    }
+  } catch (e) {}
+}
+
+function loadStoreNotesLocal() {
+  try {
+    if (typeof localStorage !== 'undefined' && localStorage) {
+      const raw = localStorage.getItem(STORE_NOTES_LOCAL_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        _storeNotesCache = mergeStoreNotes(_storeNotesCache, parsed);
+      }
+    }
+  } catch (e) {}
+  return _storeNotesCache;
+}
+
+function setStoreNotesCache(notesObj) {
+  if (notesObj && typeof notesObj === 'object') {
+    _storeNotesCache = normalizeStoreNotes(notesObj);
+    _storeNotesFetched = true;
+    _storeNotesInFlight = Promise.resolve(_storeNotesCache);
+  } else {
+    _storeNotesCache = {};
+    _storeNotesFetched = notesObj !== undefined;
+    _storeNotesInFlight = notesObj !== undefined ? Promise.resolve(_storeNotesCache) : null;
+  }
+  if (typeof globalThis !== 'undefined') globalThis.__storeNotesCache = _storeNotesCache;
+}
+
+function resetStoreNotesSession() {
+  _storeNotesCache = {};
+  _storeNotesInFlight = null;
+  _storeNotesFetched = false;
+  if (typeof globalThis !== 'undefined') delete globalThis.__storeNotesCache;
+}
+
+async function bridgeReadStoreNotes() {
+  const baseUrl = (typeof BRIDGE === 'string' && BRIDGE) ? BRIDGE : 'https://recipe-bridge.leibreiss.workers.dev';
+  const r = await fetch(baseUrl + '/read?path=' + encodeURIComponent('data/store-notes.json'));
+  if (r.status === 404) return {};
+  if (!r.ok) throw new Error('store-notes read failed (HTTP ' + r.status + ')');
+  const data = await r.json();
+  if (!data || !data.ok || typeof data.content !== 'string') return {};
+  const trimmed = data.content.trim();
+  if (!trimmed) return {};
+  const parsed = JSON.parse(trimmed);
+  return normalizeStoreNotes(parsed);
+}
+
+function ensureStoreNotesLoaded(onLoaded) {
+  loadStoreNotesLocal();
+  if (_storeNotesFetched) {
+    return _storeNotesInFlight || Promise.resolve(_storeNotesCache);
+  }
+  if (_storeNotesInFlight) return _storeNotesInFlight;
+  if (typeof fetch !== 'function') return Promise.resolve(_storeNotesCache);
+  _storeNotesFetched = true;
+  _storeNotesInFlight = Promise.resolve()
+    .then(async () => {
+      try {
+        const remote = await bridgeReadStoreNotes();
+        _storeNotesCache = mergeStoreNotes(remote, _storeNotesCache);
+        saveStoreNotesLocal();
+        if (typeof globalThis !== 'undefined') globalThis.__storeNotesCache = _storeNotesCache;
+        if (typeof onLoaded === 'function') onLoaded(_storeNotesCache);
+        return _storeNotesCache;
+      } catch (e) {
+        try {
+          const r2 = await fetch('data/store-notes.json?t=' + Date.now());
+          if (r2 && r2.ok) {
+            const p2 = await r2.json();
+            _storeNotesCache = mergeStoreNotes(p2, _storeNotesCache);
+            saveStoreNotesLocal();
+            if (typeof globalThis !== 'undefined') globalThis.__storeNotesCache = _storeNotesCache;
+            if (typeof onLoaded === 'function') onLoaded(_storeNotesCache);
+          }
+        } catch (e2) {}
+        return _storeNotesCache;
+      }
+    });
+  return _storeNotesInFlight;
+}
+
+function saveStoreNotes(mutator, message) {
+  _saveStoreNotesInFlight++;
+  const run = async () => {
+    try {
+      let lastErr;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 400));
+        try {
+          let fresh = {};
+          try {
+            fresh = await bridgeReadStoreNotes();
+          } catch (readErr) {
+            fresh = {};
+          }
+          const merged = mergeStoreNotes(fresh, _storeNotesCache);
+          if (typeof mutator === 'function') mutator(merged);
+          _storeNotesCache = normalizeStoreNotes(merged);
+          saveStoreNotesLocal();
+          if (typeof globalThis !== 'undefined') globalThis.__storeNotesCache = _storeNotesCache;
+          await ghPut('data/store-notes.json', JSON.stringify(_storeNotesCache, null, 2) + '\n',
+            message || 'Update store notes');
+          return _storeNotesCache;
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr;
+    } finally {
+      _saveStoreNotesInFlight--;
+    }
+  };
+  _saveStoreNotesChain = _saveStoreNotesChain.then(run, run);
+  return _saveStoreNotesChain;
+}
+
+function getStoreNoteStatus(baseKey, storeKey, notesObj) {
+  const sk = normalizeStore(storeKey);
+  if (!sk || sk === 'all') return null;
+  const rawBk = String(baseKey || '').toLowerCase().trim();
+  if (!rawBk) return null;
+  const canonBk = groupKey(rawBk.replace(/-/g, ' ')).toLowerCase();
+  const src = notesObj && typeof notesObj === 'object'
+    ? normalizeStoreNotes(notesObj)
+    : ((typeof _storeNotesCache === 'object' && _storeNotesCache)
+      ? _storeNotesCache
+      : ((typeof globalThis !== 'undefined' && globalThis.__storeNotesCache) || {}));
+  const itemsMap = (src && src.items && typeof src.items === 'object') ? src.items : (src || {});
+  const byStore = itemsMap[canonBk] || itemsMap[rawBk] || null;
+  if (!byStore || !byStore[sk]) return null;
+  const st = byStore[sk].status;
+  return (st === 'carries' || st === 'not-carried') ? st : null;
+}
+
+function toggleStoreNote(baseKey, storeKey, targetStatus) {
+  const sk = normalizeStore(storeKey);
+  const rawBk = String(baseKey || '').toLowerCase().trim();
+  const bk = groupKey(rawBk.replace(/-/g, ' ')).toLowerCase() || rawBk;
+  if (!bk || !sk || sk === 'all') return Promise.resolve(_storeNotesCache);
+  const curStatus = getStoreNoteStatus(bk, sk);
+  const nextStatus = (curStatus === targetStatus) ? null : targetStatus;
+  const now = Date.now();
+  if (!_storeNotesCache || typeof _storeNotesCache !== 'object') _storeNotesCache = {};
+  if (!_storeNotesCache[bk]) _storeNotesCache[bk] = {};
+  _storeNotesCache[bk][sk] = {
+    status: nextStatus,
+    updatedAt: now
+  };
+  saveStoreNotesLocal();
+  if (typeof globalThis !== 'undefined') globalThis.__storeNotesCache = _storeNotesCache;
+  const entrySnap = { ..._storeNotesCache[bk][sk] };
+  return saveStoreNotes(merged => {
+    if (!merged[bk]) merged[bk] = {};
+    const existing = merged[bk][sk];
+    if (!existing || (entrySnap.updatedAt || 0) >= (existing.updatedAt || 0)) {
+      merged[bk][sk] = entrySnap;
+    }
+  }, 'Store note: ' + bk + ' @ ' + displayStoreName(sk));
+}
+
+// Price-matching constants & word-overlap fallback (Part 1, v20261115e)
+const PRICE_ABBREV_MAP = {
+  choco: 'chocolate',
+  evap: 'evaporated',
+  cond: 'condensed',
+  mozz: 'mozzarella',
+  parm: 'parmesan',
+  oj: 'orange juice',
+  broth: 'stock'
+};
+
+const PRICE_MODIFIER_WORDS = new Set([
+  'red', 'white', 'black', 'green', 'yellow',
+  'sweet', 'hot', 'dark', 'light', 'sour',
+  'unsalted', 'salted', 'kosher', 'baby', 'real', 'semi',
+  'part', 'skim', 'organic', 'raw', 'roasted',
+  'boneless', 'skinless', 'chip'
+]);
+
+const PRICE_QUALIFIED_HEADS = new Set([
+  'vinegar', 'oil', 'milk', 'cheese', 'sauce', 'paste', 'powder',
+  'broth', 'stock', 'juice', 'cream', 'butter', 'flour', 'sugar',
+  'salt', 'pasta'
+]);
+
+function priceMatchWords(key) {
+  let s = String(key || '').toLowerCase();
+  s = s.replace(/\b([a-z]+)\b/g, (_, w) => PRICE_ABBREV_MAP[w] || w);
+  return sectionMatchWords(s);
+}
+
+function priceHeadNoun(key) {
+  let s = String(key || '').toLowerCase();
+  const m = s.match(/^([^,(;]+)/);
+  let head = m ? m[1] : s;
+  head = head.replace(/\b([a-z]+)\b/g, (_, w) => PRICE_ABBREV_MAP[w] || w);
+  const words = sectionMatchWords(head);
+  return words.length ? words[words.length - 1] : null;
+}
+
+function mergePriceHistoryEntryPair(a, b) {
+  if (!a) return b;
+  if (!b) return a;
+  const aDate = String(a.receipt_date || '');
+  const bDate = String(b.receipt_date || '');
+  const newer = bDate > aDate ? b : a;
+  const older = newer === b ? a : b;
+  const by_store = {};
+  const addPurchaseToStoreMap = p => {
+    if (!p || !Number.isFinite(Number(p.price_cents))) return;
+    const sk = normalizeStore(p.store);
+    if (!sk) return;
+    const cur = by_store[sk];
+    if (!cur || String(p.receipt_date || '') > String(cur.receipt_date || '')) {
+      by_store[sk] = {
+        price_cents: Number(p.price_cents),
+        store: p.store,
+        bought_name: p.bought_name,
+        receipt_date: p.receipt_date
+      };
+    }
+  };
+  [newer, older].forEach(entry => {
+    if (!entry) return;
+    if (entry.by_store && typeof entry.by_store === 'object') {
+      Object.values(entry.by_store).forEach(p => addPurchaseToStoreMap({ ...p, bought_name: p.bought_name || entry.bought_name }));
+    }
+    if (Array.isArray(entry.last3)) {
+      entry.last3.forEach(p => addPurchaseToStoreMap({ ...p, bought_name: p.bought_name || entry.bought_name }));
+    }
+    addPurchaseToStoreMap(entry);
+  });
+  const seenHist = new Set();
+  const combinedHist = [];
+  [newer, older].forEach(entry => {
+    const arr = Array.isArray(entry && entry.last3) && entry.last3.length
+      ? entry.last3.map(h => ({ ...h, bought_name: h.bought_name || entry.bought_name }))
+      : (entry && Number.isFinite(Number(entry.price_cents))
+        ? [{ price_cents: entry.price_cents, store: entry.store, bought_name: entry.bought_name, receipt_date: entry.receipt_date }]
+        : []);
+    arr.forEach(h => {
+      const sig = [h.receipt_date || '', normalizeStore(h.store), h.price_cents].join('|');
+      if (!seenHist.has(sig)) {
+        seenHist.add(sig);
+        combinedHist.push(h);
+      }
+    });
+  });
+  combinedHist.sort((x, y) => String(y.receipt_date || '').localeCompare(String(x.receipt_date || '')));
+  return {
+    ...newer,
+    by_store,
+    last3: combinedHist.slice(0, 3)
+  };
+}
+
+function entryPriceAtStore(p, storeKey) {
+  const sk = normalizeStore(storeKey);
+  if (!p || !sk || sk === 'all') return null;
+  const cands = [];
+  if (p.by_store && typeof p.by_store === 'object') {
+    if (p.by_store[sk] && Number.isFinite(Number(p.by_store[sk].price_cents))) {
+      cands.push({ ...p.by_store[sk], bought_name: p.by_store[sk].bought_name || p.bought_name });
+    } else {
+      Object.keys(p.by_store).forEach(k => {
+        const v = p.by_store[k];
+        if (v && normalizeStore(v.store || k) === sk && Number.isFinite(Number(v.price_cents))) {
+          cands.push({ ...v, bought_name: v.bought_name || p.bought_name });
+        }
+      });
+    }
+  }
+  if (Array.isArray(p.last3)) {
+    p.last3.forEach(h => {
+      if (h && normalizeStore(h.store) === sk && Number.isFinite(Number(h.price_cents))) {
+        cands.push({
+          price_cents: Number(h.price_cents),
+          store: h.store,
+          bought_name: h.bought_name || p.bought_name,
+          receipt_date: h.receipt_date
+        });
+      }
+    });
+  }
+  if (normalizeStore(p.store) === sk && Number.isFinite(Number(p.price_cents))) {
+    cands.push({
+      price_cents: Number(p.price_cents),
+      store: p.store,
+      bought_name: p.bought_name,
+      receipt_date: p.receipt_date
+    });
+  }
+  if (!cands.length) return null;
+  cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
+  return cands[0];
+}
+
+function entryPriceElsewhere(p, storeKey) {
+  const sk = normalizeStore(storeKey);
+  if (!p || !sk || sk === 'all') return null;
+  const cands = [];
+  if (p.by_store && typeof p.by_store === 'object') {
+    Object.keys(p.by_store).forEach(k => {
+      const v = p.by_store[k];
+      const vsk = normalizeStore((v && v.store) || k);
+      if (v && vsk && vsk !== sk && Number.isFinite(Number(v.price_cents))) {
+        cands.push({ ...v, bought_name: v.bought_name || p.bought_name });
+      }
+    });
+  }
+  if (Array.isArray(p.last3)) {
+    p.last3.forEach(h => {
+      const hsk = normalizeStore(h && h.store);
+      if (h && hsk && hsk !== sk && Number.isFinite(Number(h.price_cents))) {
+        cands.push({
+          price_cents: Number(h.price_cents),
+          store: h.store,
+          bought_name: h.bought_name || p.bought_name,
+          receipt_date: h.receipt_date
+        });
+      }
+    });
+  }
+  const topSk = normalizeStore(p.store);
+  if (topSk && topSk !== sk && Number.isFinite(Number(p.price_cents))) {
+    cands.push({
+      price_cents: Number(p.price_cents),
+      store: p.store,
+      bought_name: p.bought_name,
+      receipt_date: p.receipt_date
+    });
+  }
+  if (!cands.length) return null;
+  cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
+  return cands[0];
+}
+
+function priceMatchFor(it, pricesMapOverride) {
+  const rawMap = pricesMapOverride !== undefined
+    ? pricesMapOverride
+    : ((typeof _priceHistoryCache === 'object' && _priceHistoryCache)
+      ? _priceHistoryCache
+      : ((typeof globalThis !== 'undefined' && globalThis.__priceHistoryCache && typeof globalThis.__priceHistoryCache === 'object')
+        ? globalThis.__priceHistoryCache
+        : null));
+  if (!rawMap || typeof rawMap !== 'object') return null;
+  const bk = typeof it === 'string'
+    ? groupKey(it).toLowerCase()
+    : (it && it.base
+      ? String(it.base).toLowerCase()
+      : String((it && it.key) || '').split('|')[0].toLowerCase());
+  if (!bk) return null;
+
+  const legacyStrip = s => {
+    let out = ' ' + String(s || '').toLowerCase() + ' ';
+    SIZE_WORDS.forEach(w => {
+      out = out.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
+    });
+    return out.trim().replace(/^to\s+/i, '').replace(/\s+/g, ' ');
+  };
+  const bkClean = bk.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  const bkTailSing = bkClean.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+  const bkLegacy = legacyStrip(bkTailSing);
+
+  // Merge hyphen-equivalent keys in rawMap (e.g. 'romaine-heart' and 'romaine heart')
+  // so they unify their store history and never falsely tie against each other.
+  const canonEntries = new Map();
+  for (const k of Object.keys(rawMap)) {
+    const p = rawMap[k];
+    if (!p || !Number.isFinite(Number(p.price_cents))) continue;
+    const gk = groupKey(k.replace(/-/g, ' ')).toLowerCase();
+    const gkTailSing = gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+    const cur = canonEntries.get(gkTailSing);
+    if (!cur) {
+      canonEntries.set(gkTailSing, { key: k, gk, gkTailSing, entry: mergePriceHistoryEntryPair(p, null) });
+    } else {
+      cur.entry = mergePriceHistoryEntryPair(cur.entry, p);
+      if (!cur.key.includes('-') && k.includes('-')) {
+        // keep space-separated key as canonical representative
+      } else if (cur.key.includes('-') && !k.includes('-')) {
+        cur.key = k;
+        cur.gk = gk;
+      }
+    }
+  }
+
+  // Step 1: exact / canonical / legacy-strip lookup
+  if (rawMap[bk] && Number.isFinite(Number(rawMap[bk].price_cents))) {
+    const gk = groupKey(bk.replace(/-/g, ' ')).toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
+    return (canonEntries.get(gk) || { entry: rawMap[bk] }).entry;
+  }
+  for (const cand of canonEntries.values()) {
+    if (cand.gk === bk || cand.gk === bkClean || cand.gkTailSing === bkTailSing || legacyStrip(cand.gkTailSing) === bkLegacy) {
+      return cand.entry;
+    }
+  }
+
+  // Step 2: guarded word-overlap fallback
+  const qWords = priceMatchWords(bk);
+  if (!qWords.length) return null;
+  const qSet = new Set(qWords);
+  const headNoun = priceHeadNoun(bk);
+  const isStockLike = s => /\b(stock|broth|bouillon|consomme|consommé)\b/i.test(String(s || ''));
+  const qStock = isStockLike(bk);
+  const headRequiresQualifier = headNoun ? PRICE_QUALIFIED_HEADS.has(headNoun) : false;
+
+  let bestEntry = null;
+  let bestTuple = null;
+  let isTie = false;
+
+  for (const cand of canonEntries.values()) {
+    const k = cand.key;
+    if (isStockLike(k) !== qStock) continue;
+    const cWords = priceMatchWords(k);
+    if (!cWords.length) continue;
+    const shared = cWords.filter(w => qSet.has(w));
+    const score = shared.length;
+    if (!score) continue;
+
+    // Never match on modifier/color/cut adjectives alone
+    if (shared.every(w => PRICE_MODIFIER_WORDS.has(w))) continue;
+
+    const qCov = score / qWords.length;
+    const cCov = score / cWords.length;
+    const headAtCandEdge = headNoun
+      ? (cWords[0] === headNoun || cWords[cWords.length - 1] === headNoun)
+      : false;
+    const hasHead = Boolean(
+      headNoun &&
+      shared.includes(headNoun) &&
+      cCov >= 1 / 3 - 1e-9 &&
+      (!headRequiresQualifier || score >= 2) &&
+      (score >= 2 || headAtCandEdge)
+    );
+    const hasSymCov = score >= 2 && qCov >= 0.5 && cCov >= 0.5;
+    if (!hasHead && !hasSymCov) continue;
+
+    const noParens = k.includes('(') ? 0 : 1;
+    const tuple = [score, qCov, cCov, noParens, -k.length];
+    if (!bestTuple) {
+      bestTuple = tuple;
+      bestEntry = cand.entry;
+      isTie = false;
+    } else {
+      let cmp = 0;
+      for (let i = 0; i < tuple.length; i++) {
+        if (Math.abs(tuple[i] - bestTuple[i]) > 1e-9) {
+          cmp = tuple[i] > bestTuple[i] ? 1 : -1;
+          break;
+        }
+      }
+      if (cmp > 0) {
+        bestTuple = tuple;
+        bestEntry = cand.entry;
+        isTie = false;
+      } else if (cmp === 0) {
+        isTie = true;
+      }
+    }
+  }
+
+  if (!bestEntry || isTie) return null;
+  return bestEntry;
+}
+
+function collectKnownStores(pricesMap, storeNotesObj, selectedStore) {
+  const set = new Set();
+  if (pricesMap && typeof pricesMap === 'object') {
+    Object.values(pricesMap).forEach(p => {
+      if (!p || typeof p !== 'object') return;
+      const sTop = normalizeStore(p.store);
+      if (sTop) set.add(sTop);
+      if (Array.isArray(p.last3)) {
+        p.last3.forEach(h => {
+          const sH = normalizeStore(h && h.store);
+          if (sH) set.add(sH);
+        });
+      }
+      if (p.by_store && typeof p.by_store === 'object') {
+        Object.keys(p.by_store).forEach(k => {
+          const sB = normalizeStore((p.by_store[k] && p.by_store[k].store) || k);
+          if (sB) set.add(sB);
+        });
+      }
+    });
+  }
+  const rawNotes = (storeNotesObj && typeof storeNotesObj === 'object') ? storeNotesObj : (_storeNotesCache || {});
+  const notes = (rawNotes.items && typeof rawNotes.items === 'object' && !Array.isArray(rawNotes.items))
+    ? rawNotes.items
+    : rawNotes;
+  Object.values(notes).forEach(perStore => {
+    if (!perStore || typeof perStore !== 'object') return;
+    Object.keys(perStore).forEach(sk => {
+      const e = perStore[sk];
+      if (e && (e.status === 'carries' || e.status === 'not-carried')) {
+        const norm = normalizeStore(sk);
+        if (norm) set.add(norm);
+      }
+    });
+  });
+  if (selectedStore && selectedStore !== 'all') {
+    const normSel = normalizeStore(selectedStore);
+    if (normSel) set.add(normSel);
+  }
+  return [...set].sort((a, b) => displayStoreName(a).localeCompare(displayStoreName(b)));
+}
 
 function dismissShopKey(week, key) {
   if (!week || !key) return;
@@ -1738,6 +2374,11 @@ function shoppingListHTML() {
     ? _openPriceDetailKeys
     : new Set();
 
+  const pickedStore = getShopStore();
+  const isStorePicked = Boolean(pickedStore && pickedStore !== 'all');
+  const pickedDisplay = isStorePicked ? displayStoreName(pickedStore) : '';
+  const knownStores = collectKnownStores(pricesMap, _storeNotesCache, pickedStore);
+
   const fmtDollars = cents => {
     const n = Number(cents);
     return Number.isFinite(n) ? ('$' + (n / 100).toFixed(2)) : '';
@@ -1765,42 +2406,8 @@ function shoppingListHTML() {
     if (it && it.base) return String(it.base).toLowerCase();
     return String((it && it.key) || '').split('|')[0].toLowerCase();
   };
-  const priceMatchFor = it => {
-    if (!pricesMap) return null;
-    const bk = itemBaseKey(it);
-    if (!bk) return null;
-    let entry = pricesMap[bk];
-    if (!entry) {
-      const legacyStrip = s => {
-        let out = ' ' + String(s || '').toLowerCase() + ' ';
-        SIZE_WORDS.forEach(w => {
-          out = out.replace(new RegExp(' ' + w.replace(/-/g, '[- ]').replace(/ /g, '\\s+') + ' ', 'g'), ' ');
-        });
-        return out.trim().replace(/^to\s+/i, '').replace(/\s+/g, ' ');
-      };
-      const bkTailSing = bk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
-      const bkLegacy = legacyStrip(bkTailSing);
-      for (const k of Object.keys(pricesMap)) {
-        const gk = groupKey(k).toLowerCase();
-        const gkTailSing = gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
-        if (gk === bk || gkTailSing === bkTailSing || legacyStrip(gkTailSing) === bkLegacy) {
-          entry = pricesMap[k];
-          break;
-        }
-      }
-    }
-    if (!entry || !Number.isFinite(Number(entry.price_cents))) return null;
-    return entry;
-  };
-  const renderPriceBadge = it => {
-    const p = priceMatchFor(it);
-    if (!p) return '';
-    const bk = itemBaseKey(it);
-    const bought = String(p.bought_name || bk).trim();
-    const priceStr = fmtDollars(p.price_cents);
-    const storeStr = String(p.store || '').trim();
-    const dateStr = fmtShortDate(p.receipt_date);
-    const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
+
+  const buildDetailHTML = (it, p) => {
     const last3 = Array.isArray(p.last3) ? p.last3.slice(0, 3) : [];
     const histParts = last3.map(h =>
       '<span class="shop-price-hist-item">' +
@@ -1812,13 +2419,66 @@ function shoppingListHTML() {
       histParts.push('<span class="shop-price-avg">12-mo avg ' + esc(fmtDollars(p.avg12m_cents)) + '</span>');
     }
     const isOpen = openDetailSet.has(it.key);
-    return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
-        esc(badgeText) +
-      '</button>' +
-      '<div class="shop-price-detail" data-price-detail="' + esc(it.key) + '"' + (isOpen ? '' : ' hidden') + '>' +
+    return '<div class="shop-price-detail" data-price-detail="' + esc(it.key) + '"' + (isOpen ? '' : ' hidden') + '>' +
         histParts.join(' · ') +
       '</div>';
   };
+
+  const renderStoreNoteBadge = it => {
+    if (!isStorePicked) return '';
+    const bk = itemBaseKey(it);
+    const st = getStoreNoteStatus(bk, pickedStore);
+    if (st === 'carries') {
+      return '<span class="shop-store-note shop-store-note-carries">✓ at ' + esc(pickedDisplay) + '</span>';
+    }
+    if (st === 'not-carried') {
+      return '<span class="shop-store-note shop-store-note-not-carried">✗ not at ' + esc(pickedDisplay) + '</span>';
+    }
+    return '';
+  };
+
+  const renderPriceBadge = it => {
+    const p = priceMatchFor(it, pricesMap);
+    const noteHTML = renderStoreNoteBadge(it);
+    if (!p) return noteHTML;
+    const bk = itemBaseKey(it);
+    const isOpen = openDetailSet.has(it.key);
+    if (!isStorePicked) {
+      const bought = String(p.bought_name || bk).trim();
+      const priceStr = fmtDollars(p.price_cents);
+      const storeStr = String(p.store || '').trim();
+      const dateStr = fmtShortDate(p.receipt_date);
+      const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
+      return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
+          esc(badgeText) +
+        '</button>' +
+        buildDetailHTML(it, p);
+    }
+    const hereHit = entryPriceAtStore(p, pickedStore);
+    if (hereHit) {
+      const bought = String(hereHit.bought_name || p.bought_name || bk).trim();
+      const priceStr = fmtDollars(hereHit.price_cents);
+      const storeStr = displayStoreName(hereHit.store || pickedStore) || String(hereHit.store || '').trim();
+      const dateStr = fmtShortDate(hereHit.receipt_date);
+      const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
+      return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
+          esc(badgeText) +
+        '</button>' +
+        noteHTML +
+        buildDetailHTML(it, p);
+    }
+    const elseHit = entryPriceElsewhere(p, pickedStore);
+    if (elseHit) {
+      const otherStore = displayStoreName(elseHit.store) || String(elseHit.store || '').trim();
+      const priceStr = fmtDollars(elseHit.price_cents);
+      const dateStr = fmtShortDate(elseHit.receipt_date);
+      const flagText = 'last bought at ' + otherStore + ' ' + priceStr +
+        (dateStr ? ' · ' + dateStr : '') + ' — no ' + pickedDisplay + ' price yet';
+      return '<span class="shop-price-flag">' + esc(flagText) + '</span>' + noteHTML;
+    }
+    return noteHTML;
+  };
+
   const renderMenuWrap = (it, section) => {
     const srcs = Array.isArray(it && it.sources) ? it.sources : [];
     const fromHTML = srcs.length
@@ -1829,11 +2489,24 @@ function shoppingListHTML() {
     const moveHTML = section === 'opt'
       ? '<button type="button" class="shop-menu-item shop-menu-move" data-shop-act="move-to-buy" data-shop-key="' + esc(it.key) + '">Move to to buy</button>'
       : '';
+    let storeNotesMenuHTML = '';
+    if (isStorePicked) {
+      const bk = itemBaseKey(it);
+      const curNote = getStoreNoteStatus(bk, pickedStore);
+      const carriesActive = curNote === 'carries';
+      const notCarriedActive = curNote === 'not-carried';
+      storeNotesMenuHTML =
+        '<button type="button" class="shop-menu-item shop-menu-note' + (carriesActive ? ' active' : '') + '" data-shop-act="note-carries" data-shop-key="' + esc(it.key) + '" data-shop-base="' + esc(bk) + '">' +
+          (carriesActive ? '✓ ' : '') + esc(pickedDisplay) + ' carries this</button>' +
+        '<button type="button" class="shop-menu-item shop-menu-note' + (notCarriedActive ? ' active' : '') + '" data-shop-act="note-not-carried" data-shop-key="' + esc(it.key) + '" data-shop-base="' + esc(bk) + '">' +
+          (notCarriedActive ? '✗ ' : '') + esc(pickedDisplay) + ' doesn\u2019t carry this</button>';
+    }
     return '<div class="shop-menu-wrap">' +
       '<button class="shop-menu-btn" type="button" data-shop-menu="' + esc(it.key) + '" aria-label="Item options" aria-expanded="false">⋮</button>' +
       '<div class="shop-menu-card" data-shop-menu-card="' + esc(it.key) + '" hidden>' +
         '<button type="button" class="shop-menu-item shop-menu-del" data-shop-act="delete" data-shop-key="' + esc(it.key) + '">Delete</button>' +
         moveHTML +
+        storeNotesMenuHTML +
         fromHTML +
       '</div>' +
     '</div>';
@@ -1875,11 +2548,29 @@ function shoppingListHTML() {
       '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button>' +
       renderMenuWrap(it, 'opt') + '</div>';
 
+  const storeSortTier = it => {
+    if (!isStorePicked) return 0;
+    const bk = itemBaseKey(it);
+    const noteSt = getStoreNoteStatus(bk, pickedStore);
+    if (noteSt === 'not-carried') return 2;
+    const p = priceMatchFor(it, pricesMap);
+    if (!p) return 2;
+    if (entryPriceAtStore(p, pickedStore)) return 0;
+    if (entryPriceElsewhere(p, pickedStore)) return 1;
+    return 2;
+  };
+
   // Helper to render items grouped by department (or flat if shoppingSections is null)
   const renderShopSections = (genItems, manItems, renderGen, renderMan, containerAttr) => {
     renderMan = renderMan || (() => '');   // v20261112b: the Optional section passes null; [].map(null) throws and wipes the whole list
+    const sortByStore = isStorePicked && containerAttr === 'data-gen="1"';
+    const orderGen = list => {
+      const arr = (list || []).slice();
+      if (!sortByStore) return arr;
+      return arr.sort((a, b) => (storeSortTier(a) - storeSortTier(b)) || String(a.label || '').localeCompare(String(b.label || '')));
+    };
     if (!shoppingSections || !Array.isArray(shoppingSections.departments)) {
-      const lis = (genItems || []).map(renderGen).join('') + (manItems || []).map(renderMan).join('');
+      const lis = orderGen(genItems).map(renderGen).join('') + (manItems || []).map(renderMan).join('');
       return lis ? '<div class="shop-list"' + (containerAttr ? ' ' + containerAttr : '') + '>' + lis + '</div>' : '';
     }
     const depts = shoppingSections.departments;
@@ -1888,7 +2579,7 @@ function shoppingListHTML() {
     const groups = [];
     for (let dIdx = 0; dIdx < totalDepts; dIdx++) {
       const deptName = (dIdx < depts.length) ? depts[dIdx] : fallback;
-      const gIts = (genItems || []).filter(it => it.deptIndex === dIdx);
+      const gIts = orderGen((genItems || []).filter(it => it.deptIndex === dIdx));
       const mIts = (manItems || []).filter(m => {
         const sec = lookupShoppingSection(groupKey(m.text));
         return sec.deptIndex === dIdx;
@@ -1909,16 +2600,114 @@ function shoppingListHTML() {
     return groups.join('');
   };
 
+  const storeBarHTML =
+    '<div class="shop-store-bar no-print">' +
+      '<label for="shop-store-picker" class="shop-store-label">Shopping at:</label>' +
+      '<select id="shop-store-picker" class="shop-store-select" aria-label="Shopping at">' +
+        '<option value="all"' + (!isStorePicked ? ' selected' : '') + '>All stores</option>' +
+        knownStores.map(sk =>
+          '<option value="' + esc(sk) + '"' + (pickedStore === sk ? ' selected' : '') + '>' +
+          esc(displayStoreName(sk)) + '</option>'
+        ).join('') +
+      '</select>' +
+    '</div>';
+
+  let storeCoverageHTML = '';
   let estTotalHTML = '';
-  // The total sums the DISPLAYED To buy lines (activeToBuy): pantry staples
-  // hidden by the Hide-staples toggle are not bought this week, so they must
-  // not count toward the total or M. When the toggle is off, activeToBuy is
-  // toBuy (partitionStaples is a no-op), so the total matches the list.
-  if (pricesMap && activeToBuy.length > 0) {
+
+  if (isStorePicked && activeToBuy.length > 0) {
+    const pricedAtStore = [];
+    const notedCarriesOnly = [];
+    const onlyElsewhere = [];
+    const unconfirmed = [];
+    const notCarried = [];
+    const elseByStore = new Map();
+    let sumCents = 0;
+
+    activeToBuy.forEach(it => {
+      const bk = itemBaseKey(it);
+      const noteSt = getStoreNoteStatus(bk, pickedStore);
+      const p = priceMatchFor(it, pricesMap);
+      const hereHit = p ? entryPriceAtStore(p, pickedStore) : null;
+      const elseHit = (!hereHit && p) ? entryPriceElsewhere(p, pickedStore) : null;
+
+      if (noteSt === 'not-carried') {
+        notCarried.push(it);
+      } else if (hereHit) {
+        pricedAtStore.push(it);
+        sumCents += Number(hereHit.price_cents) || 0;
+      } else if (noteSt === 'carries') {
+        notedCarriesOnly.push(it);
+      } else if (elseHit) {
+        onlyElsewhere.push(it);
+        const oDisp = displayStoreName(elseHit.store) || String(elseHit.store || '').trim() || 'other store';
+        elseByStore.set(oDisp, (elseByStore.get(oDisp) || 0) + 1);
+      } else {
+        unconfirmed.push(it);
+      }
+    });
+
+    const summaryParts = [pickedDisplay + ': ' + pricedAtStore.length + ' of ' + activeToBuy.length + ' priced here'];
+    if (notedCarriesOnly.length > 0) {
+      summaryParts.push(notedCarriesOnly.length + ' noted carried');
+    }
+    if (onlyElsewhere.length > 0) {
+      if (elseByStore.size === 1) {
+        const [onlyStoreName, cnt] = [...elseByStore.entries()][0];
+        summaryParts.push(cnt + ' only at ' + onlyStoreName);
+      } else {
+        for (const [onlyStoreName, cnt] of elseByStore.entries()) {
+          summaryParts.push(cnt + ' only at ' + onlyStoreName);
+        }
+      }
+    }
+    if (unconfirmed.length > 0) {
+      summaryParts.push(unconfirmed.length + ' no price yet');
+    }
+    if (notCarried.length > 0) {
+      summaryParts.push(notCarried.length + ' noted not carried');
+    }
+
+    const blockers = [...notCarried, ...onlyElsewhere, ...unconfirmed];
+    let verdictText = '';
+    let verdictClass = 'shop-store-verdict';
+    if (blockers.length === 0) {
+      verdictText = 'You only need ' + pickedDisplay + ' this week.';
+      verdictClass += ' shop-store-verdict-ok';
+    } else {
+      const unconfCount = onlyElsewhere.length + unconfirmed.length;
+      const notCarriedCount = notCarried.length;
+      const vParts = [];
+      if (notCarriedCount > 0) {
+        vParts.push(notCarriedCount + ' item' + (notCarriedCount === 1 ? '' : 's') + ' noted not carried at ' + pickedDisplay);
+        if (unconfCount > 0) {
+          vParts.push(unconfCount + ' unconfirmed');
+        }
+      } else {
+        vParts.push(unconfCount + ' item' + (unconfCount === 1 ? '' : 's') + ' unconfirmed at ' + pickedDisplay);
+      }
+      verdictText = vParts.join(' · ');
+      if (blockers.length <= 3) {
+        const names = blockers.map(it => String(it.displayHead || itemBaseKey(it) || it.label || '').trim()).filter(Boolean);
+        if (names.length) verdictText += ': ' + names.join(', ');
+      }
+    }
+
+    storeCoverageHTML =
+      '<p class="shop-store-summary">' + esc(summaryParts.join(' · ')) + '</p>' +
+      '<p class="' + verdictClass + '">' + esc(verdictText) + '</p>';
+
+    if (pricedAtStore.length > 0) {
+      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedAtStore.length + ' of ' + activeToBuy.length + ' items priced</p>';
+    }
+  } else if (!isStorePicked && pricesMap && activeToBuy.length > 0) {
+    // All-stores mode: sums the DISPLAYED To buy lines (activeToBuy). Pantry
+    // staples hidden by the Hide-staples toggle are not bought this week, so
+    // they must not count toward the total or M.
     let pricedCount = 0;
     let sumCents = 0;
     activeToBuy.forEach(it => {
-      const p = priceMatchFor(it);
+      const p = priceMatchFor(it, pricesMap);
       if (p) {
         pricedCount++;
         sumCents += Number(p.price_cents) || 0;
@@ -1929,12 +2718,12 @@ function shoppingListHTML() {
     }
   }
 
-  let html = '<div class="week-strip no-print">' + weekStripHTML() + '</div>';
+  let html = '<div class="week-strip no-print">' + weekStripHTML() + '</div>' + storeBarHTML;
   if (!items.length && !week.manualItems.some(m => !m.deleted)) {
     html += '<p class="muted">Nothing planned yet' + (from ? ' from the shopping day onward' : '') +
       ' — <a href="#/planner">plan your week</a> and your shopping list builds itself here.</p>';
   } else {
-    html += estTotalHTML;
+    html += storeCoverageHTML + estTotalHTML;
     const toBuyHTML = renderShopSections(activeToBuy, manToBuy, renderGenToBuy, renderManToBuy, 'data-gen="1"');
     if (toBuyHTML) {
       html += '<h3 class="shop-sub">To buy</h3>' + toBuyHTML;
@@ -2109,9 +2898,15 @@ async function renderShopping(app) {
 
   // Fetch full JSONs for planned recipes only (parallel).
   await ensurePlannedRecipes();
+  loadStoreNotesLocal();
   renderShopWrap();
-  // One-time per-session price-history fetch (never refetches on re-render).
+  // One-time per-session price-history & store-notes fetches (never refetch on re-render).
   ensurePriceHistoryLoaded(() => {
+    if (typeof location === 'undefined' || (location.hash || '#/') === '#/shopping') {
+      renderShopWrap();
+    }
+  });
+  ensureStoreNotesLoaded(() => {
     if (typeof location === 'undefined' || (location.hash || '#/') === '#/shopping') {
       renderShopWrap();
     }
@@ -2137,6 +2932,14 @@ async function renderShopping(app) {
   }
   const stapleToggle = $('#shop-hide-staples');
   if (stapleToggle) stapleToggle.addEventListener('change', () => { setHideStaples(stapleToggle.checked); rerender(); });
+  if (shopWrap && typeof shopWrap.addEventListener === 'function') {
+    shopWrap.addEventListener('change', e => {
+      if (e && e.target && e.target.id === 'shop-store-picker') {
+        setShopStore(e.target.value);
+        rerender();
+      }
+    });
+  }
   // Start 15s background sync while the shopping page is open
   startShopPoll();
 
@@ -2154,7 +2957,7 @@ async function renderShopping(app) {
       }
       return;
     }
-    // 2. Row ⋮ menu actions (Delete / Move to to buy)
+    // 2. Row ⋮ menu actions (Delete / Move to to buy / Store carries notes)
     const menuAct = e.target.closest('[data-shop-act]');
     if (menuAct) {
       const act = menuAct.dataset.shopAct;
@@ -2168,6 +2971,16 @@ async function renderShopping(app) {
       if (act === 'move-to-buy' && k) {
         setPromoted(week, k, true);
         markShopDirty(); rerender(); return;
+      }
+      if ((act === 'note-carries' || act === 'note-not-carried') && k) {
+        const picked = getShopStore();
+        if (picked && picked !== 'all') {
+          const bk = menuAct.dataset.shopBase || String(k).split('|')[0].toLowerCase();
+          const targetSt = act === 'note-carries' ? 'carries' : 'not-carried';
+          toggleStoreNote(bk, picked, targetSt).catch(() => {});
+          rerender();
+        }
+        return;
       }
       return;
     }
