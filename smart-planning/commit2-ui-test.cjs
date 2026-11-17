@@ -11,7 +11,9 @@ const path = require('path');
 
 const SITE_DIR = fs.existsSync(path.join(__dirname, 'app.js'))
   ? __dirname
-  : path.join(__dirname, '..', 'site');
+  : (fs.existsSync(path.join(__dirname, '..', 'site', 'app.js'))
+    ? path.join(__dirname, '..', 'site')
+    : path.join(__dirname, '..'));
 const SRC = fs.readFileSync(path.join(SITE_DIR, 'app.js'), 'utf8');
 const CSS = fs.readFileSync(path.join(SITE_DIR, 'styles.css'), 'utf8');
 const geval = (0, eval);
@@ -81,11 +83,21 @@ globalThis.fetch = async () => {
 globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse(text); return { ok: true }; };
 
 /* ---------------- load the real code ---------------- */
-['totalTime', 'ymd', 'blankSlot'].forEach(n => geval(extractDeclSemi(n)));
+['totalTime', 'ymd', 'blankSlot', 'SHOP_STORE_KEY', 'STORE_NOTES_LOCAL_KEY'].forEach(n => geval(extractDeclSemi(n)));
 ['PLAN_RE', 'YIELD_LEFT_VALUES', 'TSP_PER', 'COUNT_TO_TSP', 'SIZE_WORDS',
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
  'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS',
- 'ITEM_ALIASES', 'UNIT_ALIASES'].forEach(n => geval(extractDecl(n)));
+ 'ITEM_ALIASES', 'UNIT_ALIASES',
+ 'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_QUALIFIED_HEADS'].forEach(n => geval(extractDecl(n)));
+globalThis._priceHistoryCache = null;
+globalThis._priceHistoryInFlight = null;
+globalThis._priceHistoryFetched = false;
+globalThis._openPriceDetailKeys = new Set();
+globalThis._storeNotesCache = {};
+globalThis._storeNotesInFlight = null;
+globalThis._storeNotesFetched = false;
+globalThis._saveStoreNotesChain = Promise.resolve();
+globalThis._saveStoreNotesInFlight = 0;
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -102,6 +114,13 @@ extract('parseQty', true).forEach(src => geval(src));
  'thisWeekKey', 'shoppingFromYmd', 'getWeek', 'recipeMeta', 'sectionMatchWords', 'lookupShoppingSection', 'buildShoppingList',
  'normalizeHaveMarks', 'mergeHaveMarks', 'mergeManualItems', 'normalizePromotedList',
  'mergePromoted', 'mergeWeekState', 'mergeMealPlan', 'mergeDraftSnap', 'bridgeReadMealPlan',
+ 'normalizeStore', 'displayStoreName', 'getShopStore', 'setShopStore',
+ 'normalizeStoreNotes', 'mergeStoreNotes', 'saveStoreNotesLocal', 'loadStoreNotesLocal',
+ 'setStoreNotesCache', 'resetStoreNotesSession', 'bridgeReadStoreNotes',
+ 'ensureStoreNotesLoaded', 'saveStoreNotes', 'getStoreNoteStatus', 'toggleStoreNote',
+ 'priceMatchWords', 'priceHeadNoun', 'mergePriceHistoryEntryPair',
+ 'entryPriceAtStore', 'entryPriceElsewhere', 'priceMatchFor', 'collectKnownStores',
+ 'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded',
  'slugify',
  'weekKeyDate', 'addDaysToKey', 'daysBetweenKeys', 'prevWeekKeyOf',
  'planningRawWeek', 'planSlot', 'planningPrefs', 'allPlanningMeta',
@@ -2219,8 +2238,8 @@ async function main() {
     romPrice.avg12m_cents === Math.round((299 + 349 + 319) / 3) &&
     romPrice.last3.length === 3 &&
     JSON.stringify(romPrice.last3.map(x => x.price_cents)) === JSON.stringify([299, 349, 319]) &&
-    Object.keys(romPrice).sort().join(',') === 'avg12m_cents,bought_name,last3,price_cents,receipt_date,store' &&
-    Object.keys(romPrice.last3[0]).sort().join(',') === 'price_cents,receipt_date,store' &&
+    Object.keys(romPrice).sort().join(',') === 'avg12m_cents,bought_name,by_store,last3,price_cents,receipt_date,store' &&
+    Object.keys(romPrice.last3[0]).sort().join(',') === 'bought_name,price_cents,receipt_date,store' &&
     !!jalPrice &&
     jalPrice.price_cents === 89 &&
     jalPrice.bought_name === 'JALAPENO PEPPER' &&
@@ -2962,6 +2981,450 @@ async function main() {
     secApple.department === 'Fresh Produce' && secApple.subcategory === 'Fresh Fruit' &&
     secCornmeal.department === 'Grocery' && secCornmeal.subcategory === 'Baking Needs' &&
     secOlcha.department === 'Unsorted');
+
+  // ---------------------------------------------------------------------------
+  // 32. Store-aware shopping list (v20261115e + Worker git-v13, Nov 15, 2026):
+  //     word-overlap price matching, store picker, per-store badges/flags/sort/total,
+  //     tap-to-note "carries this" (data/store-notes.json), coverage summary & verdict.
+  // ---------------------------------------------------------------------------
+  const fixtureCandidates32 = [
+    path.join(SITE_DIR, 'hidden_files', 'store-picker-20261115', 'price-history-fixture-20261115.json'),
+    path.join(__dirname, '..', 'hidden_files', 'store-picker-20261115', 'price-history-fixture-20261115.json'),
+    path.join(SITE_DIR, 'price-history-fixture-20261115.json'),
+    path.join(__dirname, '..', 'price-history-fixture-20261115.json'),
+    path.join(__dirname, 'price-history-fixture-20261115.json')
+  ];
+  const fixturePath32 = fixtureCandidates32.find(p => fs.existsSync(p));
+  const fixtureJson32 = JSON.parse(fs.readFileSync(fixturePath32, 'utf8'));
+  const fixturePrices32 = fixtureJson32.prices;
+
+  // 32(a) Word-overlap price matching, false-positive guards, tie guard, and 76-key deterministic fixture check
+  const matchMozz32 = priceMatchFor('shredded mozzarella', fixturePrices32);
+  const matchPotato32 = priceMatchFor('russet potato', fixturePrices32);
+  const matchChoco32 = priceMatchFor('semi-sweet chocolate chips', fixturePrices32);
+  const matchStock32 = priceMatchFor('chicken stock', fixturePrices32);
+  const matchRomaine32 = priceMatchFor('heart of romaine lettuce', fixturePrices32);
+  check('Section 32(a) (price fallback hits): word-overlap matches shredded mozzarella -> Part Skim Mozzarella Cheese, russet potato -> Potato Idaho - Loose, semi-sweet chocolate chips -> Semi Sweet Real Choco Chips (choco->chocolate), chicken stock -> Broth Chicken (broth->stock), and merges hyphen/space romaine-heart + romaine heart',
+    !!matchMozz32 && matchMozz32.bought_name === 'Part Skim Mozzarella Cheese' && matchMozz32.price_cents === 549 &&
+    !!matchPotato32 && matchPotato32.bought_name === 'Potato Idaho - Loose' && matchPotato32.price_cents === 150 &&
+    !!matchChoco32 && matchChoco32.bought_name === 'Semi Sweet Real Choco Chips' && matchChoco32.price_cents === 898 &&
+    !!matchStock32 && matchStock32.bought_name === 'Broth Chicken' && matchStock32.price_cents === 1000 &&
+    !!matchRomaine32 && matchRomaine32.price_cents === 349 &&
+    !!matchRomaine32.by_store &&
+    matchRomaine32.by_store['trader joes'].price_cents === 349 &&
+    matchRomaine32.by_store['arons'].price_cents === 399);
+
+  const fixtureWithoutChoco32 = { ...fixturePrices32 };
+  delete fixtureWithoutChoco32['liebers semi sweet real choco chip'];
+  const tieMap32 = {
+    'gefen garlic cube': { price_cents: 299, store: "Aron's Kissena Farms", bought_name: 'Gefen Garlic Cubes', receipt_date: '2026-11-01', avg12m_cents: null, last3: [] },
+    'dorot crushed garlic': { price_cents: 349, store: "Trader Joe's", bought_name: 'Dorot Crushed Garlic', receipt_date: '2026-11-08', avg12m_cents: null, last3: [] }
+  };
+  check('Section 32(a) (false-positive & tie guards): chicken breast != chicken broth, red bell pepper != red onion, apple cider vinegar != apple, chocolate chip != potato chip, olive oil/kosher salt != potato chips olive oil salt vinegar, and a top-score tie returns null',
+    priceMatchFor('chicken breast', fixturePrices32) === null &&
+    priceMatchFor('boneless skinless chicken breast', fixturePrices32) === null &&
+    priceMatchFor('red bell pepper', fixturePrices32) === null &&
+    priceMatchFor('apple cider vinegar', fixturePrices32) === null &&
+    priceMatchFor('chocolate chip', fixtureWithoutChoco32) === null &&
+    priceMatchFor('olive oil', fixturePrices32) === null &&
+    priceMatchFor('kosher salt', fixturePrices32) === null &&
+    priceMatchFor('garlic powder', tieMap32) === null);
+
+  // Deterministic corpus/week check on the live 2026-11-15 week against the 76-key fixture
+  const savedPlan32 = globalThis.mealPlan;
+  const savedRecipes32 = globalThis.recipes;
+  const savedMetaById32 = globalThis.metaById;
+  const savedById32 = globalThis.byId;
+  const savedSec32 = globalThis.shoppingSections;
+  const savedThisWeekKey32 = globalThis.thisWeekKey;
+  globalThis.mealPlan = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'meal-plan.json'), 'utf8'));
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  globalThis.recipes = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'recipes', 'meta.json'), 'utf8'));
+  globalThis.metaById = {};
+  globalThis.recipes.forEach(m => { globalThis.metaById[m.id] = m; });
+  globalThis.byId = {};
+  for (const rf of recipeFiles26) {
+    if (rf === 'index.json' || rf === 'meta.json') continue;
+    const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
+    if (rj && rj.id) globalThis.byId[rj.id] = rj;
+  }
+  globalThis.thisWeekKey = () => '2026-11-15';
+  const liveWeekList32 = buildShoppingList();
+  const matchedOnLiveWeek32 = liveWeekList32.filter(it => !!priceMatchFor(it, fixturePrices32));
+  check('Section 32(a) (76-key fixture corpus check): fixture has 76 keys and deterministically matches 14 of 66 items on the 2026-11-15 week (up from 0 exact without normalization)',
+    Object.keys(fixturePrices32).length === 76 &&
+    liveWeekList32.length === 66 &&
+    matchedOnLiveWeek32.length === 14);
+  globalThis.thisWeekKey = savedThisWeekKey32;
+  globalThis.mealPlan = savedPlan32;
+  globalThis.recipes = savedRecipes32;
+  globalThis.metaById = savedMetaById32;
+  globalThis.byId = savedById32;
+  globalThis.shoppingSections = savedSec32;
+
+  // 32(b) Store picker: default All, localStorage round-trip, store-name normalization, and refresh inside #shop-wrap
+  const savedLocal32 = globalThis.localStorage;
+  globalThis.localStorage = stubStorage({});
+  resetStoreNotesSession();
+  setStoreNotesCache({});
+  check('Section 32(b) (store normalization & persistence): default is "all", normalizeStore unifies "Aron\'s Kissena Farms" and "Arons Kissena Farms" to "arons" (displayed as "Aron\'s"), and setShopStore/getShopStore round-trip via localStorage',
+    getShopStore() === 'all' &&
+    normalizeStore("Aron's Kissena Farms") === 'arons' &&
+    normalizeStore('Arons Kissena Farms') === 'arons' &&
+    normalizeStore("Aron's") === 'arons' &&
+    displayStoreName("Aron's Kissena Farms") === "Aron's" &&
+    normalizeStore("Trader Joe's") === 'trader joes' &&
+    displayStoreName("Trader Joe's") === "Trader Joe's" &&
+    setShopStore("Aron's Kissena Farms") === 'arons' &&
+    getShopStore() === 'arons' &&
+    globalThis.localStorage.getItem('recipe-shop-store') === 'arons' &&
+    setShopStore('all') === 'all' &&
+    getShopStore() === 'all');
+
+  // Set up deterministic 32(b)-(g) shopping week with Fresh Produce + Grocery + hidden staple + Optional + Already-have
+  setMeta([
+    { id: 'r32-main', title: 'Store Picker Test Dish', kosher_status: 'pareve', categories: ['main'], servings: '4' }
+  ]);
+  globalThis.byId = {
+    'r32-main': {
+      id: 'r32-main', title: 'Store Picker Test Dish', servings: '4',
+      ingredients: [{ section: '', items: [
+        { qty: '1', unit: '', item: 'heart of romaine lettuce' },
+        { qty: '2', unit: '', item: 'carrots' },
+        { qty: '3', unit: 'cloves', item: 'garlic' },
+        { qty: '1', unit: '', item: 'shallot' },
+        { qty: '1', unit: 'pack', item: 'flour tortillas' },
+        { qty: '1', unit: 'tsp', item: 'sugar' },
+        { qty: '1', unit: '', item: 'avocado', optional: true }
+      ] }]
+    }
+  };
+  globalThis.shoppingSections = {
+    departments: ['Fresh Produce', 'Grocery'],
+    fallbackDepartment: 'Unsorted',
+    items: {
+      'heart of romaine lettuce': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'carrot': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'garlic': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'shallot': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
+      'avocado': { department: 'Fresh Produce', subcategory: 'Fresh Fruit' },
+      'flour tortilla': { department: 'Grocery', subcategory: 'Bakery' },
+      'sugar': { department: 'Grocery', subcategory: 'Baking Needs' }
+    }
+  };
+  const K32 = thisWeekKey();
+  const days32 = blankDays();
+  days32[0].dinner.dishes = [{ recipe: 'r32-main', drafted: false }];
+  setPlan({ [K32]: { days: days32, shoppingDay: K32, haveGenerated: [], manualItems: [] } });
+
+  // Pre-select Trader Joe's while price history is not yet loaded, then resolve price history -> picker in #shop-wrap keeps selection & renders normalized options
+  setShopStore("Trader Joe's");
+  setPriceHistoryCache(null);
+  const htmlBeforeLoad32 = shoppingListHTML();
+  const storePriceFixture32 = {
+    'romaine-heart': {
+      price_cents: 349,
+      store: "Trader Joe's",
+      bought_name: 'TJ Romaine Hearts',
+      receipt_date: '2026-11-08',
+      avg12m_cents: 374,
+      by_store: {
+        'trader joes': { price_cents: 349, store: "Trader Joe's", bought_name: 'TJ Romaine Hearts', receipt_date: '2026-11-08' },
+        'arons': { price_cents: 399, store: "Aron's Kissena Farms", bought_name: "Aron's Romaine Hearts", receipt_date: '2026-09-29' }
+      },
+      last3: [
+        { price_cents: 349, store: "Trader Joe's", bought_name: 'TJ Romaine Hearts', receipt_date: '2026-11-08' },
+        { price_cents: 399, store: "Aron's Kissena Farms", bought_name: "Aron's Romaine Hearts", receipt_date: '2026-09-29' }
+      ]
+    },
+    'carrots-cut-peeled': {
+      price_cents: 199,
+      store: "Trader Joe's",
+      bought_name: 'Carrots Cut & Peeled',
+      receipt_date: '2026-11-08',
+      avg12m_cents: null,
+      by_store: {
+        'trader joes': { price_cents: 199, store: "Trader Joe's", bought_name: 'Carrots Cut & Peeled', receipt_date: '2026-11-08' }
+      },
+      last3: [{ price_cents: 199, store: "Trader Joe's", bought_name: 'Carrots Cut & Peeled', receipt_date: '2026-11-08' }]
+    },
+    'garlic loose': {
+      price_cents: 250,
+      store: "Aron's Kissena Farms",
+      bought_name: 'Garlic Loose',
+      receipt_date: '2026-11-01',
+      avg12m_cents: null,
+      by_store: {
+        'arons': { price_cents: 250, store: 'Arons Kissena Farms', bought_name: 'Garlic Loose', receipt_date: '2026-11-01' }
+      },
+      last3: [{ price_cents: 250, store: "Aron's Kissena Farms", bought_name: 'Garlic Loose', receipt_date: '2026-11-01' }]
+    },
+    'avocado ha': {
+      price_cents: 297,
+      store: "Aron's Kissena Farms",
+      bought_name: 'Avocado Hass Large',
+      receipt_date: '2026-09-29',
+      avg12m_cents: null,
+      by_store: {
+        'arons': { price_cents: 297, store: "Aron's Kissena Farms", bought_name: 'Avocado Hass Large', receipt_date: '2026-09-29' }
+      },
+      last3: [{ price_cents: 297, store: "Aron's Kissena Farms", bought_name: 'Avocado Hass Large', receipt_date: '2026-09-29' }]
+    },
+    'sugar': {
+      price_cents: 129,
+      store: "Trader Joe's",
+      bought_name: 'Organic Cane Sugar',
+      receipt_date: '2026-11-08',
+      avg12m_cents: null,
+      by_store: {
+        'trader joes': { price_cents: 129, store: "Trader Joe's", bought_name: 'Organic Cane Sugar', receipt_date: '2026-11-08' }
+      },
+      last3: [{ price_cents: 129, store: "Trader Joe's", bought_name: 'Organic Cane Sugar', receipt_date: '2026-11-08' }]
+    }
+  };
+  setPriceHistoryCache(storePriceFixture32);
+  const htmlTJ32 = shoppingListHTML();
+  const aronsOptionMatches32 = htmlTJ32.match(/<option value="arons"/g) || [];
+  check('Section 32(b) (picker mount in #shop-wrap & deduplicated store options): pre-selected store stays selected before and after price fetch, and "Aron\'s Kissena Farms" + "Arons Kissena Farms" collapse into a single "Aron\'s" option',
+    htmlBeforeLoad32.includes('<option value="trader joes" selected>Trader Joe&#39;s</option>') &&
+    htmlTJ32.includes('id="shop-store-picker"') &&
+    htmlTJ32.includes('<option value="trader joes" selected>Trader Joe&#39;s</option>') &&
+    htmlTJ32.includes('<option value="arons">Aron&#39;s</option>') &&
+    aronsOptionMatches32.length === 1);
+
+  // 32(c) Per-store price badge + "not seen here" flag + Already-have suppression
+  setShopStore('arons');
+  const htmlArons32 = shoppingListHTML();
+  setShopStore('trader joes');
+  check('Section 32(c) (per-store badge & "not seen here" flag): mixed-store item shows store-specific bought_name + price (TJ Romaine Hearts $3.49 vs Aron\'s Romaine Hearts $3.99); item only at Aron\'s shows "last bought at Aron\'s $2.50 · Nov 1 — no Trader Joe\'s price yet" on To buy and Optional rows; unpriced item shows neither',
+    htmlTJ32.includes('TJ Romaine Hearts · $3.49 · Trader Joe&#39;s · Nov 8') &&
+    !htmlTJ32.includes('Aron&#39;s Romaine Hearts · $3.99') &&
+    htmlArons32.includes('Aron&#39;s Romaine Hearts · $3.99 · Aron&#39;s · Sep 29') &&
+    !htmlArons32.includes('TJ Romaine Hearts · $3.49') &&
+    htmlTJ32.includes('last bought at Aron&#39;s $2.50 · Nov 1 — no Trader Joe&#39;s price yet') &&
+    htmlTJ32.includes('last bought at Aron&#39;s $2.97 · Sep 29 — no Trader Joe&#39;s price yet') &&
+    !htmlTJ32.includes('data-price-toggle="flour tortilla|pack"') &&
+    !htmlTJ32.includes('flour tortillas</span><span class="shop-price-flag">'));
+
+  // Mark garlic and romaine as Already have -> neither badge nor flag appears on Already-have rows
+  getWeek(K32).haveGenerated = [
+    { key: 'heart of romaine lettuce|', session: 's1', at: 100, qty: 1, unit: '' },
+    { key: 'garlic|clove', session: 's1', at: 100, qty: 3, unit: 'clove' }
+  ];
+  const htmlHave32 = shoppingListHTML();
+  getWeek(K32).haveGenerated = [];
+  check('Section 32(c) (Already-have rows stay badgeless & flagless): moving priced-here or priced-elsewhere items to Already have suppresses both .shop-price-badge and .shop-price-flag',
+    !htmlHave32.includes('TJ Romaine Hearts · $3.49') &&
+    !htmlHave32.includes('last bought at Aron&#39;s $2.50'));
+
+  // 32(d) Sort within department section: pricedAtStore (tier 0) -> pricedOnlyElsewhere (tier 1) -> unpriced (tier 2), section order preserved
+  const posRomaine32 = htmlTJ32.indexOf('1 heart of romaine lettuce');
+  const posCarrots32 = htmlTJ32.indexOf('2 carrots');
+  const posGarlic32 = htmlTJ32.indexOf('3 cloves garlic');
+  const posShallot32 = htmlTJ32.indexOf('1 shallot');
+  const posFreshDept32 = htmlTJ32.indexOf('<span>Fresh Produce</span>');
+  const posGroceryDept32 = htmlTJ32.indexOf('<span>Grocery</span>');
+  check('Section 32(d) (per-store department sort): within Fresh Produce, TJ-priced rows (1 heart of romaine lettuce, 2 carrots) precede Aron\'s-only row (3 cloves garlic), which precedes unpriced row (1 shallot), while Fresh Produce stays above Grocery',
+    posFreshDept32 > 0 &&
+    posGroceryDept32 > posFreshDept32 &&
+    posRomaine32 > posFreshDept32 &&
+    posCarrots32 > posRomaine32 &&
+    posGarlic32 > posCarrots32 &&
+    posShallot32 > posGarlic32 &&
+    posShallot32 < posGroceryDept32);
+
+  // 32(e) Tap-to-note "carries this" / "doesn't carry this" + persistence to data/store-notes.json without touching meal-plan.json
+  setShopStore('all');
+  const htmlAllNoNoteMenu32 = shoppingListHTML();
+  setShopStore('trader joes');
+  let savedStoreNotesText32 = '{}';
+  let storeNotesSaveCount32 = 0;
+  let mealPlanSaveCount32 = 0;
+  let markShopDirtyCalls32 = 0;
+  const savedGhPut32 = globalThis.ghPut;
+  const savedFetch32 = globalThis.fetch;
+  const savedMarkDirty32 = globalThis.markShopDirty;
+  globalThis.markShopDirty = () => { markShopDirtyCalls32++; };
+  globalThis.fetch = async url => {
+    if (String(url).includes('data%2Fstore-notes.json') || String(url).includes('data/store-notes.json')) {
+      return { ok: true, status: 200, json: async () => ({ ok: true, content: savedStoreNotesText32 }) };
+    }
+    return { ok: true, status: 200, json: async () => ({ ok: true, content: JSON.stringify(serverState) }) };
+  };
+  globalThis.ghPut = async (p, text) => {
+    if (p === 'data/store-notes.json') {
+      storeNotesSaveCount32++;
+      savedStoreNotesText32 = text;
+      return { ok: true };
+    }
+    mealPlanSaveCount32++;
+    serverState = JSON.parse(text);
+    return { ok: true };
+  };
+
+  await toggleStoreNote('garlic', 'trader joes', 'carries');
+  const htmlAfterCarries32 = shoppingListHTML();
+  const parsedAfterCarries32 = JSON.parse(savedStoreNotesText32);
+  check('Section 32(e) (note-carries): menu items appear only when a store is picked; noting garlic "carries" at Trader Joe\'s renders "✓ at Trader Joe\'s", writes data/store-notes.json, and never touches meal-plan.json or markShopDirty()',
+    !htmlAllNoNoteMenu32.includes('data-shop-act="note-carries"') &&
+    htmlTJ32.includes('data-shop-act="note-carries"') &&
+    htmlTJ32.includes('data-shop-act="note-not-carried"') &&
+    htmlAfterCarries32.includes('✓ at Trader Joe&#39;s') &&
+    storeNotesSaveCount32 === 1 &&
+    mealPlanSaveCount32 === 0 &&
+    markShopDirtyCalls32 === 0 &&
+    parsedAfterCarries32.garlic &&
+    parsedAfterCarries32.garlic['trader joes'].status === 'carries' &&
+    typeof parsedAfterCarries32.garlic['trader joes'].updatedAt === 'number');
+
+  // Tap carries again on garlic -> clears note via status: null tombstone
+  await sleep(5);
+  await toggleStoreNote('garlic', 'trader joes', 'carries');
+  const htmlAfterClear32 = shoppingListHTML();
+  const parsedAfterClear32 = JSON.parse(savedStoreNotesText32);
+  check('Section 32(e) (clear note via tombstone): tapping active "carries" a second time writes { status: null, updatedAt } tombstone and removes the note badge across re-render',
+    !htmlAfterClear32.includes('✓ at Trader Joe&#39;s') &&
+    parsedAfterClear32.garlic['trader joes'].status === null &&
+    parsedAfterClear32.garlic['trader joes'].updatedAt > parsedAfterCarries32.garlic['trader joes'].updatedAt);
+
+  // 32(f) & 32(g) Coverage summary, one-store-week verdict, and per-store estimated total (with Hide-staples ON so sugar staple is hidden)
+  globalThis.localStorage.setItem('recipe-hide-staples', '1');
+  // Active To buy items (with sugar hidden): romaine ($3.49 TJ), carrots ($1.99 TJ), garlic ($2.50 Aron's only), shallot (unpriced), flour tortillas (unpriced) -> M = 5, N = 2 priced at TJ ($5.48)
+  const htmlSummaryInit32 = shoppingListHTML();
+  check('Section 32(f) & 32(g) (initial coverage summary, verdict & per-store total): 2 of 5 priced at TJ ($5.48, hidden sugar staple $1.29 and Aron\'s-only garlic $2.50 excluded), 1 only at Aron\'s, 2 no price yet, and 3 unconfirmed items named in verdict',
+    htmlSummaryInit32.includes('Trader Joe&#39;s: 2 of 5 priced here · 1 only at Aron&#39;s · 2 no price yet') &&
+    htmlSummaryInit32.includes('3 items unconfirmed at Trader Joe&#39;s: garlic, shallot, flour tortillas') &&
+    !htmlSummaryInit32.includes('You only need Trader Joe&#39;s this week.') &&
+    htmlSummaryInit32.includes('Estimated total about $5.48 · 2 of 5 items priced'));
+
+  // Note garlic, shallot, and flour tortilla as "carries" at Trader Joe's -> all 5 activeToBuy items are now either pricedAtStore (2) or notedCarriesOnly (3) -> one-store-week verdict fires!
+  await toggleStoreNote('garlic', 'trader joes', 'carries');
+  await toggleStoreNote('shallot', 'trader joes', 'carries');
+  await toggleStoreNote('flour tortilla', 'trader joes', 'carries');
+  const htmlVerdictOk32 = shoppingListHTML();
+  check('Section 32(f) (one-store-week verdict): when all active To buy items are priced at Trader Joe\'s (2) or noted carried (3), summary drops "only at Aron\'s" and verdict shows "You only need Trader Joe\'s this week."',
+    htmlVerdictOk32.includes('Trader Joe&#39;s: 2 of 5 priced here · 3 noted carried') &&
+    !htmlVerdictOk32.includes('only at Aron&#39;s') &&
+    htmlVerdictOk32.includes('class="shop-store-verdict shop-store-verdict-ok">You only need Trader Joe&#39;s this week.</p>'));
+
+  // Now mark carrots (which has a $1.99 TJ price!) as "not-carried" at Trader Joe's -> blocks verdict, names carrots, and drops TJ total from $5.48 (2 of 5) to $3.49 (1 of 5)!
+  await toggleStoreNote('carrot', 'trader joes', 'not-carried');
+  const htmlNotCarried32 = shoppingListHTML();
+  check('Section 32(f) & 32(g) (not-carried blocks verdict & excludes item from store total): noting carrots not-carried at Trader Joe\'s blocks the verdict, names carrots, and drops the TJ total from $5.48 (2 of 5) to $3.49 (1 of 5)',
+    htmlNotCarried32.includes('✗ not at Trader Joe&#39;s') &&
+    htmlNotCarried32.includes('Trader Joe&#39;s: 1 of 5 priced here · 3 noted carried · 1 noted not carried') &&
+    htmlNotCarried32.includes('1 item noted not carried at Trader Joe&#39;s: carrots') &&
+    !htmlNotCarried32.includes('You only need Trader Joe&#39;s this week.') &&
+    htmlNotCarried32.includes('Estimated total about $3.49 · 1 of 5 items priced'));
+
+  // All-stores mode and empty activeToBuy suppress both summary and verdict
+  setShopStore('all');
+  const htmlAllNoVerdict32 = shoppingListHTML();
+  setShopStore('trader joes');
+  setPlan({ [K32]: { days: blankDays(), shoppingDay: K32, haveGenerated: [], manualItems: [] } });
+  const htmlEmptyNoVerdict32 = shoppingListHTML();
+  check('Section 32(f) (All stores & empty list suppress summary/verdict): neither .shop-store-summary nor .shop-store-verdict renders on All stores or when activeToBuy is empty',
+    !htmlAllNoVerdict32.includes('shop-store-summary') &&
+    !htmlAllNoVerdict32.includes('shop-store-verdict') &&
+    !htmlEmptyNoVerdict32.includes('shop-store-summary') &&
+    !htmlEmptyNoVerdict32.includes('shop-store-verdict'));
+
+  globalThis.ghPut = savedGhPut32;
+  globalThis.fetch = savedFetch32;
+  globalThis.markShopDirty = savedMarkDirty32;
+  globalThis.localStorage = savedLocal32;
+  resetStoreNotesSession();
+
+  // 32(h) mergeStoreNotes tombstone LWW unit test
+  const mergedNotes32 = mergeStoreNotes(
+    {
+      kishka: {
+        'trader joes': { status: 'carries', updatedAt: 1763220000000 },
+        'arons': { status: 'carries', updatedAt: 1763220005000 }
+      }
+    },
+    {
+      kishka: {
+        'trader joes': { status: null, updatedAt: 1763220010000 }
+      }
+    }
+  );
+  check('Section 32(h) (mergeStoreNotes LWW & tombstones): a newer status: null tombstone (t2) beats an older "carries" (t1) for the same store while preserving other stores on the same baseKey',
+    mergedNotes32.kishka['trader joes'].status === null &&
+    mergedNotes32.kishka['trader joes'].updatedAt === 1763220010000 &&
+    mergedNotes32.kishka.arons.status === 'carries' &&
+    mergedNotes32.kishka.arons.updatedAt === 1763220005000);
+
+  // 32(i) Bridge git-v13: worker.js /save allowlist (data/store-notes.json allowed, data/other.json 403) + receipts.js per-store by_store & last3[].bought_name
+  const workerCandidates32 = [
+    path.join(SITE_DIR, 'worker.js'),
+    path.join(SITE_DIR, 'bridge-git-v12', 'worker.js'),
+    path.join(__dirname, '..', 'worker.js')
+  ];
+  const workerPath32 = workerCandidates32.find(p => fs.existsSync(p));
+  const workerMod32 = await import(pathToFileURL(workerPath32).href);
+  const savedWorkerFetch32 = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    if (init && init.method === 'PUT') {
+      return new Response(JSON.stringify({ commit: { sha: 'commit-sha-32' } }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ sha: 'old-sha-32', type: 'file', content: 'e30=' }), { status: 200 });
+  };
+  const healthRes32 = await workerMod32.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/health'),
+    { GITHUB_TOKEN: 'fake-token' }
+  );
+  const healthJson32 = await healthRes32.json();
+  const saveAllowedRes32 = await workerMod32.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: 'data/store-notes.json', content: '{}\n', message: 'test store notes' })
+    }),
+    { GITHUB_TOKEN: 'fake-token' }
+  );
+  const saveAllowedJson32 = await saveAllowedRes32.json();
+  const saveBlockedRes32 = await workerMod32.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: 'data/other.json', content: '{}\n', message: 'blocked path' })
+    }),
+    { GITHUB_TOKEN: 'fake-token' }
+  );
+  globalThis.fetch = savedWorkerFetch32;
+  check('Section 32(i) (worker git-v13 allowlist & version): worker.js /health reports version "git-v13", /save accepts "data/store-notes.json" (200 ok:true), and /save rejects "data/other.json" with 403',
+    healthRes32.status === 200 &&
+    healthJson32.version === 'git-v13' &&
+    saveAllowedRes32.status === 200 &&
+    saveAllowedJson32.ok === true &&
+    saveBlockedRes32.status === 403);
+
+  const multiStoreRows32 = [
+    // 3 recent Trader Joe's purchases + 1 older Aron's purchase (must survive in by_store.arons even though evicted from last3!)
+    { status: 'verified', needs_review: 0, group_key: 'romaine heart', paid_price_cents: 349, store: "Trader Joe's", product_name: 'TJ Romaine 1', raw_line: 'ROMAINE 1', receipt_date: '2026-11-10', receipt_id: 'r4', item_id: 4 },
+    { status: 'verified', needs_review: 0, group_key: 'romaine heart', paid_price_cents: 339, store: "Trader Joe's", product_name: 'TJ Romaine 2', raw_line: 'ROMAINE 2', receipt_date: '2026-11-05', receipt_id: 'r3', item_id: 3 },
+    { status: 'verified', needs_review: 0, group_key: 'romaine heart', paid_price_cents: 329, store: "Trader Joe's", product_name: 'TJ Romaine 3', raw_line: 'ROMAINE 3', receipt_date: '2026-11-01', receipt_id: 'r2', item_id: 2 },
+    { status: 'verified', needs_review: 0, group_key: 'romaine heart', paid_price_cents: 399, store: "Aron's Kissena Farms", product_name: "Aron's Romaine Hearts", raw_line: 'ARONS ROMAINE', receipt_date: '2026-09-29', receipt_id: 'r1', item_id: 1 }
+  ];
+  const phMultiRes32 = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(multiStoreRows32),
+    { nowMs: new Date('2026-11-15T12:00:00Z').getTime() }
+  );
+  const phMultiJson32 = await phMultiRes32.json();
+  const romMulti32 = phMultiJson32.prices['romaine heart'];
+  check('Section 32(i) (worker /price-history by_store & last3[].bought_name): preserves per-store latest in by_store even when 3 newer purchases at another store evict it from last3, includes bought_name on last3 entries, and exposes zero private fields',
+    !!romMulti32 &&
+    romMulti32.last3.length === 3 &&
+    romMulti32.last3.every(x => x.store === "Trader Joe's" && typeof x.bought_name === 'string' && x.bought_name.startsWith('TJ Romaine')) &&
+    !!romMulti32.by_store &&
+    romMulti32.by_store['trader joes'].price_cents === 349 &&
+    romMulti32.by_store['trader joes'].bought_name === 'TJ Romaine 1' &&
+    romMulti32.by_store['arons'].price_cents === 399 &&
+    romMulti32.by_store['arons'].bought_name === "Aron's Romaine Hearts" &&
+    romMulti32.by_store['arons'].receipt_date === '2026-09-29' &&
+    Object.keys(romMulti32.by_store['arons']).sort().join(',') === 'bought_name,price_cents,receipt_date,store');
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
