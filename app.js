@@ -1233,11 +1233,32 @@ function renderShopWrap() {
     const d = wrapEl.querySelector('details.' + cls);
     if (d) openState[cls] = d.open;
   });
+  // Preserve the manual-add draft across the rebuild: the input's text lives
+  // only in the DOM, and replacing innerHTML destroys the focused input (and
+  // dismisses the keyboard). Save the text + cursor first, restore after.
+  const doc = (typeof document !== 'undefined') ? document : null;
+  const oldInput = wrapEl.querySelector('#shop-new');
+  const draftText = oldInput ? oldInput.value : '';
+  const hadFocus = !!(doc && oldInput && doc.activeElement === oldInput);
+  let selStart = -1, selEnd = -1;
+  if (hadFocus) {
+    try { selStart = oldInput.selectionStart; selEnd = oldInput.selectionEnd; } catch (e) { /* not selectable */ }
+  }
   wrapEl.innerHTML = shoppingListHTML();
   Object.keys(openState).forEach(cls => {
     const d = wrapEl.querySelector('details.' + cls);
     if (d) d.open = openState[cls];
   });
+  const newInput = wrapEl.querySelector('#shop-new');
+  if (newInput) {
+    if (draftText) newInput.value = draftText;
+    if (hadFocus) {
+      try { newInput.focus(); } catch (e) { /* headless/stub DOM */ }
+      if (typeof selStart === 'number' && typeof selEnd === 'number' && selStart >= 0 && selEnd >= 0) {
+        try { newInput.setSelectionRange(selStart, selEnd); } catch (e) { /* not selectable */ }
+      }
+    }
+  }
 }
 function buildShoppingList() {
   const mon = sundayOf(0);
@@ -9566,6 +9587,11 @@ async function syncShop() {
     _shopDirty = true;  // push failed — retry on next poll / online event
   }
 }
+// Last server meal-plan content we successfully merged. The 15s poll skips the
+// rebuild entirely when the server copy is byte-identical to this — nothing
+// changed remotely (no Nava update), so re-rendering would only destroy the
+// in-progress add-box text and dismiss the keyboard for no reason.
+let _lastShopServerContent = null;
 // Poll server state via worker /read (bypasses Pages rebuild). Merges have-marks.
 async function pollShopServer() {
   if (_savePlanInFlight > 0) return;
@@ -9576,10 +9602,17 @@ async function pollShopServer() {
     if (!data.ok || !data.content) return;
     const server = JSON.parse(data.content);
     if (!server || typeof server.weeks !== 'object') return;
+    // No remote change since the last merge: skip the merge AND the rebuild.
+    // (Nava's checkmarks always change the file content, so a real remote
+    // update still flows through below within one 15s tick.)
+    if (data.content === _lastShopServerContent) return;
     // Full merge: fresh days win for every week, local shopping state
     // (timestamp/tombstone-aware) unions in, top-level keys stay live.
     mealPlan = mergeMealPlan(server, mealPlan);
     saveShopLocal();
+    // Record the content only AFTER a successful merge, so a failed merge
+    // retries on the next tick instead of being skipped forever.
+    _lastShopServerContent = data.content;
     // Re-render if we're on the shopping page
     if ((location.hash || '#/') === '#/shopping') renderShopWrap();
   } catch (e) { /* offline or worker not yet deployed — non-fatal */ }
