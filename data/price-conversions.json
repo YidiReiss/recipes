@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "version": "20261117a",
+    "version": "20261117b",
     "description": "Per-unit and per-pound kitchen weight and pack conversions for Shopping List price badges and cart estimates. Yidi-measured/confirmed values take precedence; all other entries use USDA standard kitchen weights."
   },
   "tomato": {
@@ -607,12 +607,14 @@
   "lemon": {
     "lb_per_unit": 0.15,
     "lb_per_bag": 2.0,
-    "source": "USDA standard (2.4 oz / 0.15 lb per medium lemon, 2 lb bag)"
+    "source": "USDA standard (2.4 oz / 0.15 lb per medium lemon, 2 lb bag; 1 medium lemon yields ~3 tbsp / 1.5 fl oz juice)",
+    "tbsp_juice_per_unit": 3
   },
   "lime": {
     "lb_per_unit": 0.1,
     "lb_per_bag": 1.0,
-    "source": "USDA standard (1.6 oz / 0.10 lb per medium lime)"
+    "source": "USDA standard (1.6 oz / 0.10 lb per medium lime; 1 medium lime yields ~2 tbsp / 1 fl oz juice)",
+    "tbsp_juice_per_unit": 2
   },
   "orange": {
     "lb_per_unit": 0.35,
@@ -1138,5 +1140,25 @@
     "lb_per_cup": 0.26,
     "lb_per_bag": 0.38,
     "source": "USDA standard (4.2 oz / 0.26 lb per cup dried cranberries / Craisins)"
+  },
+  "lemon juice": {
+    "tbsp_juice_per_unit": 3,
+    "fruit": "lemon",
+    "source": "USDA standard (1 medium lemon yields ~3 tbsp / 1.5 fl oz juice; Yidi squeezes fresh, never bottled)"
+  },
+  "lime juice": {
+    "tbsp_juice_per_unit": 2,
+    "fruit": "lime",
+    "source": "USDA standard (1 medium lime yields ~2 tbsp / 1 fl oz juice; Yidi squeezes fresh, never bottled)"
+  },
+  "fresh lemon juice": {
+    "tbsp_juice_per_unit": 3,
+    "fruit": "lemon",
+    "source": "USDA standard (1 medium lemon yields ~3 tbsp / 1.5 fl oz juice; Yidi squeezes fresh, never bottled)"
+  },
+  "fresh lime juice": {
+    "tbsp_juice_per_unit": 2,
+    "fruit": "lime",
+    "source": "USDA standard (1 medium lime yields ~2 tbsp / 1 fl oz juice; Yidi squeezes fresh, never bottled)"
   }
 }
