@@ -2373,6 +2373,20 @@
           "qty": 1,
           "unit": "can",
           "removed": true
+        },
+        {
+          "key": "cornflake crumb|cup",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044467249,
+          "qty": 0.25,
+          "unit": "cup"
+        },
+        {
+          "key": "breadcrumb|tbsp",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044467886,
+          "qty": 3,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [],
