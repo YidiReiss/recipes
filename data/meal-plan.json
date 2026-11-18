@@ -2482,6 +2482,20 @@
           "at": 1795044554823,
           "qty": 2,
           "unit": "tbsp"
+        },
+        {
+          "key": "boneless skinless chicken breast|",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044558241,
+          "qty": 4,
+          "unit": ""
+        },
+        {
+          "key": "bone-in skin-on chicken legs and thigh|",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044559016,
+          "qty": 6,
+          "unit": ""
         }
       ],
       "manualItems": [
