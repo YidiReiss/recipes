@@ -2433,6 +2433,13 @@
           "at": 1795044540222,
           "qty": 9,
           "unit": "clove"
+        },
+        {
+          "key": "egg|",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044541342,
+          "qty": 3,
+          "unit": ""
         }
       ],
       "manualItems": [
