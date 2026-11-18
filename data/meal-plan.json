@@ -2447,6 +2447,20 @@
           "at": 1795044545988,
           "qty": 1,
           "unit": "can"
+        },
+        {
+          "key": "chicken stock|cup",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044547534,
+          "qty": 1,
+          "unit": "cup"
+        },
+        {
+          "key": "hot paprika|tsp",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044548524,
+          "qty": 1,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
