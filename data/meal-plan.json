@@ -2461,6 +2461,27 @@
           "at": 1795044548524,
           "qty": 1,
           "unit": "tsp"
+        },
+        {
+          "key": "soy sauce|tbsp",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044551143,
+          "qty": 5,
+          "unit": "tbsp"
+        },
+        {
+          "key": "cornmeal|cup",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044553840,
+          "qty": 0.25,
+          "unit": "cup"
+        },
+        {
+          "key": "onion soup mix|tbsp",
+          "session": "smwmr4nch8zk131",
+          "at": 1795044554823,
+          "qty": 2,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [
