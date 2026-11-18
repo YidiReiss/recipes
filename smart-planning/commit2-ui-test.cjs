@@ -3553,6 +3553,8 @@ async function main() {
     ['yellow potato (the little potato company)', 'Potato Yukon Gold Large - Loose'],
     ['carrot', 'Carrots Cut & Peeled'],
     ['golden potato', 'Potato Yukon Gold Large - Loose'],
+    ['lime juice', 'Limes'],
+    ['lemon juice', 'Lemon Small'],
     ['tomato', 'Tomato Stem'],
     ['garlic', 'Garlic Loose'],
     ['fresh parsley', 'Parsley Italian'],
@@ -3562,12 +3564,12 @@ async function main() {
     ['coconut milk', 'Coconut Milk'],
     ['fettuccine pasta', 'Fettuccine']
   ];
-  check('Section 33(b) (101-key full-corpus check): 101-key fixture matches 19 of 66 live-week items (7 of 33 To-buy rows, up from 6 with 0 wrong Idaho potato matches) with exact expected bought_name pairs',
+  check('Section 33(b) (101-key full-corpus check): 101-key fixture matches 21 of 66 live-week items (8 of 33 To-buy rows, up from 6 with 0 wrong Idaho potato matches) with exact expected bought_name pairs (v20261117b adds lemon juice -> Lemon Small and lime juice -> Limes via direct matches)',
     Object.keys(fixturePrices33).length === 101 &&
     liveWeekList33.length === 66 &&
     split33.toBuy.length === 33 &&
-    matchedPairs33.length === 19 &&
-    matchedToBuy33.length === 7 &&
+    matchedPairs33.length === 21 &&
+    matchedToBuy33.length === 8 &&
     JSON.stringify(matchedPairs33.map(p => [p.base, p.bought_name])) === JSON.stringify(expectedPairs33));
   globalThis.thisWeekKey = savedThisWeekKey33;
   globalThis.mealPlan = savedPlan33;
@@ -3720,7 +3722,7 @@ async function main() {
     convTable34['chicken breast']?.lb_per_serving === 1.25 &&
     convKeys34.every(k => typeof convTable34[k].source === 'string' && convTable34[k].source.length > 0));
 
-  check('Section 34(b) (lookupPriceConversion resolution & processed-item guard): resolves produce/meat variants and parenthetical brands while rejecting processed pantry items (garlic powder, apple cider vinegar, tomato paste, lemon juice)',
+  check('Section 34(b) (lookupPriceConversion resolution & processed-item guard): resolves produce/meat variants and parenthetical brands while rejecting processed pantry items (garlic powder, apple cider vinegar, tomato paste); lemon juice is NOT rejected — it is a real fresh-squeezed conversion (v20261117b)',
     lookupPriceConversion('yellow potato (the little potato company)')?.lb_per_bag === 5.0 &&
     lookupPriceConversion('fresh brussel sprout')?.lb_per_cup === 0.35 &&
     lookupPriceConversion('heart of romaine lettuce')?.lb_per_unit === 0.5 &&
@@ -3728,7 +3730,7 @@ async function main() {
     lookupPriceConversion('garlic powder') === null &&
     lookupPriceConversion('apple cider vinegar') === null &&
     lookupPriceConversion('tomato paste') === null &&
-    lookupPriceConversion('lemon juice') === null);
+    lookupPriceConversion('lemon juice')?.tbsp_juice_per_unit === 3);
 
   // 34(c) Garlic sleeve preference vs loose fallback + Badge rate + basis formatting
   const garlicMapBoth34 = {
@@ -3873,7 +3875,7 @@ async function main() {
     const e = JSON.parse(JSON.stringify(orig));
     const bn = String(e.bought_name || '') + ' ' + k;
     const isLooseProduce = /\b(loose|tomato stem|onion red|onion shallots|apple gala|apple granny|banana|cucumber|avocado|lemon|lime|yam sweet|grape red|plum red|brussel sprouts|parsley italian|cilantro|dill|garlic loose|Cutlets|neck bones|beef patina)\b/i.test(bn) &&
-      !/\b(sleeve|bag|box|3pk|pack|egg|juice|vinegar|broth|beans|milk|fettuccine|chips|oil|sugar|salt|flour|sauce|paste|cereal|cookie|cracker|pretzel|cake|bread|roll|pita|bagel|cheese|butter|yogurt|cream|mayo|mustard|ketchup|relish|pickle|olive|tuna|salmon|sardine|gef|herring|choc|cocoa|vanilla|baking|spice|pepper|paprika|cumin|cinnamon|turmeric|oregano|basil|thyme|rosemary|bay|parsley flake|garlic powder|onion powder|soup|noodle|rice|barley|oats|quinoa|lentil|split pea)\b/i.test(bn);
+      !/\b(sleeve|bag|box|3pk|pack|egg|juice|vinegar|broth|beans|milk|fettuccine|chips|oil|sugar|salt|flour|sauce|paste|cereal|cookie|cracker|pretzel|cake|bread|roll|pita|bagel|cheese|butter|yogurt|cream|mayo|mustard|ketchup|relish|pickle|olive|tuna|salmon|sardine|gef|herring|choc|cocoa|vanilla|baking|spice|pepper|paprika|cumin|cinnamon|turmeric|oregano|basil|thyme|rosemary|bay|parsley flake|garlic powder|onion powder|soup|noodle|rice|barley|oats|quinoa|lentil|split pea|lemon|lime)\b/i.test(bn);
     const packMatch = bn.match(/\b(sleeve|bag|carton|box|bunch|dozen|doz|\d+\s*(?:pk|pack))\b/i);
     const isEgg = /\beggs?\b/i.test(bn) && !/\b(noodle|pasta|roll|wrap|eggplant)\b/i.test(bn);
     if (isLooseProduce) {
@@ -3926,7 +3928,7 @@ async function main() {
     .filter(Boolean);
   const liveShopHTML34 = shoppingListHTML();
 
-  // Verify the 7 active To-buy matched items on live week 2026-11-15:
+  // Verify the 8 active To-buy matched items on live week 2026-11-15 (v20261117b adds lemon juice):
   // 1. white vinegar (½ cup) -> Distilled White Vinegar 5% Acidity ($2.00 each) -> 200¢ ($2.00)
   // 2. yellow potato (1½ lb) -> Potato Yukon Gold Large - Loose ($3.46/lb) -> 519¢ ($5.19)
   // 3. tomato (1) -> Tomato Stem ($5.03/lb * 0.29 lb) -> 146¢ ($1.46)
@@ -3934,10 +3936,11 @@ async function main() {
   // 5. egg (3) -> X-Large Eggs ($1.99/dozen) -> 50¢ ($0.50)
   // 6. black bean (15 oz) (1 can) -> Black Beans ($0.99 each) -> 99¢ ($0.99)
   // 7. chicken stock (1 cup) -> Broth Chicken ($2.50 each) -> 250¢ ($2.50)
-  // Sum after = 200 + 519 + 146 + 16 + 50 + 99 + 250 = 1280¢ ($12.80) vs v20261116a sum = 1642¢ ($16.42)
+  // 8. lemon juice (4 tsp, Burritos only in this week's To-buy) -> Lemon Small ($0.30 each; 4 tsp = 4/9 lemon) -> 13¢ ($0.13)
+  // Sum after = 200 + 519 + 146 + 16 + 50 + 99 + 250 + 13 = 1293¢ ($12.93) vs v20261116a sum = 1642¢ ($16.42) and v20261117a sum = 1280¢ ($12.80)
   const sumAfter34 = toBuyBreakdown34.reduce((s, x) => s + x.afterCents, 0);
-  check('Section 34(f) (Live-week 2026-11-15 full-corpus before/after check): all 7 priced To-buy items convert cleanly (0 unconvertible), garlic switches from Garlic Loose to Garlic Sleeve ($0.80/head, $0.16 for 2 cloves), eggs scale to 3/12 dozen ($0.50), potatoes scale to 1.5 lb ($5.19), tomato scales by 0.29 lb ($1.46), and rendered total updates from $16.42 to $12.80 (7 of 33 items priced)',
-    toBuyBreakdown34.length === 7 &&
+  check('Section 34(f) (Live-week 2026-11-15 full-corpus before/after check): all 8 priced To-buy items convert cleanly (0 unconvertible), garlic switches from Garlic Loose to Garlic Sleeve ($0.80/head, $0.16 for 2 cloves), eggs scale to 3/12 dozen ($0.50), potatoes scale to 1.5 lb ($5.19), tomato scales by 0.29 lb ($1.46), lemon juice prices from the fruit (4 tsp = 4/9 lemon x $0.30 = $0.13), and rendered total updates from $16.42 to $12.93 (8 of 33 items priced)',
+    toBuyBreakdown34.length === 8 &&
     toBuyBreakdown34.every(x => x.convertible) &&
     toBuyBreakdown34.find(x => x.base === 'garlic')?.bought_name === 'Garlic Sleeve' &&
     toBuyBreakdown34.find(x => x.base === 'garlic')?.badgeRate === '$0.80/head' &&
@@ -3946,9 +3949,47 @@ async function main() {
     toBuyBreakdown34.find(x => x.base === 'egg')?.afterCents === 50 &&
     toBuyBreakdown34.find(x => x.base === 'tomato')?.afterCents === 146 &&
     toBuyBreakdown34.find(x => x.base === 'yellow potato (the little potato company)')?.afterCents === 519 &&
-    sumAfter34 === 1280 &&
-    liveShopHTML34.includes('Estimated total about $12.80 · 7 of 33 items priced') &&
+    toBuyBreakdown34.find(x => x.base === 'lemon juice')?.badgeRate === '$0.30 each' &&
+    toBuyBreakdown34.find(x => x.base === 'lemon juice')?.afterCents === 13 &&
+    sumAfter34 === 1293 &&
+    liveShopHTML34.includes('Estimated total about $12.93 · 8 of 33 items priced') &&
     !liveShopHTML34.includes('items not estimated'));
+
+  // 34(g) Lemon / lime juice squeezed from fruit (v20261117b): direct matches
+  // (lemon juice -> lemon, lime juice -> lime), juice yields (1 lemon = 3 tbsp,
+  // 1 lime = 2 tbsp, USDA), and Case J estimates (volume -> fruit count).
+  const pLemon34 = { price_cents: 30, basis: 'each', bought_name: 'Lemon Small' };
+  const pLime34 = { price_cents: 30, basis: 'each', bought_name: 'Limes' };
+  const matchedLemonJuice34 = priceMatchFor('lemon juice', { 'lemon': pLemon34 });
+  const matchedFreshLemonJuice34 = priceMatchFor('fresh lemon juice', { 'lemon': pLemon34 });
+  const matchedLimeJuice34 = priceMatchFor('lime juice', { 'lime': pLime34 });
+  const estLemonJuiceTbsp34 = estimateShopItemCents(
+    { base: 'lemon juice', key: 'lemon juice|tbsp', qty: 1, rawUnit: 'tbsp', unit: 'tbsp' },
+    pLemon34
+  );
+  const estLemonJuiceTsp34 = estimateShopItemCents(
+    { base: 'lemon juice', key: 'lemon juice|tsp', qty: 1, rawUnit: 'tsp', unit: 'tsp' },
+    pLemon34
+  );
+  const estLimeJuice2Tsp34 = estimateShopItemCents(
+    { base: 'lime juice', key: 'lime juice|tsp', qty: 2, rawUnit: 'tsp', unit: 'tsp' },
+    pLime34
+  );
+  const estFreshLemonJuiceTbsp34 = estimateShopItemCents(
+    { base: 'fresh lemon juice', key: 'fresh lemon juice|tbsp', qty: 1, rawUnit: 'tbsp', unit: 'tbsp' },
+    pLemon34
+  );
+  check('Section 34(g) (Lemon / lime juice from fruit — v20261117b): direct matches resolve lemon juice / fresh lemon juice -> lemon and lime juice -> lime; juice yields are 3 tbsp/lemon and 2 tbsp/lime; estimates are 1 tbsp lemon juice = 1/3 lemon x $0.30 = $0.10 (10c), 1 tsp lemon juice = 1/9 lemon x $0.30 = $0.03 (3c), 2 tsp lime juice = 1/3 lime x $0.30 = $0.10 (10c), 1 tbsp fresh lemon juice = $0.10 (10c)',
+    !!matchedLemonJuice34 && matchedLemonJuice34.bought_name === 'Lemon Small' &&
+    !!matchedFreshLemonJuice34 && matchedFreshLemonJuice34.bought_name === 'Lemon Small' &&
+    !!matchedLimeJuice34 && matchedLimeJuice34.bought_name === 'Limes' &&
+    lookupPriceConversion('lemon juice')?.tbsp_juice_per_unit === 3 &&
+    lookupPriceConversion('lime juice')?.tbsp_juice_per_unit === 2 &&
+    lookupPriceConversion('fresh lemon juice')?.tbsp_juice_per_unit === 3 &&
+    estLemonJuiceTbsp34.convertible && estLemonJuiceTbsp34.cents === 10 &&
+    estLemonJuiceTsp34.convertible && estLemonJuiceTsp34.cents === 3 &&
+    estLimeJuice2Tsp34.convertible && estLimeJuice2Tsp34.cents === 10 &&
+    estFreshLemonJuiceTbsp34.convertible && estFreshLemonJuiceTbsp34.cents === 10);
 
   // Restore state after Section 34
   globalThis.thisWeekKey = savedThisWeekKey34;
