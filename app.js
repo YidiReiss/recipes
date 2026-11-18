@@ -2718,6 +2718,32 @@ function estimateShopItemCents(it, p, convMapOverride) {
     return { convertible: true, cents: Math.round((totalUnits / unitsPerPack) * priceCents) };
   }
 
+  // Case J (v20261117b): Juice squeezed from fruit (conv.tbsp_juice_per_unit) —
+  // the recipe calls for juice by volume (tsp/tbsp/cup/fl_oz) and the price is
+  // per fruit ('each': lemons $0.30 each, limes $0.30 each). Yidi squeezes
+  // fresh, never bottled, so the juice is priced from the fruit. Convert the
+  // juice volume to a fruit count, then price by the fruit.
+  if (conv && Number.isFinite(Number(conv.tbsp_juice_per_unit)) && Number(conv.tbsp_juice_per_unit) > 0 && basis === 'each') {
+    const tspPerTbspJ = 3;
+    const tspMapJ = { tsp: 1, tbsp: 3, fl_oz: 6, cup: 48 };
+    let totalFruit = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      const b = buckets[i];
+      const q = Number(b.qty);
+      if (!Number.isFinite(q) || q <= 0) return { convertible: false, cents: 0 };
+      const u = b.unit;
+      if (tspMapJ[u] !== undefined) {
+        const totalTsp = q * tspMapJ[u];
+        totalFruit += totalTsp / (Number(conv.tbsp_juice_per_unit) * tspPerTbspJ);
+      } else if (u === 'unit' || u === 'fruit') {
+        totalFruit += q;
+      } else {
+        return { convertible: false, cents: 0 };
+      }
+    }
+    return { convertible: true, cents: Math.round(totalFruit * priceCents) };
+  }
+
   // Case 4: Other produce/weight items in price-conversions.json with basis 'pack' or 'each'
   if (conv) {
     if (basis === 'pack') {
