@@ -2389,7 +2389,15 @@
           "unit": "tbsp"
         }
       ],
-      "manualItems": [],
+      "manualItems": [
+        {
+          "id": "mmwmr54hc",
+          "text": "Pareve ice cream",
+          "have": false,
+          "updatedAt": 1795044489456,
+          "updatedBy": "smwmr4nch8zk131"
+        }
+      ],
       "optionalPromoted": [
         {
           "key": "jalapeno|",
