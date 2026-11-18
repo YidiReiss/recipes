@@ -4001,6 +4001,100 @@ async function main() {
   setShopStore(savedStore34e);
   resetPriceHistorySession();
 
+  // Section 36 — Shopping-list manual-add keyboard bug (v20261118b): the 15s
+  // poll rebuilt the whole shopping page on every tick even when nothing
+  // changed, destroying the focused #shop-new input (text + keyboard).
+  // (a) pollShopServer skips the rebuild when the server content is
+  // byte-identical to the last merged copy, and re-renders when it changes
+  // (a Nava update always changes the file content, so it still lands).
+  const savedFetch36 = globalThis.fetch;
+  const savedRenderShopWrap36 = globalThis.renderShopWrap;
+  const savedMergeMealPlan36 = globalThis.mergeMealPlan;
+  const savedSaveShopLocal36 = globalThis.saveShopLocal;
+  const savedMealPlan36 = globalThis.mealPlan;
+  const savedSavePlanInFlight36 = globalThis._savePlanInFlight;
+  const savedLastShopServerContent36 = globalThis._lastShopServerContent;
+  const savedLocation36 = globalThis.location;
+  const savedBridge36 = globalThis.BRIDGE;
+  geval(extract('pollShopServer'));
+  globalThis._savePlanInFlight = 0;
+  globalThis._lastShopServerContent = null;
+  globalThis.BRIDGE = 'https://bridge.test';
+  globalThis.location = { hash: '#/shopping' };
+  globalThis.mealPlan = { weeks: {} };
+  globalThis.mergeMealPlan = (s, l) => l;
+  globalThis.saveShopLocal = () => {};
+  let renderCalls36 = 0;
+  globalThis.renderShopWrap = () => { renderCalls36++; };
+  let serverContent36 = '{"weeks":{}}';
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ ok: true, content: serverContent36 }) });
+  await pollShopServer();
+  const afterFirstPoll36 = renderCalls36;
+  await pollShopServer();
+  const afterRepeatPoll36 = renderCalls36;
+  serverContent36 = '{"weeks":{"2026-11-15":{"days":[]}}}';
+  await pollShopServer();
+  const afterChangedPoll36 = renderCalls36;
+  check('Section 36(a) (poll skips unchanged server content): first poll renders (1), a repeat poll with identical server content does NOT re-render (still 1), and a poll with changed content re-renders (2) — so Nava updates still land within one tick',
+    afterFirstPoll36 === 1 && afterRepeatPoll36 === 1 && afterChangedPoll36 === 2);
+  globalThis.fetch = savedFetch36;
+  globalThis.renderShopWrap = savedRenderShopWrap36;
+  globalThis.mergeMealPlan = savedMergeMealPlan36;
+  globalThis.saveShopLocal = savedSaveShopLocal36;
+  globalThis.mealPlan = savedMealPlan36;
+  globalThis._savePlanInFlight = savedSavePlanInFlight36;
+  globalThis._lastShopServerContent = savedLastShopServerContent36;
+  globalThis.location = savedLocation36;
+  globalThis.BRIDGE = savedBridge36;
+
+  // (b) renderShopWrap preserves the #shop-new draft text, focus, and cursor
+  // across the rebuild when the input was focused; (c) when it was NOT
+  // focused, the text is still preserved but focus is not stolen.
+  const savedDollar36 = globalThis.$;
+  const savedDocument36 = globalThis.document;
+  const hadShoppingListHTML36 = ('shoppingListHTML' in globalThis);
+  const savedShoppingListHTML36 = globalThis.shoppingListHTML;
+  geval(extract('renderShopWrap'));
+  globalThis.shoppingListHTML = () => '<input id="shop-new">';
+  const makeInput36 = (value) => ({
+    value,
+    selectionStart: 0,
+    selectionEnd: 0,
+    focused: false,
+    focus() { this.focused = true; if (globalThis.document) globalThis.document.activeElement = this; },
+    setSelectionRange(s, e) { this.selectionStart = s; this.selectionEnd = e; }
+  });
+  let currentInput36 = makeInput36('onions');
+  const fakeWrap36 = {
+    get innerHTML() { return ''; },
+    set innerHTML(v) { currentInput36 = makeInput36(''); },
+    querySelector(sel) {
+      if (sel === '#shop-new') return currentInput36;
+      return null;
+    }
+  };
+  globalThis.$ = (sel) => (sel === '#shop-wrap' ? fakeWrap36 : null);
+  // Focused case: text 'onions' with cursor 3-6.
+  currentInput36.selectionStart = 3;
+  currentInput36.selectionEnd = 6;
+  globalThis.document = { activeElement: currentInput36 };
+  renderShopWrap();
+  const focusedNewInput36 = currentInput36;
+  check('Section 36(b) (renderShopWrap preserves focused add-box draft): after a rebuild the new #shop-new still holds "onions", is focused, and the cursor is back at 3-6',
+    focusedNewInput36.value === 'onions' && focusedNewInput36.focused === true &&
+    focusedNewInput36.selectionStart === 3 && focusedNewInput36.selectionEnd === 6);
+  // Unfocused case: text 'milk' typed, then the user tapped elsewhere.
+  currentInput36 = makeInput36('milk');
+  globalThis.document = { activeElement: null };
+  renderShopWrap();
+  const unfocusedNewInput36 = currentInput36;
+  check('Section 36(c) (renderShopWrap preserves unfocused draft without stealing focus): after a rebuild the new #shop-new still holds "milk" and was NOT focused',
+    unfocusedNewInput36.value === 'milk' && unfocusedNewInput36.focused === false);
+  globalThis.$ = savedDollar36;
+  globalThis.document = savedDocument36;
+  if (hadShoppingListHTML36) globalThis.shoppingListHTML = savedShoppingListHTML36;
+  else delete globalThis.shoppingListHTML;
+
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
   if (failed.length) process.exitCode = 1;
