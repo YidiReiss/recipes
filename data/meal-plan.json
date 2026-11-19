@@ -2597,6 +2597,13 @@
           "updatedAt": 1795053670657,
           "updatedBy": "smwmwj2lnhhdxdq",
           "deleted": true
+        },
+        {
+          "id": "mmwmzt2qr",
+          "text": "qa circ test",
+          "have": false,
+          "updatedAt": 1795059043875,
+          "updatedBy": "smwmzr2ll3jygoy"
         }
       ],
       "optionalPromoted": [
