@@ -2586,8 +2586,9 @@
         {
           "key": "breadcrumb|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085811038,
-          "removed": true
+          "at": 1795086656455,
+          "qty": 3,
+          "unit": "tbsp"
         },
         {
           "key": "flour tortilla|",
