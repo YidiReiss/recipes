@@ -88,7 +88,7 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
  'UNCOUNTABLES', 'IRREGULAR_PLURALS', 'IRREGULAR_SINGULARS',
  'UNICODE_FRACTIONS', 'SECTION_GENERIC_WORDS',
   'ITEM_ALIASES', 'UNIT_ALIASES',
-  'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_QUALIFIED_HEADS', 'PRICE_VARIETY_WORDS'].forEach(n => geval(extractDecl(n)));
+  'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_FORM_WORDS', 'PRICE_QUALIFIED_HEADS', 'PRICE_VARIETY_WORDS'].forEach(n => geval(extractDecl(n)));
 globalThis.priceDirectMatches = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
 globalThis.priceConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-conversions.json'), 'utf8'));
 globalThis._priceHistoryCache = null;
@@ -5071,6 +5071,37 @@ async function main() {
       pRomaine39?.pack_size === '3 ct' &&
       pRomaine39?.price_cents === 349 &&
       pRomaineLettuce39?.basis === 'each');
+
+    // 40(a) Form-word guard (v20261119b): a Step 2 match must share a
+    // specific-product word. "pomegranate seeds" must NOT price as cumin seeds
+    // (shared word "seed" only); exact seed matches and distinctive-word
+    // overlaps still work.
+    const formMap40 = {
+      'cumin seed': { price_cents: null, basis: 'pack', bought_name: 'Cumin Seeds', store: "Aron's Kissena Farms", receipt_date: null, avg12m_cents: null, by_store: {}, last3: [], expected: { price_cents: 559, reg_price_cents: null, basis: 'pack', pack_size: '4 oz', source: 'online-store', week: '2026-11-15', raw_name: 'Cumin Seeds' } },
+      'sesame seed': { price_cents: 299, basis: 'pack', bought_name: 'Sesame Seeds', store: "Aron's Kissena Farms", receipt_date: '2026-11-01', avg12m_cents: null, by_store: {}, last3: [] },
+      'garlic powder': { price_cents: 349, basis: 'pack', bought_name: 'Garlic Powder', store: "Aron's Kissena Farms", receipt_date: '2026-11-01', avg12m_cents: null, by_store: {}, last3: [] },
+      'corn flake': { price_cents: 429, basis: 'pack', bought_name: 'Corn Flakes', store: "Aron's Kissena Farms", receipt_date: '2026-11-01', avg12m_cents: null, by_store: {}, last3: [] }
+    };
+    check('Section 40(a) (form-word guard): "pomegranate seeds" returns null (never cumin seeds), "chili powder" returns null (never garlic powder), "red pepper flakes" returns null (never corn flakes), while exact "cumin seeds"/"sesame seeds"/"garlic powder" and Step 2 "toasted sesame seeds" still match',
+      priceMatchFor('pomegranate seeds', formMap40) === null &&
+      priceMatchFor('chili powder', formMap40) === null &&
+      priceMatchFor('red pepper flakes', formMap40) === null &&
+      priceMatchFor('cumin seeds', formMap40)?.bought_name === 'Cumin Seeds' &&
+      priceMatchFor('sesame seeds', formMap40)?.bought_name === 'Sesame Seeds' &&
+      priceMatchFor('garlic powder', formMap40)?.bought_name === 'Garlic Powder' &&
+      priceMatchFor('toasted sesame seeds', formMap40)?.bought_name === 'Sesame Seeds');
+
+    // 40(b) Regression: legit Step 2 word-overlap matches still work.
+    const potatoMap40 = {
+      'potato yukon gold large loose': { price_cents: 189, basis: 'lb', bought_name: 'Potato Yukon Gold Large - Loose', store: "Aron's Kissena Farms", receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] }
+    };
+    check('Section 40(b) (form-guard regression): "yellow potatoes" still Step-2-matches Potato Yukon Gold Large - Loose via the potato variety group',
+      priceMatchFor('yellow potatoes', potatoMap40)?.bought_name === 'Potato Yukon Gold Large - Loose');
+
+    // 40(c) Source asserts for the guard.
+    check('Section 40(c) (form-guard source): PRICE_FORM_WORDS set exists and the Step 2 guard consults it alongside PRICE_MODIFIER_WORDS',
+      appSrc39.includes('PRICE_FORM_WORDS') &&
+      appSrc39.includes('PRICE_MODIFIER_WORDS.has(w) || PRICE_FORM_WORDS.has(w)'));
   }
 
   const failed = results.filter(r => !r.pass);
