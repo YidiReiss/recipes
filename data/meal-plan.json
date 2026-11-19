@@ -2108,9 +2108,10 @@
         {
           "key": "rice vinegar|tbsp",
           "session": "smwi0rpb9p8c03b",
-          "at": 1794758612814,
+          "at": 1795085841812,
           "qty": 1,
-          "unit": "tbsp"
+          "unit": "tbsp",
+          "removed": true
         },
         {
           "key": "tamari or soy sauce|tbsp",
@@ -2724,6 +2725,12 @@
           "key": "ortega taco seasoning|tbsp",
           "session": "smwnfqpvky65xnq",
           "at": 1795085839541,
+          "removed": true
+        },
+        {
+          "key": "rice vinegar|tbsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085841812,
           "removed": true
         }
       ],
