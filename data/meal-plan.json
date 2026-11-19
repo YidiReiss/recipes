@@ -2508,7 +2508,7 @@
         {
           "key": "jerusalem spice|tsp",
           "session": "smwmsbp0aqezj74",
-          "at": 1795046526736,
+          "at": 1795053646091,
           "qty": 1,
           "unit": "tsp",
           "removed": true
@@ -2516,9 +2516,10 @@
         {
           "key": "jerusalem spice|tsp",
           "session": "smwmwkvue05i4jb",
-          "at": 1795053622838,
+          "at": 1795053646091,
           "qty": 1,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         }
       ],
       "manualItems": [
