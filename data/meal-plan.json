@@ -2949,6 +2949,20 @@
           "at": 1795087726578,
           "qty": 0.25,
           "unit": "cup"
+        },
+        {
+          "key": "paprika|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087729445,
+          "qty": 1.5,
+          "unit": "tsp"
+        },
+        {
+          "key": "sugar|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087731033,
+          "qty": 1.5,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
