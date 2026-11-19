@@ -2698,8 +2698,9 @@
         {
           "key": "avocado oil|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085830134,
-          "removed": true
+          "at": 1795087034769,
+          "qty": 3,
+          "unit": "tbsp"
         },
         {
           "key": "tomato|",
