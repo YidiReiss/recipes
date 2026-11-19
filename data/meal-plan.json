@@ -2250,9 +2250,10 @@
         {
           "key": "dried plum (prunes)|",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770513579,
+          "at": 1795085827636,
           "qty": 3,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "lime juice|tsp",
@@ -2265,7 +2266,7 @@
         {
           "key": "lemon juice|tbsp",
           "session": "smwi7tm67j1bo6b",
-          "at": 1795044537805,
+          "at": 1795085828508,
           "qty": 2,
           "unit": "tbsp",
           "removed": true
@@ -2424,9 +2425,10 @@
         {
           "key": "lemon juice|tsp",
           "session": "smwmr4nch8zk131",
-          "at": 1795044537806,
+          "at": 1795085828508,
           "qty": 10,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         },
         {
           "key": "avocado oil|tbsp",
@@ -2632,6 +2634,18 @@
           "key": "lime juice|tsp",
           "session": "smwnfqpvky65xnq",
           "at": 1795085826990,
+          "removed": true
+        },
+        {
+          "key": "dried plum (prunes)|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085827636,
+          "removed": true
+        },
+        {
+          "key": "lemon juice|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085828508,
           "removed": true
         }
       ],
