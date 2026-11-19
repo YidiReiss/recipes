@@ -1,52 +1,420 @@
 {
   "week": "2026-11-15",
-  "checked_at": "2026-11-15T14:20:00Z",
+  "checked_at": "2026-11-19T10:47:47Z",
   "store": "Aron's Kissena Farms",
   "source": "online-store",
   "source_url": "https://www.aronskissenafarms.com/order-online/",
   "items": {
-    "butterfly chicken cutlet": {
-      "price_cents": 999,
+    "cornflake crumb": {
+      "price_cents": 549,
+      "basis": "pack",
+      "raw_name": "Cornflake Crumbs",
+      "reg_price_cents": 549,
+      "in_stock": true,
+      "pack_size": "12 Oz"
+    },
+    "breadcrumb": {
+      "price_cents": 469,
+      "basis": "pack",
+      "raw_name": "Plain Bread Crumbs",
+      "reg_price_cents": 469,
+      "in_stock": true,
+      "pack_size": "15 Oz"
+    },
+    "flour tortilla": {
+      "price_cents": 369,
+      "basis": "pack",
+      "raw_name": "White Flour Tortillas 8 ct",
+      "reg_price_cents": 369,
+      "in_stock": true,
+      "pack_size": "20 Oz"
+    },
+    "apple": {
+      "price_cents": 199,
       "basis": "lb",
-      "raw_name": "Fresh Family Pack Butterfly Chicken Cutlets",
-      "reg_price_cents": 999,
+      "raw_name": "Honeycrisp Apple",
+      "reg_price_cents": 699,
       "in_stock": true
     },
-    "boneless skinless chicken thigh": {
-      "price_cents": 899,
+    "jalapeno": {
+      "price_cents": 289,
       "basis": "lb",
-      "raw_name": "Boneless Skinless Chicken Thighs (Pargiot)",
-      "reg_price_cents": 899,
+      "raw_name": "Pepper Jalapeno",
+      "reg_price_cents": 699,
       "in_stock": true
     },
-    "first cut brisket": {
-      "price_cents": 1699,
+    "fresh brussel sprout": {
+      "price_cents": 349,
       "basis": "lb",
-      "raw_name": "1st Cut Beef Brisket",
-      "reg_price_cents": 1699,
+      "raw_name": "Brussel Sprouts",
+      "reg_price_cents": 699,
       "in_stock": true
     },
-    "persian cucumber": {
+    "purple onion": {
+      "price_cents": 89,
+      "basis": "lb",
+      "raw_name": "Onion Red",
+      "reg_price_cents": 399,
+      "in_stock": true
+    },
+    "shallot": {
+      "price_cents": 399,
+      "basis": "lb",
+      "raw_name": "Onion Shallots",
+      "reg_price_cents": 799,
+      "in_stock": true
+    },
+    "fresh ginger": {
       "price_cents": 249,
       "basis": "lb",
-      "raw_name": "Persian Cucumbers",
+      "raw_name": "Ginger",
+      "reg_price_cents": 699,
+      "in_stock": true
+    },
+    "white vinegar": {
+      "price_cents": 219,
+      "basis": "pack",
+      "raw_name": "White Vinegar",
+      "reg_price_cents": 219,
+      "in_stock": true,
+      "pack_size": "32 fl oz"
+    },
+    "dried parsley": {
+      "price_cents": 249,
+      "basis": "pack",
+      "raw_name": "Parsley Flakes",
       "reg_price_cents": 249,
       "in_stock": true
     },
-    "garlic": {
-      "price_cents": 299,
+    "yellow potato (the little potato company)": {
+      "price_cents": 899,
+      "basis": "pack",
+      "raw_name": "The Little Potato Co. Yellow Potatoes 3lb",
+      "reg_price_cents": 999,
+      "in_stock": true,
+      "pack_size": "3lb"
+    },
+    "carrot": {
+      "price_cents": 99,
       "basis": "lb",
-      "raw_name": "Fresh Loose Garlic",
+      "raw_name": "Carrot Loose",
       "reg_price_cents": 299,
       "in_stock": true
     },
-    "extra virgin olive oil": {
-      "price_cents": 1199,
+    "golden potato": {
+      "price_cents": 500,
       "basis": "pack",
-      "pack_size": "25.4 fl oz",
-      "raw_name": "Gefen Extra Virgin Olive Oil 750ml",
-      "reg_price_cents": 1199,
+      "raw_name": "Yukon Gold Potatoes",
+      "reg_price_cents": 899,
+      "in_stock": true,
+      "pack_size": "5 lb"
+    },
+    "lime juice": {
+      "price_cents": 150,
+      "basis": "pack",
+      "raw_name": "Tuscanini Lime Juice",
+      "reg_price_cents": 219,
+      "in_stock": true,
+      "pack_size": "6.7 fl oz"
+    },
+    "lemon juice": {
+      "price_cents": 319,
+      "basis": "pack",
+      "raw_name": "Lemon Juice",
+      "reg_price_cents": 319,
+      "in_stock": true,
+      "pack_size": "32 fl oz"
+    },
+    "avocado oil": {
+      "price_cents": 2689,
+      "basis": "pack",
+      "raw_name": "Avocado Oil",
+      "reg_price_cents": 2689,
+      "in_stock": true,
+      "pack_size": "33.8 fl oz"
+    },
+    "garlic": {
+      "price_cents": 499,
+      "basis": "lb",
+      "raw_name": "Garlic Loose",
+      "reg_price_cents": 799,
       "in_stock": true
+    },
+    "fresh parsley": {
+      "price_cents": 150,
+      "basis": "each",
+      "raw_name": "Parsley",
+      "reg_price_cents": 199,
+      "in_stock": true
+    },
+    "egg": {
+      "price_cents": 279,
+      "basis": "pack",
+      "raw_name": "Large Eggs 18 ct",
+      "reg_price_cents": 999,
+      "in_stock": true,
+      "pack_size": "18 ct"
+    },
+    "black bean (15 oz)": {
+      "price_cents": 229,
+      "basis": "pack",
+      "raw_name": "Black Beans",
+      "reg_price_cents": 299,
+      "in_stock": true,
+      "pack_size": "15 Oz"
+    },
+    "mayonnaise": {
+      "price_cents": 300,
+      "basis": "pack",
+      "raw_name": "Real Mayonnaise",
+      "reg_price_cents": 699,
+      "in_stock": true,
+      "pack_size": "30 fl oz"
+    },
+    "chicken stock": {
+      "price_cents": 399,
+      "basis": "pack",
+      "raw_name": "Kosher Chicken Broth [KFP]",
+      "reg_price_cents": 399,
+      "in_stock": true,
+      "pack_size": "32 fl oz"
+    },
+    "rice (any, not sticky rice)": {
+      "price_cents": 699,
+      "basis": "pack",
+      "raw_name": "Persian Rice",
+      "reg_price_cents": 699,
+      "in_stock": true,
+      "pack_size": "2 lb"
+    },
+    "hot sauce": {
+      "price_cents": 250,
+      "basis": "pack",
+      "raw_name": "Spicy Hot Sauce",
+      "reg_price_cents": 299,
+      "in_stock": true,
+      "pack_size": "12 fl oz"
+    },
+    "ortega taco seasoning": {
+      "price_cents": 199,
+      "basis": "pack",
+      "raw_name": "Taco Seasoning Mix",
+      "reg_price_cents": 199,
+      "in_stock": true
+    },
+    "rice vinegar": {
+      "price_cents": 399,
+      "basis": "pack",
+      "raw_name": "Rice Vinegar",
+      "reg_price_cents": 499,
+      "in_stock": true,
+      "pack_size": "12.7 Oz"
+    },
+    "toasted sesame oil": {
+      "price_cents": 1519,
+      "basis": "pack",
+      "raw_name": "Toasted Sesame Oil",
+      "reg_price_cents": 1519,
+      "in_stock": true,
+      "pack_size": "10 fl oz"
+    },
+    "tomato paste": {
+      "price_cents": 119,
+      "basis": "pack",
+      "raw_name": "Tomato Paste",
+      "reg_price_cents": 119,
+      "in_stock": true,
+      "pack_size": "6 Oz"
+    },
+    "hot paprika": {
+      "price_cents": 619,
+      "basis": "pack",
+      "raw_name": "Hot Paprika",
+      "reg_price_cents": 619,
+      "in_stock": true,
+      "pack_size": "4.2 Oz"
+    },
+    "jerusalem spice": {
+      "price_cents": 619,
+      "basis": "pack",
+      "raw_name": "Pereg Jerusalem Spice Mix",
+      "reg_price_cents": 619,
+      "in_stock": true,
+      "pack_size": "4.2 Oz"
+    },
+    "all purpose flour": {
+      "price_cents": 449,
+      "basis": "pack",
+      "raw_name": "All Purpose Flour",
+      "reg_price_cents": 579,
+      "in_stock": true,
+      "pack_size": "5 lb"
+    },
+    "coriander": {
+      "price_cents": 419,
+      "basis": "pack",
+      "raw_name": "Coriander",
+      "reg_price_cents": 419,
+      "in_stock": true,
+      "pack_size": "1 Oz"
+    },
+    "cumin": {
+      "price_cents": 299,
+      "basis": "pack",
+      "raw_name": "Ground Cumin",
+      "reg_price_cents": 299,
+      "in_stock": true,
+      "pack_size": "2.5 Oz"
+    },
+    "soy sauce": {
+      "price_cents": 259,
+      "basis": "pack",
+      "raw_name": "Soy Sauce",
+      "reg_price_cents": 259,
+      "in_stock": true,
+      "pack_size": "5 fl oz"
+    },
+    "olive oil": {
+      "price_cents": 3449,
+      "basis": "pack",
+      "raw_name": "Olive Oil",
+      "reg_price_cents": 3449,
+      "in_stock": true,
+      "pack_size": "50 fl oz"
+    },
+    "cornmeal": {
+      "price_cents": 199,
+      "basis": "pack",
+      "raw_name": "Old Fashioned Stone Ground Yellow Corn Meal",
+      "reg_price_cents": 199,
+      "in_stock": true,
+      "pack_size": "32 Oz"
+    },
+    "gochujang (korean red chili paste)": {
+      "price_cents": 929,
+      "basis": "pack",
+      "raw_name": "Gochujang Korean Chili Sauce",
+      "reg_price_cents": 929,
+      "in_stock": true
+    },
+    "oil": {
+      "price_cents": 1429,
+      "basis": "pack",
+      "raw_name": "Vegetable Oil",
+      "reg_price_cents": 1429,
+      "in_stock": true,
+      "pack_size": "48 fl oz"
+    },
+    "cumin seed": {
+      "price_cents": 559,
+      "basis": "pack",
+      "raw_name": "Cumin Seeds",
+      "reg_price_cents": 559,
+      "in_stock": true,
+      "pack_size": "4 Oz"
+    },
+    "paprika": {
+      "price_cents": 999,
+      "basis": "pack",
+      "raw_name": "Paprika",
+      "reg_price_cents": 999,
+      "in_stock": true,
+      "pack_size": "16 Oz"
+    },
+    "sugar": {
+      "price_cents": 599,
+      "basis": "pack",
+      "raw_name": "Bowl & Basket Granulated Sugar",
+      "reg_price_cents": 599,
+      "in_stock": true,
+      "pack_size": "4 lb"
+    },
+    "coconut milk": {
+      "price_cents": 379,
+      "basis": "pack",
+      "raw_name": "Original Classic Coconut Milk",
+      "reg_price_cents": 379,
+      "in_stock": true,
+      "pack_size": "13.5 fl oz"
+    },
+    "kosher salt": {
+      "price_cents": 439,
+      "basis": "pack",
+      "raw_name": "Kosher Salt",
+      "reg_price_cents": 439,
+      "in_stock": true,
+      "pack_size": "35.2 Oz"
+    },
+    "onion soup mix": {
+      "price_cents": 229,
+      "basis": "pack",
+      "raw_name": "Onion Soup Mix",
+      "reg_price_cents": 269,
+      "in_stock": true,
+      "pack_size": "2 Oz"
+    },
+    "garlic powder": {
+      "price_cents": 899,
+      "basis": "pack",
+      "raw_name": "Garlic Powder",
+      "reg_price_cents": 999,
+      "in_stock": true,
+      "pack_size": "22 Oz"
+    },
+    "cornstarch": {
+      "price_cents": 419,
+      "basis": "pack",
+      "raw_name": "Corn Starch",
+      "reg_price_cents": 419,
+      "in_stock": true,
+      "pack_size": "14 Oz"
+    },
+    "honey": {
+      "price_cents": 999,
+      "basis": "pack",
+      "raw_name": "Honey",
+      "reg_price_cents": 1399,
+      "in_stock": true,
+      "pack_size": "2 lb"
+    },
+    "fettuccine pasta": {
+      "price_cents": 249,
+      "basis": "pack",
+      "raw_name": "Fettuccine Pasta Enriched Macaroni Product",
+      "reg_price_cents": 249,
+      "in_stock": true,
+      "pack_size": "1 lb"
+    },
+    "sriracha chili sauce": {
+      "price_cents": 1299,
+      "basis": "pack",
+      "raw_name": "Sriracha Chili Sauce",
+      "reg_price_cents": 1299,
+      "in_stock": true,
+      "pack_size": "18 Oz"
+    },
+    "turmeric": {
+      "price_cents": 649,
+      "basis": "pack",
+      "raw_name": "Ground Turmeric",
+      "reg_price_cents": 649,
+      "in_stock": true,
+      "pack_size": "4.6 Oz"
+    },
+    "lamb shank": {
+      "price_cents": 1599,
+      "basis": "lb",
+      "raw_name": "Lamb Shanks",
+      "reg_price_cents": 1599,
+      "in_stock": true
+    },
+    "extra firm tofu": {
+      "price_cents": 399,
+      "basis": "pack",
+      "raw_name": "Premium Gluten Free & Extra Firm Tofu",
+      "reg_price_cents": 399,
+      "in_stock": true,
+      "pack_size": "16 Oz"
     }
   }
 }
