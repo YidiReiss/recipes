@@ -2823,8 +2823,9 @@
         {
           "key": "cumin seed|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085850134,
-          "removed": true
+          "at": 1795087386723,
+          "qty": 0.25,
+          "unit": "tsp"
         },
         {
           "key": "coconut milk|oz",
