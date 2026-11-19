@@ -2746,8 +2746,9 @@
         {
           "key": "rice (any, not sticky rice)|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085836981,
-          "removed": true
+          "at": 1795087278569,
+          "qty": 1,
+          "unit": "cup"
         },
         {
           "key": "chicken stock|cup",
