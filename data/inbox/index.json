@@ -2392,13 +2392,14 @@
   },
   {
     "id": "inbox-mwngtxt3-6cog",
-    "status": "working",
+    "status": "done",
     "type": "edit",
     "edit_target": "osvo-babulas",
     "created_at": "2026-11-19T11:27:17.609Z",
     "text": "For the beef it should definitely not be ground beef I think that we should specify flanken or chulent meat. Also I don't remember if this i",
-    "updated_at": "2026-11-19T12:38:52.379Z",
+    "updated_at": "2026-11-19T12:39:12.502Z",
     "needs": [],
-    "fail_reason": null
+    "fail_reason": null,
+    "recipe_id": "osvo-babulas"
   }
 ]
