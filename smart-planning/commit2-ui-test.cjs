@@ -2306,18 +2306,18 @@ async function main() {
   // 26(d) Estimated cart total: 3 generated To buy lines (beans 2 cans @ $1.49, romaine @ $2.99, flour tortillas unpriced), plus 1 manual item (excluded from M) and 2 optional items (excluded from M)
   // Sum = $1.49 + $2.99 = $4.48 (one unit per line, NOT multiplied by 2 cans of beans), 2 of 3 items priced.
   // The priced sugar staple ($1.00) is hidden by the Hide-staples toggle: its badge still renders in the staples section, but it must NOT enter the sum or M — without the activeToBuy fix the total would read $5.48 · 3 of 4.
-  check('Section 26 (estimated cart total): sums one unit per matched To buy line ($4.48) and reports 2 of 3 items priced (manual and optional items excluded from N and M)',
-    html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
-  check('Section 26 (estimated cart total): a priced pantry staple hidden by the Hide-staples toggle shows its badge but is excluded from the total (still $4.48 · 2 of 3, not $5.48 · 3 of 4)',
+  check('Section 26 (estimated cart total): sums one unit per matched To buy line ($4.48) and reports 2 of 4 items priced (manual items count in M since v20261119a; optional items excluded)',
+    html26.includes('Estimated total about $4.48 · 2 of 4 items priced'));
+  check('Section 26 (estimated cart total): a priced pantry staple hidden by the Hide-staples toggle shows its badge but is excluded from the total (still $4.48 · 2 of 4, not $5.48 · 3 of 5)',
     html26.includes('Domino Sugar 4lb · $1.00 · Bingo · Nov 9') &&
-    html26.includes('Estimated total about $4.48 · 2 of 3 items priced'));
+    html26.includes('Estimated total about $4.48 · 2 of 4 items priced'));
 
   // Move beans to Already have: Already-have rows get NO badge, and cart total updates to $2.99 · 1 of 2 items priced
   wk25.haveGenerated = [{ key: beans25.key, session: 's1', at: 200 }];
   const html26Have = shoppingListHTML();
-  check('Section 26 (Already have excluded): moving a priced item to Already have suppresses its badge and updates the cart total to $2.99 · 1 of 2 items priced',
+  check('Section 26 (Already have excluded): moving a priced item to Already have suppresses its badge and updates the cart total to $2.99 · 1 of 3 items priced',
     !html26Have.includes('Goya Black Beans · $1.49 · Bingo · Nov 8') &&
-    html26Have.includes('Estimated total about $2.99 · 1 of 2 items priced'));
+    html26Have.includes('Estimated total about $2.99 · 1 of 3 items priced'));
 
   globalThis.localStorage = savedLocal26;   // restore the Hide-staples toggle state
 
@@ -3546,7 +3546,7 @@ async function main() {
     ['apple', 'Apple Gala Small'],
     ['heart of romaine lettuce', 'Romaine Hearts'],
     ['fresh brussel sprout', 'Brussel Sprouts'],
-    ['onion', 'Onion Red'],
+    ['onion', 'Onion Yellow Globe - Loose'],
     ['purple onion', 'Onion Red'],
     ['shallot', 'Onion Shallots'],
     ['white vinegar', 'Distilled White Vinegar 5% Acidity'],
@@ -3565,7 +3565,7 @@ async function main() {
     ['coconut milk', 'Coconut Milk'],
     ['fettuccine pasta', 'Fettuccine']
   ];
-  check('Section 33(b) (101-key full-corpus check): 101-key fixture matches 21 of 66 live-week items (8 of 33 To-buy rows, up from 6 with 0 wrong Idaho potato matches) with exact expected bought_name pairs (v20261117b adds lemon juice -> Lemon Small and lime juice -> Limes via direct matches)',
+  check('Section 33(b) (101-key full-corpus check): 101-key fixture matches 21 of 66 live-week items (8 of 33 To-buy rows, up from 6 with 0 wrong Idaho potato matches) with exact expected bought_name pairs (v20261117b adds lemon juice -> Lemon Small and lime juice -> Limes via direct matches; v20261119a direct-matches onion -> Onion Yellow Globe - Loose)',
     Object.keys(fixturePrices33).length === 101 &&
     liveWeekList33.length === 66 &&
     split33.toBuy.length === 33 &&
@@ -3633,16 +3633,24 @@ async function main() {
   const allDirectValuesInFixture33 = directKeys33.every(k => {
     const v = directMapFile33[k];
     const targets = Array.isArray(v) ? v : [v];
-    return targets.length > 0 && targets.every(t => Object.prototype.hasOwnProperty.call(fixturePrices33, t));
+    // 'basmati rice' (v20261119a) is a deliberate forward target: no basmati
+    // purchase exists yet; the price check creates its entry, and Step 0
+    // falls through harmlessly until then.
+    return targets.length > 0 && targets.every(t => t === 'basmati rice' || Object.prototype.hasOwnProperty.call(fixturePrices33, t));
   });
   globalThis.priceDirectMatches = { egg: 'stale-missing-egg-key' };
   const fallThroughEgg33 = priceMatchFor('egg', fixturePrices33);
   globalThis.priceDirectMatches = directMapFile33;
-  check('Section 33(d) (direct-map staleness & fall-through guard): data/price-direct-matches.json contains the 3 seed entries, every mapped value exists in the 101-key fixture, and a direct entry absent from the price map falls through to fuzzy matching instead of returning null',
+  check('Section 33(d) (direct-map staleness & fall-through guard): data/price-direct-matches.json contains the seed entries (incl. v20261119a onion/spanish onion -> onion yellow globe loose, purple onion -> onion red, tomato -> tomato stem, rice -> basmati rice), every mapped value exists in the 101-key fixture (except the deliberate forward target basmati rice), and a direct entry absent from the price map falls through to fuzzy matching instead of returning null',
     directKeys33.length >= 3 &&
     directMapFile33['egg'] === 'jacks f x-large egg' &&
     directMapFile33['yellow potato (the little potato company)'] === 'potato yukon gold loose' &&
     directMapFile33['chicken stock'] === 'tabatchnick broth chicken' &&
+    directMapFile33['onion'] === 'onion yellow globe loose' &&
+    directMapFile33['spanish onion'] === 'onion yellow globe loose' &&
+    directMapFile33['purple onion'] === 'onion red' &&
+    directMapFile33['tomato'] === 'tomato stem' &&
+    directMapFile33['rice'] === 'basmati rice' &&
     allDirectValuesInFixture33 &&
     !!fallThroughEgg33 &&
     fallThroughEgg33.bought_name === 'X-Large Eggs' &&
@@ -4914,6 +4922,155 @@ async function main() {
       cmpHeadVsSleevePricier37 === 'pricier' &&
       cmpHeadVsSleeveCheaper37 === 'cheaper' &&
       cmpHeadVsSleeveSame37 === 'same');
+  }
+
+  /* ============ 39. v20261119a fix batch (detail close, onion/tomato/rice directs, plum guard, detail names, manual badges, Aron's circular button, romaine pack rule) ============ */
+  {
+    const fixture39 = JSON.parse(fs.readFileSync(path.join(__dirname, 'price-history-fixture-20261117.json'), 'utf8'));
+    const fixturePrices39 = fixture39.prices || fixture39;
+    const appSrc39 = fs.readFileSync(path.join(SITE_DIR, 'app.js'), 'utf8');
+
+    // 39(a) Plum variety-modifier guard: "dried plums" must NOT price as plum tomatoes;
+    // plain "tomato" direct-matches to stem tomatoes.
+    const plumMap39 = {
+      'plum tomato': { price_cents: 129, basis: 'lb', bought_name: 'Vine Ripe Plum Tomatoes', store: "Aron's Kissena Farms", receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] },
+      'tomato stem': { price_cents: 399, basis: 'lb', bought_name: 'Tomato Stem', store: "Aron's Kissena Farms", receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] }
+    };
+    check('Section 39(a) (plum guard + tomato direct): "dried plums (prunes)" and "dried plums" return null (never plum tomatoes), "plum tomato" still matches Vine Ripe Plum Tomatoes, and plain "tomato" direct-matches to Tomato Stem',
+      priceMatchFor('dried plums (prunes)', plumMap39) === null &&
+      priceMatchFor('dried plums', plumMap39) === null &&
+      priceMatchFor('plum tomato', plumMap39)?.bought_name === 'Vine Ripe Plum Tomatoes' &&
+      priceMatchFor('tomato', plumMap39)?.bought_name === 'Tomato Stem' &&
+      priceMatchFor('tomato', fixturePrices39)?.bought_name === 'Tomato Stem');
+
+    // 39(b) Onion direct matches against the 101-key fixture.
+    check('Section 39(b) (onion directs): "onion" and "spanish onion" price as Onion Yellow Globe - Loose (the large Spanish onions), "purple onion" and "red onion" price as Onion Red',
+      priceMatchFor('onion', fixturePrices39)?.bought_name === 'Onion Yellow Globe - Loose' &&
+      priceMatchFor('spanish onion', fixturePrices39)?.bought_name === 'Onion Yellow Globe - Loose' &&
+      priceMatchFor('purple onion', fixturePrices39)?.bought_name === 'Onion Red' &&
+      priceMatchFor('red onion', fixturePrices39)?.bought_name === 'Onion Red');
+
+    // 39(c) Detail card close: badge tap toggles open/closed with +/- indicator flip;
+    // tapping the open card itself closes it. Fake-DOM handler test (Section 37 pattern).
+    const savedDollar39 = globalThis.$;
+    const savedDocument39 = globalThis.document;
+    const savedGetWeek39 = globalThis.getWeek;
+    const savedThisWeekKey39 = globalThis.thisWeekKey;
+    const savedGetSessionId39 = globalThis.getSessionId;
+    const savedMarkShopDirty39 = globalThis.markShopDirty;
+    const savedRenderShopWrap39 = globalThis.renderShopWrap;
+    const hadShoppingListHTML39 = ('shoppingListHTML' in globalThis);
+    const savedShoppingListHTML39 = globalThis.shoppingListHTML;
+    const savedEnsurePlanned39 = globalThis.ensurePlannedRecipes;
+    const savedLoadStoreNotes39 = globalThis.loadStoreNotesLocal;
+    const savedEnsurePriceHistory39 = globalThis.ensurePriceHistoryLoaded;
+    const savedEnsureStoreNotes39 = globalThis.ensureStoreNotesLoaded;
+    const savedShoppingFromLabel39 = globalThis.shoppingFromLabel;
+    const savedGetHideStaples39 = globalThis.getHideStaples;
+    const savedHelpLinkHTML39 = globalThis.helpLinkHTML;
+    geval(extract('renderShopping'));
+    geval(extract('renderShopWrap'));
+    globalThis.shoppingListHTML = () => '<input id="shop-new">';
+    globalThis.getWeek = () => ({ manualItems: [] });
+    globalThis.thisWeekKey = () => '2026-11-15';
+    globalThis.getSessionId = () => 'test-session';
+    globalThis.markShopDirty = () => {};
+    globalThis.ensurePlannedRecipes = async () => {};
+    globalThis.loadStoreNotesLocal = () => {};
+    globalThis.ensurePriceHistoryLoaded = () => {};
+    globalThis.ensureStoreNotesLoaded = () => {};
+    globalThis.shoppingFromLabel = () => '';
+    globalThis.getHideStaples = () => false;
+    globalThis.helpLinkHTML = () => '';
+    let shopClick39 = null;
+    const fakeWrap39 = {
+      get innerHTML() { return ''; },
+      set innerHTML(v) {},
+      querySelector() { return null; },
+      querySelectorAll() { return []; },
+      addEventListener(type, fn) { if (type === 'click') shopClick39 = fn; }
+    };
+    globalThis.document = { title: '', activeElement: null, addEventListener() {} };
+    globalThis.$ = (sel) => (sel === '#shop-wrap' ? fakeWrap39 : null);
+    await renderShopping({ innerHTML: '' });
+    const fakeInd39 = { textContent: '+' };
+    const fakeDetail39 = { hidden: true, dataset: { priceDetail: 'k39' }, parentElement: null };
+    const fakeBtn39 = {
+      dataset: { priceToggle: 'k39' },
+      attrs: {},
+      setAttribute(n, v) { this.attrs[n] = v; },
+      querySelector(sel) { return sel === '.shop-price-toggle-ind' ? fakeInd39 : null; },
+      parentElement: { querySelector(sel) { return sel === '.shop-price-detail' ? fakeDetail39 : null; } }
+    };
+    fakeDetail39.parentElement = { querySelector(sel) { return sel === '[data-price-toggle]' ? fakeBtn39 : null; } };
+    const badgeTarget39 = { closest: (sel) => (sel === '[data-price-toggle]' ? fakeBtn39 : null) };
+    const detailTarget39 = { closest: (sel) => (sel === '.shop-price-detail' ? fakeDetail39 : null) };
+    shopClick39({ target: badgeTarget39 });
+    const opened39 = fakeDetail39.hidden === false && fakeInd39.textContent === '−' && fakeBtn39.attrs['aria-expanded'] === 'true';
+    shopClick39({ target: badgeTarget39 });
+    const closedByBadge39 = fakeDetail39.hidden === true && fakeInd39.textContent === '+' && fakeBtn39.attrs['aria-expanded'] === 'false';
+    shopClick39({ target: badgeTarget39 });
+    shopClick39({ target: detailTarget39 });
+    const closedByCard39 = fakeDetail39.hidden === true && fakeInd39.textContent === '+' && fakeBtn39.attrs['aria-expanded'] === 'false';
+    check('Section 39(c) (detail card close): badge tap opens (indicator flips to −), badge tap again closes, and tapping the open card itself closes it; badge markup carries the +/- indicator span',
+      opened39 && closedByBadge39 && closedByCard39 &&
+      appSrc39.includes('shop-price-toggle-ind') &&
+      appSrc39.includes("closest('.shop-price-detail')"));
+    globalThis.$ = savedDollar39;
+    globalThis.document = savedDocument39;
+    globalThis.getWeek = savedGetWeek39;
+    globalThis.thisWeekKey = savedThisWeekKey39;
+    globalThis.getSessionId = savedGetSessionId39;
+    globalThis.markShopDirty = savedMarkShopDirty39;
+    globalThis.renderShopWrap = savedRenderShopWrap39;
+    if (hadShoppingListHTML39) globalThis.shoppingListHTML = savedShoppingListHTML39;
+    else delete globalThis.shoppingListHTML;
+    globalThis.ensurePlannedRecipes = savedEnsurePlanned39;
+    globalThis.loadStoreNotesLocal = savedLoadStoreNotes39;
+    globalThis.ensurePriceHistoryLoaded = savedEnsurePriceHistory39;
+    globalThis.ensureStoreNotesLoaded = savedEnsureStoreNotes39;
+    globalThis.shoppingFromLabel = savedShoppingFromLabel39;
+    globalThis.getHideStaples = savedGetHideStaples39;
+    globalThis.helpLinkHTML = savedHelpLinkHTML39;
+
+    // 39(d) Product names in the expanded detail (source assertions; visual verified in live QA).
+    check('Section 39(d) (detail names): expected line includes the circular/online product name (exp.raw_name) and history lines include the purchased product name (bought_name)',
+      appSrc39.includes("(exp.raw_name ? exp.raw_name + ' ' : '')") &&
+      /const nStr = String\(h\.bought_name \|\| ''\)\.trim\(\);/.test(appSrc39) &&
+      appSrc39.includes('[nStr, dStr, sStr, fmtDollars(h.price_cents)]'));
+
+    // 39(e) Manual items: price badge on manual rows + counted in the All-stores estimate.
+    check('Section 39(e) (manual item prices): renderManToBuy renders the price badge via a pseudo-item from the manual text, and the All-stores estimate loop includes manToBuy (1 unit each) in the total and denominator',
+      appSrc39.includes('renderPriceBadge(manualPseudoItem(m))') &&
+      appSrc39.includes('manToBuy.forEach(m => {') &&
+      appSrc39.includes('(activeToBuy.length + manToBuy.length)'));
+
+    // 39(f) Aron's circular button: boot loads circulars/index.json; store bar links the latest pdf_url.
+    check('Section 39(f) (Aron\'s circular button): boot fetches data/circulars/index.json and the shopping-list store bar renders an "Aron\'s circular" link to the latest week pdf_url (new tab)',
+      appSrc39.includes("fetch('data/circulars/index.json' + cb)") &&
+      appSrc39.includes('shop-circular-btn') &&
+      appSrc39.includes('target="_blank" rel="noopener"') &&
+      appSrc39.includes('idx.weeks.find(x => x && x.week === idx.latest_week)'));
+
+    // 39(g) Bridge git-v17 romaine hearts known-pack rule.
+    const rowsRomaine39 = [
+      { status: 'verified', needs_review: 0, group_key: 'romaine heart', receipt_dept: null, category: null, paid_price_cents: 349, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Romaine Hearts', raw_line: 'ROMAINE HEARTS', receipt_date: '2026-11-08', receipt_id: 'r39_1', line_no: 1, id: 3901 },
+      { status: 'verified', needs_review: 0, group_key: 'romaine lettuce', receipt_dept: null, category: null, paid_price_cents: 250, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Romaine Lettuce', raw_line: 'ROMAINE LETTUCE', receipt_date: '2026-11-08', receipt_id: 'r39_2', line_no: 2, id: 3902 },
+      { status: 'verified', needs_review: 0, group_key: 'romaine heart', receipt_dept: null, category: null, paid_price_cents: 499, qty_or_weight: 2, unit: 'lb', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Romaine Hearts Loose', raw_line: 'ROMAINE HEARTS LB', receipt_date: '2026-11-01', receipt_id: 'r39_3', line_no: 3, id: 3903 }
+    ];
+    const resRomaine39 = await receiptsMod.handlePriceHistory(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+      makeMockEnv(rowsRomaine39),
+      { nowMs: new Date('2026-11-19T12:00:00Z').getTime(), currentWeekKey: '2026-11-15', circularRates: {}, currentPrices: null }
+    );
+    const jsonRomaine39 = await resRomaine39.json();
+    const pRomaine39 = jsonRomaine39.prices['romaine heart'];
+    const pRomaineLettuce39 = jsonRomaine39.prices['romaine lettuce'];
+    check('Section 39(g) (bridge git-v17 romaine pack rule): weight-less "Romaine Hearts" rows derive basis "pack" with pack_size "3 ct" (latest row wins), while plain "Romaine Lettuce" stays basis "each"',
+      pRomaine39?.basis === 'pack' &&
+      pRomaine39?.pack_size === '3 ct' &&
+      pRomaine39?.price_cents === 349 &&
+      pRomaineLettuce39?.basis === 'each');
   }
 
   const failed = results.filter(r => !r.pass);
