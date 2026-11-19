@@ -410,6 +410,18 @@ Near the top of the Shopping List (just below the week strip) is the **Shopping 
 
 ---
 
+### Pantry Tracking (What's Already at Home)
+
+The site now keeps track of what you already have at home, so the shopping list can tell you when you don't need to buy something.
+
+1. **Where stock comes from:** When a receipt is confirmed, its items are added to your pantry automatically with the amount bought. Items bought by weight (like chicken) are figured out from the price and that week's circular when the receipt doesn't print a weight. If an amount can't be figured out, the item shows as **Amount unconfirmed** — type the amount in the Pantry view and tap **Confirm** before it counts as something you have.
+2. **The Pantry page:** Tap **Pantry** in the top bar (or the Pantry card on the home page). You'll see everything in stock grouped by item, with each purchase listed separately (how much, when you bought it, and when it expires), plus an **Expiring soon** section at the top. Raw meat, poultry, and fish are always listed as frozen, since that's how you store them; freezer dates are "best by" quality dates only, not discard dates.
+3. **Adding and removing by hand:** Use the form at the top of the Pantry page to add something you have (name, amount, unit). Tap **Remove** on an item when it's gone for good.
+4. **Moving something to the fridge:** Each purchase has a storage dropdown (Pantry / Fridge / Freezer). When you move frozen meat to the fridge to thaw, change it to **Fridge** — the freshness clock starts from that day.
+5. **Expired items:** When something passes its date it stops counting as "have" and moves to the **Expired** section. If it's actually still fine, tap **Still good** and it counts again (and won't be flagged again).
+6. **On the shopping list:** If your pantry fully covers an item, it moves to **Already have** with a "from pantry" tag and isn't counted in the estimated total. If you only have part of what's needed, the row stays in **To buy** with an "In pantry" tag and the amount reduced to just the shortfall. Tap the tag to check or fix the amounts — the dialog shows "This recipe needs X. Your pantry has Y." and lets you adjust both numbers for this week.
+7. **Cooking uses up stock:** On the Meal Planner, tap **Cooked it** on a dish after you make it. Its ingredients are deducted from the pantry (amounts are rounded up, so the pantry never claims you have more than you do). Tapping **✓ Cooked** again undoes it and puts everything back. Leftovers dishes don't deduct twice.
+
 ## 7. Submitting Recipes and the Recent Submissions Log
 
 To add a recipe without typing out every ingredient and step yourself, tap **+ Add a recipe** on the Home page (`#/`) or on the **Recipes** page (`#/recipes`). This opens the unified **Add a recipe** screen (`#/submit`) with **✨ Auto-Import (Link / Photo / Text)** selected by default (you can switch to **✍️ Manual Form (Type Ingredients)** at any time using the toggle at the top of the screen without losing anything you've typed).
