@@ -369,6 +369,16 @@ When an item on your **To buy** or **Optional** list matches a product from your
 3. **Tap a Price Badge for Recent History & 12-Month Average:**
    - Tap any price badge to expand (or hide) a detail line right below it showing up to your **last 3 verified purchases** (`Date · Store · $X.XX/<basis>`) plus the **12-mo avg $X.XX** when you have more than one verified purchase in the past year.
 
+### Two Prices on Each Row: What You Paid Last Time vs What It Costs Now
+
+Every priced row on the shopping list now shows two prices, so you can tell at a glance whether something is really a good deal this week:
+
+1. **Last price:** what you paid the last time you bought it, from your verified receipts. Tap the badge to see the last 3 purchases and the 12-month average, as before.
+2. **Expected price now:** what it should cost this week. When the item is on sale in this week's Aron's circular, the sale price wins — that is the expected price. Otherwise the expected price comes from Aron's online store.
+3. **Reading the badge:** a row that says `Butterfly Chicken Cutlets · Now $7.99/lb sale (reg $9.99) · Last $7.99/lb Nov 15` means the circular has it on sale this week at $7.99/lb (regular $9.99) and you last paid $7.99/lb on Nov 15 — this week's sale matches what you paid, so it is not a new lower price. When the item is not on sale, the badge adds `(lower)` or `(up)` to say whether the expected price is lower or higher than what you paid last time.
+4. **Check current prices:** after your meals are planned for the week, tap the **Check current prices** button on the shopping list. It checks Aron's online store for the items that are not in this week's circular, and the list updates with the fresh expected prices when it is done. Tap it once per week — the button is the only thing that starts the check.
+5. **Stale prices and packs without a weight:** if the expected price comes from an older week, the row says the prices are as of that week instead of pretending they are current. And if a receipt line has no weight on it — a pack of chicken cutlets with no weight printed, for example — the row shows the pack price (`$30.04 pack`) and leaves it out of the estimated total rather than guessing.
+
 ### Choosing a Store (`Shopping at:`)
 Near the top of the Shopping List (just below the week strip) is the **Shopping at:** store picker:
 1. **Pick a Store (`All stores`, `Aron's`, `Bingo`, `Trader Joe's`, …):**

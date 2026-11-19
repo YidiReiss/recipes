@@ -2069,26 +2069,48 @@ function priceHeadNoun(key) {
   return words.length ? words[words.length - 1] : null;
 }
 
+function isValidPriceEntry(p) {
+  if (!p || typeof p !== 'object') return false;
+  if (p.price_cents !== null && p.price_cents !== undefined && Number.isFinite(Number(p.price_cents)) && Number(p.price_cents) > 0) {
+    return true;
+  }
+  if (p.expected && typeof p.expected === 'object' && Number.isFinite(Number(p.expected.price_cents)) && Number(p.expected.price_cents) > 0) {
+    return true;
+  }
+  return false;
+}
+
 function mergePriceHistoryEntryPair(a, b) {
   if (!a) return b;
   if (!b) return a;
+  const aHasReceipt = a.price_cents !== null && a.price_cents !== undefined && Number.isFinite(Number(a.price_cents));
+  const bHasReceipt = b.price_cents !== null && b.price_cents !== undefined && Number.isFinite(Number(b.price_cents));
   const aDate = String(a.receipt_date || '');
   const bDate = String(b.receipt_date || '');
-  const newer = bDate > aDate ? b : a;
+  let newer = bDate > aDate ? b : a;
+  if (!bHasReceipt && aHasReceipt) newer = a;
+  else if (!aHasReceipt && bHasReceipt) newer = b;
   const older = newer === b ? a : b;
   const by_store = {};
   const addPurchaseToStoreMap = p => {
-    if (!p || !Number.isFinite(Number(p.price_cents))) return;
+    if (!p || p.price_cents === null || p.price_cents === undefined || !Number.isFinite(Number(p.price_cents))) return;
     const sk = normalizeStore(p.store);
     if (!sk) return;
     const cur = by_store[sk];
     if (!cur || String(p.receipt_date || '') > String(cur.receipt_date || '')) {
-      by_store[sk] = {
+      const storeEntry = {
         price_cents: Number(p.price_cents),
         store: p.store,
         bought_name: p.bought_name,
         receipt_date: p.receipt_date
       };
+      if (p.basis !== undefined) storeEntry.basis = p.basis;
+      if (p.pack_size !== undefined) storeEntry.pack_size = p.pack_size;
+      if (p.source !== undefined) storeEntry.source = p.source;
+      if (p.circular_week !== undefined) storeEntry.circular_week = p.circular_week;
+      if (p.receipt_paid_cents !== undefined) storeEntry.receipt_paid_cents = p.receipt_paid_cents;
+      if (p.implied_qty_lb !== undefined) storeEntry.implied_qty_lb = p.implied_qty_lb;
+      by_store[sk] = storeEntry;
     }
   };
   [newer, older].forEach(entry => {
@@ -2106,8 +2128,18 @@ function mergePriceHistoryEntryPair(a, b) {
   [newer, older].forEach(entry => {
     const arr = Array.isArray(entry && entry.last3) && entry.last3.length
       ? entry.last3.map(h => ({ ...h, bought_name: h.bought_name || entry.bought_name }))
-      : (entry && Number.isFinite(Number(entry.price_cents))
-        ? [{ price_cents: entry.price_cents, store: entry.store, bought_name: entry.bought_name, receipt_date: entry.receipt_date }]
+      : (entry && entry.price_cents !== null && entry.price_cents !== undefined && Number.isFinite(Number(entry.price_cents))
+        ? [{
+            price_cents: entry.price_cents,
+            store: entry.store,
+            bought_name: entry.bought_name,
+            receipt_date: entry.receipt_date,
+            ...(entry.basis !== undefined ? { basis: entry.basis } : {}),
+            ...(entry.source !== undefined ? { source: entry.source } : {}),
+            ...(entry.circular_week !== undefined ? { circular_week: entry.circular_week } : {}),
+            ...(entry.receipt_paid_cents !== undefined ? { receipt_paid_cents: entry.receipt_paid_cents } : {}),
+            ...(entry.implied_qty_lb !== undefined ? { implied_qty_lb: entry.implied_qty_lb } : {})
+          }]
         : []);
     arr.forEach(h => {
       const sig = [h.receipt_date || '', normalizeStore(h.store), h.price_cents].join('|');
@@ -2118,11 +2150,14 @@ function mergePriceHistoryEntryPair(a, b) {
     });
   });
   combinedHist.sort((x, y) => String(y.receipt_date || '').localeCompare(String(x.receipt_date || '')));
-  return {
+  const merged = {
     ...newer,
     by_store,
     last3: combinedHist.slice(0, 3)
   };
+  const exp = (newer && newer.expected) || (older && older.expected) || null;
+  if (exp) merged.expected = exp;
+  return merged;
 }
 
 function entryPriceAtStore(p, storeKey) {
@@ -2130,12 +2165,12 @@ function entryPriceAtStore(p, storeKey) {
   if (!p || !sk || sk === 'all') return null;
   const cands = [];
   if (p.by_store && typeof p.by_store === 'object') {
-    if (p.by_store[sk] && Number.isFinite(Number(p.by_store[sk].price_cents))) {
+    if (p.by_store[sk] && p.by_store[sk].price_cents !== null && Number.isFinite(Number(p.by_store[sk].price_cents))) {
       cands.push({ ...p.by_store[sk], bought_name: p.by_store[sk].bought_name || p.bought_name });
     } else {
       Object.keys(p.by_store).forEach(k => {
         const v = p.by_store[k];
-        if (v && normalizeStore(v.store || k) === sk && Number.isFinite(Number(v.price_cents))) {
+        if (v && normalizeStore(v.store || k) === sk && v.price_cents !== null && Number.isFinite(Number(v.price_cents))) {
           cands.push({ ...v, bought_name: v.bought_name || p.bought_name });
         }
       });
@@ -2143,30 +2178,69 @@ function entryPriceAtStore(p, storeKey) {
   }
   if (Array.isArray(p.last3)) {
     p.last3.forEach(h => {
-      if (h && normalizeStore(h.store) === sk && Number.isFinite(Number(h.price_cents))) {
-        cands.push({
+      if (h && normalizeStore(h.store) === sk && h.price_cents !== null && Number.isFinite(Number(h.price_cents))) {
+        const candObj = {
           price_cents: Number(h.price_cents),
           store: h.store,
           bought_name: h.bought_name || p.bought_name,
           receipt_date: h.receipt_date
-        });
+        };
+        if (h.basis !== undefined) candObj.basis = h.basis;
+        if (h.pack_size !== undefined) candObj.pack_size = h.pack_size;
+        if (h.source !== undefined) candObj.source = h.source;
+        if (h.circular_week !== undefined) candObj.circular_week = h.circular_week;
+        if (h.receipt_paid_cents !== undefined) candObj.receipt_paid_cents = h.receipt_paid_cents;
+        if (h.implied_qty_lb !== undefined) candObj.implied_qty_lb = h.implied_qty_lb;
+        cands.push(candObj);
       }
     });
   }
-  if (normalizeStore(p.store) === sk && Number.isFinite(Number(p.price_cents))) {
-    cands.push({
+  if (normalizeStore(p.store) === sk && p.price_cents !== null && p.price_cents !== undefined && Number.isFinite(Number(p.price_cents))) {
+    const topCand = {
       price_cents: Number(p.price_cents),
       store: p.store,
       bought_name: p.bought_name,
       receipt_date: p.receipt_date
-    });
+    };
+    if (p.basis !== undefined) topCand.basis = p.basis;
+    if (p.pack_size !== undefined) topCand.pack_size = p.pack_size;
+    if (p.source !== undefined) topCand.source = p.source;
+    if (p.circular_week !== undefined) topCand.circular_week = p.circular_week;
+    if (p.receipt_paid_cents !== undefined) topCand.receipt_paid_cents = p.receipt_paid_cents;
+    if (p.implied_qty_lb !== undefined) topCand.implied_qty_lb = p.implied_qty_lb;
+    cands.push(topCand);
   }
-  if (!cands.length) return null;
+  if (!cands.length) {
+    // Edge 1a (Store-picker isolation): expected is Aron's-only.
+    // If shopping at Aron's and p has an active/valid expected (e.g. expected-only item or item previously bought elsewhere),
+    // return an expected-only Aron's entry. For Bingo / Trader Joe's, return null.
+    if (sk === 'arons' && p.expected && typeof p.expected === 'object' && Number.isFinite(Number(p.expected.price_cents))) {
+      return {
+        price_cents: null,
+        store: p.expected.store || "Aron's Kissena Farms",
+        bought_name: p.expected.raw_name || p.bought_name,
+        receipt_date: null,
+        expected: p.expected
+      };
+    }
+    return null;
+  }
   cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
   const win = { ...cands[0] };
-  if (p.basis !== undefined && win.basis === undefined) win.basis = p.basis;
-  if (p.qty !== undefined && win.qty === undefined) win.qty = p.qty;
-  if (p.pack_size !== undefined && win.pack_size === undefined) win.pack_size = p.pack_size;
+  const topStoreMatchesWin = !p.store || normalizeStore(p.store) === sk;
+  if (p.basis !== undefined && win.basis === undefined && topStoreMatchesWin) win.basis = p.basis;
+  if (p.qty !== undefined && win.qty === undefined && topStoreMatchesWin) win.qty = p.qty;
+  if (p.pack_size !== undefined && win.pack_size === undefined && topStoreMatchesWin) win.pack_size = p.pack_size;
+  if (p.source !== undefined && win.source === undefined && topStoreMatchesWin) win.source = p.source;
+  if (p.circular_week !== undefined && win.circular_week === undefined && topStoreMatchesWin) win.circular_week = p.circular_week;
+  if (p.receipt_paid_cents !== undefined && win.receipt_paid_cents === undefined && topStoreMatchesWin) win.receipt_paid_cents = p.receipt_paid_cents;
+  if (p.implied_qty_lb !== undefined && win.implied_qty_lb === undefined && topStoreMatchesWin) win.implied_qty_lb = p.implied_qty_lb;
+  // Edge 1a: attach expected ONLY when storeKey is Aron's
+  if (sk === 'arons' && p.expected && typeof p.expected === 'object') {
+    win.expected = p.expected;
+  } else {
+    delete win.expected;
+  }
   return win;
 }
 
@@ -2178,7 +2252,7 @@ function entryPriceElsewhere(p, storeKey) {
     Object.keys(p.by_store).forEach(k => {
       const v = p.by_store[k];
       const vsk = normalizeStore((v && v.store) || k);
-      if (v && vsk && vsk !== sk && Number.isFinite(Number(v.price_cents))) {
+      if (v && vsk && vsk !== sk && v.price_cents !== null && Number.isFinite(Number(v.price_cents))) {
         cands.push({ ...v, bought_name: v.bought_name || p.bought_name });
       }
     });
@@ -2186,31 +2260,39 @@ function entryPriceElsewhere(p, storeKey) {
   if (Array.isArray(p.last3)) {
     p.last3.forEach(h => {
       const hsk = normalizeStore(h && h.store);
-      if (h && hsk && hsk !== sk && Number.isFinite(Number(h.price_cents))) {
+      if (h && hsk && hsk !== sk && h.price_cents !== null && Number.isFinite(Number(h.price_cents))) {
         cands.push({
           price_cents: Number(h.price_cents),
           store: h.store,
           bought_name: h.bought_name || p.bought_name,
-          receipt_date: h.receipt_date
+          receipt_date: h.receipt_date,
+          ...(h.basis !== undefined ? { basis: h.basis } : {}),
+          ...(h.pack_size !== undefined ? { pack_size: h.pack_size } : {})
         });
       }
     });
   }
   const topSk = normalizeStore(p.store);
-  if (topSk && topSk !== sk && Number.isFinite(Number(p.price_cents))) {
+  if (topSk && topSk !== sk && p.price_cents !== null && p.price_cents !== undefined && Number.isFinite(Number(p.price_cents))) {
     cands.push({
       price_cents: Number(p.price_cents),
       store: p.store,
       bought_name: p.bought_name,
-      receipt_date: p.receipt_date
+      receipt_date: p.receipt_date,
+      ...(p.basis !== undefined ? { basis: p.basis } : {}),
+      ...(p.pack_size !== undefined ? { pack_size: p.pack_size } : {})
     });
   }
-  if (!cands.length) return null;
+  // Fix 5A: do NOT synthesize an elsewhere hit from p.expected when the entry has no receipt history
+  if (!cands.length) {
+    return null;
+  }
   cands.sort((a, b) => String(b.receipt_date || '').localeCompare(String(a.receipt_date || '')));
   const win = { ...cands[0] };
-  if (p.basis !== undefined && win.basis === undefined) win.basis = p.basis;
-  if (p.qty !== undefined && win.qty === undefined) win.qty = p.qty;
-  if (p.pack_size !== undefined && win.pack_size === undefined) win.pack_size = p.pack_size;
+  const topStoreMatchesWin = !p.store || normalizeStore(p.store) === normalizeStore(win.store);
+  if (p.basis !== undefined && win.basis === undefined && topStoreMatchesWin) win.basis = p.basis;
+  if (p.qty !== undefined && win.qty === undefined && topStoreMatchesWin) win.qty = p.qty;
+  if (p.pack_size !== undefined && win.pack_size === undefined && topStoreMatchesWin) win.pack_size = p.pack_size;
   return win;
 }
 
@@ -2243,10 +2325,11 @@ function priceMatchFor(it, pricesMapOverride) {
 
   // Merge hyphen-equivalent keys in rawMap (e.g. 'romaine-heart' and 'romaine heart')
   // so they unify their store history and never falsely tie against each other.
+  // Also accept expected-only entries (price_cents === null && expected.price_cents > 0).
   const canonEntries = new Map();
   for (const k of Object.keys(rawMap)) {
     const p = rawMap[k];
-    if (!p || !Number.isFinite(Number(p.price_cents))) continue;
+    if (!isValidPriceEntry(p)) continue;
     const gk = groupKey(k.replace(/-/g, ' ')).toLowerCase();
     const gkTailSing = gk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
     const cur = canonEntries.get(gkTailSing);
@@ -2268,37 +2351,65 @@ function priceMatchFor(it, pricesMapOverride) {
   // ($3.99 ÷ 5 = $0.80/head); per-lb 'garlic loose' is the fallback.
   if (bkClean === 'garlic' || bkClean === 'fresh garlic' || bkTailSing === 'garlic' || bkTailSing === 'fresh garlic') {
     const sleeveCand = canonEntries.get('garlic sleeve') || (rawMap['garlic sleeve'] ? { entry: rawMap['garlic sleeve'] } : null);
-    if (sleeveCand && sleeveCand.entry && sleeveCand.entry.basis && Number.isFinite(Number(sleeveCand.entry.price_cents))) {
+    if (sleeveCand && sleeveCand.entry && sleeveCand.entry.basis && isValidPriceEntry(sleeveCand.entry)) {
       return sleeveCand.entry;
     }
   }
 
+  // Chicken direct-match guard (PLAN.md §1c):
+  // Map chicken breast / boneless skinless chicken breast / chicken cutlet -> 'butterfly chicken cutlet'
+  // ONLY when the circular fallback + pack_unweighed guard (or active expected / genuine /lb rate) is in place,
+  // never on an un-guarded $30.04 random-weight package fixture.
+  const passesDirectTargetGuard = (targetKey, entryObj) => {
+    if (!entryObj) return false;
+    const tLow = String(targetKey || '').toLowerCase();
+    const qLow = bkTailSing.toLowerCase();
+    if (tLow === 'butterfly chicken cutlet' && qLow !== 'butterfly chicken cutlet') {
+      return Boolean(
+        entryObj.basis === 'pack_unweighed' ||
+        entryObj.source === 'circular' ||
+        entryObj.source === 'receipt' ||
+        entryObj.circular_week ||
+        (entryObj.expected && Number.isFinite(Number(entryObj.expected.price_cents))) ||
+        (entryObj.basis === 'lb' && Number.isFinite(Number(entryObj.price_cents)) && Number(entryObj.price_cents) > 0 && Number(entryObj.price_cents) < 2500)
+      );
+    }
+    return true;
+  };
+
   // Step 0: direct-match lookup (data/price-direct-matches.json)
   // If the mapped receipt key is present in rawMap/canonEntries, return it;
   // if not present in the price map, fall through to Steps 1-2.
-  const directMap = (typeof priceDirectMatches === 'object' && priceDirectMatches)
+  const rawDirectMap = (typeof priceDirectMatches === 'object' && priceDirectMatches)
     ? priceDirectMatches
     : ((typeof globalThis !== 'undefined' && globalThis.priceDirectMatches && typeof globalThis.priceDirectMatches === 'object')
       ? globalThis.priceDirectMatches
       : null);
+  const directMap = (rawDirectMap && rawDirectMap.matches && typeof rawDirectMap.matches === 'object')
+    ? rawDirectMap.matches
+    : rawDirectMap;
   if (directMap) {
-    const directTarget = directMap[bk] || directMap[bkClean] || directMap[bkTailSing];
+    const directTarget = directMap[bk] || directMap[bkClean] || directMap[bkTailSing] || directMap[bkLegacy];
     if (directTarget) {
       const targets = Array.isArray(directTarget) ? directTarget : [directTarget];
       for (let i = 0; i < targets.length; i++) {
         const t = String(targets[i] || '').trim();
         if (!t) continue;
-        if (rawMap[t] && Number.isFinite(Number(rawMap[t].price_cents))) {
+        if (rawMap[t] && isValidPriceEntry(rawMap[t])) {
           const tGk = groupKey(t.replace(/-/g, ' ')).toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
-          return (canonEntries.get(tGk) || { entry: rawMap[t] }).entry;
+          const resolved = (canonEntries.get(tGk) || { entry: rawMap[t] }).entry;
+          if (passesDirectTargetGuard(t, resolved)) return resolved;
         }
         const tClean = t.replace(/-/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
         const tGk = groupKey(tClean).toLowerCase();
         const tTailSing = tGk.replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
-        if (canonEntries.has(tTailSing)) return canonEntries.get(tTailSing).entry;
+        if (canonEntries.has(tTailSing)) {
+          const resolved = canonEntries.get(tTailSing).entry;
+          if (passesDirectTargetGuard(t, resolved)) return resolved;
+        }
         for (const cand of canonEntries.values()) {
           if (cand.key.toLowerCase() === t.toLowerCase() || cand.gk === tGk || cand.gkTailSing === tTailSing) {
-            return cand.entry;
+            if (passesDirectTargetGuard(t, cand.entry)) return cand.entry;
           }
         }
       }
@@ -2306,7 +2417,7 @@ function priceMatchFor(it, pricesMapOverride) {
   }
 
   // Step 1: exact / canonical / legacy-strip lookup
-  if (rawMap[bk] && Number.isFinite(Number(rawMap[bk].price_cents))) {
+  if (rawMap[bk] && isValidPriceEntry(rawMap[bk])) {
     const gk = groupKey(bk.replace(/-/g, ' ')).toLowerCase().replace(/\b(\w+)$/, (_, w) => singularizeWord(w));
     return (canonEntries.get(gk) || { entry: rawMap[bk] }).entry;
   }
@@ -2470,6 +2581,9 @@ function formatPriceWithBasis(priceCents, p, it, convMapOverride) {
   const packTag = String(p.pack_size || '').toLowerCase().trim();
   const bought = String(p.bought_name || '').toLowerCase();
 
+  if (basis === 'pack_unweighed') {
+    return baseDollars + ' pack';
+  }
   if (basis === 'lb') {
     return baseDollars + '/lb';
   }
@@ -2650,8 +2764,101 @@ function convertBucketToPounds(bucket, conv) {
   return null;
 }
 
+function effectivePriceBasisKey(p, it, convMapOverride) {
+  if (!p || !p.basis) return '';
+  const basis = String(p.basis || '').toLowerCase();
+  if (basis === 'pack_unweighed') return 'pack_unweighed';
+  const packTag = String(p.pack_size || '').toLowerCase().trim();
+  const bought = String(p.bought_name || p.raw_name || '').toLowerCase();
+  const conv = lookupPriceConversion(it, convMapOverride);
+  const isSleeve = basis === 'head' || packTag === 'sleeve' || /\bsleeve\b/i.test(bought) ||
+    (basis === 'pack' && conv && conv.pack_name === 'sleeve');
+  if (isSleeve && conv && conv.pack_unit === 'head') return 'head';
+  const isDozen = basis === 'dozen' || packTag === 'dozen' || packTag === 'doz' || /\b(dozen|doz)\b/i.test(bought) ||
+    (conv && conv.pack_name === 'dozen' && Number(conv.units_per_pack) === 12);
+  if (isDozen) return 'dozen';
+  if (basis === 'pack') return 'pack:' + (packTag || (conv && conv.pack_name ? String(conv.pack_name).toLowerCase() : 'pack'));
+  return basis;
+}
+
+function effectiveUnitRateCents(entryObj, basisKey, it, convMapOverride) {
+  const rawCents = Number(entryObj && entryObj.price_cents);
+  if (!Number.isFinite(rawCents)) return NaN;
+  const rawBasis = String((entryObj && entryObj.basis) || '').toLowerCase();
+  const conv = lookupPriceConversion(it, convMapOverride);
+  if (basisKey === 'head' && rawBasis !== 'head') {
+    const units = Number(entryObj && entryObj.units_per_pack) || Number(conv && conv.units_per_pack) || 1;
+    return units > 1 ? Math.round(rawCents / units) : rawCents;
+  }
+  if (basisKey === 'dozen') {
+    if (rawBasis === 'each') return rawCents * 12;
+    const units = Number(entryObj && entryObj.units_per_pack) || 12;
+    if (units > 0 && units !== 12) return Math.round((rawCents / units) * 12);
+  }
+  return rawCents;
+}
+
+// Edge 1b (Basis-matched comparison):
+// Never compare raw price_cents across different bases (e.g. $0.80/head garlic sleeve vs $2.99/lb loose garlic).
+// Returns 'cheaper' | 'pricier' | 'same' | null.
+function compareExpectedVsLast(it, p, convMapOverride) {
+  if (!p || !p.expected || p.expected.stale) return null;
+  const exp = p.expected;
+  if (!Number.isFinite(Number(exp.price_cents)) || Number(exp.price_cents) <= 0) return null;
+  if (p.price_cents === null || p.price_cents === undefined || !Number.isFinite(Number(p.price_cents)) || Number(p.price_cents) <= 0) return null;
+  if (String(p.basis || '').toLowerCase() === 'pack_unweighed') return null;
+
+  const expEntry = { ...exp, bought_name: exp.raw_name || p.bought_name, _ignoreExpected: true };
+  const lastEntry = { ...p, _ignoreExpected: true };
+  const expBasisKey = effectivePriceBasisKey(expEntry, it, convMapOverride);
+  const lastBasisKey = effectivePriceBasisKey(lastEntry, it, convMapOverride);
+
+  // 1. Direct rate comparison when both share the exact same effective basis (normalized per effective unit)
+  if (expBasisKey && lastBasisKey && expBasisKey === lastBasisKey) {
+    const eCents = effectiveUnitRateCents(expEntry, expBasisKey, it, convMapOverride);
+    const lCents = effectiveUnitRateCents(lastEntry, lastBasisKey, it, convMapOverride);
+    if (eCents < lCents) return 'cheaper';
+    if (eCents > lCents) return 'pricier';
+    return 'same';
+  }
+
+  // 2. Converted recipe-quantity comparison when `it` is a shopping list item with an explicit quantity
+  const hasExplicitQty = Boolean(
+    it && typeof it === 'object' && (
+      (it.qty !== null && it.qty !== undefined && it.qty !== '' && Number.isFinite(Number(it.qty))) ||
+      (Array.isArray(it.buckets) && it.buckets.some(b => b && Number.isFinite(Number(b.qty))))
+    )
+  );
+  if (hasExplicitQty) {
+    const estExp = estimateShopItemCents(it, expEntry, convMapOverride);
+    const estLast = estimateShopItemCents(it, lastEntry, convMapOverride);
+    if (estExp.convertible && estLast.convertible && estExp.cents > 0 && estLast.cents > 0) {
+      if (estExp.cents < estLast.cents) return 'cheaper';
+      if (estExp.cents > estLast.cents) return 'pricier';
+      return 'same';
+    }
+  }
+
+  return null;
+}
+
 function estimateShopItemCents(it, p, convMapOverride) {
-  if (!p || !Number.isFinite(Number(p.price_cents))) {
+  if (!p || typeof p !== 'object') {
+    return { convertible: false, cents: 0 };
+  }
+  // Two-price model: when `p` has a current (non-stale) `expected` price and `_ignoreExpected` is not set,
+  // `expected` drives the estimated cart total; fall back to `last` purchase if `expected` is absent, stale, or unconvertible.
+  if (!p._ignoreExpected && p.expected && typeof p.expected === 'object' && !p.expected.stale && Number.isFinite(Number(p.expected.price_cents)) && Number(p.expected.price_cents) > 0) {
+    const expEst = estimateShopItemCents(
+      it,
+      { ...p.expected, bought_name: p.expected.raw_name || p.bought_name, _ignoreExpected: true },
+      convMapOverride
+    );
+    if (expEst.convertible) {
+      return expEst;
+    }
+  }
+  if (p.price_cents === null || p.price_cents === undefined || !Number.isFinite(Number(p.price_cents)) || Number(p.price_cents) <= 0) {
     return { convertible: false, cents: 0 };
   }
   const priceCents = Number(p.price_cents);
@@ -2660,8 +2867,14 @@ function estimateShopItemCents(it, p, convMapOverride) {
     return { convertible: true, cents: priceCents };
   }
 
-  const conv = lookupPriceConversion(it, convMapOverride);
   const basis = String(p.basis || '').toLowerCase();
+  // Hard pack_unweighed guard: a weight-less meat/poultry/fish/bone receipt line with no circular backfill
+  // must NEVER be multiplied or added to the estimated cart total.
+  if (basis === 'pack_unweighed') {
+    return { convertible: false, cents: 0 };
+  }
+
+  const conv = lookupPriceConversion(it, convMapOverride);
   const packTag = String(p.pack_size || '').toLowerCase().trim();
   const bought = String(p.bought_name || '').toLowerCase();
   const buckets = parseExtraBucketsFromItem(it);
@@ -2928,6 +3141,23 @@ function ensurePriceHistoryLoaded(onLoaded) {
   return _priceHistoryInFlight;
 }
 
+async function triggerPriceCheckFlag(weekOverride) {
+  if (typeof fetch !== 'function') return { ok: false };
+  const baseUrl = (typeof BRIDGE === 'string' && BRIDGE) ? BRIDGE : 'https://recipe-bridge.leibreiss.workers.dev';
+  const wk = weekOverride || (typeof thisWeekKey === 'function' ? thisWeekKey() : null);
+  try {
+    const res = await fetch(baseUrl + '/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requested: true, week: wk })
+    });
+    if (!res || !res.ok) return { ok: false };
+    return await res.json();
+  } catch (_) {
+    return { ok: false };
+  }
+}
+
 function shoppingListHTML() {
   const week = getWeek(thisWeekKey());
   if (!Array.isArray(week.manualItems)) week.manualItems = [];
@@ -3006,13 +3236,50 @@ function shoppingListHTML() {
     return String((it && it.key) || '').split('|')[0].toLowerCase();
   };
 
+  const formatHistoryItemText = (h, it) => {
+    if (!h) return '';
+    const dStr = fmtShortDate(h.receipt_date);
+    const sStr = String(h.store || '').trim();
+    if (h.source === 'circular' && h.receipt_paid_cents) {
+      const rateStr = formatPriceWithBasis(h.price_cents, h, it);
+      const paidStr = fmtDollars(h.receipt_paid_cents);
+      const qtyStr = h.implied_qty_lb ? (', ~' + h.implied_qty_lb + ' lb') : '';
+      return [dStr, sStr, rateStr + ' (circular rate · paid ' + paidStr + qtyStr + ')'].filter(Boolean).join(' · ');
+    }
+    return [dStr, sStr, fmtDollars(h.price_cents)].filter(Boolean).join(' · ');
+  };
+
   const buildDetailHTML = (it, p) => {
     const last3 = Array.isArray(p.last3) ? p.last3.slice(0, 3) : [];
-    const histParts = last3.map(h =>
-      '<span class="shop-price-hist-item">' +
-      esc([fmtShortDate(h.receipt_date), String(h.store || '').trim(), fmtDollars(h.price_cents)].filter(Boolean).join(' · ')) +
-      '</span>'
-    );
+    const histParts = [];
+    if (p.expected && typeof p.expected === 'object' && !p.expected.stale && Number.isFinite(Number(p.expected.price_cents))) {
+      const exp = p.expected;
+      const expRate = formatPriceWithBasis(exp.price_cents, { ...exp, bought_name: exp.raw_name || p.bought_name }, it);
+      const srcLabel = exp.source === 'circular' ? 'weekly circular sale' : 'online store';
+      const regPart = (Number.isFinite(Number(exp.reg_price_cents)) && Number(exp.reg_price_cents) > Number(exp.price_cents))
+        ? (' · reg ' + fmtDollars(exp.reg_price_cents))
+        : '';
+      histParts.push(
+        '<span class="shop-price-exp-detail">' +
+        esc("Expected at Aron's: " + expRate + ' (' + srcLabel + (exp.week ? ' · week of ' + exp.week : '') + regPart + ')') +
+        '</span>'
+      );
+    }
+    if (last3.length === 0 && p.source === 'circular' && p.receipt_paid_cents) {
+      histParts.push(
+        '<span class="shop-price-hist-item">' +
+        esc(formatHistoryItemText(p, it)) +
+        '</span>'
+      );
+    } else {
+      last3.forEach(h => {
+        histParts.push(
+          '<span class="shop-price-hist-item">' +
+          esc(formatHistoryItemText(h, it)) +
+          '</span>'
+        );
+      });
+    }
     const hasAvg = p.avg12m_cents !== null && p.avg12m_cents !== undefined && Number.isFinite(Number(p.avg12m_cents));
     if (hasAvg) {
       histParts.push('<span class="shop-price-avg">12-mo avg ' + esc(fmtDollars(p.avg12m_cents)) + '</span>');
@@ -3036,6 +3303,57 @@ function shoppingListHTML() {
     return '';
   };
 
+  const formatTwoPriceBadgeText = (it, entryObj, fallbackKey) => {
+    const exp = entryObj && entryObj.expected;
+    const hasLast = entryObj && entryObj.price_cents !== null && entryObj.price_cents !== undefined &&
+      Number.isFinite(Number(entryObj.price_cents)) && Number(entryObj.price_cents) > 0;
+    const bought = String((entryObj && entryObj.bought_name) || (exp && exp.raw_name) || fallbackKey).trim();
+
+    if (exp && typeof exp === 'object' && Number.isFinite(Number(exp.price_cents)) && Number(exp.price_cents) > 0) {
+      // Rank 2 — Stale expected fallback: show "prices as of <week>" note and use last purchase
+      if (exp.stale) {
+        if (hasLast) {
+          const lastStr = formatPriceWithBasis(entryObj.price_cents, entryObj, it);
+          const dateStr = fmtShortDate(entryObj.receipt_date);
+          return [bought, 'Last ' + lastStr + (dateStr ? ' ' + dateStr : ''), 'prices as of ' + (exp.week || '')].filter(Boolean).join(' · ');
+        }
+        const expStr = formatPriceWithBasis(exp.price_cents, { ...exp, bought_name: exp.raw_name || bought }, it);
+        return [bought, expStr, 'prices as of ' + (exp.week || '')].filter(Boolean).join(' · ');
+      }
+
+      const expStr = formatPriceWithBasis(exp.price_cents, { ...exp, bought_name: exp.raw_name || bought }, it);
+      const isSale = exp.source === 'circular' ||
+        (Number.isFinite(Number(exp.reg_price_cents)) && Number(exp.reg_price_cents) > Number(exp.price_cents));
+      const regStr = (Number.isFinite(Number(exp.reg_price_cents)) && Number(exp.reg_price_cents) > Number(exp.price_cents))
+        ? fmtDollars(exp.reg_price_cents)
+        : '';
+      const multiStr = exp.multi_buy ? (' (' + exp.multi_buy + ')') : '';
+      let nowPart = 'Now ' + expStr + multiStr;
+      if (isSale) {
+        nowPart += ' sale' + (regStr ? ' (reg ' + regStr + ')' : '');
+      }
+      let lastPart = '';
+      if (hasLast) {
+        const lastStr = formatPriceWithBasis(entryObj.price_cents, entryObj, it);
+        const dateStr = fmtShortDate(entryObj.receipt_date);
+        lastPart = 'Last ' + lastStr + (dateStr ? ' ' + dateStr : '');
+        if (!isSale) {
+          const cmp = compareExpectedVsLast(it, entryObj);
+          if (cmp === 'cheaper') nowPart += ' (lower)';
+          else if (cmp === 'pricier') nowPart += ' (up)';
+        }
+      }
+      return [bought, nowPart, lastPart].filter(Boolean).join(' · ');
+    }
+
+    const priceStr = formatPriceWithBasis(entryObj.price_cents, entryObj, it);
+    const storeStr = isStorePicked
+      ? (displayStoreName(entryObj.store || pickedStore) || String(entryObj.store || '').trim())
+      : String(entryObj.store || '').trim();
+    const dateStr = fmtShortDate(entryObj.receipt_date);
+    return [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
+  };
+
   const renderPriceBadge = it => {
     const p = priceMatchFor(it, pricesMap);
     const noteHTML = renderStoreNoteBadge(it);
@@ -3043,28 +3361,22 @@ function shoppingListHTML() {
     const bk = itemBaseKey(it);
     const isOpen = openDetailSet.has(it.key);
     if (!isStorePicked) {
-      const bought = String(p.bought_name || bk).trim();
-      const priceStr = formatPriceWithBasis(p.price_cents, p, it);
-      const storeStr = String(p.store || '').trim();
-      const dateStr = fmtShortDate(p.receipt_date);
-      const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
-      return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
+      const badgeText = formatTwoPriceBadgeText(it, p, bk);
+      const hasSale = Boolean(p.expected && !p.expected.stale && (p.expected.source === 'circular' || (Number(p.expected.reg_price_cents) > Number(p.expected.price_cents))));
+      return '<button type="button" class="shop-price-badge' + (hasSale ? ' shop-price-badge-sale' : '') + '" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
           esc(badgeText) +
         '</button>' +
         buildDetailHTML(it, p);
     }
     const hereHit = entryPriceAtStore(p, pickedStore);
     if (hereHit) {
-      const bought = String(hereHit.bought_name || p.bought_name || bk).trim();
-      const priceStr = formatPriceWithBasis(hereHit.price_cents, hereHit, it);
-      const storeStr = displayStoreName(hereHit.store || pickedStore) || String(hereHit.store || '').trim();
-      const dateStr = fmtShortDate(hereHit.receipt_date);
-      const badgeText = [bought, priceStr, storeStr, dateStr].filter(Boolean).join(' · ');
-      return '<button type="button" class="shop-price-badge" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
+      const badgeText = formatTwoPriceBadgeText(it, hereHit, bk);
+      const hasSale = Boolean(hereHit.expected && !hereHit.expected.stale && (hereHit.expected.source === 'circular' || (Number(hereHit.expected.reg_price_cents) > Number(hereHit.expected.price_cents))));
+      return '<button type="button" class="shop-price-badge' + (hasSale ? ' shop-price-badge-sale' : '') + '" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
           esc(badgeText) +
         '</button>' +
         noteHTML +
-        buildDetailHTML(it, p);
+        buildDetailHTML(it, hereHit.expected ? p : { ...p, expected: undefined });
     }
     const elseHit = entryPriceElsewhere(p, pickedStore);
     if (elseHit) {
@@ -3147,6 +3459,13 @@ function shoppingListHTML() {
       '<button class="shop-opt-btn" data-opt-have="' + esc(it.key) + '" type="button" aria-label="Already have" title="Already have">✓</button>' +
       renderMenuWrap(it, 'opt') + '</div>';
 
+  const isStaleExpectedOnlyHit = hit => Boolean(
+    hit &&
+    (hit.price_cents === null || hit.price_cents === undefined || !Number.isFinite(Number(hit.price_cents))) &&
+    hit.expected &&
+    hit.expected.stale
+  );
+
   const storeSortTier = it => {
     if (!isStorePicked) return 0;
     const bk = itemBaseKey(it);
@@ -3154,7 +3473,8 @@ function shoppingListHTML() {
     if (noteSt === 'not-carried') return 2;
     const p = priceMatchFor(it, pricesMap);
     if (!p) return 2;
-    if (entryPriceAtStore(p, pickedStore)) return 0;
+    const hereHit = entryPriceAtStore(p, pickedStore);
+    if (hereHit && !isStaleExpectedOnlyHit(hereHit)) return 0;
     if (entryPriceElsewhere(p, pickedStore)) return 1;
     return 2;
   };
@@ -3209,6 +3529,7 @@ function shoppingListHTML() {
           esc(displayStoreName(sk)) + '</option>'
         ).join('') +
       '</select>' +
+      '<button type="button" class="btn secondary shop-check-prices-btn" id="shop-check-prices" title="Mark meals planned and request current Aron\u2019s prices">Check current prices</button>' +
     '</div>';
 
   let storeCoverageHTML = '';
@@ -3229,7 +3550,8 @@ function shoppingListHTML() {
       const bk = itemBaseKey(it);
       const noteSt = getStoreNoteStatus(bk, pickedStore);
       const p = priceMatchFor(it, pricesMap);
-      const hereHit = p ? entryPriceAtStore(p, pickedStore) : null;
+      const rawHereHit = p ? entryPriceAtStore(p, pickedStore) : null;
+      const hereHit = (rawHereHit && !isStaleExpectedOnlyHit(rawHereHit)) ? rawHereHit : null;
       const elseHit = (!hereHit && p) ? entryPriceElsewhere(p, pickedStore) : null;
 
       if (noteSt === 'not-carried') {
@@ -3559,6 +3881,18 @@ async function renderShopping(app) {
   startShopPoll();
 
   shopWrap.addEventListener('click', e => {
+    // 0. "Meals planned — check prices" flag button
+    const checkPricesBtn = e.target.closest('#shop-check-prices');
+    if (checkPricesBtn) {
+      checkPricesBtn.disabled = true;
+      triggerPriceCheckFlag().then(out => {
+        checkPricesBtn.disabled = false;
+        if (typeof toast === 'function') {
+          toast(out && out.ok ? 'Price check queued for this week' : 'Could not queue price check');
+        }
+      });
+      return;
+    }
     // 1. Row ⋮ menu toggle
     const menuBtn = e.target.closest('[data-shop-menu]');
     if (menuBtn) {

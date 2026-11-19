@@ -120,12 +120,13 @@ extract('parseQty', true).forEach(src => geval(src));
  'normalizeStoreNotes', 'mergeStoreNotes', 'saveStoreNotesLocal', 'loadStoreNotesLocal',
  'setStoreNotesCache', 'resetStoreNotesSession', 'bridgeReadStoreNotes',
  'ensureStoreNotesLoaded', 'saveStoreNotes', 'getStoreNoteStatus', 'toggleStoreNote',
- 'priceVarietyGroups', 'priceMatchWords', 'priceHeadNoun', 'mergePriceHistoryEntryPair',
+ 'priceVarietyGroups', 'priceMatchWords', 'priceHeadNoun', 'isValidPriceEntry', 'mergePriceHistoryEntryPair',
  'entryPriceAtStore', 'entryPriceElsewhere', 'priceMatchFor',
  'getPriceConversionsMap', 'lookupPriceConversion', 'formatPriceWithBasis',
- 'normalizeRecipeEstimateUnit', 'parseExtraBucketsFromItem', 'convertBucketToPounds', 'estimateShopItemCents',
+ 'normalizeRecipeEstimateUnit', 'parseExtraBucketsFromItem', 'convertBucketToPounds',
+ 'effectivePriceBasisKey', 'effectiveUnitRateCents', 'compareExpectedVsLast', 'estimateShopItemCents',
  'collectKnownStores',
- 'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded',
+ 'setPriceHistoryCache', 'resetPriceHistorySession', 'ensurePriceHistoryLoaded', 'triggerPriceCheckFlag',
  'slugify',
  'weekKeyDate', 'addDaysToKey', 'daysBetweenKeys', 'prevWeekKeyOf',
  'planningRawWeek', 'planSlot', 'planningPrefs', 'allPlanningMeta',
@@ -4001,6 +4002,401 @@ async function main() {
   setShopStore(savedStore34e);
   resetPriceHistorySession();
 
+  // =========================================================================
+  // Section 35. Weekly Circular Pipeline + Two-Price Shopping-List Model (PLAN.md).
+  // =========================================================================
+
+  // 35(a) Circular data files + current-prices/latest.json + sundayWeekKey UTC math + chicken direct matches
+  const circIndex35 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'circulars', 'index.json'), 'utf8'));
+  const circItems35 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'circulars', '2026-11-15', 'items.json'), 'utf8'));
+  const circRates35 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'circulars', 'rates-by-week.json'), 'utf8'));
+  const latestPrices35 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'current-prices', 'latest.json'), 'utf8'));
+  const directMatches35 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
+  const meatLbItems35 = (circItems35.items || []).filter(it => it.section === 'Meat' && it.basis === 'lb');
+  const produceItems35 = (circItems35.items || []).filter(it => it.section === 'Produce');
+  const multiBuyItems35 = (circItems35.items || []).filter(it => Boolean(it.multi_buy));
+  check('Section 35(a) (Circular & current-prices data files + sundayWeekKey UTC math + chicken direct matches): sundayWeekKey computes pure UTC Sunday week keys; data/circulars/2026-11-15/items.json has >=5 Meat /lb items, >=5 Produce items, multi_buy examples, and matches rates-by-week.json; data/price-direct-matches.json maps 4 chicken breast/cutlet keys to "butterfly chicken cutlet"',
+    receiptsMod.sundayWeekKey('2026-11-15') === '2026-11-15' &&
+    receiptsMod.sundayWeekKey('2026-11-18') === '2026-11-15' &&
+    receiptsMod.sundayWeekKey('2026-11-21') === '2026-11-15' &&
+    receiptsMod.sundayWeekKey('2026-11-22') === '2026-11-22' &&
+    circIndex35.latest_week === '2026-11-15' &&
+    meatLbItems35.length >= 5 &&
+    produceItems35.length >= 5 &&
+    multiBuyItems35.length >= 2 &&
+    circRates35['2026-11-15']?.['butterfly chicken cutlet']?.price_cents === 799 &&
+    circRates35['2026-11-15']?.['butterfly chicken cutlet']?.basis === 'lb' &&
+    circRates35['2026-11-15']?.['butterfly chicken cutlet']?.reg_price_cents === 999 &&
+    latestPrices35.week === '2026-11-15' &&
+    latestPrices35.items?.['butterfly chicken cutlet']?.price_cents === 999 &&
+    directMatches35['chicken breast'] === 'butterfly chicken cutlet' &&
+    directMatches35['boneless skinless chicken breast'] === 'butterfly chicken cutlet' &&
+    directMatches35['boneless chicken breast'] === 'butterfly chicken cutlet' &&
+    directMatches35['chicken cutlet'] === 'butterfly chicken cutlet');
+
+  // 35(b) Worker isolate caching for rates-by-week.json and latest.json (5-min TTL + fail-soft)
+  receiptsMod.clearPriceDataCaches();
+  let fetchCalls35b = 0;
+  const mockFetch35b = async (url) => {
+    fetchCalls35b++;
+    if (String(url).includes('rates-by-week.json')) {
+      return { ok: true, json: async () => circRates35 };
+    }
+    if (String(url).includes('latest.json')) {
+      return { ok: true, json: async () => latestPrices35 };
+    }
+    return { ok: false };
+  };
+  const r1_35b = await receiptsMod.getCircularRates({ fetchImpl: mockFetch35b });
+  const r2_35b = await receiptsMod.getCircularRates({ fetchImpl: mockFetch35b });
+  const c1_35b = await receiptsMod.getCurrentPrices({ fetchImpl: mockFetch35b });
+  const c2_35b = await receiptsMod.getCurrentPrices({ fetchImpl: mockFetch35b });
+  receiptsMod.clearPriceDataCaches();
+  const failSoftRates35b = await receiptsMod.getCircularRates({
+    fetchImpl: async () => { throw new Error('network timeout'); }
+  });
+  const failSoftCurr35b = await receiptsMod.getCurrentPrices({
+    fetchImpl: async () => { throw new Error('network timeout'); }
+  });
+  check('Section 35(b) (Worker isolate caching & fail-soft): getCircularRates and getCurrentPrices cache responses per isolate (1 fetch each across repeated calls within 5-min TTL) and fail-soft to {} / null on network timeout',
+    fetchCalls35b === 2 &&
+    r1_35b === r2_35b &&
+    r1_35b['2026-11-15']?.['butterfly chicken cutlet']?.price_cents === 799 &&
+    c1_35b === c2_35b &&
+    c1_35b?.week === '2026-11-15' &&
+    typeof failSoftRates35b === 'object' && Object.keys(failSoftRates35b).length === 0 &&
+    failSoftCurr35b === null);
+
+  // 35(c) Same-week circular backfill + pack_unweighed hard guard in handlePriceHistory
+  const rows35c = [
+    // Weight-less Aron's chicken cutlet line on 2026-11-15 (week HAS circular $7.99/lb): backfilled to 799¢/lb, implied_qty_lb = 3.76
+    { status: 'verified', needs_review: 0, group_key: 'butterfly chicken cutlet', paid_price_cents: 3004, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Butterfly Chicken Cutlets', raw_line: 'BUTTERFLY CHICKEN CUTLETS', receipt_date: '2026-11-15', receipt_id: 'r35_1', line_no: 1, id: 3501 },
+    // Weight-less Aron's marrow bone line on 2026-11-08 (week has NO circular entry): must get basis: 'pack_unweighed'
+    { status: 'verified', needs_review: 0, group_key: 'marrow bone', paid_price_cents: 1450, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Beef Marrow Bones', raw_line: 'BEEF MARROW BONES', receipt_date: '2026-11-08', receipt_id: 'r35_2', line_no: 1, id: 3502 }
+  ];
+  const phRes35c = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(rows35c),
+    {
+      nowMs: new Date('2026-11-17T12:00:00Z').getTime(),
+      currentWeekKey: '2026-11-15',
+      circularRates: { '2026-11-15': { 'butterfly chicken cutlet': circRates35['2026-11-15']['butterfly chicken cutlet'] } },
+      currentPrices: latestPrices35
+    }
+  );
+  const phJson35c = await phRes35c.json();
+  const pChickenBackfilled35c = phJson35c.prices['butterfly chicken cutlet'];
+  const pMarrowUnweighed35c = phJson35c.prices['marrow bone'];
+  const unweighedChickenOnly35c = {
+    price_cents: 3004,
+    store: "Aron's Kissena Farms",
+    bought_name: 'Butterfly Chicken Cutlets',
+    receipt_date: '2026-11-08',
+    basis: 'pack_unweighed',
+    source: 'receipt',
+    receipt_paid_cents: 3004
+  };
+  const unweighedEst35c = estimateShopItemCents(
+    { base: 'boneless skinless chicken breast', key: 'boneless skinless chicken breast|', qty: 4, rawUnit: '', unit: '' },
+    unweighedChickenOnly35c
+  );
+  check('Section 35(c) (Circular backfill & pack_unweighed guard): weight-less Aron\'s chicken cutlet on 2026-11-15 backfills to 799¢/lb (source: "circular", receipt_paid_cents: 3004, implied_qty_lb: 3.76); weight-less meat without circular match gets basis: "pack_unweighed", badges "$30.04 pack", and is excluded from cart estimates (convertible: false)',
+    !!pChickenBackfilled35c &&
+    pChickenBackfilled35c.price_cents === 799 &&
+    pChickenBackfilled35c.basis === 'lb' &&
+    pChickenBackfilled35c.source === 'circular' &&
+    pChickenBackfilled35c.circular_week === '2026-11-15' &&
+    pChickenBackfilled35c.receipt_paid_cents === 3004 &&
+    pChickenBackfilled35c.implied_qty_lb === 3.76 &&
+    !!pMarrowUnweighed35c &&
+    pMarrowUnweighed35c.price_cents === 1450 &&
+    pMarrowUnweighed35c.basis === 'pack_unweighed' &&
+    pMarrowUnweighed35c.source === 'receipt' &&
+    pMarrowUnweighed35c.receipt_paid_cents === 1450 &&
+    formatPriceWithBasis(3004, unweighedChickenOnly35c, 'chicken breast') === '$30.04 pack' &&
+    unweighedEst35c.convertible === false &&
+    unweighedEst35c.cents === 0);
+
+  // 35(d) Guard 2a (Active-week expiry), Guard 2b (reg_price_cents preservation), Rank 1 (Expected-only entries), Rank 2 (stale latest.json)
+  const pBrisketExpectedOnly35d = phJson35c.prices['first cut brisket'];
+  const pOliveOilExpectedOnly35d = phJson35c.prices['extra virgin olive oil'];
+  const matchedBrisket35d = priceMatchFor('brisket', phJson35c.prices);
+  const estBrisket35d = estimateShopItemCents(
+    { base: 'brisket', key: 'brisket|lb', qty: 3, rawUnit: 'lb', unit: 'lb' },
+    matchedBrisket35d
+  );
+  // Now test week rollover to 2026-11-22 where circularRates only has 2026-11-15 and latestPrices35 has week 2026-11-15:
+  const phResExpired35d = await receiptsMod.handlePriceHistory(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+    makeMockEnv(rows35c),
+    {
+      nowMs: new Date('2026-11-23T12:00:00Z').getTime(),
+      currentWeekKey: '2026-11-22',
+      circularRates: { '2026-11-15': { 'butterfly chicken cutlet': circRates35['2026-11-15']['butterfly chicken cutlet'] } },
+      currentPrices: latestPrices35
+    }
+  );
+  const phJsonExpired35d = await phResExpired35d.json();
+  const pChickenExpired35d = phJsonExpired35d.prices['butterfly chicken cutlet'];
+  check('Section 35(d) (Guard 2a active-week expiry, Guard 2b reg_price_cents, Rank 1 expected-only entries, Rank 2 stale latest.json): active circular preserves reg_price_cents (999¢); expected-only items (price_cents: null) are emitted for non-receipt items and convert cleanly; when week rolls to 2026-11-22, the 2026-11-15 circular sale expires for expected while keeping historical receipt backfill, and 2026-11-15 online-store is marked stale: true',
+    pChickenBackfilled35c.expected?.price_cents === 799 &&
+    pChickenBackfilled35c.expected?.source === 'circular' &&
+    pChickenBackfilled35c.expected?.week === '2026-11-15' &&
+    pChickenBackfilled35c.expected?.reg_price_cents === 999 &&
+    !!pBrisketExpectedOnly35d &&
+    pBrisketExpectedOnly35d.price_cents === null &&
+    pBrisketExpectedOnly35d.expected?.price_cents === 1699 &&
+    pBrisketExpectedOnly35d.expected?.source === 'online-store' &&
+    !!pOliveOilExpectedOnly35d &&
+    pOliveOilExpectedOnly35d.price_cents === null &&
+    pOliveOilExpectedOnly35d.expected?.price_cents === 1199 &&
+    !!matchedBrisket35d &&
+    estBrisket35d.convertible === true &&
+    estBrisket35d.cents === 5097 &&
+    // On 2026-11-22: historical receipt from 2026-11-15 STILL has circular backfill 799¢/lb,
+    // but expected is NO LONGER circular 799¢ — it falls back to online-store 999¢ with stale: true!
+    pChickenExpired35d.price_cents === 799 &&
+    pChickenExpired35d.source === 'circular' &&
+    pChickenExpired35d.expected?.source === 'online-store' &&
+    pChickenExpired35d.expected?.price_cents === 999 &&
+    pChickenExpired35d.expected?.stale === true);
+
+  // 35(e) Edge 1a (Store-picker isolation) & Edge 1b (Basis-matched deal comparison)
+  const multiStoreWithExp35e = {
+    price_cents: 249,
+    store: "Aron's Kissena Farms",
+    bought_name: 'Persian Cucumbers',
+    receipt_date: '2026-11-10',
+    basis: 'lb',
+    by_store: {
+      arons: { price_cents: 249, store: "Aron's Kissena Farms", bought_name: 'Persian Cucumbers', receipt_date: '2026-11-10', basis: 'lb' },
+      bingo: { price_cents: 179, store: 'Bingo Wholesale', bought_name: 'Persian Cucumbers', receipt_date: '2026-11-05', basis: 'lb' }
+    },
+    last3: [
+      { price_cents: 249, store: "Aron's Kissena Farms", bought_name: 'Persian Cucumbers', receipt_date: '2026-11-10', basis: 'lb' },
+      { price_cents: 179, store: 'Bingo Wholesale', bought_name: 'Persian Cucumbers', receipt_date: '2026-11-05', basis: 'lb' }
+    ],
+    expected: {
+      price_cents: 149,
+      basis: 'lb',
+      source: 'circular',
+      store: "Aron's Kissena Farms",
+      week: '2026-11-15',
+      reg_price_cents: 249
+    }
+  };
+  const hitArons35e = entryPriceAtStore(multiStoreWithExp35e, 'arons');
+  const hitBingo35e = entryPriceAtStore(multiStoreWithExp35e, 'bingo');
+  const hitExpOnlyArons35e = entryPriceAtStore(pBrisketExpectedOnly35d, 'arons');
+  const hitExpOnlyBingo35e = entryPriceAtStore(pBrisketExpectedOnly35d, 'bingo');
+  const elseExpOnlyBingo35e = entryPriceElsewhere(pBrisketExpectedOnly35d, 'bingo');
+
+  // Cross-basis garlic: Last purchase is Garlic Sleeve ($3.99 / 5-head sleeve = $0.80/head), Expected is loose garlic ($2.99/lb)
+  const crossBasisGarlic35e = {
+    price_cents: 399,
+    store: "Aron's Kissena Farms",
+    bought_name: 'Garlic Sleeve',
+    receipt_date: '2026-11-10',
+    basis: 'pack',
+    pack_size: 'sleeve',
+    expected: {
+      price_cents: 299,
+      basis: 'lb',
+      source: 'online-store',
+      store: "Aron's Kissena Farms",
+      week: '2026-11-15',
+      raw_name: 'Garlic Loose'
+    }
+  };
+  const cmpCrossNoQty35e = compareExpectedVsLast('garlic', crossBasisGarlic35e);
+  const cmpCrossWithQty35e = compareExpectedVsLast(
+    { base: 'garlic', key: 'garlic|clove', qty: 2, rawUnit: 'clove', unit: 'clove' },
+    crossBasisGarlic35e
+  );
+  const cmpSameBasisCheaper35e = compareExpectedVsLast('persian cucumber', multiStoreWithExp35e);
+  check('Section 35(e) (Edge 1a store-picker isolation & Edge 1b basis-matched comparison): expected attaches to Aron\'s hits but never to Bingo/TJ\'s; expected-only items return null at Bingo and do NOT synthesize a fake past purchase via entryPriceElsewhere; cross-basis garlic ($0.80/head sleeve vs $2.99/lb loose) returns null when unquantified and compares converted item cents when quantified',
+    !!hitArons35e && !!hitArons35e.expected && hitArons35e.expected.price_cents === 149 &&
+    !!hitBingo35e && hitBingo35e.expected === undefined && hitBingo35e.price_cents === 179 &&
+    !!hitExpOnlyArons35e && hitExpOnlyArons35e.price_cents === null && hitExpOnlyArons35e.expected?.price_cents === 1699 &&
+    hitExpOnlyBingo35e === null &&
+    elseExpOnlyBingo35e === null &&
+    cmpCrossNoQty35e === null &&
+    cmpCrossWithQty35e === 'cheaper' &&
+    cmpSameBasisCheaper35e === 'cheaper');
+
+  // 35(f) Live-week 2026-11-15 shopping list rendering with two-price model + pack_unweighed safety check
+  const savedThisWeekKey35 = globalThis.thisWeekKey;
+  const savedPlan35 = globalThis.mealPlan;
+  const savedRecipes35 = globalThis.recipes;
+  const savedMetaById35 = globalThis.metaById;
+  const savedById35 = globalThis.byId;
+  const savedSec35 = globalThis.shoppingSections;
+  const savedLocal35 = globalThis.localStorage;
+  globalThis.localStorage = stubStorage({});
+  const savedStore35 = getShopStore();
+
+  globalThis.thisWeekKey = () => '2026-11-15';
+  globalThis.mealPlan = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'meal-plan.json'), 'utf8'));
+  globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+  globalThis.recipes = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'recipes', 'meta.json'), 'utf8'));
+  globalThis.metaById = {};
+  globalThis.recipes.forEach(m => { globalThis.metaById[m.id] = m; });
+  globalThis.byId = {};
+  for (const rf of recipeFiles26) {
+    if (rf === 'index.json' || rf === 'meta.json') continue;
+    const rj = JSON.parse(fs.readFileSync(path.join(recipeDir26, rf), 'utf8'));
+    if (rj && rj.id) globalThis.byId[rj.id] = rj;
+  }
+  setShopStore('all');
+
+  // Case 1: butterfly chicken cutlet has circular backfill ($7.99/lb, paid $30.04, ~3.76 lb) + active circular sale ($7.99/lb, reg $9.99)
+  const pricesWithTwoPriceChicken35f = JSON.parse(JSON.stringify(fixturePrices34));
+  pricesWithTwoPriceChicken35f['butterfly chicken cutlet'] = {
+    price_cents: 799,
+    store: "Aron's Kissena Farms",
+    bought_name: 'Butterfly Chicken Cutlets',
+    receipt_date: '2026-11-15',
+    avg12m_cents: 799,
+    basis: 'lb',
+    source: 'circular',
+    circular_week: '2026-11-15',
+    receipt_paid_cents: 3004,
+    implied_qty_lb: 3.76,
+    by_store: {
+      arons: {
+        price_cents: 799,
+        store: "Aron's Kissena Farms",
+        bought_name: 'Butterfly Chicken Cutlets',
+        receipt_date: '2026-11-15',
+        basis: 'lb',
+        source: 'circular',
+        circular_week: '2026-11-15',
+        receipt_paid_cents: 3004,
+        implied_qty_lb: 3.76
+      }
+    },
+    last3: [
+      {
+        price_cents: 799,
+        store: "Aron's Kissena Farms",
+        bought_name: 'Butterfly Chicken Cutlets',
+        receipt_date: '2026-11-15',
+        basis: 'lb',
+        source: 'circular',
+        circular_week: '2026-11-15',
+        receipt_paid_cents: 3004,
+        implied_qty_lb: 3.76
+      }
+    ],
+    expected: {
+      price_cents: 799,
+      basis: 'lb',
+      source: 'circular',
+      store: "Aron's Kissena Farms",
+      week: '2026-11-15',
+      reg_price_cents: 999,
+      raw_name: 'Fresh Family Pack Butterfly Chicken Cutlets'
+    }
+  };
+  setPriceHistoryCache(pricesWithTwoPriceChicken35f);
+  const htmlTwoPrice35f = shoppingListHTML();
+
+  // Case 2: butterfly chicken cutlet is pack_unweighed ($30.04) with NO expected
+  const pricesWithUnweighedChicken35f = JSON.parse(JSON.stringify(fixturePrices34));
+  pricesWithUnweighedChicken35f['butterfly chicken cutlet'] = unweighedChickenOnly35c;
+  setPriceHistoryCache(pricesWithUnweighedChicken35f);
+  const htmlUnweighed35f = shoppingListHTML();
+
+  // Case 3: Shopping at Bingo with two-price chicken (which only has Aron's history + Aron's expected)
+  setShopStore('bingo');
+  setPriceHistoryCache(pricesWithTwoPriceChicken35f);
+  const htmlBingoIsolation35f = shoppingListHTML();
+
+  globalThis.thisWeekKey = savedThisWeekKey35;
+  globalThis.mealPlan = savedPlan35;
+  globalThis.recipes = savedRecipes35;
+  globalThis.metaById = savedMetaById35;
+  globalThis.byId = savedById35;
+  globalThis.shoppingSections = savedSec35;
+  setShopStore(savedStore35);
+  globalThis.localStorage = savedLocal35;
+  resetPriceHistorySession();
+
+  check('Section 35(f) (Shopping List two-price badge, detail provenance, pack_unweighed UI guard, & Bingo store isolation): 4 boneless skinless chicken breasts (2.0 lb) with circular sale renders "Butterfly Chicken Cutlets · Now $7.99/lb sale (reg $9.99) · Last $7.99/lb Nov 15", detail shows "(circular rate · paid $30.04, ~3.76 lb)", and total is $28.91 (9 of 33 priced); when pack_unweighed without expected, badges "$30.04 pack" and total stays $12.93 with "1 item not estimated"; when Shopping at Bingo, Aron\'s expected sale never leaks into Bingo',
+    htmlTwoPrice35f.includes('Butterfly Chicken Cutlets · Now $7.99/lb sale (reg $9.99) · Last $7.99/lb Nov 15') &&
+    htmlTwoPrice35f.includes('circular rate · paid $30.04, ~3.76 lb') &&
+    htmlTwoPrice35f.includes('Estimated total about $28.91 · 9 of 33 items priced') &&
+    htmlUnweighed35f.includes('Butterfly Chicken Cutlets · $30.04 pack · Aron&#39;s Kissena Farms · Nov 8') &&
+    htmlUnweighed35f.includes('Estimated total about $12.93 · 8 of 33 items priced · 1 item not estimated') &&
+    !htmlBingoIsolation35f.includes('Now $7.99/lb sale') &&
+    htmlBingoIsolation35f.includes('last bought at Aron&#39;s $7.99/lb · Nov 15 — no Bingo price yet'));
+
+  // 35(g) Bridge /price-check-flag endpoint & HARD REQUIREMENT on flag clearing
+  const workerV16Mod = await import(pathToFileURL(path.join(SITE_DIR, 'bridge-git-v16', 'worker.js')).href);
+  if (typeof workerV16Mod.resetMemoryPriceCheckFlag === 'function') {
+    workerV16Mod.resetMemoryPriceCheckFlag();
+  }
+  const flagGet0_35g = await (await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', { method: 'GET' }),
+    {}
+  )).json();
+  const flagSet_35g = await (await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requested: true, week: '2026-11-15' })
+    }),
+    {}
+  )).json();
+  // Attempt to clear WITHOUT latest_written -> must fail (409) and stay requested: true
+  const clearNoLatestRes_35g = await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear', week: '2026-11-15' })
+    }),
+    {}
+  );
+  const clearNoLatest_35g = await clearNoLatestRes_35g.json();
+  // Attempt to clear on Turnstile/browser failure -> must fail (409) and stay requested: true
+  const clearFailedRes_35g = await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear', week: '2026-11-15', latest_written: true, turnstile_blocked: true })
+    }),
+    {}
+  );
+  const clearFailed_35g = await clearFailedRes_35g.json();
+  // Attempt to clear on empty shopping list -> must fail (409) and stay requested: true
+  const clearEmptyRes_35g = await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear', week: '2026-11-15', latest_written: true, item_count: 0 })
+    }),
+    {}
+  );
+  const clearEmpty_35g = await clearEmptyRes_35g.json();
+  // Valid clear after latest.json written with item_count > 0 -> succeeds (200) and sets requested: false
+  const clearOkRes_35g = await workerV16Mod.default.fetch(
+    new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear', week: '2026-11-15', latest_written: true, item_count: 6 })
+    }),
+    {}
+  );
+  const clearOk_35g = await clearOkRes_35g.json();
+  check('Section 35(g) (Bridge /price-check-flag & HARD REQUIREMENT on flag clearing): sets flag on POST {requested: true}, refuses to clear without latest_written=true or on failure/Turnstile block or on empty shopping list (409, requested stays true), and clears ONLY after latest.json is written with item_count > 0',
+    flagGet0_35g.ok === true && flagGet0_35g.requested === false &&
+    flagSet_35g.ok === true && flagSet_35g.requested === true && flagSet_35g.week === '2026-11-15' &&
+    clearNoLatestRes_35g.status === 409 && clearNoLatest_35g.requested === true &&
+    clearFailedRes_35g.status === 409 && clearFailed_35g.requested === true &&
+    clearEmptyRes_35g.status === 409 && clearEmpty_35g.requested === true &&
+    clearOkRes_35g.status === 200 && clearOk_35g.ok === true && clearOk_35g.cleared === true &&
+    clearOk_35g.requested === false && clearOk_35g.last_checked_week === '2026-11-15');
+
   // Section 36 — Shopping-list manual-add keyboard bug (v20261118b): the 15s
   // poll rebuilt the whole shopping page on every tick even when nothing
   // changed, destroying the focused #shop-new input (text + keyboard).
@@ -4192,6 +4588,333 @@ async function main() {
   globalThis.shoppingFromLabel = savedShoppingFromLabel37;
   globalThis.getHideStaples = savedGetHideStaples37;
   globalThis.helpLinkHTML = savedHelpLinkHTML37;
+
+  /* ============ 38. Fix Round Regression Tests (Fixes 1A, 1B, 3A, 4A, 5A, 5B, 6, 7) ============ */
+  {
+    // Fix 1A: SQL SELECT includes ri.receipt_dept & ri.category, and BY_WEIGHT_MEAT_KEYS covers
+    // generic 'chicken', 'salmon', 'veal neck bone', 'pastrami', plus receipt_dept='MEAT' with unrecognized key.
+    const receiptsSrc37 = fs.readFileSync(path.join(SITE_DIR, 'bridge-git-v16', 'receipts.js'), 'utf8');
+    const sqlSelectHasDeptAndCat37 = /SELECT\s+ri\.id[\s\S]*?ri\.receipt_dept,\s*ri\.category,/i.test(receiptsSrc37);
+    const rowsFix1A = [
+      // (i) receipt_dept = 'MEAT' with an unrecognized group_key ("mystery butcher special")
+      { status: 'verified', needs_review: 0, group_key: 'mystery butcher special', receipt_dept: 'MEAT', category: null, paid_price_cents: 2450, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Mystery Butcher Special', raw_line: 'MYSTERY BUTCHER SPECIAL', receipt_date: '2026-11-08', receipt_id: 'r37_1', line_no: 1, id: 3701 },
+      // (ii) group_key = 'chicken' without receipt_dept
+      { status: 'verified', needs_review: 0, group_key: 'chicken', receipt_dept: null, category: null, paid_price_cents: 1899, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Fresh Chicken Pack', raw_line: 'FRESH CHICKEN PACK', receipt_date: '2026-11-08', receipt_id: 'r37_2', line_no: 2, id: 3702 },
+      // (iii) group_key = 'salmon' without receipt_dept
+      { status: 'verified', needs_review: 0, group_key: 'salmon', receipt_dept: null, category: null, paid_price_cents: 2200, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Fresh Salmon', raw_line: 'FRESH SALMON', receipt_date: '2026-11-08', receipt_id: 'r37_3', line_no: 3, id: 3703 },
+      // (iv) group_key = 'veal neck bone' without receipt_dept
+      { status: 'verified', needs_review: 0, group_key: 'veal neck bone', receipt_dept: null, category: null, paid_price_cents: 1599, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Veal Neck Bones', raw_line: 'VEAL NECK BONES', receipt_date: '2026-11-08', receipt_id: 'r37_4', line_no: 4, id: 3704 },
+      // (v) group_key = 'pastrami' without receipt_dept
+      { status: 'verified', needs_review: 0, group_key: 'pastrami', receipt_dept: null, category: null, paid_price_cents: 1299, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'House Pastrami', raw_line: 'HOUSE PASTRAMI', receipt_date: '2026-11-08', receipt_id: 'r37_5', line_no: 5, id: 3705 }
+    ];
+    const resFix1A = await receiptsMod.handlePriceHistory(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+      makeMockEnv(rowsFix1A),
+      { nowMs: new Date('2026-11-17T12:00:00Z').getTime(), currentWeekKey: '2026-11-15', circularRates: {}, currentPrices: null }
+    );
+    const jsonFix1A = await resFix1A.json();
+    const pMystery1A = jsonFix1A.prices['mystery butcher special'];
+    const pChicken1A = jsonFix1A.prices['chicken'];
+    const pSalmon1A = jsonFix1A.prices['salmon'];
+    const pVealNeck1A = jsonFix1A.prices['veal neck bone'];
+    const pPastrami1A = jsonFix1A.prices['pastrami'];
+    check('Section 38(a) (Fix 1A — SQL SELECT includes ri.receipt_dept & ri.category + expanded BY_WEIGHT_MEAT_KEYS): weight-less rows with receipt_dept="MEAT" (even unrecognized key) or group_key in {chicken, salmon, veal neck bone, pastrami} all get basis: "pack_unweighed" and never pose as basis: "each"',
+      sqlSelectHasDeptAndCat37 &&
+      pMystery1A?.basis === 'pack_unweighed' &&
+      pChicken1A?.basis === 'pack_unweighed' &&
+      pSalmon1A?.basis === 'pack_unweighed' &&
+      pVealNeck1A?.basis === 'pack_unweighed' &&
+      pPastrami1A?.basis === 'pack_unweighed' &&
+      estimateShopItemCents({ base: 'chicken', key: 'chicken|', qty: 2, rawUnit: '', unit: '' }, pChicken1A).convertible === false &&
+      estimateShopItemCents({ base: 'salmon', key: 'salmon|lb', qty: 2, rawUnit: 'lb', unit: 'lb' }, pSalmon1A).convertible === false);
+
+    // Fix 1B: Multi-store item where latest row is pack_unweighed at Aron's ($30.04) and older row is weighed 'lb' at Bingo ($6.49/lb)
+    // and vice-versa (latest row is weighed 'lb' at Bingo $9.99/lb, older row is pack_unweighed at Aron's $32.50).
+    const rowsFix1B = [
+      // Item 1 (chicken cutlet): latest at Aron's (2026-11-15) is pack_unweighed ($30.04); older at Bingo (2026-11-10) is weighed lb ($6.49/lb)
+      { status: 'verified', needs_review: 0, group_key: 'chicken cutlet', paid_price_cents: 3004, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Chicken Cutlet Family Pack', raw_line: 'CHICKEN CUTLET PACK', receipt_date: '2026-11-15', receipt_id: 'r37_b1', line_no: 1, id: 3711 },
+      { status: 'verified', needs_review: 0, group_key: 'chicken cutlet', paid_price_cents: 1298, qty_or_weight: 2, unit: 'lb', pack_size: null, store: 'Bingo Wholesale', product_name: 'Bingo Chicken Cutlet', raw_line: 'BINGO CHICKEN CUTLET', receipt_date: '2026-11-10', receipt_id: 'r37_b2', line_no: 1, id: 3712 },
+      // Item 2 (chuck roast): latest at Bingo (2026-11-15) is weighed lb ($9.99/lb); older at Aron's (2026-11-08) is pack_unweighed ($32.50)
+      { status: 'verified', needs_review: 0, group_key: 'chuck roast', paid_price_cents: 1998, qty_or_weight: 2, unit: 'lb', pack_size: null, store: 'Bingo Wholesale', product_name: 'Bingo Chuck Roast', raw_line: 'BINGO CHUCK ROAST', receipt_date: '2026-11-15', receipt_id: 'r37_b3', line_no: 1, id: 3713 },
+      { status: 'verified', needs_review: 0, group_key: 'chuck roast', paid_price_cents: 3250, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Aron Chuck Roast Pack', raw_line: 'ARON CHUCK ROAST', receipt_date: '2026-11-08', receipt_id: 'r37_b4', line_no: 1, id: 3714 }
+    ];
+    const resFix1B = await receiptsMod.handlePriceHistory(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+      makeMockEnv(rowsFix1B),
+      { nowMs: new Date('2026-11-17T12:00:00Z').getTime(), currentWeekKey: '2026-11-15', circularRates: {}, currentPrices: null }
+    );
+    const jsonFix1B = await resFix1B.json();
+    const pCb1B = jsonFix1B.prices['chicken cutlet'];
+    const pCr1B = jsonFix1B.prices['chuck roast'];
+    const hitCbAtBingo1B = entryPriceAtStore(pCb1B, 'Bingo Wholesale');
+    const hitCbAtArons1B = entryPriceAtStore(pCb1B, "Aron's Kissena Farms");
+    const estCbAtBingo1B = estimateShopItemCents({ base: 'chicken cutlet', key: 'chicken cutlet|lb', qty: 2, rawUnit: 'lb', unit: 'lb' }, hitCbAtBingo1B);
+    const estCbAtArons1B = estimateShopItemCents({ base: 'chicken cutlet', key: 'chicken cutlet|lb', qty: 2, rawUnit: 'lb', unit: 'lb' }, hitCbAtArons1B);
+    const hitCrAtArons1B = entryPriceAtStore(pCr1B, "Aron's Kissena Farms");
+    const hitCrAtBingo1B = entryPriceAtStore(pCr1B, 'Bingo Wholesale');
+    const estCrAtArons1B = estimateShopItemCents({ base: 'chuck roast', key: 'chuck roast|lb', qty: 2, rawUnit: 'lb', unit: 'lb' }, hitCrAtArons1B);
+    const estCrAtBingo1B = estimateShopItemCents({ base: 'chuck roast', key: 'chuck roast|lb', qty: 2, rawUnit: 'lb', unit: 'lb' }, hitCrAtBingo1B);
+    check('Section 38(b) (Fix 1B — by_store and last3 always carry their own basis & provenance): when latest is pack_unweighed at Aron\'s ($30.04) and older is weighed lb at Bingo ($6.49/lb), Bingo keeps basis: "lb" and converts 2 lb to $12.98 while Aron\'s stays pack_unweighed (unconvertible); and vice-versa',
+      pCb1B.basis === 'pack_unweighed' &&
+      pCb1B.by_store?.arons?.basis === 'pack_unweighed' &&
+      (pCb1B.by_store?.bingo || pCb1B.by_store?.['bingo wholesale'])?.basis === 'lb' &&
+      pCb1B.last3?.[0]?.basis === 'pack_unweighed' &&
+      pCb1B.last3?.[1]?.basis === 'lb' &&
+      hitCbAtBingo1B?.basis === 'lb' &&
+      estCbAtBingo1B.convertible === true && estCbAtBingo1B.cents === 1298 &&
+      hitCbAtArons1B?.basis === 'pack_unweighed' &&
+      estCbAtArons1B.convertible === false && estCbAtArons1B.cents === 0 &&
+      pCr1B.basis === 'lb' &&
+      (pCr1B.by_store?.bingo || pCr1B.by_store?.['bingo wholesale'])?.basis === 'lb' &&
+      pCr1B.by_store?.arons?.basis === 'pack_unweighed' &&
+      hitCrAtArons1B?.basis === 'pack_unweighed' &&
+      estCrAtArons1B.convertible === false && estCrAtArons1B.cents === 0 &&
+      hitCrAtBingo1B?.basis === 'lb' &&
+      estCrAtBingo1B.convertible === true && estCrAtBingo1B.cents === 1998);
+
+    // Fix 3A & Fix 7 (Option A): /price-check-flag requires item_count > 0 on clear (omitted/null/0 all 409),
+    // recognizes failed: true and turnstile: true, and surfaces storage: 'kv' | 'memory'.
+    workerV16Mod.resetMemoryPriceCheckFlag();
+    // Set flag in memory mode (no KV binding in env)
+    const setMemRes37 = await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requested: true, week: '2026-11-15' })
+      }),
+      {}
+    );
+    const setMem37 = await setMemRes37.json();
+    // Clear with omitted item_count -> must return 409 and keep requested: true
+    const clearOmittedCountRes37 = await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear', latest_written: true })
+      }),
+      {}
+    );
+    const clearOmittedCount37 = await clearOmittedCountRes37.json();
+    // Clear with failed: true -> must return 409
+    const clearFailedBoolRes37 = await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear', latest_written: true, item_count: 5, failed: true })
+      }),
+      {}
+    );
+    const clearFailedBool37 = await clearFailedBoolRes37.json();
+    // Clear with turnstile: true -> must return 409
+    const clearTurnstileBoolRes37 = await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear', latest_written: true, item_count: 5, turnstile: true })
+      }),
+      {}
+    );
+    const clearTurnstileBool37 = await clearTurnstileBoolRes37.json();
+    // Now test with a mock KV binding in env to verify storage: 'kv'
+    const kvStore37 = new Map();
+    const mockKvEnv37 = {
+      PRICE_CHECK_KV: {
+        async get(k) { return kvStore37.has(k) ? kvStore37.get(k) : null; },
+        async put(k, v) { kvStore37.set(k, v); }
+      }
+    };
+    const setKv37 = await (await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requested: true, week: '2026-11-15' })
+      }),
+      mockKvEnv37
+    )).json();
+    const clearKvOkRes37 = await workerV16Mod.default.fetch(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear', latest_written: true, item_count: 5 })
+      }),
+      mockKvEnv37
+    );
+    const clearKvOk37 = await clearKvOkRes37.json();
+    check('Section 38(c) (Fix 3A & Fix 7 Option A — /price-check-flag strict item_count > 0, failed/turnstile booleans, and storage: "kv" | "memory" indicator): clear with omitted item_count or failed:true or turnstile:true returns 409 and keeps flag set; clear with latest_written:true and item_count:5 returns 200; responses surface storage: "memory" vs "kv"',
+      setMem37.storage === 'memory' && setMem37.requested === true &&
+      clearOmittedCountRes37.status === 409 && clearOmittedCount37.requested === true && clearOmittedCount37.reason === 'empty_shopping_list_kept_set' &&
+      clearFailedBoolRes37.status === 409 && clearFailedBool37.requested === true && clearFailedBool37.reason === 'check_failed_kept_set' &&
+      clearTurnstileBoolRes37.status === 409 && clearTurnstileBool37.requested === true && clearTurnstileBool37.reason === 'check_failed_kept_set' &&
+      setKv37.storage === 'kv' && setKv37.requested === true &&
+      clearKvOkRes37.status === 200 && clearKvOk37.cleared === true && clearKvOk37.requested === false && clearKvOk37.storage === 'kv');
+
+    // Fix 4A: buildExpectedForKey only borrows reg_price_cents from onlineItem when basis matches
+    const resFix4A = await receiptsMod.handlePriceHistory(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/price-history'),
+      makeMockEnv([]),
+      {
+        nowMs: new Date('2026-11-17T12:00:00Z').getTime(),
+        currentWeekKey: '2026-11-15',
+        circularRates: {
+          '2026-11-15': {
+            // Circular sale is per-lb ($1.99/lb, no reg_price_cents), online item is per-pack ($4.99/pack) -> mismatched basis!
+            'roma tomato': { price_cents: 199, basis: 'lb', raw_name: 'Roma Tomatoes' },
+            // Circular sale is per-lb ($7.99/lb, no reg_price_cents), online item is also per-lb ($9.99/lb) -> matching basis!
+            'butterfly chicken cutlet': { price_cents: 799, basis: 'lb', raw_name: 'Butterfly Chicken Cutlets' }
+          }
+        },
+        currentPrices: {
+          week: '2026-11-15',
+          store: 'arons',
+          items: {
+            'roma tomato': { price_cents: 499, basis: 'pack', pack_size: 'box', raw_name: 'Roma Tomato Box' },
+            'butterfly chicken cutlet': { price_cents: 999, basis: 'lb', raw_name: 'Butterfly Chicken Cutlets' }
+          }
+        }
+      }
+    );
+    const jsonFix4A = await resFix4A.json();
+    const expTomato4A = jsonFix4A.prices['roma tomato']?.expected;
+    const expChicken4A = jsonFix4A.prices['butterfly chicken cutlet']?.expected;
+    check('Section 38(d) (Fix 4A — reg_price_cents basis guard in buildExpectedForKey): circular entry with basis "lb" and no reg_price_cents does NOT borrow reg_price_cents from an online entry with basis "pack", while matching basis "lb" DOES preserve reg_price_cents',
+      expTomato4A?.price_cents === 199 &&
+      expTomato4A?.basis === 'lb' &&
+      expTomato4A?.reg_price_cents === undefined &&
+      expChicken4A?.price_cents === 799 &&
+      expChicken4A?.basis === 'lb' &&
+      expChicken4A?.reg_price_cents === 999);
+
+    // Fix 5A & Fix 5B: Shopping list UI tests for expected-only under Bingo (Fix 5A) and stale expected-only under Aron's (Fix 5B)
+    const savedThisWeekKey37 = globalThis.thisWeekKey;
+    const savedShoppingFromYmd37 = globalThis.shoppingFromYmd;
+    const savedPlan37 = globalThis.mealPlan;
+    const savedRecipes37 = globalThis.recipes;
+    const savedMetaById37 = globalThis.metaById;
+    const savedById37 = globalThis.byId;
+    const savedSec37 = globalThis.shoppingSections;
+    const savedLocal37 = globalThis.localStorage;
+    const savedStore37 = getShopStore();
+
+    globalThis.localStorage = stubStorage({});
+    globalThis.thisWeekKey = () => '2026-11-15';
+    globalThis.shoppingFromYmd = () => '2026-11-15';
+    const simpleRecipe37 = {
+      id: 'brisket-only-37',
+      title: 'Test Brisket 37',
+      categories: ['main'],
+      kosher_status: 'meat',
+      servings: '4',
+      ingredients: [
+        { section: '', items: [{ qty: '3', unit: 'lb', item: 'brisket' }] }
+      ]
+    };
+    setMeta([simpleRecipe37]);
+    globalThis.byId = { 'brisket-only-37': simpleRecipe37 };
+    globalThis.shoppingSections = null;
+    const days37 = blankDays();
+    days37[5].dinner.dishes = [{ recipe: 'brisket-only-37' }];
+    setPlan({ '2026-11-15': { days: days37, have: [], manualItems: [] } });
+
+    // (1) Fix 5A: Active expected-only item (price_cents: null, expected active at Aron's), Shopping at Bingo
+    const activeExpOnlyMap37 = {
+      'first cut brisket': {
+        price_cents: null,
+        store: "Aron's Kissena Farms",
+        bought_name: 'First Cut Brisket',
+        receipt_date: null,
+        avg12m_cents: null,
+        by_store: {},
+        last3: [],
+        expected: {
+          price_cents: 1699,
+          basis: 'lb',
+          source: 'online-store',
+          store: "Aron's Kissena Farms",
+          week: '2026-11-15'
+        }
+      }
+    };
+    setPriceHistoryCache(activeExpOnlyMap37);
+    setShopStore('bingo');
+    const htmlBingoExpOnly37 = shoppingListHTML();
+
+    // (2) Fix 5B: Stale expected-only item (price_cents: null, expected.stale: true), Shopping at Aron's
+    const staleExpOnlyMap37 = {
+      'first cut brisket': {
+        price_cents: null,
+        store: "Aron's Kissena Farms",
+        bought_name: 'First Cut Brisket',
+        receipt_date: null,
+        avg12m_cents: null,
+        by_store: {},
+        last3: [],
+        expected: {
+          price_cents: 1699,
+          basis: 'lb',
+          source: 'online-store',
+          store: "Aron's Kissena Farms",
+          week: '2026-11-08',
+          stale: true
+        }
+      }
+    };
+    setPriceHistoryCache(staleExpOnlyMap37);
+    setShopStore('arons');
+    const htmlAronsStaleExpOnly37 = shoppingListHTML();
+
+    globalThis.thisWeekKey = savedThisWeekKey37;
+    globalThis.shoppingFromYmd = savedShoppingFromYmd37;
+    globalThis.mealPlan = savedPlan37;
+    globalThis.recipes = savedRecipes37;
+    globalThis.metaById = savedMetaById37;
+    globalThis.byId = savedById37;
+    globalThis.shoppingSections = savedSec37;
+    setShopStore(savedStore37);
+    globalThis.localStorage = savedLocal37;
+    resetPriceHistorySession();
+
+    check('Section 38(e) (Fix 5A — expected-only item under Shopping at Bingo): shows no "last bought at Aron\'s" wording and does NOT increment "only at Aron\'s" in store coverage summary (counts as "1 no price yet")',
+      !htmlBingoExpOnly37.includes('last bought') &&
+      !htmlBingoExpOnly37.includes('only at Aron') &&
+      htmlBingoExpOnly37.includes('Bingo: 0 of 1 priced here · 1 no price yet'));
+
+    check('Section 38(f) (Fix 5B — stale expected-only item under Shopping at Aron\'s): counts as NEITHER priced here ("0 of 1 priced here · 1 no price yet") NOR not-estimated, and detail popup renders no active "Expected at Aron\'s" line',
+      htmlAronsStaleExpOnly37.includes('Aron&#39;s: 0 of 1 priced here · 1 no price yet') &&
+      !htmlAronsStaleExpOnly37.includes('not estimated') &&
+      !htmlAronsStaleExpOnly37.includes('Expected at Aron'));
+
+    // Fix (6) edge note: compareExpectedVsLast Step 1 normalizes multi-unit pack prices by units_per_pack
+    // when effective basis is 'head' (e.g. 5-head garlic sleeve at 399¢ = 80¢/head vs single head at 100¢/head)
+    const garlicSleeveVsSingleHead37 = {
+      price_cents: 399,
+      store: "Aron's Kissena Farms",
+      bought_name: 'Garlic Sleeve',
+      receipt_date: '2026-11-10',
+      basis: 'pack',
+      pack_size: 'sleeve',
+      expected: {
+        price_cents: 100,
+        basis: 'head',
+        source: 'online-store',
+        store: "Aron's Kissena Farms",
+        week: '2026-11-15',
+        raw_name: 'Garlic Head'
+      }
+    };
+    const cmpHeadVsSleevePricier37 = compareExpectedVsLast('garlic', garlicSleeveVsSingleHead37);
+    const cmpHeadVsSleeveCheaper37 = compareExpectedVsLast('garlic', {
+      ...garlicSleeveVsSingleHead37,
+      expected: { ...garlicSleeveVsSingleHead37.expected, price_cents: 65 }
+    });
+    const cmpHeadVsSleeveSame37 = compareExpectedVsLast('garlic', {
+      ...garlicSleeveVsSingleHead37,
+      expected: { ...garlicSleeveVsSingleHead37.expected, price_cents: 80 }
+    });
+    check('Section 38(g) (Fix (6) edge note — compareExpectedVsLast Step 1 unit-pack normalization): a 5-head garlic sleeve at $3.99 (80¢/head) compared against an expected single garlic head (basis: "head") compares per-head rates (100¢/head -> "pricier", 65¢/head -> "cheaper", 80¢/head -> "same") rather than raw 100¢ vs 399¢',
+      cmpHeadVsSleevePricier37 === 'pricier' &&
+      cmpHeadVsSleeveCheaper37 === 'cheaper' &&
+      cmpHeadVsSleeveSame37 === 'same');
+  }
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
