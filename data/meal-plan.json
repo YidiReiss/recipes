@@ -2900,6 +2900,41 @@
           "at": 1795087685902,
           "qty": 2,
           "unit": ""
+        },
+        {
+          "key": "jerusalem spice|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087715385,
+          "qty": 1,
+          "unit": "tsp"
+        },
+        {
+          "key": "all purpose flour|tbsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087716414,
+          "qty": 11,
+          "unit": "tbsp"
+        },
+        {
+          "key": "coriander|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087717397,
+          "qty": 0.5,
+          "unit": "tsp"
+        },
+        {
+          "key": "crushed red pepper|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087718230,
+          "qty": 0.5,
+          "unit": "tsp"
+        },
+        {
+          "key": "cumin|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087720023,
+          "qty": 0.5,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
