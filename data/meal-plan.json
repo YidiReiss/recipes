@@ -2525,8 +2525,9 @@
         {
           "key": "boneless skinless chicken breast|",
           "session": "smwmzr2ll3jygoy",
-          "at": 1795058950377,
-          "removed": true
+          "at": 1795059090667,
+          "qty": 4,
+          "unit": ""
         }
       ],
       "manualItems": [
