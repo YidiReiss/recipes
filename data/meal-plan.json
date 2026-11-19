@@ -2830,8 +2830,9 @@
         {
           "key": "coconut milk|oz",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085851453,
-          "removed": true
+          "at": 1795087464827,
+          "qty": 13.5,
+          "unit": "oz"
         },
         {
           "key": "onion soup mix|tbsp",
