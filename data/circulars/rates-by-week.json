@@ -1,0 +1,162 @@
+{
+  "2026-11-15": {
+    "butterfly chicken cutlet": {
+      "price_cents": 799,
+      "basis": "lb",
+      "raw_name": "Fresh Family Pack Butterfly Chicken Cutlets",
+      "section": "Meat",
+      "pack_size": "family pack",
+      "reg_price_cents": 999
+    },
+    "boneless skinless chicken thigh": {
+      "price_cents": 699,
+      "basis": "lb",
+      "raw_name": "Fresh Family Pack Boneless Chicken Thighs (Pargiot)",
+      "section": "Meat",
+      "pack_size": "family pack",
+      "reg_price_cents": 899
+    },
+    "whole chicken": {
+      "price_cents": 379,
+      "basis": "lb",
+      "raw_name": "Fresh Whole Chicken",
+      "section": "Meat",
+      "reg_price_cents": 449
+    },
+    "ground beef": {
+      "price_cents": 799,
+      "basis": "lb",
+      "raw_name": "Fresh Family Pack Ground Beef",
+      "section": "Meat",
+      "pack_size": "family pack",
+      "reg_price_cents": 949
+    },
+    "first cut brisket": {
+      "price_cents": 1399,
+      "basis": "lb",
+      "raw_name": "1st Cut Beef Brisket",
+      "section": "Meat",
+      "reg_price_cents": 1699
+    },
+    "chuck roast": {
+      "price_cents": 1199,
+      "basis": "lb",
+      "raw_name": "Boneless Beef Chuck Roast",
+      "section": "Meat",
+      "reg_price_cents": 1399
+    },
+    "beef flanken": {
+      "price_cents": 1399,
+      "basis": "lb",
+      "raw_name": "Beef Bone-In Flanken Short Ribs",
+      "section": "Meat",
+      "reg_price_cents": 1699
+    },
+    "marrow bone": {
+      "price_cents": 599,
+      "basis": "lb",
+      "raw_name": "Beef Marrow Soup Bones",
+      "section": "Meat",
+      "reg_price_cents": 699
+    },
+    "salmon fillet": {
+      "price_cents": 1199,
+      "basis": "lb",
+      "raw_name": "Fresh Atlantic Salmon Fillet",
+      "section": "Fish",
+      "reg_price_cents": 1499
+    },
+    "flounder fillet": {
+      "price_cents": 1099,
+      "basis": "lb",
+      "raw_name": "Fresh Flounder Fillet",
+      "section": "Fish",
+      "reg_price_cents": 1299
+    },
+    "persian cucumber": {
+      "price_cents": 149,
+      "basis": "lb",
+      "raw_name": "Crispy Persian Cucumbers",
+      "section": "Produce",
+      "reg_price_cents": 249
+    },
+    "plum tomato": {
+      "price_cents": 129,
+      "basis": "lb",
+      "raw_name": "Vine Ripe Plum Tomatoes",
+      "section": "Produce",
+      "reg_price_cents": 199
+    },
+    "yellow onion": {
+      "price_cents": 199,
+      "basis": "pack",
+      "pack_size": "3 lb bag",
+      "raw_name": "Yellow Cooking Onions 3 lb Bag",
+      "section": "Produce",
+      "reg_price_cents": 299
+    },
+    "idaho potato": {
+      "price_cents": 299,
+      "basis": "pack",
+      "pack_size": "5 lb bag",
+      "raw_name": "U.S. #1 Idaho Potatoes 5 lb Bag",
+      "section": "Produce",
+      "reg_price_cents": 449
+    },
+    "red pepper": {
+      "price_cents": 249,
+      "basis": "lb",
+      "raw_name": "Sweet Red Bell Peppers",
+      "section": "Produce",
+      "reg_price_cents": 349
+    },
+    "sweet potato": {
+      "price_cents": 99,
+      "basis": "lb",
+      "raw_name": "Southern Yams / Sweet Potatoes",
+      "section": "Produce",
+      "reg_price_cents": 149
+    },
+    "green squash": {
+      "price_cents": 149,
+      "basis": "lb",
+      "raw_name": "Fancy Green Squash / Zucchini",
+      "section": "Produce",
+      "reg_price_cents": 229
+    },
+    "hass avocado": {
+      "price_cents": 125,
+      "basis": "each",
+      "multi_buy": "4/$5",
+      "raw_name": "Large Hass Avocados",
+      "section": "Produce",
+      "reg_price_cents": 199
+    },
+    "romaine heart": {
+      "price_cents": 299,
+      "basis": "pack",
+      "pack_size": "3 ct",
+      "raw_name": "Fresh Romaine Hearts 3 Pack",
+      "section": "Produce",
+      "reg_price_cents": 399
+    },
+    "spaghetti": {
+      "price_cents": 150,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$3",
+      "raw_name": "Barilla Pasta 16 oz (Assorted)",
+      "section": "Grocery",
+      "reg_price_cents": 229
+    },
+    "crushed tomato": {
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "28 oz",
+      "multi_buy": "2/$4",
+      "raw_name": "Gefen Crushed Tomatoes 28 oz",
+      "section": "Grocery",
+      "reg_price_cents": 279
+    }
+  }
+}

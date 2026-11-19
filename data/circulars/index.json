@@ -1,0 +1,18 @@
+{
+  "_comment": "Weekly circular index for Aron's Kissena Farms (aronskissenafarms.com/weekly-circular/). Keyed by Sunday week YYYY-MM-DD (America/New_York).",
+  "store": "Aron's Kissena Farms",
+  "source_page": "https://www.aronskissenafarms.com/weekly-circular/",
+  "retention_weeks_pdf": 4,
+  "latest_week": "2026-11-15",
+  "weeks": [
+    {
+      "week": "2026-11-15",
+      "valid_from": "2026-11-15",
+      "valid_to": "2026-11-20",
+      "pdf_url": "https://www.aronskissenafarms.com/wp-content/uploads/2026/11/circular-2026-11-15.pdf",
+      "items_path": "data/circulars/2026-11-15/items.json",
+      "item_count": 21,
+      "extracted_at": "2026-11-15T11:05:00Z"
+    }
+  ]
+}
