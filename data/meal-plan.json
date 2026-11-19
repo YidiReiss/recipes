@@ -2705,14 +2705,16 @@
         {
           "key": "tomato|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085830881,
-          "removed": true
+          "at": 1795087131421,
+          "qty": 3,
+          "unit": ""
         },
         {
           "key": "garlic|clove",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085831645,
-          "removed": true
+          "at": 1795087132463,
+          "qty": 9,
+          "unit": "clove"
         },
         {
           "key": "fresh parsley|",
