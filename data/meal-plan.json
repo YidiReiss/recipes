@@ -2512,6 +2512,13 @@
           "qty": 1,
           "unit": "tsp",
           "removed": true
+        },
+        {
+          "key": "jerusalem spice|tsp",
+          "session": "smwmwkvue05i4jb",
+          "at": 1795053622838,
+          "qty": 1,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
