@@ -456,7 +456,7 @@
     "lb_per_unit": 0.5,
     "lb_per_head": 0.5,
     "lb_per_cup": 0.1,
-    "lb_per_bag": 1.0,
+    "lb_per_bag": 1.5,
     "source": "USDA standard (8 oz / 0.50 lb per romaine heart, 3 hearts per 3-pack, 0.10 lb/cup shredded)"
   },
   "romaine heart": {

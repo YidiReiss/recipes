@@ -1,0 +1,2237 @@
+{
+  "_comment": "Shelf-life table for pantry tracking. Days are conservative single values (low end of sourced ranges; report conservative picks; Argon consult corrections Nov 19 2026). null = no expiry for that storage. Freezer days are QUALITY limits only (safe indefinitely at 0F). Raw meat/poultry/fish default to freezer per household rule. Items with unpinned=true await a decision on unsourced values.",
+  "generated": "2026-11-19",
+  "sources": {
+    "research": "Deep research Nov 19 2026 (USDA FoodKeeper data, FoodSafety.gov Cold Chart, university extensions, StillTasty) — ~/workspace/research_notes/pantry-shelf-life-20261119-1236/report.md",
+    "argon": "Gemini 4 Argon cross-check consult Nov 19 2026 — pantry-20261115/argon-consult-20261119.md"
+  },
+  "items": {
+    "romaine heart": {
+      "name": "Romaine hearts / romaine & iceberg lettuce",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C][H]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–14 (1–2 wk)†",
+        "freezer": "Do not freeze (salad use)",
+        "opened": "3–5 opened bag; 3–4 cut"
+      }
+    },
+    "leafy greens": {
+      "name": "Leaf lettuce & spinach (loose/bagged greens)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][H]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–7; bagged greens 3–5; generic greens 1–4†",
+        "freezer": "300–360 (cooked/blanched greens)",
+        "opened": "3–5 opened bag; 3–4 cut"
+      }
+    },
+    "kale": {
+      "name": "Kale",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5†",
+        "freezer": "240–360",
+        "opened": "3–4 cut"
+      }
+    },
+    "parsley": {
+      "name": "Parsley, fresh",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][I]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "2–3†",
+        "freezer": "90–120",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "cilantro": {
+      "name": "Cilantro, fresh",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 5,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][I]",
+      "raw": {
+        "pantry": "— (see note)",
+        "fridge": "14–21†",
+        "freezer": "— (freeze damage)",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "dill": {
+      "name": "Dill, fresh",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[I][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "9 (water method); generic herbs 7–10†",
+        "freezer": "30–60 (generic herbs)",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "basil": {
+      "name": "Basil, fresh",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 5,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "5 (in water)",
+        "fridge": "10 (will discolor)†",
+        "freezer": "—",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "fresh herbs": {
+      "name": "Herbs, generic fresh (fallback)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–10†",
+        "freezer": "30–60",
+        "opened": "3–4 cut"
+      }
+    },
+    "tomato": {
+      "name": "Tomatoes, whole",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 2,
+      "freezer_days": 60,
+      "opened_fridge_days": 2,
+      "opened_pantry_days": null,
+      "source": "[C][E][F][B]",
+      "raw": {
+        "pantry": "Until ripe, then ~7",
+        "fridge": "Not listed [B]; ripe 1–2 [F]†",
+        "freezer": "60",
+        "opened": "2–3 cut [E]; 3–4 general cut rule"
+      }
+    },
+    "cherry tomato": {
+      "name": "Cherry tomatoes",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 10,
+      "fridge_days": 5,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "10",
+        "fridge": "5",
+        "freezer": "—",
+        "opened": "3–4 cut"
+      }
+    },
+    "cucumber": {
+      "name": "Cucumbers",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 4,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "4–6 (up to 7 [E])",
+        "freezer": "—",
+        "opened": "3–4 cut"
+      }
+    },
+    "bell pepper": {
+      "name": "Peppers (bell)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 4,
+      "freezer_days": 180,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "4–14 (up to 14 [E])",
+        "freezer": "180–240",
+        "opened": "3–4 cut"
+      }
+    },
+    "zucchini": {
+      "name": "Zucchini / summer squash",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "1–5 (zucchini entry: — pantry)",
+        "fridge": "4–5 (zucchini whole 7)†",
+        "freezer": "300–360 (squash); 300 (zucchini)",
+        "opened": "3–4 cut"
+      }
+    },
+    "eggplant": {
+      "name": "Eggplant",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": 1,
+      "fridge_days": 3,
+      "freezer_days": 180,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "1",
+        "fridge": "4–7†",
+        "freezer": "180–240",
+        "opened": "3–4 cut"
+      }
+    },
+    "carrot": {
+      "name": "Carrots (incl. parsnips)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "— (baby carrots 4)",
+        "fridge": "14–21 (baby carrots 28)†",
+        "freezer": "300–360 (baby 90)",
+        "opened": "3–4 cut"
+      }
+    },
+    "celery": {
+      "name": "Celery",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–14",
+        "freezer": "300–360",
+        "opened": "3–4 cut"
+      }
+    },
+    "broccoli": {
+      "name": "Broccoli",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "300–360",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "cauliflower": {
+      "name": "Cauliflower",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "300–360",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "green bean": {
+      "name": "Green beans (beans/peas group)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5†",
+        "freezer": "240",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "brussel sprout": {
+      "name": "Brussels sprouts",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "300–360",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "mushroom": {
+      "name": "Mushrooms",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–7†",
+        "freezer": "300–360",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "avocado": {
+      "name": "Avocados",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": null,
+      "opened_fridge_days": 1,
+      "opened_pantry_days": null,
+      "source": "[B][C][E]",
+      "raw": {
+        "pantry": "Until ripe",
+        "fridge": "3–4 once ripe",
+        "freezer": "—",
+        "opened": "3–4 cut (general cut-produce rule)"
+      }
+    },
+    "lemon": {
+      "name": "Lemons / limes (citrus group)",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 10,
+      "fridge_days": 10,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "10",
+        "fridge": "10–21",
+        "freezer": "—",
+        "opened": "3–4 cut (general); wrap cut surface [F]"
+      }
+    },
+    "apple": {
+      "name": "Apples",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 21,
+      "fridge_days": 28,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "21 (3 wk)",
+        "fridge": "28–42 (4–6 wk)",
+        "freezer": "240 (cooked apples per [C] note)",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "banana": {
+      "name": "Other common fruit — bananas",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "Until ripe",
+        "fridge": "3 (skin darkens)",
+        "freezer": "60–90",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "grape": {
+      "name": "Other fruit — grapes",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": 1,
+      "fridge_days": 7,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "1",
+        "fridge": "7",
+        "freezer": "30",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "strawberry": {
+      "name": "Other fruit — strawberries/raspberries",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 2,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "2–3",
+        "freezer": "240–360",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "blueberry": {
+      "name": "Other fruit — blueberries",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–14",
+        "freezer": "240–360",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "peach": {
+      "name": "Other fruit — peaches/nectarines/plums/pears",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "— (ripen at room temp [E])",
+        "fridge": "3–5 (5 [E])",
+        "freezer": "60",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "onion": {
+      "name": "Onions, whole (yellow/white/red)",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 30,
+      "fridge_days": 60,
+      "freezer_days": 300,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][C][G]",
+      "raw": {
+        "pantry": "30 (1 mo)†",
+        "fridge": "60 (2 mo)",
+        "freezer": "300–360",
+        "opened": "See cut onions below"
+      },
+      "note": "Once cut, use the cut onion entry (7d sealed fridge)"
+    },
+    "cut onion": {
+      "name": "Onions, cut (half/chopped/sliced)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 180,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "[L][H]",
+      "raw": {
+        "pantry": "Do not store cut at room temp (>2h discard)",
+        "fridge": "— (whole-onion fridge value does not apply)",
+        "freezer": "180–240 (3–8 mo, sources vary)",
+        "opened": "**7** (up to 7 [L]; 7–10 StillTasty-cited)†"
+      }
+    },
+    "garlic": {
+      "name": "Garlic, whole bulbs",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 90,
+      "fridge_days": 7,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C][G]",
+      "raw": {
+        "pantry": "30 (1 mo)†",
+        "fridge": "3–14 (cloves [C])",
+        "freezer": "30",
+        "opened": "3–4 cut/peeled (general)"
+      }
+    },
+    "potato": {
+      "name": "Potatoes, whole raw",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 14,
+      "fridge_days": 7,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "30–60 (1–2 mo)",
+        "fridge": "7–14",
+        "freezer": "300–360 **cooked/mashed only** [C]",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "sweet potato": {
+      "name": "Sweet potatoes / yams",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 14,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][G]",
+      "raw": {
+        "pantry": "14–21†",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "3–4 cut/cooked"
+      }
+    },
+    "ginger": {
+      "name": "Ginger root, fresh",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": 2,
+      "fridge_days": 14,
+      "freezer_days": 180,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "2–5",
+        "fridge": "14–21",
+        "freezer": "180",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "scallion": {
+      "name": "Scallions / green onions",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][G]",
+      "raw": {
+        "pantry": "Not pinned (see note)",
+        "fridge": "7 [B]; 3–5 ideal-storage [G]†",
+        "freezer": "300–360",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "corn": {
+      "name": "Corn on the cob (in husk)",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "240",
+        "opened": "3–4 cooked"
+      }
+    },
+    "chicken breast": {
+      "name": "Chicken breasts/cutlets (boneless/bone-in parts)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 270,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "270 (9 mo)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "chicken leg": {
+      "name": "Chicken legs/thighs (parts)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 270,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "270 (9 mo)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "whole chicken": {
+      "name": "Chicken, whole",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 360,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "360–365 (1 yr)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "turkey": {
+      "name": "Turkey, whole / parts / ground",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 360,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2 (all forms)",
+        "freezer": "Whole 360–365; parts 270; ground 90–120",
+        "opened": "3–4 cooked"
+      }
+    },
+    "ground beef": {
+      "name": "Ground beef (and ground lamb/poultry)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "90–120 (3–4 mo)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "beef roast": {
+      "name": "Beef roasts — chuck roast, brisket",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "120–360 (4–12 mo)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "flanken": {
+      "name": "Beef — flanken",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "Yidi Nov 19 2026: treat like all meat (frozen default); values from short-ribs entry",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5 (as short ribs*)",
+        "freezer": "120–360 (as short ribs*)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "beef steak": {
+      "name": "Beef steaks / stew cubes",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "120–360",
+        "opened": "3–4 cooked"
+      }
+    },
+    "lamb": {
+      "name": "Lamb, whole cuts (chops, leg, roast, shanks)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "120–360",
+        "opened": "3–4 cooked"
+      }
+    },
+    "ground lamb": {
+      "name": "Lamb, ground",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "90–120",
+        "opened": "3–4 cooked"
+      }
+    },
+    "salmon": {
+      "name": "Salmon (fatty fish)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 2,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–3 [A]; 1–2 [B]†",
+        "freezer": "60–90 (2–3 mo)",
+        "opened": "3–4 cooked fish"
+      }
+    },
+    "white fish": {
+      "name": "White fish, lean (cod, flounder, haddock, halibut, sole)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 2,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2 [B] (chart fridge cell blank; fatty-fish row 1–3)†",
+        "freezer": "180–240 (6–8 mo [A])",
+        "opened": "3–4 cooked fish"
+      }
+    },
+    "cooked leftovers": {
+      "name": "Cooked meat/poultry leftovers (reference)",
+      "category": "meat",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[A]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–4",
+        "freezer": "60–180 (2–6 mo)",
+        "opened": "— (this is the leftover value)"
+      }
+    },
+    "milk": {
+      "name": "Milk, pasteurized (plain/flavored)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": 9,
+      "opened_pantry_days": null,
+      "source": "Yidi Nov 19 2026: opened milk 9 days; unopened by package date (FoodKeeper)",
+      "raw": {
+        "pantry": "— (shelf-stable milk 180–360 unopened [B])",
+        "fridge": "**By package date** (FoodKeeper gives no day count)†",
+        "freezer": "90 (3 mo)",
+        "opened": "5 [F]; 5–7 in secondary summaries†"
+      }
+    },
+    "ultra-pasteurized milk": {
+      "name": "Milk, ultra-pasteurized",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 30,
+      "freezer_days": null,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "30–90",
+        "freezer": "—",
+        "opened": "7–10 (secondary, via [C] summaries)"
+      }
+    },
+    "heavy cream": {
+      "name": "Heavy cream",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 10,
+      "freezer_days": 90,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "[B][F][J]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "10",
+        "freezer": "90–120 (3–4 mo)",
+        "opened": "3 [F, cream generic]†; ultra-pasteurized whipping: 30 sealed / 7 opened [J]"
+      }
+    },
+    "butter": {
+      "name": "Butter",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 30,
+      "freezer_days": 180,
+      "opened_fridge_days": 14,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "30–60 (1–2 mo)†",
+        "freezer": "180–270 (6–9 mo)",
+        "opened": "Same fridge window from purchase (no separate opened value in [B])"
+      }
+    },
+    "hard cheese": {
+      "name": "Hard cheese, block (cheddar, Swiss, block Parmesan), unopened",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 180,
+      "freezer_days": 180,
+      "opened_fridge_days": 21,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "180 (6 mo)",
+        "freezer": "180 (6 mo)",
+        "opened": "21–28 (3–4 wk) opened"
+      }
+    },
+    "soft cheese": {
+      "name": "Soft cheese (brie, goat, bel paese)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 180,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "[B][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–14",
+        "freezer": "180 (6 mo)",
+        "opened": "5–7 fresh soft (ricotta/cottage 5 [F])†"
+      }
+    },
+    "cottage cheese": {
+      "name": "Cottage cheese / ricotta",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": null,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "14",
+        "freezer": "—",
+        "opened": "5 [F]; cottage 7 once opened [C]†"
+      }
+    },
+    "shredded cheese": {
+      "name": "Shredded cheese (cheddar, mozzarella)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 30,
+      "freezer_days": 90,
+      "opened_fridge_days": 14,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "30 (1 mo)",
+        "freezer": "90–120 (3–4 mo)",
+        "opened": "14 (sliced/grated [F])†"
+      }
+    },
+    "cream cheese": {
+      "name": "Cream cheese",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": null,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "14 (2 wk)",
+        "freezer": "Not listed / not recommended [C]",
+        "opened": "5–6 soft cream cheese after opening [F]; 7–14 Neufchatel/cream cheese [F]†"
+      }
+    },
+    "sour cream": {
+      "name": "Sour cream",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 21,
+      "freezer_days": null,
+      "opened_fridge_days": 14,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced, unobjected)",
+      "raw": {
+        "pantry": "—",
+        "fridge": "**By package date** (FoodKeeper gives no day count)",
+        "freezer": "Not recommended [C]",
+        "opened": "7–14 (1–2 wk; [F] sour-cream dips 14)†"
+      }
+    },
+    "yogurt": {
+      "name": "Yogurt",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 30,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "[B][C][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "7–14 (1–2 wk)",
+        "freezer": "30–60 (1–2 mo)",
+        "opened": "7–10 [F] (use shorter)"
+      }
+    },
+    "egg": {
+      "name": "Eggs, in shell (raw)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 21,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[A][B][F]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "21–35 (3–5 wk)",
+        "freezer": "Do not freeze in shell (beat whites+yolks, then freeze; 360 for whites/yolks [B])",
+        "opened": "N/A in shell; hard-cooked eggs 7 fridge, do not freeze"
+      }
+    },
+    "flour": {
+      "name": "Flour, white (all-purpose/bread/cake)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "[B][D][C]",
+      "raw": {
+        "pantry": "180–360 (6–12 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "365 (1 yr) fridge opened; opened pantry 180–240 (6–8 mo)"
+      }
+    },
+    "whole wheat flour": {
+      "name": "Flour, whole wheat",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 90,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "90–180 (3–6 mo)†",
+        "fridge": "—",
+        "freezer": "— (second entry: 730)†",
+        "opened": "180–240 (6–8 mo) fridge opened"
+      }
+    },
+    "rice": {
+      "name": "Rice, white/wild, dry",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "730 (2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180 (6 mo) fridge opened; opened pantry 365"
+      }
+    },
+    "brown rice": {
+      "name": "Rice, brown, dry",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365 (1 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180 fridge opened; opened pantry 365"
+      }
+    },
+    "dry pasta": {
+      "name": "Pasta, dry without eggs",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "730 (2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 365 (no fridge value)"
+      }
+    },
+    "oats": {
+      "name": "Oats / oatmeal (hot cereal)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 360,
+      "fridge_days": null,
+      "freezer_days": 240,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "360 (12 mo); oats whole grain 120",
+        "fridge": "—",
+        "freezer": "Oats whole grain 240",
+        "opened": "Opened pantry 180–360 (6–12 mo)"
+      }
+    },
+    "breadcrumb": {
+      "name": "Breadcrumbs, commercial",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "180 (6 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "No opened value listed"
+      }
+    },
+    "sugar": {
+      "name": "Sugar, granulated (also brown/powdered)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 540,
+      "source": "[D][C]",
+      "raw": {
+        "pantry": "Indefinitely (source wording)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry best within 540–720 (18–24 mo)"
+      }
+    },
+    "dried bean": {
+      "name": "Dried beans",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365–730 (1–2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 365"
+      }
+    },
+    "lentil": {
+      "name": "Lentils, dried (also split peas)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365 (1 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 365"
+      }
+    },
+    "canned low-acid": {
+      "name": "Canned goods, low-acid (meat, soups, beans, corn, peas, veg)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][D][C]",
+      "raw": {
+        "pantry": "730–1825 (2–5 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "**3–4** (opened pantry: not recommended)"
+      }
+    },
+    "canned high-acid": {
+      "name": "Canned goods, high-acid (fruit, juices, pickles, tomato soup, vinegar sauces)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 360,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "[B][D][C]",
+      "raw": {
+        "pantry": "360–540 (12–18 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "**5–7** (opened pantry: not recommended)"
+      },
+      "note": "Transfer out of the metal can after opening (Argon)"
+    },
+    "pasta sauce": {
+      "name": "Jarred sauces — spaghetti/pasta sauce in jars",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 540,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "[B][J][C]",
+      "raw": {
+        "pantry": "540 (18 mo)",
+        "fridge": "—",
+        "freezer": "No freezer time listed [J]",
+        "opened": "**4** (tomato-sauce entry 3–5)†"
+      }
+    },
+    "oil": {
+      "name": "Oils, olive/vegetable (canola 365)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "180–360 (6–12 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "120 (4 mo) fridge opened; opened pantry 90–150 (3–5 mo)"
+      }
+    },
+    "vinegar": {
+      "name": "Vinegar (generic)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "730 (2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "No opened value listed (apple cider vinegar: indefinitely [D])"
+      }
+    },
+    "ground spice": {
+      "name": "Spices, ground",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 730,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "730–1095 (2–3 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 730–1095 (same)"
+      }
+    },
+    "whole spice": {
+      "name": "Spices, whole",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 1095,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 1095,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "1095–1460 (3–4 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 1095–1460 (same)"
+      }
+    },
+    "dried herb": {
+      "name": "Herbs, dried",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365–730 (1–2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 365–730"
+      }
+    },
+    "nut": {
+      "name": "Nuts, jars/cans (generic)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": 180,
+      "opened_fridge_days": 120,
+      "opened_pantry_days": 60,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365 (1 yr)",
+        "fridge": "—",
+        "freezer": "180–360 (6–12 mo)",
+        "opened": "120–180 (4–6 mo) fridge opened; opened pantry 60–270 (2–9 mo)"
+      }
+    },
+    "almond": {
+      "name": "Nuts, specific example — almonds, no shell",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 120,
+      "fridge_days": 240,
+      "freezer_days": 300,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "120",
+        "fridge": "240",
+        "freezer": "300",
+        "opened": "No separate opened value in [B] (varies by nut)"
+      }
+    },
+    "dried fruit": {
+      "name": "Dried fruit (raisins, apricots, mangoes, cranberries)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 180,
+      "opened_pantry_days": 30,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "180 (6 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180 (6 mo) fridge opened; opened pantry 30 (1 mo)"
+      }
+    },
+    "honey": {
+      "name": "Honey",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][D][C]",
+      "raw": {
+        "pantry": "730 (2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "No opened value listed"
+      }
+    },
+    "peanut butter": {
+      "name": "Peanut butter, commercial",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 90,
+      "opened_pantry_days": 60,
+      "source": "[B][D][C]",
+      "raw": {
+        "pantry": "180–720 (6–24 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 60–90 (2–3 mo); stabilized type fridge opened 90–120"
+      }
+    },
+    "stock carton": {
+      "name": "Stock/broth, cartons commercially produced, unopened",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": 7,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced, unobjected); opened 3-4d from FoodKeeper",
+      "raw": {
+        "pantry": "**To package date — no day count in FoodKeeper**†",
+        "fridge": "7 (fridge-case, from purchase)",
+        "freezer": "60–90 (2–3 mo)",
+        "opened": "**3–4** opened"
+      }
+    },
+    "homemade broth": {
+      "name": "Broth, homemade (reference)",
+      "category": "pantry",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–4",
+        "freezer": "60–90 [B]; 60–90 (2–3 mo [D])",
+        "opened": "— (this is the made/opened value)"
+      }
+    },
+    "bouillon": {
+      "name": "Bouillon, dry (soup mixes)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "[B][D]",
+      "raw": {
+        "pantry": "365 (1 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "Opened pantry 365"
+      }
+    },
+    "sandwich bread": {
+      "name": "Sandwich bread, commercial (pan breads, rolls, buns, flat breads)",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 5,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "14–18",
+        "fridge": "— (see opened)",
+        "freezer": "90–150",
+        "opened": "14–21 (2–3 wk) in fridge after opening [C]†"
+      }
+    },
+    "whole wheat bread": {
+      "name": "Whole wheat bread, commercial pre-sliced",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 3,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "3–5†",
+        "fridge": "—",
+        "freezer": "90",
+        "opened": "No separate opened value"
+      }
+    },
+    "homemade bread": {
+      "name": "Bread, homemade",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 3,
+      "fridge_days": null,
+      "freezer_days": 60,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "3–5",
+        "fridge": "60–90 [B] (quality drops; fridge not preferred)",
+        "freezer": "—",
+        "opened": "Same as pantry window once cut (no separate value)"
+      }
+    },
+    "challah": {
+      "name": "Challah",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 6,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": 2,
+      "opened_pantry_days": null,
+      "source": "Yidi (pantry ~1 week); freezer/cut from Argon consult (unsourced)",
+      "raw": {
+        "pantry": "**Not pinned (authoritative)** — blogs only: 2–3",
+        "fridge": "**Not pinned** — blogs only: up to 7",
+        "freezer": "**Not pinned** — blogs only: 60–90 (2–3 mo)",
+        "opened": "Not pinned"
+      }
+    },
+    "flour tortilla": {
+      "name": "Tortillas, flour",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 90,
+      "fridge_days": null,
+      "freezer_days": 180,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "90",
+        "fridge": "—",
+        "freezer": "180",
+        "opened": "No separate opened value"
+      }
+    },
+    "corn tortilla": {
+      "name": "Tortillas, corn",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 25,
+      "fridge_days": 60,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "25–45",
+        "fridge": "60–90",
+        "freezer": "—",
+        "opened": "No separate opened value"
+      }
+    },
+    "pita": {
+      "name": "Pita, packaged",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 5,
+      "fridge_days": 3,
+      "freezer_days": 90,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 5,
+      "source": "[H]",
+      "raw": {
+        "pantry": "5–7",
+        "fridge": "3–4 if refrigerated",
+        "freezer": "90 (3 mo)",
+        "opened": "5–7 pantry opened-or-unopened [H]"
+      }
+    },
+    "bagel": {
+      "name": "Bagels, fresh baked",
+      "category": "bread_frozen",
+      "default_storage": "pantry",
+      "pantry_days": 1,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B]",
+      "raw": {
+        "pantry": "1–2",
+        "fridge": "—",
+        "freezer": "90",
+        "opened": "No separate opened value"
+      }
+    },
+    "frozen bagel": {
+      "name": "Bagels, commercially frozen",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": null,
+      "opened_pantry_days": null,
+      "source": "[B][J]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "—",
+        "freezer": "90 (3 mo)",
+        "opened": "After thawing: use promptly (no day count in [B])"
+      }
+    },
+    "frozen pizza": {
+      "name": "Pizza, commercially frozen (uncooked)",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 360,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][A]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–4 [B, thawed/cooked context]",
+        "freezer": "360 (12 mo)",
+        "opened": "Cooked leftover pizza: 3–4 fridge, 30–60 freezer [A]"
+      }
+    },
+    "frozen entree": {
+      "name": "Frozen entrees / prepared meals (generic)",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][J]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "—",
+        "freezer": "360 (12 mo)",
+        "opened": "Cooked: 3–4 (general leftover rule [A])"
+      }
+    },
+    "boureka": {
+      "name": "Bourekas, frozen",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 180,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced), accepted by Yidi Nov 19 2026",
+      "raw": {
+        "pantry": "**Not pinned**",
+        "fridge": "**Not pinned**",
+        "freezer": "**Not pinned** (nearest category: frozen entrees 360 — do not use as bourekas value)",
+        "opened": "Not pinned"
+      }
+    },
+    "frozen chicken nugget": {
+      "name": "Chicken nuggets/patties, frozen (reference)",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": null,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][A]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "—",
+        "freezer": "30–90",
+        "opened": "Cooked: 3–4 fridge, 30–90 freezer [A]"
+      }
+    },
+    "ketchup": {
+      "name": "Ketchup / cocktail / chili sauce",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 180,
+      "opened_pantry_days": null,
+      "source": "[B][D][K][H]",
+      "raw": {
+        "pantry": "365 (1 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180 (6 mo)† (opened pantry ~30)"
+      }
+    },
+    "mustard": {
+      "name": "Mustard, prepared",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 365,
+      "opened_pantry_days": null,
+      "source": "[B][D][K]",
+      "raw": {
+        "pantry": "365–730 (1–2 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "365 (1 yr) (opened pantry ~30)"
+      }
+    },
+    "mayonnaise": {
+      "name": "Mayonnaise, commercial",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 90,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 30,
+      "opened_pantry_days": null,
+      "source": "[B][C][F][K]",
+      "raw": {
+        "pantry": "90–180 (3–6 mo)",
+        "fridge": "—",
+        "freezer": "Do not freeze (quality)",
+        "opened": "60 (2 mo); [K] 30–60 (1–2 mo)†"
+      }
+    },
+    "soy sauce": {
+      "name": "Soy sauce / teriyaki sauce",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 1095,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 365,
+      "opened_pantry_days": null,
+      "source": "[B][H][K]",
+      "raw": {
+        "pantry": "1095 (3 yr)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "~730 (2 yr) StillTasty-cited†; [K] lists 30 (1 mo)†"
+      }
+    },
+    "hot sauce": {
+      "name": "Hot sauce",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 180,
+      "opened_pantry_days": null,
+      "source": "[B][K][H]",
+      "raw": {
+        "pantry": "180 (6 mo) [B]†",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180 (6 mo) [K]† (StillTasty-cited up to ~1095)"
+      }
+    },
+    "jam": {
+      "name": "Jam / jelly / preserves, commercial",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 180,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 180,
+      "opened_pantry_days": null,
+      "source": "[B][D][K]",
+      "raw": {
+        "pantry": "180–540 (6–18 mo)",
+        "fridge": "—",
+        "freezer": "—",
+        "opened": "180–360 (6–12 mo)"
+      }
+    },
+    "stew meat": {
+      "name": "Beef stew cubes",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 2,
+      "freezer_days": 120,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "3–5",
+        "freezer": "120–360",
+        "opened": "3–4 cooked"
+      },
+      "note": "Argon: cubed stew meat spoils at ground-meat rate (1-2d)"
+    },
+    "turkey parts": {
+      "name": "Turkey parts",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 270,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2 (all forms)",
+        "freezer": "Whole 360–365; parts 270; ground 90–120",
+        "opened": "3–4 cooked"
+      }
+    },
+    "ground turkey": {
+      "name": "Ground turkey",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2 (all forms)",
+        "freezer": "Whole 360–365; parts 270; ground 90–120",
+        "opened": "3–4 cooked"
+      }
+    },
+    "lime": {
+      "name": "Limes",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 10,
+      "fridge_days": 10,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "10",
+        "fridge": "10–21",
+        "freezer": "—",
+        "opened": "3–4 cut (general); wrap cut surface [F]"
+      }
+    },
+    "chicken thigh": {
+      "name": "Chicken thighs",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 270,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[A][B]",
+      "raw": {
+        "pantry": "—",
+        "fridge": "1–2",
+        "freezer": "270 (9 mo)",
+        "opened": "3–4 cooked"
+      }
+    },
+    "plum": {
+      "name": "Plums",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "— (ripen at room temp [E])",
+        "fridge": "3–5 (5 [E])",
+        "freezer": "60",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "pear": {
+      "name": "Pears",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "— (ripen at room temp [E])",
+        "fridge": "3–5 (5 [E])",
+        "freezer": "60",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "nectarine": {
+      "name": "Nectarines",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 60,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][E]",
+      "raw": {
+        "pantry": "— (ripen at room temp [E])",
+        "fridge": "3–5 (5 [E])",
+        "freezer": "60",
+        "opened": "3–4 cut (general)"
+      }
+    },
+    "deli meat": {
+      "name": "Deli meats / pastrami / corned beef / turkey breast",
+      "category": "meat",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 30,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA Cold Chart (via Argon consult)"
+    },
+    "beef fry": {
+      "name": "Beef fry / kosher bacon strips",
+      "category": "meat",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 30,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced)"
+    },
+    "hot dog": {
+      "name": "Hot dogs / knockwurst / beef sausages",
+      "category": "meat",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 30,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "USDA Cold Chart (via Argon consult)"
+    },
+    "tofu": {
+      "name": "Tofu, water-packed",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 150,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)",
+      "note": "Unopened to package date (7-21d); opened submerged in fresh water"
+    },
+    "imitation crab": {
+      "name": "Imitation crab / surimi (kani)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 3,
+      "freezer_days": 180,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "tofutti cream cheese": {
+      "name": "Pareve non-dairy cream cheese / sour (Tofutti)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 30,
+      "freezer_days": null,
+      "opened_fridge_days": 10,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced)"
+    },
+    "richs whip": {
+      "name": "Non-dairy whip (Rich's Whip)",
+      "category": "dairy",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 365,
+      "opened_fridge_days": 7,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced)"
+    },
+    "margarine": {
+      "name": "Margarine (pareve sticks/tubs)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 90,
+      "freezer_days": 360,
+      "opened_fridge_days": 30,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "puff pastry": {
+      "name": "Puff pastry / phyllo dough, frozen",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 180,
+      "opened_fridge_days": 1,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "frozen dough": {
+      "name": "Pizza / challah dough, frozen raw",
+      "category": "bread_frozen",
+      "default_storage": "freezer",
+      "pantry_days": null,
+      "fridge_days": 1,
+      "freezer_days": 60,
+      "opened_fridge_days": 1,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced)"
+    },
+    "matzo meal": {
+      "name": "Matzo meal / cake meal / farfel / matzo",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": 730,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "Argon consult (unsourced)"
+    },
+    "barley": {
+      "name": "Barley, pearl (dry)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 365,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "cabbage": {
+      "name": "Cabbage, whole head",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)",
+      "note": "Intact dense heads up to 21-30d; half head wrapped 7d"
+    },
+    "winter squash": {
+      "name": "Winter squash (butternut/acorn/spaghetti)",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 30,
+      "fridge_days": null,
+      "freezer_days": 300,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "beet": {
+      "name": "Beets, fresh",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": 1,
+      "fridge_days": 14,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "turnip": {
+      "name": "Turnips & radishes",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 14,
+      "freezer_days": 240,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "leek": {
+      "name": "Leeks",
+      "category": "produce",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "canned tuna": {
+      "name": "Canned tuna / canned salmon",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "gefilte fish": {
+      "name": "Gefilte fish (jarred / frozen loaf)",
+      "category": "meat",
+      "default_storage": "freezer",
+      "pantry_days": 730,
+      "fridge_days": null,
+      "freezer_days": 90,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced for loaf)"
+    },
+    "tomato paste": {
+      "name": "Tomato paste & canned crushed/diced tomatoes",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 360,
+      "fridge_days": null,
+      "freezer_days": 60,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)",
+      "note": "Opened: transfer to non-metal container"
+    },
+    "tahini": {
+      "name": "Tahini (raw sesame paste)",
+      "category": "pantry",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": null,
+      "opened_pantry_days": 180,
+      "source": "Argon consult"
+    },
+    "hummus": {
+      "name": "Hummus / babaganoush (prepared tubs)",
+      "category": "dairy",
+      "default_storage": "fridge",
+      "pantry_days": null,
+      "fridge_days": 7,
+      "freezer_days": null,
+      "opened_fridge_days": 5,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)"
+    },
+    "pickle": {
+      "name": "Pickles / olives / capers (jarred in brine)",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 30,
+      "opened_pantry_days": null,
+      "source": "USDA FoodKeeper (via Argon consult)",
+      "note": "Olives/capers submerged in brine 90-180d opened"
+    },
+    "asian sauce": {
+      "name": "Asian sauces (gochujang/hoisin/sriracha/sesame oil/sweet chili)",
+      "category": "condiment",
+      "default_storage": "pantry",
+      "pantry_days": 365,
+      "fridge_days": null,
+      "freezer_days": null,
+      "opened_fridge_days": 180,
+      "opened_pantry_days": null,
+      "source": "Argon consult (unsourced)",
+      "note": "Sesame oil stays in pantry opened (180d)"
+    }
+  }
+}
