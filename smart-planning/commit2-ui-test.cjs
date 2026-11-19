@@ -91,6 +91,8 @@ globalThis.ghPut = async (p, text) => { await sleep(1); serverState = JSON.parse
   'PRICE_ABBREV_MAP', 'PRICE_MODIFIER_WORDS', 'PRICE_FORM_WORDS', 'PRICE_QUALIFIED_HEADS', 'PRICE_VARIETY_WORDS'].forEach(n => geval(extractDecl(n)));
 globalThis.priceDirectMatches = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-direct-matches.json'), 'utf8'));
 globalThis.priceConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-conversions.json'), 'utf8'));
+globalThis.shelfLifeTable = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shelf-life.json'), 'utf8'));
+globalThis.unitConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'unit-conversions.json'), 'utf8'));
 globalThis._priceHistoryCache = null;
 globalThis._priceHistoryInFlight = null;
 globalThis._priceHistoryFetched = false;
@@ -100,6 +102,13 @@ globalThis._storeNotesInFlight = null;
 globalThis._storeNotesFetched = false;
 globalThis._saveStoreNotesChain = Promise.resolve();
 globalThis._saveStoreNotesInFlight = 0;
+globalThis.PANTRY_LOCAL_KEY = 'recipe-pantry-local';
+globalThis._pantryCache = {};
+globalThis._pantryInFlight = null;
+globalThis._pantryFetched = false;
+globalThis._savePantryChain = Promise.resolve();
+globalThis._savePantryInFlight = 0;
+['RAW_MEAT_POULTRY_FISH_RE', 'COOKED_DELI_CANNED_RE'].forEach(n => geval(extractDeclSemi(n)));
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -153,8 +162,20 @@ extract('parseQty', true).forEach(src => geval(src));
  'serializeTimersForSession', 'restoreTimersFromSessionJSON', 'timerDockHTML',
  'clampCookStepIndex', 'formatScaledIngredientLine', 'cookModeIngredientsHTML',
  'cookModeStepHTML',
- 'stopStepSpeech', 'speakRecipeStepText'
-].forEach(n => geval(extract(n)));
+ 'stopStepSpeech', 'speakRecipeStepText',
+ /* Pantry Tracking (v20261119c + Bridge git-v18) */
+ 'getShelfLifeTable', 'getUnitConversionsMap', 'lookupUnitConversion',
+ 'isRawMeatPoultryFishKey', 'lookupShelfLife', 'defaultStorageForPantryItem',
+ 'addDaysYmd', 'todayPantryYmd', 'computeLotExpiry', 'evaluateLotStatus', 'isLotExpiringSoon',
+ 'normalizePantryUnit', 'normalizePantryLot', 'recomputePantryEntry', 'normalizePantryData', 'mergePantryData',
+ 'convertPantryQty', 'resolvePantryEntryKey', 'mergeReceiptStockIntoPantry',
+ 'getPantryHaveFor', 'applyPantryToShopItem',
+ 'deductIngredientFromPantryMap', 'restorePantryDeductionsToMap', 'toggleDishCooked',
+ 'savePantryLocal', 'loadPantryLocal', 'setPantryCache', 'resetPantrySession',
+ 'bridgeReadPantry', 'fetchBridgePantryStock', 'ensurePantryLoaded', 'savePantry',
+ 'setPantryManualStock', 'removePantryEntry', 'overridePantryLotStillGood', 'switchPantryLotStorage',
+ 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
+].forEach(n => geval(extract(n) + '\n;globalThis.' + n + ' = ' + n + ';'));
 /* speakTimerAlarm closes over the module-level _alarmWatchdogId (Fix 1):
    load both in ONE eval unit so the binding survives (a bare `let` in its
    own indirect eval is discarded with that eval). */
@@ -3363,8 +3384,9 @@ async function main() {
 
   // 32(i) Bridge git-v13: worker.js /save allowlist (data/store-notes.json allowed, data/other.json 403) + receipts.js per-store by_store & last3[].bought_name
   const workerCandidates32 = [
-    path.join(SITE_DIR, 'worker.js'),
+    path.join(SITE_DIR, 'bridge-git-v13', 'worker.js'),
     path.join(SITE_DIR, 'bridge-git-v12', 'worker.js'),
+    path.join(SITE_DIR, 'worker.js'),
     path.join(__dirname, '..', 'worker.js')
   ];
   const workerPath32 = workerCandidates32.find(p => fs.existsSync(p));
@@ -5102,6 +5124,469 @@ async function main() {
     check('Section 40(c) (form-guard source): PRICE_FORM_WORDS set exists and the Step 2 guard consults it alongside PRICE_MODIFIER_WORDS',
       appSrc39.includes('PRICE_FORM_WORDS') &&
       appSrc39.includes('PRICE_MODIFIER_WORDS.has(w) || PRICE_FORM_WORDS.has(w)'));
+
+    /* ============ 41. Pantry Tracking (v20261119c + Bridge git-v18) ============ */
+    {
+      globalThis.shelfLifeTable = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shelf-life.json'), 'utf8'));
+      globalThis.unitConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'unit-conversions.json'), 'utf8'));
+      resetPantrySession();
+      globalThis.__pantryTodayYmd = '2026-11-19';
+
+      // 41(a) Bridge git-v18: /health version, /save allowlist for data/pantry.json, and GET /pantry-stock privacy + unconfirmed null-qty + circular meat backfill
+      const worker18Path = fs.existsSync(path.join(SITE_DIR, 'bridge-git-v18', 'worker.js'))
+        ? path.join(SITE_DIR, 'bridge-git-v18', 'worker.js')
+        : path.join(SITE_DIR, 'worker.js');
+      const receipts18Path = fs.existsSync(path.join(SITE_DIR, 'bridge-git-v18', 'receipts.js'))
+        ? path.join(SITE_DIR, 'bridge-git-v18', 'receipts.js')
+        : path.join(SITE_DIR, 'receipts.js');
+      const worker18Mod = await import('file://' + worker18Path);
+      const worker18 = worker18Mod.default;
+      const receipts18Mod = await import('file://' + receipts18Path);
+
+      let savedPath41 = null;
+      let savedBody41 = null;
+      const prevFetch41 = globalThis.fetch;
+      globalThis.fetch = async (url, init = {}) => {
+        const u = String(url);
+        if (u.includes('api.github.com/repos/') && u.includes('/contents/')) {
+          const m = u.match(/\/contents\/([^?]+)/);
+          const p = m ? decodeURIComponent(m[1]) : '';
+          if (!init.method || init.method === 'GET') {
+            return new Response(JSON.stringify({ sha: 'sha41', content: Buffer.from('{}', 'utf8').toString('base64') }), { status: 200 });
+          }
+          if (init.method === 'PUT') {
+            savedPath41 = p;
+            savedBody41 = JSON.parse(init.body);
+            return new Response(JSON.stringify({ content: { sha: 'newsha41' } }), { status: 200 });
+          }
+        }
+        return new Response('not found', { status: 404 });
+      };
+
+      const env18 = {
+        ...makeMockEnv([]),
+        GH_TOKEN: 'fake-gh-token',
+        GH_REPO: 'YidiReiss/recipes',
+        GH_BRANCH: 'main'
+      };
+      const health18Res = await worker18.fetch(new Request('https://recipe-bridge.leibreiss.workers.dev/health'), env18);
+      const health18Json = await health18Res.json();
+
+      const savePantry18Res = await worker18.fetch(
+        new Request('https://recipe-bridge.leibreiss.workers.dev/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: 'data/pantry.json', content: '{"onion":{"lots":[]}}\n', message: 'Test pantry save' })
+        }),
+        env18
+      );
+      const savePantry18Json = await savePantry18Res.json();
+
+      const saveDisallowed18Res = await worker18.fetch(
+        new Request('https://recipe-bridge.leibreiss.workers.dev/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: 'data/secret.json', content: '{}' })
+        }),
+        env18
+      );
+      globalThis.fetch = prevFetch41;
+
+      check('Section 41(a.1) (bridge git-v18 /health + /save allowlist): /health reports version "git-v18", /save accepts "data/pantry.json" (200 ok:true), and rejects non-allowlisted paths (403)',
+        health18Json.ok === true &&
+        health18Json.version === 'git-v18' &&
+        savePantry18Res.status === 200 &&
+        savePantry18Json.ok === true &&
+        savedPath41 === 'data/pantry.json' &&
+        !!savedBody41 &&
+        saveDisallowed18Res.status === 403);
+
+      // Test GET /pantry-stock privacy, verified/non-flagged filtering, null-qty unconfirmed flag, and circular meat weight backfill
+      const pantryStockRows41 = [
+        // Verified, known qty
+        { status: 'verified', needs_review: 0, group_key: 'onion', receipt_dept: 'PRODUCE', category: 'produce', paid_price_cents: 299, qty_or_weight: 3, unit: 'lb', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Yellow Onions', raw_line: 'ONIONS 3LB', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_1', line_no: 1, id: 4101 },
+        // Verified, null qty -> must emit qty: null, unconfirmed: true
+        { status: 'verified', needs_review: 0, group_key: 'olive oil', receipt_dept: 'GROCERY', category: 'grocery', paid_price_cents: 1199, qty_or_weight: null, unit: 'bottle', pack_size: null, store: 'Bingo Wholesale', product_name: 'Extra Virgin Olive Oil', raw_line: 'EVOO', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_2', line_no: 2, id: 4102 },
+        // Verified, weight-less Aron's meat WITH circular /lb rate -> backfills weight (1497 / 499 = 3 lb) and is confirmed
+        { status: 'verified', needs_review: 0, group_key: 'chicken breast', receipt_dept: 'MEAT', category: 'meat', paid_price_cents: 1497, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Chicken Breast Cutlets', raw_line: 'CHICKEN BREAST', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_3', line_no: 3, id: 4103 },
+        // Verified, weight-less meat WITHOUT circular /lb rate -> unweighed meat must be unconfirmed: true, qty: null
+        { status: 'verified', needs_review: 0, group_key: 'beef chuck roast', receipt_dept: 'MEAT', category: 'meat', paid_price_cents: 2450, qty_or_weight: 1, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Beef Chuck Roast', raw_line: 'BEEF CHUCK ROAST', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_4', line_no: 4, id: 4104 },
+        // Unverified receipt -> must be excluded by SQL filter
+        { status: 'review', needs_review: 0, group_key: 'garlic', receipt_dept: 'PRODUCE', category: 'produce', paid_price_cents: 199, qty_or_weight: 2, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Garlic', raw_line: 'GARLIC', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_5', line_no: 5, id: 4105 },
+        // Flagged line item (needs_review = 1) -> must be excluded
+        { status: 'verified', needs_review: 1, group_key: 'lemon', receipt_dept: 'PRODUCE', category: 'produce', paid_price_cents: 99, qty_or_weight: 4, unit: 'ea', pack_size: null, store: "Aron's Kissena Farms", product_name: 'Lemons', raw_line: 'LEMONS', receipt_date: '2026-11-16', receipt_id: 'rcpt_secret_6', line_no: 6, id: 4106 }
+      ];
+      const circRates41 = {
+        '2026-11-15': {
+          'chicken breast': { price_cents: 499, basis: 'lb' }
+        }
+      };
+      const stockRes41 = await receipts18Mod.handlePantryStock(
+        new Request('https://recipe-bridge.leibreiss.workers.dev/pantry-stock'),
+        makeMockEnv(pantryStockRows41),
+        { nowMs: new Date('2026-11-19T12:00:00Z').getTime(), circularRates: circRates41 }
+      );
+      const stockJson41 = await stockRes41.json();
+      const stockRawStr41 = JSON.stringify(stockJson41);
+      const PRIVATE_LEAK_RE_41 = /"price_cents"|"paid_price_cents"|"receipt_id"|"store"|"total_cents"|"tax_cents"|"user_email"|"raw_line"|"raw_ocr"|rcpt_secret|Kissena|Bingo/i;
+
+      check('Section 41(a.2) (GET /pantry-stock privacy & derivation): returns only verified non-flagged items, strips all prices/receipt_ids/stores/payment fields, marks null-qty and unweighed meat without circular backfill as qty:null + unconfirmed:true, and backfills Aron\'s meat lb from circular rate',
+        stockJson41.ok === true &&
+        !PRIVATE_LEAK_RE_41.test(stockRawStr41) &&
+        stockJson41.stock['onion']?.total_qty === 3 &&
+        stockJson41.stock['onion']?.lots?.[0]?.unit === 'lb' &&
+        stockJson41.stock['onion']?.lots?.[0]?.unconfirmed === false &&
+        stockJson41.stock['olive oil']?.lots?.[0]?.qty === null &&
+        stockJson41.stock['olive oil']?.lots?.[0]?.unconfirmed === true &&
+        stockJson41.stock[' olive oil'] === undefined &&
+        stockJson41.stock['chicken breast']?.lots?.[0]?.qty === 3 &&
+        stockJson41.stock['chicken breast']?.lots?.[0]?.unit === 'lb' &&
+        stockJson41.stock['chicken breast']?.lots?.[0]?.unconfirmed === false &&
+        stockJson41.stock['beef chuck roast']?.lots?.[0]?.qty === null &&
+        stockJson41.stock['beef chuck roast']?.lots?.[0]?.unconfirmed === true &&
+        !stockJson41.stock['garlic'] &&
+        !stockJson41.stock['lemon']);
+
+      // 41(b) Ingesting /pantry-stock into pantry map: unconfirmed null-qty does NOT count as "have", confirmed lots sum into have, tombstones suppress older receipt lots
+      const mergedFromRcpt41 = mergeReceiptStockIntoPantry({}, stockJson41, '2026-11-19');
+      setPantryCache(mergedFromRcpt41, '2026-11-19');
+      const onionHave41 = getPantryHaveFor('onion', 'lb', { todayYmd: '2026-11-19' });
+      const oilHave41 = getPantryHaveFor('olive oil', 'bottle', { todayYmd: '2026-11-19' });
+      const chuckHave41 = getPantryHaveFor('beef chuck roast', 'lb', { todayYmd: '2026-11-19' });
+
+      check('Section 41(b) (stock derivation & unconfirmed null-qty): confirmed receipt lots count toward haveQty (3 lb onion), while unconfirmed null-qty lots have haveQty === 0 and hasUnconfirmed === true so they do not auto-cover',
+        onionHave41.found === true &&
+        onionHave41.haveQty === 3 &&
+        oilHave41.found === true &&
+        oilHave41.haveQty === 0 &&
+        oilHave41.hasUnconfirmed === true &&
+        chuckHave41.found === true &&
+        chuckHave41.haveQty === 0 &&
+        chuckHave41.hasUnconfirmed === true);
+
+      // 41(c) Unit conversions & Romaine lb_per_bag consistency across price-conversions.json and unit-conversions.json
+      const priceConvJson41 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'price-conversions.json'), 'utf8'));
+      const unitConvJson41 = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'unit-conversions.json'), 'utf8'));
+      const pItems41 = priceConvJson41.items || priceConvJson41;
+      const uItems41 = unitConvJson41.items || unitConvJson41;
+
+      const checkRomaineConsistency = (itemsObj) => {
+        const rom = itemsObj['romaine lettuce'];
+        if (!rom || rom.lb_per_bag !== 1.5) return false;
+        if (rom.units_per_pack && rom.lb_per_unit && rom.lb_per_bag) {
+          if (Math.abs(rom.units_per_pack * rom.lb_per_unit - rom.lb_per_bag) > 1e-6) return false;
+        }
+        return true;
+      };
+
+      const garlicCloveToHead41 = convertPantryQty('garlic', 10, 'clove', 'head');
+      const garlicHeadToLb41 = convertPantryQty('garlic', 1, 'head', 'lb');
+      const garlicSleeveToHead41 = convertPantryQty('garlic', 1, 'sleeve', 'head');
+      const garlicSleeveToLb41 = convertPantryQty('garlic', 1, 'sleeve', 'lb');
+      const garlicTspToClove41 = convertPantryQty('garlic', 5, 'tsp', 'clove');
+      const chickenServingToLb41 = convertPantryQty('chicken breast', 2, 'serving', 'lb');
+      const unconvertiblePair41 = convertPantryQty('ketchup', 1, 'bottle', 'sprig');
+
+      check('Section 41(c) (unit conversions & romaine lb_per_bag fix): romaine lettuce lb_per_bag is 1.5 (== 3 * 0.5) in both price-conversions.json and unit-conversions.json; garlic lb_per_unit is per HEAD (0.1 lb, never divided by units_per_pack 5); chicken lb_per_serving is rejected for pantry conversion; unconvertible pairs return convertible:false',
+        checkRomaineConsistency(pItems41) &&
+        checkRomaineConsistency(uItems41) &&
+        garlicCloveToHead41.convertible === true && Math.abs(garlicCloveToHead41.qty - 1) < 1e-6 &&
+        garlicHeadToLb41.convertible === true && Math.abs(garlicHeadToLb41.qty - 0.1) < 1e-6 &&
+        garlicSleeveToHead41.convertible === true && Math.abs(garlicSleeveToHead41.qty - 5) < 1e-6 &&
+        garlicSleeveToLb41.convertible === true && Math.abs(garlicSleeveToLb41.qty - 0.5) < 1e-6 &&
+        garlicTspToClove41.convertible === true && Math.abs(garlicTspToClove41.qty - 5) < 1e-6 &&
+        chickenServingToLb41.convertible === false && chickenServingToLb41.qty === null &&
+        unconvertiblePair41.convertible === false && unconvertiblePair41.qty === null);
+
+      // 41(d) "Cooked it" deduction + ceiling rounding + partial-lot opened shelf life + variants + leftovers + un-mark restore
+      resetPantrySession();
+      // Seed pantry with:
+      // - 5 whole onions (unit: 'unit')
+      // - 2 cartons chicken stock (unit: 'carton', 1 carton = 2 lb = 4 cups)
+      // - 4 lb ground beef (unit: 'lb')
+      // - 4 lb chicken breast (unit: 'lb')
+      await setPantryManualStock('onion', 5, 'unit', { todayYmd: '2026-11-15', skipRemoteSave: true });
+      await setPantryManualStock('chicken stock', 2, 'carton', { todayYmd: '2026-11-15', skipRemoteSave: true });
+      await setPantryManualStock('ground beef', 4, 'lb', { todayYmd: '2026-11-15', skipRemoteSave: true });
+      await setPantryManualStock('chicken breast', 4, 'lb', { todayYmd: '2026-11-15', skipRemoteSave: true });
+
+      const testStewRecipe41 = {
+        id: 'pantry-test-stew',
+        title: 'Pantry Test Stew',
+        categories: ['main'],
+        kosher_status: 'meat',
+        servings: '4',
+        variants: [
+          { key: 'beef', label: 'Beef', default: true },
+          { key: 'chicken', label: 'Chicken' }
+        ],
+        ingredients: [
+          {
+            section: 'Base',
+            items: [
+              // 1.8 lb onion -> at 0.72 lb/unit = 2.5 onions -> ceiling rounding deducts 3 onions (leaving 2 onions, openedAt set, cut onion fridge expiry = cookDate + 7 days)
+              { qty: '1.8', unit: 'lb', item: 'onion' },
+              // 2 cups chicken stock -> 1 cup = 0.5 lb, 2 cups = 1 lb = 0.5 carton -> ceiling rounding in carton unit OR let's also test cup stock lot!
+              { qty: '1.5', unit: 'lb', item: 'ground beef', variant: 'beef' },
+              { qty: '1.5', unit: 'lb', item: 'chicken breast', variant: 'chicken' }
+            ]
+          }
+        ]
+      };
+      globalThis.byId['pantry-test-stew'] = testStewRecipe41;
+      const days41 = blankDays();
+      // Sunday dinner: Pantry Test Stew (variant: 'beef')
+      days41[0].dinner.dishes = [{ recipe: 'pantry-test-stew', variant: 'beef', scale: 1 }];
+      // Monday lunch: Leftovers of Pantry Test Stew (leftovers: true)
+      days41[1].lunch.dishes = [{ recipe: 'pantry-test-stew', variant: 'beef', scale: 1, leftovers: true }];
+      setPlan({ '2026-11-15': { days: days41 } });
+
+      const cookRes1 = await toggleDishCooked('2026-11-15', 0, 'dinner', 0, {
+        todayYmd: '2026-11-19',
+        nowMs: 1795089600000,
+        skipRemoteSave: true
+      });
+      const onionAfterCook41 = getPantryHaveFor('onion', 'unit', { todayYmd: '2026-11-19' });
+      const beefAfterCook41 = getPantryHaveFor('ground beef', 'lb', { todayYmd: '2026-11-19' });
+      const chickenAfterCook41 = getPantryHaveFor('chicken breast', 'lb', { todayYmd: '2026-11-19' });
+      const remainingOnionLot41 = onionAfterCook41.activeLots[0];
+
+      check('Section 41(d.1) ("Cooked it" ceiling rounding, partial-lot opened shelf life & variant deduction): 1.8 lb onion (2.5 units) rounds UP via ceiling to deduct 3 onions (leaving 2); remaining onion lot marks openedAt="2026-11-19" and switches to fridge 7-day cut-onion expiry ("2026-11-26"); beef variant (1.5 lb -> ceil 2 lb) deducts while chicken variant (4 lb) is untouched',
+        cookRes1?.cooked === true &&
+        getWeek('2026-11-15').days[0].dinner.dishes[0].cookedAt === 1795089600000 &&
+        onionAfterCook41.stockQty === 2 &&
+        remainingOnionLot41?.openedAt === '2026-11-19' &&
+        remainingOnionLot41?.storage === 'fridge' &&
+        remainingOnionLot41?.expiresAt === '2026-11-26' &&
+        beefAfterCook41.stockQty === 2 &&
+        chickenAfterCook41.stockQty === 4);
+
+      // Leftovers dish should mark cookedAt without deducting a second time
+      const leftoverCookRes41 = await toggleDishCooked('2026-11-15', 1, 'lunch', 0, {
+        todayYmd: '2026-11-19',
+        nowMs: 1795093200000,
+        skipRemoteSave: true
+      });
+      check('Section 41(d.2) (leftovers no double-deduct): marking a leftovers dish as cooked sets cookedAt without deducting ingredients a second time',
+        leftoverCookRes41?.cooked === true &&
+        leftoverCookRes41?.deductions?.length === 0 &&
+        getPantryHaveFor('onion', 'unit', { todayYmd: '2026-11-19' }).stockQty === 2 &&
+        getPantryHaveFor('ground beef', 'lb', { todayYmd: '2026-11-19' }).stockQty === 2);
+
+      // Un-marking the Sunday dinner dish restores deducted stock and original lot state
+      const uncookRes41 = await toggleDishCooked('2026-11-15', 0, 'dinner', 0, {
+        todayYmd: '2026-11-19',
+        skipRemoteSave: true
+      });
+      const onionAfterUncook41 = getPantryHaveFor('onion', 'unit', { todayYmd: '2026-11-19' });
+      const beefAfterUncook41 = getPantryHaveFor('ground beef', 'lb', { todayYmd: '2026-11-19' });
+      check('Section 41(d.3) (un-mark cooked restores stock): tapping "Cooked it" again clears cookedAt and restores the deducted quantities (5 onions in pantry storage, 4 lb ground beef)',
+        uncookRes41?.cooked === false &&
+        !getWeek('2026-11-15').days[0].dinner.dishes[0].cookedAt &&
+        onionAfterUncook41.stockQty === 5 &&
+        !onionAfterUncook41.activeLots[0]?.openedAt &&
+        onionAfterUncook41.activeLots[0]?.storage === 'pantry' &&
+        beefAfterUncook41.stockQty === 4);
+
+      // 41(e) Partial-stock flag, dialog math ("This recipe needs X. Your pantry has Y."), full-cover Already Have auto-mark, and exclusion from estimated total
+      resetPantrySession();
+      // Recipe needs: 3 onions, 2 lb carrots, 1 bottle olive oil
+      // Pantry has: 1 onion (partial cover -> shortfall 2 onions + flag), 3 lb carrots (full cover -> moves to Already Have with pantryCovered:true), and unconfirmed olive oil (qty: null -> stays in To Buy with flag)
+      const shopTestRecipe41 = {
+        id: 'pantry-shop-test',
+        title: 'Pantry Shop Test',
+        categories: ['main'],
+        kosher_status: 'pareve',
+        servings: '4',
+        ingredients: [
+          {
+            section: '',
+            items: [
+              { qty: '3', unit: '', item: 'onion' },
+              { qty: '2', unit: 'lb', item: 'carrot' },
+              { qty: '1', unit: 'bottle', item: 'olive oil' }
+            ]
+          }
+        ]
+      };
+      globalThis.byId['pantry-shop-test'] = shopTestRecipe41;
+      setMeta([shopTestRecipe41]);
+      const shopDays41 = blankDays();
+      shopDays41[6].dinner.dishes = [{ recipe: 'pantry-shop-test', scale: 1 }];
+      setPlan({ '2026-11-15': { days: shopDays41 } });
+
+      await setPantryManualStock('onion', 1, 'unit', { todayYmd: '2026-11-19', skipRemoteSave: true });
+      await setPantryManualStock('carrot', 3, 'lb', { todayYmd: '2026-11-19', skipRemoteSave: true });
+      // Add unconfirmed olive oil lot from receipt
+      _pantryCache = mergeReceiptStockIntoPantry(_pantryCache, {
+        stock: {
+          'olive oil': {
+            bought_name: 'Extra Virgin Olive Oil',
+            total_qty: null,
+            unit: 'bottle',
+            has_unconfirmed: true,
+            lots: [{ lot_key: 'rcpt-oil-1', qty: null, unit: 'bottle', receipt_date: '2026-11-16', bought_name: 'Extra Virgin Olive Oil', unconfirmed: true }]
+          }
+        }
+      }, '2026-11-19');
+
+      const rawShopList41 = buildShoppingList();
+      const weekShop41 = getWeek('2026-11-15');
+      // Run applyPantryToShopItem through splitShopItems or directly
+      const onionRawItem41 = rawShopList41.find(it => it.base === 'onion');
+      const carrotRawItem41 = rawShopList41.find(it => it.base === 'carrot');
+      const oilRawItem41 = rawShopList41.find(it => it.base === 'olive oil');
+
+      const onionApplied41 = applyPantryToShopItem(onionRawItem41, weekShop41);
+      const carrotApplied41 = applyPantryToShopItem(carrotRawItem41, weekShop41);
+      const oilApplied41 = applyPantryToShopItem(oilRawItem41, weekShop41);
+
+      const savedThisWeekKey41 = globalThis.thisWeekKey;
+      const savedShoppingFromYmd41 = globalThis.shoppingFromYmd;
+      globalThis.thisWeekKey = () => '2026-11-15';
+      globalThis.shoppingFromYmd = () => '2026-11-15';
+      // Rebuild rawShopList41 with shoppingFromYmd = 2026-11-15 so Sunday-Saturday dishes are included
+      const fullList41 = buildShoppingList();
+      const onionFull41 = fullList41.find(it => it.base === 'onion');
+      const carrotFull41 = fullList41.find(it => it.base === 'carrot');
+      const oilFull41 = fullList41.find(it => it.base === 'olive oil');
+
+      const onionRes41 = applyPantryToShopItem(onionFull41, weekShop41);
+      const carrotRes41 = applyPantryToShopItem(carrotFull41, weekShop41);
+      const oilRes41 = applyPantryToShopItem(oilFull41, weekShop41);
+      const dialogState41 = buildPantryFlagDialogState(onionFull41.key, weekShop41);
+
+      check('Section 41(e.1) (partial-stock flag, full cover & dialog math): carrot (have 3 lb >= need 2 lb) moves to Already Have with pantryCovered:true; onion (need 3, have 1) stays in To Buy with shortfall qty 2, pantryFlag.kind==="partial", and dialog text "This recipe needs 3. Your pantry has 1."; unconfirmed olive oil triggers pantryFlag.kind==="unconfirmed"',
+        carrotRes41.toBuyItem === null &&
+        carrotRes41.haveItem?.pantryCovered === true &&
+        onionRes41.haveItem === null &&
+        onionRes41.toBuyItem?.qty === 2 &&
+        onionRes41.toBuyItem?.pantryFlag?.kind === 'partial' &&
+        onionRes41.toBuyItem?.pantryFlag?.neededQty === 3 &&
+        onionRes41.toBuyItem?.pantryFlag?.haveQty === 1 &&
+        onionRes41.toBuyItem?.pantryFlag?.shortfallQty === 2 &&
+        dialogState41?.promptText === 'This recipe needs 3. Your pantry has 1.' &&
+        dialogState41?.buyQty === 2 &&
+        oilRes41.toBuyItem?.pantryFlag?.kind === 'unconfirmed');
+
+      // Confirming an edit in the partial-stock dialog updates data/pantry.json AND overrides the week's buy quantity
+      applyPantryFlagDialogConfirm('onion', 2, 'unit', 1, weekShop41, {
+        todayYmd: '2026-11-19',
+        skipRemoteSave: true
+      });
+      const onionAfterDialog41 = applyPantryToShopItem(onionFull41, weekShop41);
+      check('Section 41(e.2) (dialog confirm updates pantry & week buy qty): editing haveQty to 2 and buyQty to 1 updates pantry stock to 2 and sets To Buy row qty to 1',
+        getPantryHaveFor('onion', 'unit', { todayYmd: '2026-11-19' }).stockQty === 2 &&
+        onionAfterDialog41.toBuyItem?.qty === 1);
+
+      // 41(e.3) End-to-end splitShopItems + shoppingListHTML with pantry-covered carrot and partial-stock onion
+      const savedGetHideStaples41 = globalThis.getHideStaples;
+      const savedShoppingFromLabel41 = globalThis.shoppingFromLabel;
+      const savedHelpLinkHTML41 = globalThis.helpLinkHTML;
+      globalThis.getHideStaples = () => false;
+      globalThis.shoppingFromLabel = () => 'Sun–Sat';
+      globalThis.helpLinkHTML = () => '';
+      setPriceHistoryCache({
+        'onion': { price_cents: 100, basis: 'each', bought_name: 'Yellow Onions', store: "Aron's Kissena Farms", receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] },
+        'carrot': { price_cents: 150, basis: 'lb', bought_name: 'Carrots', store: "Aron's Kissena Farms", receipt_date: '2026-11-15', avg12m_cents: null, by_store: {}, last3: [] }
+      });
+      setShopStore('all');
+      const splitRes41 = splitShopItems(fullList41, weekShop41);
+      const shopHtml41 = shoppingListHTML();
+      check('Section 41(e.3) (pantry-covered excluded from estimated total & rendered badges): splitShopItems moves full-covered carrot to haveIts with pantryCovered:true ("from pantry" badge), excludes carrot ($3.00) from estimated total so only the 1 remaining onion ($1.00) is estimated ("Estimated total about $1.00 · 1 of 2 items priced"), and renders .shop-pantry-flag on partial-stock rows',
+        splitRes41.haveIts.some(it => it.base === 'carrot' && it.pantryCovered === true) &&
+        !splitRes41.toBuy.some(it => it.base === 'carrot') &&
+        splitRes41.toBuy.some(it => it.base === 'onion' && it.qty === 1 && !!it.pantryFlag) &&
+        shopHtml41.includes('shop-pantry-covered-badge') &&
+        shopHtml41.includes('from pantry') &&
+        shopHtml41.includes('shop-pantry-flag') &&
+        shopHtml41.includes('Estimated total about $1.00 · 1 of 2 items priced'));
+      resetPriceHistorySession();
+      globalThis.getHideStaples = savedGetHideStaples41;
+      globalThis.shoppingFromLabel = savedShoppingFromLabel41;
+      globalThis.helpLinkHTML = savedHelpLinkHTML41;
+
+      globalThis.thisWeekKey = savedThisWeekKey41;
+      globalThis.shoppingFromYmd = savedShoppingFromYmd41;
+
+      // 41(f) Expiry, raw meat freezer default, storage switch (freezer -> fridge starts fridge clock), and "Still good" override
+      resetPantrySession();
+      const meatStorage41 = defaultStorageForPantryItem('chicken breast');
+      const groundBeefStorage41 = defaultStorageForPantryItem('ground beef');
+      const salmonStorage41 = defaultStorageForPantryItem('salmon fillet');
+
+      // Add chicken breast in default freezer storage on 2026-01-01 (more than 180 days before 2026-11-19)
+      // Freezer days are QUALITY alerts only — must remain status: 'good' and count in haveQty!
+      await setPantryManualStock('chicken breast', 3, 'lb', { todayYmd: '2026-01-01', skipRemoteSave: true });
+      const frozenChickenLot41 = JSON.parse(JSON.stringify(_pantryCache['chicken breast']?.lots?.[0]));
+      const frozenChickenHave41 = getPantryHaveFor('chicken breast', 'lb', { todayYmd: '2026-11-19' });
+      const frozenSoonAlert41 = isLotExpiringSoon('chicken breast', frozenChickenLot41, '2026-11-19');
+
+      // Switch chicken breast lot from freezer -> fridge on 2026-11-19: starts 1-day fridge clock -> expiresAt = 2026-11-20
+      await switchPantryLotStorage('chicken breast', frozenChickenLot41.lotId, 'fridge', {
+        todayYmd: '2026-11-19',
+        skipRemoteSave: true
+      });
+      const thawedChickenLot41 = JSON.parse(JSON.stringify(_pantryCache['chicken breast']?.lots?.[0]));
+
+      // Add fresh spinach in fridge on 2026-11-01 (leafy greens fridge_days: 3 -> expired by 2026-11-19)
+      await setPantryManualStock('spinach', 1, 'bag', { todayYmd: '2026-11-01', skipRemoteSave: true });
+      // Re-normalize as of 2026-11-19 so expiry is evaluated against today
+      setPantryCache(_pantryCache, '2026-11-19');
+      const expiredSpinachHave41 = getPantryHaveFor('spinach', 'bag', { todayYmd: '2026-11-19' });
+      const expiredSpinachLot41 = JSON.parse(JSON.stringify(_pantryCache['spinach']?.lots?.[0]));
+      const pantryHtmlBeforeOverride41 = pantryViewHTML({ todayYmd: '2026-11-19' });
+
+      // Override expired spinach with "Still good" -> status becomes 'overridden', counts in haveQty again, and stays 'overridden' even in future dates
+      await overridePantryLotStillGood('spinach', expiredSpinachLot41.lotId, {
+        todayYmd: '2026-11-19',
+        skipRemoteSave: true
+      });
+      const overriddenSpinachHave41 = getPantryHaveFor('spinach', 'bag', { todayYmd: '2026-12-31' });
+      const overriddenSpinachLot41 = _pantryCache['spinach']?.lots?.[0];
+
+      check('Section 41(f) (raw meat freezer default, freezer quality-only rule, freezer->fridge switch clock, expired exclusion & "Still good" override): raw meat/poultry/fish defaults to freezer; past-freezer_days lot stays status "good" and counts in have (with quality alert); switching freezer->fridge starts fridge_days clock at switch date (2026-11-19 + 1d = 2026-11-20); expired fridge lot is excluded from have (haveQty===0) but remains in pantry view; "Still good" sets status "overridden", restores haveQty===1, and never auto-expires again',
+        meatStorage41 === 'freezer' &&
+        groundBeefStorage41 === 'freezer' &&
+        salmonStorage41 === 'freezer' &&
+        frozenChickenLot41?.storage === 'freezer' &&
+        frozenChickenHave41.haveQty === 3 &&
+        frozenSoonAlert41 === true &&
+        thawedChickenLot41?.storage === 'fridge' &&
+        thawedChickenLot41?.switchedAt === '2026-11-19' &&
+        thawedChickenLot41?.expiresAt === '2026-11-20' &&
+        expiredSpinachLot41?.status === 'expired' &&
+        expiredSpinachHave41.haveQty === 0 &&
+        expiredSpinachHave41.hasExpired === true &&
+        pantryHtmlBeforeOverride41.includes('data-pantry-stillgood="spinach|') &&
+        overriddenSpinachLot41?.status === 'overridden' &&
+        overriddenSpinachHave41.haveQty === 1);
+
+      // 41(g) Tombstone removal & receipt lot suppression
+      await removePantryEntry('spinach', { todayYmd: '2026-11-19', nowMs: new Date('2026-11-19T18:00:00Z').getTime(), skipRemoteSave: true });
+      const tombstonedSpinach41 = _pantryCache['spinach'];
+      // Attempt to re-merge an older receipt lot from 2026-11-16 for spinach -> tombstone must block resurrection
+      const afterReingest41 = mergeReceiptStockIntoPantry(_pantryCache, {
+        stock: {
+          'spinach': {
+            bought_name: 'Baby Spinach',
+            total_qty: 1,
+            unit: 'bag',
+            has_unconfirmed: false,
+            lots: [{ lot_key: 'rcpt-spin-old', qty: 1, unit: 'bag', receipt_date: '2026-11-16', bought_name: 'Baby Spinach', unconfirmed: false }]
+          }
+        }
+      }, '2026-11-19');
+      check('Section 41(g) (tombstone removal & older receipt suppression): removePantryEntry writes {status:null, updatedAt} tombstone, zeroes haveQty, and prevents older receipt lots from resurrecting the removed item',
+        tombstonedSpinach41?.status === null &&
+        tombstonedSpinach41?.updatedAt > 0 &&
+        getPantryHaveFor('spinach', 'bag', { todayYmd: '2026-11-19', pantryMap: afterReingest41 }).haveQty === 0 &&
+        afterReingest41['spinach']?.status === null);
+
+      // Clean up pantry session state
+      resetPantrySession();
+      delete globalThis.__pantryTodayYmd;
+    }
   }
 
   const failed = results.filter(r => !r.pass);

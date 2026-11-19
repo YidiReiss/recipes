@@ -3428,3 +3428,370 @@ body.has-timer-dock .cook-mode-overlay {
    END DELIMITED RECEIPTS STYLES
    ============================================================ */
 
+/* ============================================================
+   PANTRY TRACKING STYLES
+   ============================================================ */
+
+.pantry-view {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.pantry-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pantry-title {
+  margin: 0;
+}
+
+.pantry-subnote {
+  margin: 0.25rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.pantry-soon-section {
+  background: #fff9ec;
+  border: 1.5px solid #d49b35;
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.pantry-section-head {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+
+.pantry-soon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.pantry-soon-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.pantry-soon-name {
+  font-weight: 700;
+}
+
+.pantry-soon-meta {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.pantry-add-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.pantry-add-name {
+  flex: 2 1 180px;
+}
+
+.pantry-add-qty {
+  width: 90px;
+}
+
+.pantry-add-unit {
+  width: 120px;
+}
+
+.pantry-add-storage {
+  width: 120px;
+}
+
+.pantry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pantry-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+.pantry-card-expired {
+  border-color: var(--meat);
+  background: #fdf6f4;
+}
+
+.pantry-card-soon {
+  border-color: #d49b35;
+}
+
+.pantry-card-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.pantry-card-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+
+.pantry-item-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.pantry-item-qty {
+  font-weight: 600;
+  font-size: 0.96rem;
+  color: var(--accent);
+}
+
+.pantry-price-badge {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+}
+
+.pantry-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pantry-lot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.5rem;
+}
+
+.pantry-lot-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  padding: 0.25rem 0;
+}
+
+.pantry-lot-expired {
+  color: var(--meat);
+}
+
+.pantry-lot-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pantry-lot-qty {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pantry-lot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pantry-storage-select {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.pantry-badge {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+}
+
+.pantry-badge-expired {
+  background: #fbeeea;
+  color: var(--meat);
+  border-color: var(--meat);
+}
+
+.pantry-badge-soon {
+  background: #fff4d6;
+  color: #8a5a00;
+  border-color: #d49b35;
+}
+
+.pantry-badge-overridden {
+  background: #e9f5ec;
+  color: var(--pareve);
+  border-color: var(--pareve);
+}
+
+.pantry-badge-unconfirmed {
+  background: #eef4fa;
+  color: var(--dairy);
+  border-color: var(--dairy);
+}
+
+.pantry-still-good-btn {
+  font-size: 0.78rem;
+  padding: 0.18rem 0.55rem;
+  border-color: var(--pareve);
+  color: var(--pareve);
+}
+
+.shop-pantry-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.55rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #8a5a00;
+  background: #fff4d6;
+  border: 1px solid #d49b35;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.shop-pantry-flag:hover {
+  background: #ffe8ad;
+}
+
+.shop-pantry-covered-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.08rem 0.48rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--pareve);
+  background: #e9f5ec;
+  border: 1px solid var(--pareve);
+  border-radius: 999px;
+}
+
+.pantry-flag-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(34, 24, 16, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.pantry-flag-modal {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 440px;
+  width: 100%;
+  padding: 1.15rem 1.25rem;
+}
+
+.pantry-flag-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.pantry-flag-msg {
+  margin: 0 0 0.85rem;
+  font-size: 0.94rem;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.pantry-flag-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.pantry-flag-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.dish-cooked-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.48rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.dish-cooked-btn:hover {
+  border-color: var(--pareve);
+  color: var(--pareve);
+}
+
+.dish-cooked-btn.is-cooked {
+  background: #e9f5ec;
+  color: var(--pareve);
+  border-color: var(--pareve);
+}
+
+/* ============================================================
+   END PANTRY TRACKING STYLES
+   ============================================================ */
