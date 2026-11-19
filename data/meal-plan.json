@@ -2022,7 +2022,7 @@
         {
           "key": "garlic|clove",
           "session": "smwi093dx8q78cg",
-          "at": 1794757525277,
+          "at": 1794787998944,
           "qty": 1,
           "unit": "clove",
           "removed": true
@@ -2496,6 +2496,21 @@
           "at": 1795044559016,
           "qty": 6,
           "unit": ""
+        },
+        {
+          "key": "garlic|clove",
+          "session": "smwiif2sbzpv4if",
+          "at": 1794787998944,
+          "qty": 9,
+          "unit": "clove",
+          "removed": true
+        },
+        {
+          "key": "jerusalem spice|tsp",
+          "session": "smwmsbp0aqezj74",
+          "at": 1795046475610,
+          "qty": 1,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
