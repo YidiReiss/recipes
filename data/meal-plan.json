@@ -2536,9 +2536,10 @@
         {
           "key": "bone-in skin-on chicken legs and thigh|",
           "session": "smwmr4nch8zk131",
-          "at": 1795044559016,
+          "at": 1795085858236,
           "qty": 6,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "garlic|clove",
@@ -2823,6 +2824,12 @@
           "session": "smwnfqpvky65xnq",
           "at": 1795085857249,
           "removed": true
+        },
+        {
+          "key": "bone-in skin-on chicken legs and thigh|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085858236,
+          "removed": true
         }
       ],
       "manualItems": [
@@ -2853,9 +2860,14 @@
         {
           "id": "mmwmr9w7a",
           "text": "16 oz kale",
-          "have": false,
-          "updatedAt": 1795044712006,
-          "updatedBy": "smwmr4nch8zk131"
+          "have": true,
+          "updatedAt": 1795085859391,
+          "updatedBy": "smwnfqpvky65xnq",
+          "haveSession": "smwnfqpvky65xnq",
+          "haveAt": 1795085859391,
+          "haveSessions": [
+            "smwnfqpvky65xnq"
+          ]
         },
         {
           "id": "mmwmrads1",
