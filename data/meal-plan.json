@@ -2879,8 +2879,7 @@
         {
           "key": "beef|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085862534,
-          "removed": true
+          "at": 1795087657747
         },
         {
           "key": "extra firm tofu|16 ounce block",
@@ -2892,8 +2891,9 @@
         {
           "key": "olcha|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085867903,
-          "removed": true
+          "at": 1795087659207,
+          "qty": 2.25,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
