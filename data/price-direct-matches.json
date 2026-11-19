@@ -8,5 +8,9 @@
   "milk": "tuscan milk plain 2%",
   "sweet potato": "yam sweet",
   "lemon juice": "lemon",
-  "lime juice": "lime"
+  "lime juice": "lime",
+  "chicken breast": "butterfly chicken cutlet",
+  "boneless skinless chicken breast": "butterfly chicken cutlet",
+  "boneless chicken breast": "butterfly chicken cutlet",
+  "chicken cutlet": "butterfly chicken cutlet"
 }
