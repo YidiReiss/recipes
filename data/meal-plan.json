@@ -2519,15 +2519,17 @@
           "id": "mmwmr54hc",
           "text": "Pareve ice cream",
           "have": false,
-          "updatedAt": 1795044489456,
-          "updatedBy": "smwmr4nch8zk131"
+          "updatedAt": 1795051056294,
+          "updatedBy": "smwmv1syvuzmj75",
+          "deleted": true
         },
         {
           "id": "mmwmr5inr",
           "text": "8 oz tufuti cream cheese",
           "have": false,
-          "updatedAt": 1795044507831,
-          "updatedBy": "smwmr4nch8zk131"
+          "updatedAt": 1795051055294,
+          "updatedBy": "smwmv1syvuzmj75",
+          "deleted": true
         },
         {
           "id": "mmwmr5uxj",
