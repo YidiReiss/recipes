@@ -2760,26 +2760,30 @@
         {
           "key": "hot sauce|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085838739,
-          "removed": true
+          "at": 1795087342696,
+          "qty": 1,
+          "unit": "tbsp"
         },
         {
           "key": "ortega taco seasoning|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085839541,
-          "removed": true
+          "at": 1795087343818,
+          "qty": 1,
+          "unit": "tbsp"
         },
         {
           "key": "rice vinegar|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085841812,
-          "removed": true
+          "at": 1795087345221,
+          "qty": 1,
+          "unit": "tbsp"
         },
         {
           "key": "toasted sesame oil|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085842713,
-          "removed": true
+          "at": 1795087347503,
+          "qty": 1,
+          "unit": "tbsp"
         },
         {
           "key": "tomato paste|tbsp",
