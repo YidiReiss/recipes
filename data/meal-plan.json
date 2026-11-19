@@ -2977,6 +2977,20 @@
           "at": 1795087733459,
           "qty": 2,
           "unit": "tsp"
+        },
+        {
+          "key": "cornstarch|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087734302,
+          "qty": 10,
+          "unit": "tsp"
+        },
+        {
+          "key": "honey|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087734975,
+          "qty": 10,
+          "unit": "tsp"
         }
       ],
       "manualItems": [
