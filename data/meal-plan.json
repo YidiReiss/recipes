@@ -2607,20 +2607,23 @@
         {
           "key": "heart of romaine lettuce|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085814631,
-          "removed": true
+          "at": 1795086838566,
+          "qty": 1,
+          "unit": ""
         },
         {
           "key": "fresh brussel sprout|lb",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085815389,
-          "removed": true
+          "at": 1795086840263,
+          "qty": 1,
+          "unit": "lb"
         },
         {
           "key": "onion|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085818997,
-          "removed": true
+          "at": 1795086842365,
+          "qty": 1,
+          "unit": ""
         },
         {
           "key": "purple onion|",
