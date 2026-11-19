@@ -2197,9 +2197,10 @@
         {
           "key": "ground beef|lb",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770230879,
+          "at": 1795085856239,
           "qty": 1,
-          "unit": "lb"
+          "unit": "lb",
+          "removed": true
         },
         {
           "key": "cornflake crumb|cup",
@@ -2527,7 +2528,7 @@
         {
           "key": "boneless skinless chicken breast|",
           "session": "smwmr4nch8zk131",
-          "at": 1795058950377,
+          "at": 1795085857249,
           "qty": 4,
           "unit": "",
           "removed": true
@@ -2566,9 +2567,10 @@
         {
           "key": "boneless skinless chicken breast|",
           "session": "smwmzr2ll3jygoy",
-          "at": 1795059090667,
+          "at": 1795085857249,
           "qty": 4,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "cornflake crumb|cup",
@@ -2808,6 +2810,18 @@
           "key": "sriracha chili sauce|tsp",
           "session": "smwnfqpvky65xnq",
           "at": 1795085853809,
+          "removed": true
+        },
+        {
+          "key": "ground beef|lb",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085856239,
+          "removed": true
+        },
+        {
+          "key": "boneless skinless chicken breast|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085857249,
           "removed": true
         }
       ],
