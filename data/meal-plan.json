@@ -2193,7 +2193,7 @@
         {
           "key": "cornflake crumb|cup",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794774014272,
+          "at": 1795085807744,
           "qty": 0.25,
           "unit": "cup",
           "removed": true
@@ -2381,9 +2381,10 @@
         {
           "key": "cornflake crumb|cup",
           "session": "smwmr4nch8zk131",
-          "at": 1795044467249,
+          "at": 1795085807744,
           "qty": 0.25,
-          "unit": "cup"
+          "unit": "cup",
+          "removed": true
         },
         {
           "key": "breadcrumb|tbsp",
@@ -2528,6 +2529,12 @@
           "at": 1795059090667,
           "qty": 4,
           "unit": ""
+        },
+        {
+          "key": "cornflake crumb|cup",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085807744,
+          "removed": true
         }
       ],
       "manualItems": [
@@ -2536,7 +2543,7 @@
           "text": "Pareve ice cream",
           "have": false,
           "updatedAt": 1795051056294,
-          "updatedBy": "smwmr4nch8zk131",
+          "updatedBy": "smwmv1syvuzmj75",
           "deleted": true
         },
         {
@@ -2544,7 +2551,7 @@
           "text": "8 oz tufuti cream cheese",
           "have": false,
           "updatedAt": 1795051055294,
-          "updatedBy": "smwmr4nch8zk131",
+          "updatedBy": "smwmv1syvuzmj75",
           "deleted": true
         },
         {
@@ -2552,7 +2559,7 @@
           "text": "Caramel chips",
           "have": false,
           "updatedAt": 1795051053031,
-          "updatedBy": "smwmr4nch8zk131",
+          "updatedBy": "smwmv1syvuzmj75",
           "deleted": true
         },
         {
