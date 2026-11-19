@@ -2379,7 +2379,8 @@
         {
           "key": "beef|",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770930718
+          "at": 1795085862534,
+          "removed": true
         },
         {
           "key": "fettuccine pasta|lb",
@@ -2829,6 +2830,12 @@
           "key": "bone-in skin-on chicken legs and thigh|",
           "session": "smwnfqpvky65xnq",
           "at": 1795085858236,
+          "removed": true
+        },
+        {
+          "key": "beef|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085862534,
           "removed": true
         }
       ],
