@@ -2365,9 +2365,10 @@
         {
           "key": "extra firm tofu|16 ounce block",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770898221,
+          "at": 1795085865650,
           "qty": 1,
-          "unit": "16 ounce block"
+          "unit": "16 ounce block",
+          "removed": true
         },
         {
           "key": "chicken|",
@@ -2836,6 +2837,12 @@
           "key": "beef|",
           "session": "smwnfqpvky65xnq",
           "at": 1795085862534,
+          "removed": true
+        },
+        {
+          "key": "extra firm tofu|16 ounce block",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085865650,
           "removed": true
         }
       ],
