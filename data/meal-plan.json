@@ -2587,8 +2587,9 @@
           "id": "mmwmwjfh9",
           "text": "qa enter test",
           "have": false,
-          "updatedAt": 1795053554973,
-          "updatedBy": "smwmwj2lnhhdxdq"
+          "updatedAt": 1795053670657,
+          "updatedBy": "smwmwj2lnhhdxdq",
+          "deleted": true
         }
       ],
       "optionalPromoted": [
