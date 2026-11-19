@@ -2579,8 +2579,9 @@
         {
           "key": "cornflake crumb|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085807744,
-          "removed": true
+          "at": 1795086649928,
+          "qty": 0.25,
+          "unit": "cup"
         },
         {
           "key": "breadcrumb|tbsp",
