@@ -1,0 +1,52 @@
+{
+  "week": "2026-11-15",
+  "checked_at": "2026-11-15T14:20:00Z",
+  "store": "Aron's Kissena Farms",
+  "source": "online-store",
+  "source_url": "https://www.aronskissenafarms.com/order-online/",
+  "items": {
+    "butterfly chicken cutlet": {
+      "price_cents": 999,
+      "basis": "lb",
+      "raw_name": "Fresh Family Pack Butterfly Chicken Cutlets",
+      "reg_price_cents": 999,
+      "in_stock": true
+    },
+    "boneless skinless chicken thigh": {
+      "price_cents": 899,
+      "basis": "lb",
+      "raw_name": "Boneless Skinless Chicken Thighs (Pargiot)",
+      "reg_price_cents": 899,
+      "in_stock": true
+    },
+    "first cut brisket": {
+      "price_cents": 1699,
+      "basis": "lb",
+      "raw_name": "1st Cut Beef Brisket",
+      "reg_price_cents": 1699,
+      "in_stock": true
+    },
+    "persian cucumber": {
+      "price_cents": 249,
+      "basis": "lb",
+      "raw_name": "Persian Cucumbers",
+      "reg_price_cents": 249,
+      "in_stock": true
+    },
+    "garlic": {
+      "price_cents": 299,
+      "basis": "lb",
+      "raw_name": "Fresh Loose Garlic",
+      "reg_price_cents": 299,
+      "in_stock": true
+    },
+    "extra virgin olive oil": {
+      "price_cents": 1199,
+      "basis": "pack",
+      "pack_size": "25.4 fl oz",
+      "raw_name": "Gefen Extra Virgin Olive Oil 750ml",
+      "reg_price_cents": 1199,
+      "in_stock": true
+    }
+  }
+}
