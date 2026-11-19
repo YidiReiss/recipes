@@ -2844,8 +2844,9 @@
         {
           "key": "fettuccine pasta|lb",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085853081,
-          "removed": true
+          "at": 1795087489090,
+          "qty": 0.75,
+          "unit": "lb"
         },
         {
           "key": "sriracha chili sauce|tsp",
