@@ -189,7 +189,7 @@
       },
       {
         "lotId": "rcpt-2026-11-01-1menk3sh34",
-        "qty": 0.6,
+        "qty": 0.98,
         "unit": "lb",
         "addedAt": "2026-11-01",
         "receiptDate": "2026-11-01",
@@ -198,15 +198,26 @@
         "unconfirmed": false,
         "boughtName": "Tomato Stem",
         "category": "tomatoes",
-        "openedAt": "2026-11-19",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-09-29-5652kt1wvx",
+        "qty": 1.62,
+        "unit": "lb",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Tomato Stem",
+        "category": "tomatoes",
         "expiresAt": null,
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [
-      "rcpt-2026-09-29-5652kt1wvx"
-    ],
-    "updatedAt": 1795122844489
+    "consumedReceiptLots": [],
+    "updatedAt": 1795122852912
   },
   "garlic loose": {
     "base": "garlic loose",
@@ -358,22 +369,21 @@
       },
       {
         "lotId": "rcpt-2026-09-29-ac6vob10z3",
-        "qty": 0.15,
+        "qty": 2.15,
         "unit": "lb",
         "addedAt": "2026-09-29",
         "receiptDate": "2026-09-29",
-        "storage": "fridge",
+        "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
         "boughtName": "Onion Red",
         "category": "onions",
-        "openedAt": "2026-11-19",
-        "expiresAt": "2026-11-26",
+        "expiresAt": null,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795122844490
+    "updatedAt": 1795122852912
   },
   "apple granny smith": {
     "base": "apple granny smith",
