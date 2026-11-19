@@ -2085,9 +2085,10 @@
         {
           "key": "hot sauce|tbsp",
           "session": "smwi0rpb9p8c03b",
-          "at": 1794758609282,
+          "at": 1795085838739,
           "qty": 1,
-          "unit": "tbsp"
+          "unit": "tbsp",
+          "removed": true
         },
         {
           "key": "mustard (grey poupon dijon)|tbsp",
@@ -2099,9 +2100,10 @@
         {
           "key": "ortega taco seasoning|tbsp",
           "session": "smwi0rpb9p8c03b",
-          "at": 1794758612042,
+          "at": 1795085839541,
           "qty": 1,
-          "unit": "tbsp"
+          "unit": "tbsp",
+          "removed": true
         },
         {
           "key": "rice vinegar|tbsp",
@@ -2710,6 +2712,18 @@
           "key": "chicken stock|cup",
           "session": "smwnfqpvky65xnq",
           "at": 1795085837848,
+          "removed": true
+        },
+        {
+          "key": "hot sauce|tbsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085838739,
+          "removed": true
+        },
+        {
+          "key": "ortega taco seasoning|tbsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085839541,
           "removed": true
         }
       ],
