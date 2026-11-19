@@ -2414,9 +2414,10 @@
         {
           "key": "yellow potato (the little potato company)|lb",
           "session": "smwmr4nch8zk131",
-          "at": 1795044536904,
+          "at": 1795085823683,
           "qty": 1.5,
-          "unit": "lb"
+          "unit": "lb",
+          "removed": true
         },
         {
           "key": "lemon juice|tsp",
@@ -2611,6 +2612,12 @@
           "key": "dried parsley|tsp",
           "session": "smwnfqpvky65xnq",
           "at": 1795085822842,
+          "removed": true
+        },
+        {
+          "key": "yellow potato (the little potato company)|lb",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085823683,
           "removed": true
         }
       ],
