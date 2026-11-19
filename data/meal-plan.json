@@ -2593,8 +2593,9 @@
         {
           "key": "flour tortilla|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085812154,
-          "removed": true
+          "at": 1795086662278,
+          "qty": 4,
+          "unit": ""
         },
         {
           "key": "apple|",
