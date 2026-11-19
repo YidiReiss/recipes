@@ -2991,6 +2991,23 @@
           "at": 1795087734975,
           "qty": 10,
           "unit": "tsp"
+        },
+        {
+          "key": "black pepper|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087735623,
+          "qty": 4,
+          "unit": "tsp"
+        },
+        {
+          "key": "red pepper flake|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087737429
+        },
+        {
+          "key": "turmeric|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087738716
         }
       ],
       "manualItems": [
