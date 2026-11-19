@@ -2531,25 +2531,11 @@
     "updatedAt": 1795122783660
   },
   "qa pantry test": {
-    "base": "qa pantry test",
-    "displayName": "qa pantry test",
-    "unit": "unit",
-    "lots": [
-      {
-        "lotId": "man-2026-11-19-ux0i9",
-        "qty": 2,
-        "unit": "unit",
-        "addedAt": "2026-11-19",
-        "receiptDate": "2026-11-19",
-        "storage": "pantry",
-        "source": "manual",
-        "unconfirmed": false,
-        "boughtName": "qa pantry test",
-        "expiresAt": null,
-        "status": "good"
-      }
-    ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795122800730
+    "status": null,
+    "updatedAt": 1795122872728,
+    "lots": [],
+    "consumedReceiptLots": [
+      "man-2026-11-19-ux0i9"
+    ]
   }
 }
