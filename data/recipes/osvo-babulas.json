@@ -140,7 +140,7 @@
   "notes": "Babula's osvo. Potatoes (2 golden) and eggs (2) are optional, per Yidi (Nov 15, 2026); crock pot on low about 20 hours, then keep warm until lunch. Instructions as submitted, in shorthand.",
   "pairings": [],
   "pdf": "pdfs/osvo-babulas.pdf",
-  "pdf_stale": true,
+  "pdf_stale": false,
   "photo_generated": true,
   "prep_minutes": 30,
   "servings": "4",
@@ -218,6 +218,15 @@
         }
       ],
       "reasoning": "Edit request inbox-mwngtxt3-6cog (Yidi, Nov 19): beef specified as flanken or chulent meat (not ground beef); lamb shank already optional, kept; added optional beef, lamb, or veal bones. Per Yidi c4 answers: bones in step 3 with meat/shank; apple shredded/grated + orange squash after pan vegetables; olcha just before water. c3/c4 pass."
+    },
+    {
+      "ts": "2026-11-19T12:40:50.912Z",
+      "actor": "sous-chef",
+      "action": "re-press",
+      "changes": [
+        "PDF regenerated"
+      ],
+      "reasoning": "pdf_stale was true (photo replaced / recipe edited)"
     }
   ],
   "needs_side": false
