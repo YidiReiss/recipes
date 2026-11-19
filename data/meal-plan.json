@@ -2579,8 +2579,9 @@
           "id": "mmwmwj2ln",
           "text": "qa clear test",
           "have": false,
-          "updatedAt": 1795053538283,
-          "updatedBy": "smwmwj2lnhhdxdq"
+          "updatedAt": 1795053667493,
+          "updatedBy": "smwmwj2lnhhdxdq",
+          "deleted": true
         },
         {
           "id": "mmwmwjfh9",
