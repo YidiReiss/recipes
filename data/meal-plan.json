@@ -2858,8 +2858,9 @@
         {
           "key": "ground beef|lb",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085856239,
-          "removed": true
+          "at": 1795087517351,
+          "qty": 1,
+          "unit": "lb"
         },
         {
           "key": "boneless skinless chicken breast|",
