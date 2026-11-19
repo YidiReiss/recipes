@@ -2520,7 +2520,7 @@
           "text": "Pareve ice cream",
           "have": false,
           "updatedAt": 1795051056294,
-          "updatedBy": "smwmv1syvuzmj75",
+          "updatedBy": "smwmr4nch8zk131",
           "deleted": true
         },
         {
@@ -2528,7 +2528,7 @@
           "text": "8 oz tufuti cream cheese",
           "have": false,
           "updatedAt": 1795051055294,
-          "updatedBy": "smwmv1syvuzmj75",
+          "updatedBy": "smwmr4nch8zk131",
           "deleted": true
         },
         {
@@ -2536,7 +2536,7 @@
           "text": "Caramel chips",
           "have": false,
           "updatedAt": 1795051053031,
-          "updatedBy": "smwmv1syvuzmj75",
+          "updatedBy": "smwmr4nch8zk131",
           "deleted": true
         },
         {
@@ -2566,6 +2566,13 @@
           "have": false,
           "updatedAt": 1795051078074,
           "updatedBy": "smwmv1syvuzmj75"
+        },
+        {
+          "id": "mmwmwj2ln",
+          "text": "qa clear test",
+          "have": false,
+          "updatedAt": 1795053538283,
+          "updatedBy": "smwmwj2lnhhdxdq"
         }
       ],
       "optionalPromoted": [
