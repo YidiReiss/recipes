@@ -2670,8 +2670,9 @@
         {
           "key": "carrot|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085825906,
-          "removed": true
+          "at": 1795087008215,
+          "qty": 2,
+          "unit": ""
         },
         {
           "key": "lime juice|tsp",
