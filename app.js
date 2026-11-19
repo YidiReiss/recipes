@@ -31,6 +31,7 @@ let byId = {};             // id -> FULL recipe (on-demand cache via ensureRecip
 let metaById = {};         // id -> lightweight metadata (loaded at boot)
 let shoppingSections = null; // shopping sections taxonomy loaded at boot
 let priceDirectMatches = null; // direct price-matching lookup (data/price-direct-matches.json) loaded at boot
+let circularIndex = null; // weekly circular index (data/circulars/index.json) loaded at boot
 let priceConversions = null; // per-lb / per-unit kitchen conversions (data/price-conversions.json) loaded at boot
 // Fetch a full recipe JSON on demand; cached in byId after first load.
 async function ensureRecipe(id) {
@@ -236,11 +237,12 @@ async function boot() {
   const livePlanPromise = Promise.resolve().then(() => fetchLiveMealPlan()).catch(() => null);
   try {
     const cb = '?v=' + Date.now();
-    const [metaResSettled, secResSettled, directResSettled, convResSettled] = await Promise.allSettled([
+    const [metaResSettled, secResSettled, directResSettled, convResSettled, circResSettled] = await Promise.allSettled([
       fetch('data/recipes/meta.json' + cb),
       fetch('data/shopping-sections.json' + cb),
       fetch('data/price-direct-matches.json' + cb),
-      fetch('data/price-conversions.json' + cb)
+      fetch('data/price-conversions.json' + cb),
+      fetch('data/circulars/index.json' + cb)
     ]);
     const meta = (metaResSettled.status === 'fulfilled' && metaResSettled.value.ok)
       ? await metaResSettled.value.json()
@@ -260,6 +262,11 @@ async function boot() {
       priceDirectMatches = await directResSettled.value.json();
     } else {
       priceDirectMatches = null;
+    }
+    if (circResSettled.status === 'fulfilled' && circResSettled.value.ok) {
+      circularIndex = await circResSettled.value.json();
+    } else {
+      circularIndex = null;
     }
     if (convResSettled.status === 'fulfilled' && convResSettled.value.ok) {
       const convJson = await convResSettled.value.json();
@@ -2447,6 +2454,13 @@ function priceMatchFor(it, pricesMapOverride) {
     const cWords = priceMatchWords(k);
     if (!cWords.length) continue;
 
+    // Variety-modifier guard (v20261119a): when the query's head noun is only a
+    // variety word of the candidate's head noun (e.g. "dried plums" vs
+    // "plum tomato"), the shared word names a variety, not the product — no match.
+    const candHead = cWords[cWords.length - 1];
+    const candVarietyMap = PRICE_VARIETY_WORDS[candHead];
+    if (candVarietyMap && headNoun && headNoun !== candHead && candVarietyMap[headNoun]) continue;
+
     // Variety-conflict rule (Part 2b): when both query and candidate carry a
     // variety word for the same head noun and their varieties differ, no match.
     const cVarieties = priceVarietyGroups(cWords, headNoun);
@@ -3240,13 +3254,14 @@ function shoppingListHTML() {
     if (!h) return '';
     const dStr = fmtShortDate(h.receipt_date);
     const sStr = String(h.store || '').trim();
+    const nStr = String(h.bought_name || '').trim();
     if (h.source === 'circular' && h.receipt_paid_cents) {
       const rateStr = formatPriceWithBasis(h.price_cents, h, it);
       const paidStr = fmtDollars(h.receipt_paid_cents);
       const qtyStr = h.implied_qty_lb ? (', ~' + h.implied_qty_lb + ' lb') : '';
-      return [dStr, sStr, rateStr + ' (circular rate · paid ' + paidStr + qtyStr + ')'].filter(Boolean).join(' · ');
+      return [nStr, dStr, sStr, rateStr + ' (circular rate · paid ' + paidStr + qtyStr + ')'].filter(Boolean).join(' · ');
     }
-    return [dStr, sStr, fmtDollars(h.price_cents)].filter(Boolean).join(' · ');
+    return [nStr, dStr, sStr, fmtDollars(h.price_cents)].filter(Boolean).join(' · ');
   };
 
   const buildDetailHTML = (it, p) => {
@@ -3261,7 +3276,7 @@ function shoppingListHTML() {
         : '';
       histParts.push(
         '<span class="shop-price-exp-detail">' +
-        esc("Expected at Aron's: " + expRate + ' (' + srcLabel + (exp.week ? ' · week of ' + exp.week : '') + regPart + ')') +
+        esc("Expected at Aron's: " + (exp.raw_name ? exp.raw_name + ' ' : '') + expRate + ' (' + srcLabel + (exp.week ? ' · week of ' + exp.week : '') + regPart + ')') +
         '</span>'
       );
     }
@@ -3364,7 +3379,7 @@ function shoppingListHTML() {
       const badgeText = formatTwoPriceBadgeText(it, p, bk);
       const hasSale = Boolean(p.expected && !p.expected.stale && (p.expected.source === 'circular' || (Number(p.expected.reg_price_cents) > Number(p.expected.price_cents))));
       return '<button type="button" class="shop-price-badge' + (hasSale ? ' shop-price-badge-sale' : '') + '" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
-          esc(badgeText) +
+          esc(badgeText) + ' <span class="shop-price-toggle-ind" aria-hidden="true">' + (isOpen ? '−' : '+') + '</span>' +
         '</button>' +
         buildDetailHTML(it, p);
     }
@@ -3373,7 +3388,7 @@ function shoppingListHTML() {
       const badgeText = formatTwoPriceBadgeText(it, hereHit, bk);
       const hasSale = Boolean(hereHit.expected && !hereHit.expected.stale && (hereHit.expected.source === 'circular' || (Number(hereHit.expected.reg_price_cents) > Number(hereHit.expected.price_cents))));
       return '<button type="button" class="shop-price-badge' + (hasSale ? ' shop-price-badge-sale' : '') + '" data-price-toggle="' + esc(it.key) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '">' +
-          esc(badgeText) +
+          esc(badgeText) + ' <span class="shop-price-toggle-ind" aria-hidden="true">' + (isOpen ? '−' : '+') + '</span>' +
         '</button>' +
         noteHTML +
         buildDetailHTML(it, hereHit.expected ? p : { ...p, expected: undefined });
@@ -3441,10 +3456,11 @@ function shoppingListHTML() {
   // Staple rows reuse the exact To Buy row template (same keys, same split
   // attribute) so the delegated have-toggle handlers work unchanged.
   const stapleLis = stapleIts.map(renderGenToBuy).join('');
+  const manualPseudoItem = m => ({ key: 'm:' + m.id, base: groupKey(m.text), label: m.text, qty: 1, unit: '' });
   const renderManToBuy = m =>
     '<div class="shop-item manual" data-manual="' + esc(m.id) + '">' +
       '<button class="shop-have-btn" type="button" aria-label="Mark as have">○</button>' +
-      '<span>' + esc(m.text) + '</span>' +
+      '<span class="shop-item-main"><span class="shop-item-label">' + esc(m.text) + '</span>' + renderPriceBadge(manualPseudoItem(m)) + '</span>' +
       '<button class="shop-del" data-mandel="' + esc(m.id) + '" type="button" aria-label="Remove">×</button></div>';
   const renderManHave = m =>
     '<div class="shop-item manual have' + (conflictKeys.has('m:' + m.id) ? ' conflict' : '') + '" data-manual="' + esc(m.id) + '">' +
@@ -3519,6 +3535,14 @@ function shoppingListHTML() {
     return groups.join('');
   };
 
+  const circularPdfUrl = (() => {
+    try {
+      const idx = (typeof circularIndex === 'object' && circularIndex) ? circularIndex : null;
+      if (!idx || !Array.isArray(idx.weeks) || !idx.weeks.length) return '';
+      const w = idx.weeks.find(x => x && x.week === idx.latest_week) || idx.weeks[0];
+      return (w && w.pdf_url) ? String(w.pdf_url) : '';
+    } catch (e) { return ''; }
+  })();
   const storeBarHTML =
     '<div class="shop-store-bar no-print">' +
       '<label for="shop-store-picker" class="shop-store-label">Shopping at:</label>' +
@@ -3530,6 +3554,7 @@ function shoppingListHTML() {
         ).join('') +
       '</select>' +
       '<button type="button" class="btn secondary shop-check-prices-btn" id="shop-check-prices" title="Mark meals planned and request current Aron\u2019s prices">Check current prices</button>' +
+      (circularPdfUrl ? '<a class="btn secondary shop-circular-btn" href="' + esc(circularPdfUrl) + '" target="_blank" rel="noopener">Aron\u2019s circular</a>' : '') +
     '</div>';
 
   let storeCoverageHTML = '';
@@ -3649,9 +3674,23 @@ function shoppingListHTML() {
         }
       }
     });
+    // Manual additions count toward the estimate too (v20261119a): 1 unit each.
+    manToBuy.forEach(m => {
+      const pseudo = manualPseudoItem(m);
+      const p = priceMatchFor(pseudo, pricesMap);
+      if (p) {
+        const est = estimateShopItemCents(pseudo, p);
+        if (est.convertible) {
+          pricedCount++;
+          sumCents += est.cents;
+        } else {
+          unconvertibleCount++;
+        }
+      }
+    });
     if (pricedCount > 0 || unconvertibleCount > 0) {
       const notEstSuffix = unconvertibleCount > 0 ? (' · ' + unconvertibleCount + (unconvertibleCount === 1 ? ' item' : ' items') + ' not estimated') : '';
-      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedCount + ' of ' + activeToBuy.length + ' items priced' + notEstSuffix + '</p>';
+      estTotalHTML = '<p class="shop-est-total">Estimated total about ' + fmtDollars(sumCents) + ' · ' + pricedCount + ' of ' + (activeToBuy.length + manToBuy.length) + ' items priced' + notEstSuffix + '</p>';
     }
   }
 
@@ -3946,7 +3985,26 @@ async function renderShopping(app) {
       if (nextOpen) _openPriceDetailKeys.add(k);
       else _openPriceDetailKeys.delete(k);
       priceBtn.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+      const indEl = priceBtn.querySelector('.shop-price-toggle-ind');
+      if (indEl) indEl.textContent = nextOpen ? '−' : '+';
       if (detailEl) detailEl.hidden = !nextOpen;
+      return;
+    }
+    // 3b. Price detail card tap: tapping the open card closes it (v20261119a)
+    const detailTapEl = e.target.closest('.shop-price-detail');
+    if (detailTapEl) {
+      const k = detailTapEl.dataset.priceDetail;
+      if (k) _openPriceDetailKeys.delete(k);
+      detailTapEl.hidden = true;
+      const mainEl = detailTapEl.parentElement;
+      const btnEl = mainEl && typeof mainEl.querySelector === 'function'
+        ? mainEl.querySelector('[data-price-toggle]')
+        : null;
+      if (btnEl) {
+        btnEl.setAttribute('aria-expanded', 'false');
+        const indEl = btnEl.querySelector('.shop-price-toggle-ind');
+        if (indEl) indEl.textContent = '+';
+      }
       return;
     }
     closeAllShopMenus();
