@@ -2597,8 +2597,9 @@
         {
           "key": "apple|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085813077,
-          "removed": true
+          "at": 1795086640489,
+          "qty": 1,
+          "unit": ""
         },
         {
           "key": "heart of romaine lettuce|",
@@ -2843,8 +2844,9 @@
         {
           "key": "extra firm tofu|16 ounce block",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085865650,
-          "removed": true
+          "at": 1795086635300,
+          "qty": 1,
+          "unit": "16 ounce block"
         },
         {
           "key": "olcha|tsp",
