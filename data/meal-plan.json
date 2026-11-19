@@ -2219,9 +2219,10 @@
         {
           "key": "carrot|",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770462018,
+          "at": 1795085825906,
           "qty": 2,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "tomato|",
@@ -2256,9 +2257,10 @@
         {
           "key": "lime juice|tsp",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770515879,
+          "at": 1795085826990,
           "qty": 2,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         },
         {
           "key": "lemon juice|tbsp",
@@ -2618,6 +2620,18 @@
           "key": "yellow potato (the little potato company)|lb",
           "session": "smwnfqpvky65xnq",
           "at": 1795085823683,
+          "removed": true
+        },
+        {
+          "key": "carrot|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085825906,
+          "removed": true
+        },
+        {
+          "key": "lime juice|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085826990,
           "removed": true
         }
       ],
