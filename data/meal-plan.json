@@ -2719,8 +2719,7 @@
         {
           "key": "fresh parsley|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085832391,
-          "removed": true
+          "at": 1795087688175
         },
         {
           "key": "egg|",
@@ -3002,6 +3001,11 @@
           "key": "golden potato|",
           "promotedAt": null,
           "removedAt": 1795087685902
+        },
+        {
+          "key": "fresh parsley|",
+          "promotedAt": null,
+          "removedAt": 1795087688175
         }
       ],
       "shoppingDay": "2026-11-11",
@@ -3011,7 +3015,8 @@
       ],
       "dismissedShopKeys": [
         "panko breadcrumb|cup",
-        "jalapeno|"
+        "jalapeno|",
+        "orange squash|"
       ]
     }
   },
