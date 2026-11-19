@@ -2203,16 +2203,18 @@
         {
           "key": "purple onion|",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770383645,
+          "at": 1795085819834,
           "qty": 1,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "shallot|",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770384695,
+          "at": 1795085820512,
           "qty": 1,
-          "unit": ""
+          "unit": "",
+          "removed": true
         },
         {
           "key": "carrot|",
@@ -2239,9 +2241,10 @@
         {
           "key": "fresh ginger|tsp",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770508322,
+          "at": 1795085821330,
           "qty": 1,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         },
         {
           "key": "dried plum (prunes)|",
@@ -2268,16 +2271,18 @@
         {
           "key": "onion|cup",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770548350,
+          "at": 1795085818997,
           "qty": 0.5,
-          "unit": "cup"
+          "unit": "cup",
+          "removed": true
         },
         {
           "key": "dried parsley|tsp",
           "session": "smwi7tm67j1bo6b",
-          "at": 1794770565981,
+          "at": 1795085822842,
           "qty": 0.5,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         },
         {
           "key": "rice (any, not sticky rice)|cup",
@@ -2401,9 +2406,10 @@
         {
           "key": "white vinegar|cup",
           "session": "smwmr4nch8zk131",
-          "at": 1795044535687,
+          "at": 1795085822158,
           "qty": 0.5,
-          "unit": "cup"
+          "unit": "cup",
+          "removed": true
         },
         {
           "key": "yellow potato (the little potato company)|lb",
@@ -2569,6 +2575,42 @@
           "key": "fresh brussel sprout|lb",
           "session": "smwnfqpvky65xnq",
           "at": 1795085815389,
+          "removed": true
+        },
+        {
+          "key": "onion|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085818997,
+          "removed": true
+        },
+        {
+          "key": "purple onion|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085819834,
+          "removed": true
+        },
+        {
+          "key": "shallot|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085820512,
+          "removed": true
+        },
+        {
+          "key": "fresh ginger|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085821330,
+          "removed": true
+        },
+        {
+          "key": "white vinegar|cup",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085822158,
+          "removed": true
+        },
+        {
+          "key": "dried parsley|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085822842,
           "removed": true
         }
       ],
