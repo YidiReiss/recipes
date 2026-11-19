@@ -2656,14 +2656,16 @@
         {
           "key": "dried parsley|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085822842,
-          "removed": true
+          "at": 1795086989178,
+          "qty": 0.5,
+          "unit": "tsp"
         },
         {
           "key": "yellow potato (the little potato company)|lb",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085823683,
-          "removed": true
+          "at": 1795086990519,
+          "qty": 1.5,
+          "unit": "lb"
         },
         {
           "key": "carrot|",
