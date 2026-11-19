@@ -2865,14 +2865,16 @@
         {
           "key": "boneless skinless chicken breast|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085857249,
-          "removed": true
+          "at": 1795087528808,
+          "qty": 4,
+          "unit": ""
         },
         {
           "key": "bone-in skin-on chicken legs and thigh|",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085858236,
-          "removed": true
+          "at": 1795087531122,
+          "qty": 6,
+          "unit": ""
         },
         {
           "key": "beef|",
