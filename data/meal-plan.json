@@ -2732,14 +2732,16 @@
         {
           "key": "black bean (15 oz)|can",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085835533,
-          "removed": true
+          "at": 1795087168276,
+          "qty": 1,
+          "unit": "can"
         },
         {
           "key": "mayonnaise|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085836238,
-          "removed": true
+          "at": 1795087169391,
+          "qty": 17,
+          "unit": "tbsp"
         },
         {
           "key": "rice (any, not sticky rice)|cup",
