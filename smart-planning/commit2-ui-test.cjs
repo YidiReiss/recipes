@@ -4095,6 +4095,104 @@ async function main() {
   if (hadShoppingListHTML36) globalThis.shoppingListHTML = savedShoppingListHTML36;
   else delete globalThis.shoppingListHTML;
 
+  // Section 37 — Add button clears the box (v20261118c): the Add handler used
+  // to rely on the rebuild destroying the input to clear it; since Section 36
+  // renderShopWrap now restores the draft across rebuilds, the handler must
+  // clear the box itself, or the text stays after every add.
+  const savedDollar37 = globalThis.$;
+  const savedDocument37 = globalThis.document;
+  const savedGetWeek37 = globalThis.getWeek;
+  const savedThisWeekKey37 = globalThis.thisWeekKey;
+  const savedGetSessionId37 = globalThis.getSessionId;
+  const savedMarkShopDirty37 = globalThis.markShopDirty;
+  const savedRenderShopWrap37 = globalThis.renderShopWrap;
+  const hadShoppingListHTML37 = ('shoppingListHTML' in globalThis);
+  const savedShoppingListHTML37 = globalThis.shoppingListHTML;
+  const savedEnsurePlanned37 = globalThis.ensurePlannedRecipes;
+  const savedLoadStoreNotes37 = globalThis.loadStoreNotesLocal;
+  const savedEnsurePriceHistory37 = globalThis.ensurePriceHistoryLoaded;
+  const savedEnsureStoreNotes37 = globalThis.ensureStoreNotesLoaded;
+  const savedShoppingFromLabel37 = globalThis.shoppingFromLabel;
+  const savedGetHideStaples37 = globalThis.getHideStaples;
+  const savedHelpLinkHTML37 = globalThis.helpLinkHTML;
+  geval(extract('renderShopping'));
+  geval(extract('renderShopWrap'));
+  globalThis.shoppingListHTML = () => '<input id="shop-new">';
+  const fakeWeek37 = { manualItems: [] };
+  globalThis.getWeek = () => fakeWeek37;
+  globalThis.thisWeekKey = () => '2026-11-15';
+  globalThis.getSessionId = () => 'test-session';
+  globalThis.markShopDirty = () => {};
+  globalThis.ensurePlannedRecipes = async () => {};
+  globalThis.loadStoreNotesLocal = () => {};
+  globalThis.ensurePriceHistoryLoaded = () => {};
+  globalThis.ensureStoreNotesLoaded = () => {};
+  globalThis.shoppingFromLabel = () => '';
+  globalThis.getHideStaples = () => false;
+  globalThis.helpLinkHTML = () => '';
+  const makeInput37 = (value) => ({
+    id: 'shop-new',
+    value,
+    selectionStart: 0,
+    selectionEnd: 0,
+    focused: false,
+    focus() { this.focused = true; if (globalThis.document) globalThis.document.activeElement = this; },
+    setSelectionRange(s, e) { this.selectionStart = s; this.selectionEnd = e; },
+    addEventListener(type, fn) { this['on' + type] = fn; }
+  });
+  let currentInput37 = makeInput37('cumin');
+  const fakeAddBtn37 = { click() { shopClick37({ target: fakeAddTarget37 }); } };
+  const fakeAddTarget37 = { closest: (sel) => (sel === '#shop-add' ? fakeAddBtn37 : null) };
+  let shopClick37 = null;
+  let shopKeydown37 = null;
+  const fakeWrap37 = {
+    get innerHTML() { return ''; },
+    set innerHTML(v) { currentInput37 = makeInput37(''); },
+    querySelector(sel) {
+      if (sel === '#shop-new') return currentInput37;
+      return null;
+    },
+    querySelectorAll() { return []; },
+    addEventListener(type, fn) { if (type === 'click') shopClick37 = fn; else if (type === 'keydown') shopKeydown37 = fn; }
+  };
+  globalThis.document = { title: '', activeElement: null, addEventListener() {} };
+  globalThis.$ = (sel) => (sel === '#shop-wrap' ? fakeWrap37 : sel === '#shop-new' ? currentInput37 : sel === '#shop-add' ? fakeAddBtn37 : null);
+  await renderShopping({ innerHTML: '' });
+  // (a) Tap Add with 'cumin' typed: item lands in manualItems, the NEW box is
+  // empty, and it stays focused so the next item can be typed right away.
+  currentInput37.focus();
+  shopClick37({ target: fakeAddTarget37 });
+  const afterAdd37 = currentInput37;
+  check('Section 37(a) (Add clears the box): after tapping Add, "cumin" is in manualItems, the new #shop-new is empty, and it is focused',
+    fakeWeek37.manualItems.length === 1 && fakeWeek37.manualItems[0].text === 'cumin' &&
+    afterAdd37.value === '' && afterAdd37.focused === true);
+  // (b) Enter key path, delegated on shopWrap so it survives the rebuild:
+  // typing 'paprika' + Enter on the NEW input (post-rebuild) adds it and
+  // clears the box too. With the old direct binding this did nothing.
+  currentInput37.value = 'paprika';
+  currentInput37.focus();
+  shopKeydown37({ key: 'Enter', target: currentInput37, preventDefault() {} });
+  const afterEnter37 = currentInput37;
+  check('Section 37(b) (Enter adds and clears after a rebuild): after Enter, "paprika" is in manualItems, the new #shop-new is empty, and it is focused',
+    fakeWeek37.manualItems.length === 2 && fakeWeek37.manualItems[1].text === 'paprika' &&
+    afterEnter37.value === '' && afterEnter37.focused === true);
+  globalThis.$ = savedDollar37;
+  globalThis.document = savedDocument37;
+  globalThis.getWeek = savedGetWeek37;
+  globalThis.thisWeekKey = savedThisWeekKey37;
+  globalThis.getSessionId = savedGetSessionId37;
+  globalThis.markShopDirty = savedMarkShopDirty37;
+  globalThis.renderShopWrap = savedRenderShopWrap37;
+  if (hadShoppingListHTML37) globalThis.shoppingListHTML = savedShoppingListHTML37;
+  else delete globalThis.shoppingListHTML;
+  globalThis.ensurePlannedRecipes = savedEnsurePlanned37;
+  globalThis.loadStoreNotesLocal = savedLoadStoreNotes37;
+  globalThis.ensurePriceHistoryLoaded = savedEnsurePriceHistory37;
+  globalThis.ensureStoreNotesLoaded = savedEnsureStoreNotes37;
+  globalThis.shoppingFromLabel = savedShoppingFromLabel37;
+  globalThis.getHideStaples = savedGetHideStaples37;
+  globalThis.helpLinkHTML = savedHelpLinkHTML37;
+
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
   if (failed.length) process.exitCode = 1;
