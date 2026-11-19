@@ -2752,8 +2752,9 @@
         {
           "key": "chicken stock|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085837848,
-          "removed": true
+          "at": 1795087254447,
+          "qty": 1,
+          "unit": "cup"
         },
         {
           "key": "hot sauce|tbsp",
