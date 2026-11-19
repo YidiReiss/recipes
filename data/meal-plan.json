@@ -2935,6 +2935,13 @@
           "at": 1795087720023,
           "qty": 0.5,
           "unit": "tsp"
+        },
+        {
+          "key": "olive oil|tbsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087725026,
+          "qty": 7,
+          "unit": "tbsp"
         }
       ],
       "manualItems": [
