@@ -2642,14 +2642,16 @@
         {
           "key": "fresh ginger|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085821330,
-          "removed": true
+          "at": 1795086901102,
+          "qty": 1,
+          "unit": "tsp"
         },
         {
           "key": "white vinegar|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085822158,
-          "removed": true
+          "at": 1795086904275,
+          "qty": 0.5,
+          "unit": "cup"
         },
         {
           "key": "dried parsley|tsp",
