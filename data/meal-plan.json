@@ -2942,6 +2942,13 @@
           "at": 1795087725026,
           "qty": 7,
           "unit": "tbsp"
+        },
+        {
+          "key": "oil|cup",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087726578,
+          "qty": 0.25,
+          "unit": "cup"
         }
       ],
       "manualItems": [
