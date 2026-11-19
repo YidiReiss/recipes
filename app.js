@@ -3760,15 +3760,21 @@ async function renderShopping(app) {
       const week = getWeek(thisWeekKey());
       if (!Array.isArray(week.manualItems)) week.manualItems = [];
       week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false, updatedAt: Date.now(), updatedBy: getSessionId() });
+      input.value = ''; // clear the box now: renderShopWrap restores the live draft across the rebuild, so without this the text would come back
       saveShop(); rerender();
       const ni = $('#shop-new');
       if (ni) ni.focus();
     }
   });
-  const newInput = $('#shop-new');
-  if (newInput) newInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); $('#shop-add').click(); }
-  });
+  // Enter in the add box adds the item: delegated on shopWrap (not bound to
+  // the input itself) so it survives the renderShopWrap rebuilds, which
+  // replace the #shop-new element — the old direct binding died on the first
+  // rebuild, so Enter only worked for the first item.
+  if (shopWrap && typeof shopWrap.addEventListener === 'function') {
+    shopWrap.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target && e.target.id === 'shop-new') { e.preventDefault(); $('#shop-add').click(); }
+    });
+  }
   const copyBtn = $('#shop-copy');
   if (copyBtn) copyBtn.addEventListener('click', () => {
     const week = getWeek(thisWeekKey());
