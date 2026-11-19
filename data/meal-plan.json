@@ -2161,9 +2161,10 @@
         {
           "key": "cumin seed|tsp",
           "session": "smwi0rpb9p8c03b",
-          "at": 1794758629834,
+          "at": 1795085850134,
           "qty": 0.25,
-          "unit": "tsp"
+          "unit": "tsp",
+          "removed": true
         },
         {
           "key": "sriracha chili sauce|tbsp",
@@ -2773,6 +2774,12 @@
           "key": "gochujang (korean red chili paste); check label if gluten free matters|cup",
           "session": "smwnfqpvky65xnq",
           "at": 1795085848188,
+          "removed": true
+        },
+        {
+          "key": "cumin seed|tsp",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795085850134,
           "removed": true
         }
       ],
