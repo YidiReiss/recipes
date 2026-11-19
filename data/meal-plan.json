@@ -2691,8 +2691,9 @@
         {
           "key": "lemon juice|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085828508,
-          "removed": true
+          "at": 1795087029679,
+          "qty": 10,
+          "unit": "tsp"
         },
         {
           "key": "avocado oil|tbsp",
