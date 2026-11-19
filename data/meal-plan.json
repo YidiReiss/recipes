@@ -2788,20 +2788,23 @@
         {
           "key": "tomato paste|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085843725,
-          "removed": true
+          "at": 1795087358342,
+          "qty": 1,
+          "unit": "tbsp"
         },
         {
           "key": "hot paprika|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085844685,
-          "removed": true
+          "at": 1795087359254,
+          "qty": 1,
+          "unit": "tsp"
         },
         {
           "key": "soy sauce|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085845688,
-          "removed": true
+          "at": 1795087360046,
+          "qty": 5,
+          "unit": "tbsp"
         },
         {
           "key": "cornmeal|cup",
