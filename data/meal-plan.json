@@ -2837,8 +2837,9 @@
         {
           "key": "onion soup mix|tbsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085852284,
-          "removed": true
+          "at": 1795087467863,
+          "qty": 2,
+          "unit": "tbsp"
         },
         {
           "key": "fettuccine pasta|lb",
