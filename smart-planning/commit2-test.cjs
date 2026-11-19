@@ -11,7 +11,9 @@ const path = require('path');
 
 const SITE_DIR = fs.existsSync(path.join(__dirname, 'app.js'))
   ? __dirname
-  : path.join(__dirname, '..', 'site');
+  : (fs.existsSync(path.join(__dirname, '..', 'site', 'app.js'))
+    ? path.join(__dirname, '..', 'site')
+    : path.join(__dirname, '..'));
 const SRC = fs.readFileSync(path.join(SITE_DIR, 'app.js'), 'utf8');
 const geval = (0, eval);
 

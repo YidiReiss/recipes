@@ -8,7 +8,9 @@ const path = require('path');
 
 const APP_PATH = fs.existsSync(path.join(__dirname, 'app.js'))
   ? path.join(__dirname, 'app.js')
-  : path.join(__dirname, '..', 'site', 'app.js');
+  : (fs.existsSync(path.join(__dirname, '..', 'site', 'app.js'))
+    ? path.join(__dirname, '..', 'site', 'app.js')
+    : path.join(__dirname, '..', 'app.js'));
 const SRC = fs.readFileSync(APP_PATH, 'utf8');
 
 function extract(name) {

@@ -16,7 +16,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const SRC = fs.readFileSync(path.join(__dirname, '..', 'site', 'app.js'), 'utf8');
+const SITE_DIR = fs.existsSync(path.join(__dirname, 'app.js'))
+  ? __dirname
+  : (fs.existsSync(path.join(__dirname, '..', 'site', 'app.js'))
+    ? path.join(__dirname, '..', 'site')
+    : path.join(__dirname, '..'));
+const SRC = fs.readFileSync(path.join(SITE_DIR, 'app.js'), 'utf8');
 
 function extract(src, name) {
   // form 1: function NAME(
@@ -231,7 +236,7 @@ check('lift cleared when there are no timers',
 
 // --- extra section: A2 / T1–T3 CSS checks (Argon's checks 4–15, verbatim
 // except renumbering) -----------------------------------------------
-const CSS = fs.readFileSync(path.join(__dirname, '..', 'site', 'styles.css'), 'utf8');
+const CSS = fs.readFileSync(path.join(SITE_DIR, 'styles.css'), 'utf8');
 const portraitIdx = CSS.indexOf('@media (max-width: 768px)');
 const landscapeIdx = CSS.indexOf('@media (orientation: landscape) and (max-height: 500px)');
 const rcptIdx = CSS.indexOf('BEGIN DELIMITED RECEIPTS STYLES');
