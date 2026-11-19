@@ -2610,8 +2610,9 @@
           "id": "mmwmztbbk",
           "text": "qa circ enter",
           "have": false,
-          "updatedAt": 1795059054992,
-          "updatedBy": "smwmzr2ll3jygoy"
+          "updatedAt": 1795059080569,
+          "updatedBy": "smwmzr2ll3jygoy",
+          "deleted": true
         }
       ],
       "optionalPromoted": [
