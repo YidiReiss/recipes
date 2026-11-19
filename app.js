@@ -1986,6 +1986,19 @@ const PRICE_MODIFIER_WORDS = new Set([
   'boneless', 'skinless', 'chip'
 ]);
 
+// Form/category nouns (v20261119b): words that name a form or broad category
+// rather than a specific product. A Step 2 match must share at least one
+// specific-product word — sharing only form words (e.g. "pomegranate seed"
+// vs "cumin seed" on "seed") is not a match. Preparation words (fresh, dried,
+// ground, chopped, ...) never reach here: sectionMatchWords drops them.
+const PRICE_FORM_WORDS = new Set([
+  'seed', 'powder', 'paste', 'sauce', 'juice', 'extract', 'syrup', 'flake',
+  'granulated', 'canned', 'frozen', 'crushed', 'crumb', 'noodle', 'roll',
+  'wrap', 'meal', 'starch', 'soup', 'mix', 'jam', 'jelly', 'puree', 'ketchup',
+  'vinegar', 'oil', 'milk', 'cheese', 'broth', 'stock', 'cream', 'butter',
+  'flour', 'sugar', 'salt', 'pasta', 'honey'
+]);
+
 const PRICE_QUALIFIED_HEADS = new Set([
   'vinegar', 'oil', 'milk', 'cheese', 'sauce', 'paste', 'powder',
   'broth', 'stock', 'juice', 'cream', 'butter', 'flour', 'sugar',
@@ -2472,8 +2485,9 @@ function priceMatchFor(it, pricesMapOverride) {
     let score = shared.length;
     if (!score) continue;
 
-    // Never match on modifier/color/cut adjectives alone
-    if (shared.every(w => PRICE_MODIFIER_WORDS.has(w)) && !hasSharedVariety) continue;
+    // Never match on modifier/color/cut adjectives or form/category nouns
+    // alone (v20261119b: "pomegranate seed" matched "cumin seed" on "seed")
+    if (shared.every(w => PRICE_MODIFIER_WORDS.has(w) || PRICE_FORM_WORDS.has(w)) && !hasSharedVariety) continue;
 
     if (hasSharedVariety && headNoun && shared.includes(headNoun) && score === 1) {
       score = 2;

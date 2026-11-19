@@ -1,5 +1,10 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-19 — Price matcher form-word guard: no match on form words alone (`app.js` `v=20261119b`)
+
+- **What changed (Muse-built small fix, Nov 19, 2026, spotted in the v20261119a live QA):** "Pomegranate seeds" was showing a Cumin Seeds price — Step 2 of `priceMatchFor` matched the two on the shared word "seed" alone. New `PRICE_FORM_WORDS` set (seed, powder, paste, sauce, juice, extract, syrup, flake, granulated, canned, frozen, crushed, crumb, noodle, roll, wrap, meal, starch, soup, mix, jam, jelly, puree, ketchup, plus the qualified-head nouns vinegar/oil/milk/cheese/broth/stock/cream/butter/flour/sugar/salt/pasta/honey) joins the existing modifier guard: a Step 2 match must now share at least one specific-product word, not only modifier or form/category words. Preparation words (fresh, dried, ground, chopped, ...) were already dropped by `sectionMatchWords` and never reach the guard. Exact matches, direct matches, variety-group matches, and distinctive-word overlaps are untouched.
+- **Verification:** Section 40 (`40(a)`–`40(c)`) added to `smart-planning/commit2-ui-test.cjs` (also registers `PRICE_FORM_WORDS` in the extraction list): pomegranate seeds / chili powder / red pepper flakes return null against cumin seeds / garlic powder / corn flakes, exact seed and powder matches still work, "toasted sesame seeds" still Step-2-matches, "yellow potatoes" still matches via the potato variety group. Sensitivity proven: removing the form words from the guard fails `40(a)`/`40(c)`. Full suites (frozen Nov 18 week): `commit1-merge-test.cjs` 56/56 + `commit2-test.cjs` 174/174 + `commit2-ui-test.cjs` 327/327 + `cookmode-render-check.cjs` 27/27 = **584/584** pass.
+
 ## 2026-11-19 — Shopping-list price fixes from Yidi's live review (`app.js` `v=20261119a`, `styles.css` `v=20261119a`; Worker `git-v17`)
 
 - **What changed (Muse-built small-fix batch, Nov 19, 2026, from Yidi's walk-through of the first live price check):**
