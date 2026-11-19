@@ -2602,8 +2602,9 @@
           "id": "mmwmzt2qr",
           "text": "qa circ test",
           "have": false,
-          "updatedAt": 1795059043875,
-          "updatedBy": "smwmzr2ll3jygoy"
+          "updatedAt": 1795059077069,
+          "updatedBy": "smwmzr2ll3jygoy",
+          "deleted": true
         },
         {
           "id": "mmwmztbbk",
