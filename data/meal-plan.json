@@ -2809,14 +2809,16 @@
         {
           "key": "cornmeal|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085847272,
-          "removed": true
+          "at": 1795087380494,
+          "qty": 0.25,
+          "unit": "cup"
         },
         {
           "key": "gochujang (korean red chili paste); check label if gluten free matters|cup",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085848188,
-          "removed": true
+          "at": 1795087382407,
+          "qty": 0.25,
+          "unit": "cup"
         },
         {
           "key": "cumin seed|tsp",
