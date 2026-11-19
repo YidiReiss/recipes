@@ -2894,6 +2894,13 @@
           "at": 1795087659207,
           "qty": 2.25,
           "unit": "tsp"
+        },
+        {
+          "key": "golden potato|",
+          "session": "smwnfqpvky65xnq",
+          "at": 1795087685902,
+          "qty": 2,
+          "unit": ""
         }
       ],
       "manualItems": [
@@ -2990,6 +2997,11 @@
           "key": "jalapeno|",
           "promotedAt": 1794757445895,
           "removedAt": 1794757460325
+        },
+        {
+          "key": "golden potato|",
+          "promotedAt": null,
+          "removedAt": 1795087685902
         }
       ],
       "shoppingDay": "2026-11-11",
