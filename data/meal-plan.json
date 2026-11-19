@@ -2677,8 +2677,9 @@
         {
           "key": "lime juice|tsp",
           "session": "smwnfqpvky65xnq",
-          "at": 1795085826990,
-          "removed": true
+          "at": 1795087011123,
+          "qty": 2,
+          "unit": "tsp"
         },
         {
           "key": "dried plum (prunes)|",
