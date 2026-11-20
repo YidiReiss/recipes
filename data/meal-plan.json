@@ -2062,7 +2062,9 @@
                 "cookDate": null,
                 "locked": true,
                 "drafted": true,
-                "reason": "Standing — Thursday pizza night"
+                "reason": "Standing — Thursday pizza night",
+                "cookedAt": 1795142832516,
+                "pantryDeductions": []
               }
             ]
           }
