@@ -1163,6 +1163,24 @@
         "opened": "Opened pantry 180–360 (6–12 mo)"
       }
     },
+    "orange": {
+      "name": "Oranges / mandarins (citrus group)",
+      "category": "produce",
+      "default_storage": "pantry",
+      "pantry_days": 10,
+      "fridge_days": 10,
+      "freezer_days": null,
+      "opened_fridge_days": 3,
+      "opened_pantry_days": null,
+      "source": "[B][C]",
+      "raw": {
+        "pantry": "10",
+        "fridge": "10–21",
+        "freezer": "—",
+        "opened": "3–4 cut (general)"
+      },
+      "note": "Citrus-group values from the shelf-life research report (same row as lemons/limes)."
+    },
     "breadcrumb": {
       "name": "Breadcrumbs, commercial",
       "category": "pantry",

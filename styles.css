@@ -899,7 +899,7 @@ footer.site-footer {
     flex: 0 0 auto;
     width: 100%;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0.25rem;
   }
   .main-nav a {
@@ -3500,10 +3500,6 @@ body.has-timer-dock .cook-mode-overlay {
 }
 
 .pantry-add-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -3511,20 +3507,27 @@ body.has-timer-dock .cook-mode-overlay {
   margin-bottom: 1.25rem;
 }
 
-.pantry-add-name {
-  flex: 2 1 180px;
+.pantry-add-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 
-.pantry-add-qty {
-  width: 90px;
+.pantry-add-row input,
+.pantry-add-row select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.65rem;
 }
 
-.pantry-add-unit {
-  width: 120px;
+#pantry-add-name {
+  grid-column: 1 / -1;
 }
 
-.pantry-add-storage {
-  width: 120px;
+#pantry-add-btn {
+  grid-column: 1 / -1;
 }
 
 .pantry-list {
@@ -3534,6 +3537,7 @@ body.has-timer-dock .cook-mode-overlay {
 }
 
 .pantry-card {
+  display: block;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -3550,31 +3554,31 @@ body.has-timer-dock .cook-mode-overlay {
   border-color: #d49b35;
 }
 
-.pantry-card-main {
+.pantry-card-head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.65rem;
-  margin-bottom: 0.5rem;
+  gap: 0.75rem;
 }
 
-.pantry-card-title-row {
+.pantry-card-title-wrap {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.55rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 .pantry-item-name {
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
-.pantry-item-qty {
+.pantry-item-total {
   font-weight: 600;
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   color: var(--accent);
 }
 
@@ -3587,57 +3591,67 @@ body.has-timer-dock .cook-mode-overlay {
   padding: 0.1rem 0.55rem;
 }
 
-.pantry-card-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+.pantry-remove-btn {
+  flex: 0 0 auto;
 }
 
-.pantry-lot-list {
+.pantry-lots-list {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  margin-top: 0.5rem;
   border-top: 1px dashed var(--line);
-  padding-top: 0.5rem;
 }
 
 .pantry-lot-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-size: 0.86rem;
-  color: var(--ink-soft);
-  padding: 0.25rem 0;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 0.95rem;
 }
 
-.pantry-lot-expired {
+.pantry-lot-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0.1rem;
+}
+
+.pantry-lot-row.is-expired {
   color: var(--meat);
 }
 
-.pantry-lot-main {
+.pantry-lot-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.45rem 0.6rem;
 }
 
 .pantry-lot-qty {
   font-weight: 700;
   color: var(--ink);
+  margin-right: auto;
 }
 
-.pantry-lot-actions {
-  display: flex;
-  flex-wrap: wrap;
+.pantry-lot-meta {
+  margin-top: 0.15rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.pantry-confirm-inline {
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.pantry-confirm-input {
+  width: 7.5rem;
+  font-size: 0.95rem;
+  padding: 0.35rem 0.5rem;
 }
 
 .pantry-storage-select {
-  font-size: 0.8rem;
-  padding: 0.15rem 0.4rem;
+  font-size: 0.88rem;
+  padding: 0.3rem 0.45rem;
   border-radius: 5px;
   border: 1px solid var(--line);
   background: var(--cream);
@@ -3764,6 +3778,54 @@ body.has-timer-dock .cook-mode-overlay {
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 0.9rem;
+}
+
+.pantry-flag-prompt {
+  margin: 0 0 0.85rem;
+  font-size: 0.98rem;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.pantry-flag-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pantry-flag-fields input {
+  font-size: 1rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.pantry-sec-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 0.6rem;
+}
+
+.pantry-soon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pantry-soon-chip {
+  font-size: 0.92rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.45rem 0.7rem;
+}
+
+.pantry-expired-section {
+  margin-top: 1rem;
+}
+
+.pantry-expired-section summary {
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.4rem 0;
 }
 
 .dish-cooked-btn {
