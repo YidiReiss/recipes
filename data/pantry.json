@@ -382,7 +382,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-6l6b87hcan",
-        "qty": 0,
+        "qty": 0.2,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
@@ -396,6 +396,12 @@
             "qtyAfter": 0,
             "kind": "cooked",
             "dish": "Dairy-Free Chicken Fettuccine Alfredo"
+          },
+          {
+            "at": "2026-11-20",
+            "delta": 0.2,
+            "qtyAfter": 0.2,
+            "kind": "edit"
           }
         ],
         "boughtName": "Onion Shallots",
@@ -404,10 +410,8 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [
-      "rcpt-2026-11-15-6l6b87hcan"
-    ],
-    "updatedAt": 1795174555177
+    "consumedReceiptLots": [],
+    "updatedAt": 1795186886358
   },
   "onion red": {
     "base": "onion red",
