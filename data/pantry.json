@@ -389,22 +389,32 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-6l6b87hcan",
-        "qty": 0.4,
+        "qty": 0,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -0.4,
+            "qtyAfter": 0,
+            "kind": "cooked",
+            "dish": "Dairy-Free Chicken Fettuccine Alfredo"
+          }
+        ],
         "boughtName": "Onion Shallots",
         "category": "shallots",
         "expiresAt": "2026-12-15",
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687704
+    "consumedReceiptLots": [
+      "rcpt-2026-11-15-6l6b87hcan"
+    ],
+    "updatedAt": 1795174555177
   },
   "onion red": {
     "base": "onion red",
@@ -499,7 +509,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-1xu6tsggj6",
-        "qty": 5.76,
+        "qty": 3.76,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
@@ -518,17 +528,25 @@
             "delta": 2,
             "qtyAfter": 5.76,
             "kind": "restore"
+          },
+          {
+            "at": "2026-11-20",
+            "delta": -2,
+            "qtyAfter": 3.76,
+            "kind": "cooked",
+            "dish": "Dairy-Free Chicken Fettuccine Alfredo"
           }
         ],
         "boughtName": "Butterfly Chicken Cutlets",
         "category": "meat",
-        "expiresAt": "2027-08-12",
+        "openedAt": "2026-11-20",
+        "expiresAt": "2027-08-17",
         "qualityOnly": true,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795174546392
+    "updatedAt": 1795174555168
   },
   "veal neck bone": {
     "base": "veal neck bone",
@@ -662,14 +680,22 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-1et30vp1qx",
-        "qty": 1,
+        "qty": 0,
         "unit": "16 oz",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "cooked",
+            "dish": "Dairy-Free Chicken Fettuccine Alfredo"
+          }
+        ],
         "boughtName": "Fettuccine",
         "category": "pasta",
         "packSize": "16 oz",
@@ -677,8 +703,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687705
+    "consumedReceiptLots": [
+      "rcpt-2026-11-15-1et30vp1qx"
+    ],
+    "updatedAt": 1795174555175
   },
   "roland coconut milk": {
     "base": "roland coconut milk",
@@ -687,14 +715,22 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-17v7ia0qzg",
-        "qty": 1,
+        "qty": 0,
         "unit": "14 oz",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "cooked",
+            "dish": "Dairy-Free Chicken Fettuccine Alfredo"
+          }
+        ],
         "boughtName": "Coconut Milk",
         "category": "coconut milk",
         "packSize": "14 oz",
@@ -702,8 +738,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687705
+    "consumedReceiptLots": [
+      "rcpt-2026-11-15-17v7ia0qzg"
+    ],
+    "updatedAt": 1795174555182
   },
   "ungers pie crusts deep dish": {
     "base": "ungers pie crusts deep dish",
