@@ -3638,6 +3638,7 @@ function shoppingListHTML() {
       '</select>' +
       '<button type="button" class="btn secondary shop-check-prices-btn" id="shop-check-prices" title="Mark meals planned and request current Aron\u2019s prices">Check current prices</button>' +
       (circularPdfUrl ? '<a class="btn secondary shop-circular-btn" href="' + esc(circularPdfUrl) + '" target="_blank" rel="noopener">Aron\u2019s circular</a>' : '') +
+      '<a class="btn secondary shop-history-btn" href="#/receipts" id="shop-history-link">Shopping History</a>' +
     '</div>';
 
   let storeCoverageHTML = '';
@@ -13457,30 +13458,86 @@ function normalizePantryUnit(u) {
   return normalizeRecipeEstimateUnit(low);
 }
 
+/**
+ * Parse a sized measure pack unit string of the form `"N <base>"` where `<base>`
+ * is a weight/volume unit (`oz|lb|g|kg|ml|l`, NOT count packs like `"3 pk"`).
+ * Checked before `normalizePantryUnit` so `"16 oz"` is recognized as a 16-oz pack.
+ */
+function parsePantryPackUnit(u) {
+  const m = /^(\d+(?:\.\d+)?)\s*(oz|lb|lbs|pound|pounds|g|gram|grams|kg|ml|l|liter|liters|fl\s*oz)$/i.exec(String(u || '').trim());
+  if (!m) return null;
+  const count = Number(m[1]);
+  if (!Number.isFinite(count) || count <= 0) return null;
+  const rawBase = m[2].toLowerCase().replace(/\s+/g, '_');
+  let baseUnit = rawBase;
+  if (rawBase === 'lbs' || rawBase === 'pound' || rawBase === 'pounds') baseUnit = 'lb';
+  else if (rawBase === 'gram' || rawBase === 'grams') baseUnit = 'g';
+  else if (rawBase === 'liter' || rawBase === 'liters') baseUnit = 'l';
+  else if (rawBase === 'fl_oz') baseUnit = 'fl_oz';
+  return { size: count, baseUnit };
+}
+
+function appendPantryLotHistory(lot, event) {
+  if (!lot || typeof lot !== 'object' || !event || typeof event !== 'object') return [];
+  const list = Array.isArray(lot.history) ? lot.history.slice() : [];
+  const ev = {
+    at: String(event.at || todayPantryYmd()).slice(0, 10),
+    delta: Number.isFinite(Number(event.delta)) ? Math.round(Number(event.delta) * 1000) / 1000 : 0,
+    qtyAfter: (event.qtyAfter !== null && event.qtyAfter !== undefined && Number.isFinite(Number(event.qtyAfter)))
+      ? Math.max(0, Math.round(Number(event.qtyAfter) * 1000) / 1000)
+      : 0,
+    kind: String(event.kind || 'edit')
+  };
+  if (event.dish) ev.dish = String(event.dish);
+  if (event.openedAt !== undefined) ev.openedAt = event.openedAt;
+  list.push(ev);
+  lot.history = list.slice(-50);
+  return lot.history;
+}
+
 function normalizePantryLot(baseKey, rawLot, todayStr) {
   if (!rawLot || typeof rawLot !== 'object') return null;
   const today = todayStr || todayPantryYmd();
   const rawQty = rawLot.qty;
   const hasNumQty = rawQty !== null && rawQty !== undefined && rawQty !== '' && Number.isFinite(Number(rawQty));
   const qty = hasNumQty ? Math.max(0, Math.round(Number(rawQty) * 1000) / 1000) : null;
-  const unconfirmed = Boolean(rawLot.unconfirmed) || qty === null;
+  const unconfirmed = rawLot.unconfirmed !== undefined ? Boolean(rawLot.unconfirmed) : (qty === null);
   const unit = String(rawLot.unit || 'unit').trim();
   const addedAt = String(rawLot.addedAt || rawLot.receiptDate || rawLot.receipt_date || today).slice(0, 10);
   const openedAt = rawLot.openedAt ? String(rawLot.openedAt).slice(0, 10) : null;
   const switchedAt = rawLot.switchedAt ? String(rawLot.switchedAt).slice(0, 10) : null;
   const isOpened = Boolean(openedAt);
-  let storage = rawLot.storage;
-  if (!storage || !['pantry', 'fridge', 'freezer'].includes(storage)) {
-    storage = defaultStorageForPantryItem(baseKey, {
-      isOpened,
-      category: rawLot.category,
-      boughtName: rawLot.boughtName || rawLot.bought_name
-    });
-  }
-  // Cut/opened onion automatically moves to fridge if not already set
+  const hasExplicitStorage = Boolean(rawLot.storageExplicit || switchedAt);
+  let storage = (hasExplicitStorage && rawLot.storage && ['pantry', 'fridge', 'freezer'].includes(rawLot.storage))
+    ? rawLot.storage
+    : defaultStorageForPantryItem(baseKey, {
+        isOpened,
+        category: rawLot.category,
+        boughtName: rawLot.boughtName || rawLot.bought_name
+      });
+  // Cut/opened onion automatically moves to fridge if not explicitly set
   if (isOpened && /\bonions?\b/i.test(baseKey) && !/\b(powder|flake|soup)\b/i.test(baseKey) && !rawLot.storageExplicit) {
     storage = 'fridge';
   }
+  const history = Array.isArray(rawLot.history)
+    ? rawLot.history
+        .filter(h => h && typeof h === 'object')
+        .map(h => {
+          const ev = {
+            at: String(h.at || addedAt || today).slice(0, 10),
+            delta: Number.isFinite(Number(h.delta)) ? Math.round(Number(h.delta) * 1000) / 1000 : 0,
+            qtyAfter: (h.qtyAfter !== null && h.qtyAfter !== undefined && Number.isFinite(Number(h.qtyAfter)))
+              ? Math.max(0, Math.round(Number(h.qtyAfter) * 1000) / 1000)
+              : (qty !== null ? qty : 0),
+            kind: String(h.kind || 'edit')
+          };
+          if (h.dish) ev.dish = String(h.dish);
+          if (h.openedAt !== undefined) ev.openedAt = h.openedAt;
+          return ev;
+        })
+        .slice(-50)
+    : [];
+
   const lotObj = {
     lotId: String(rawLot.lotId || rawLot.lot_key || ('lot-' + addedAt + '-' + Math.random().toString(36).slice(2, 7))),
     qty,
@@ -13489,7 +13546,8 @@ function normalizePantryLot(baseKey, rawLot, todayStr) {
     receiptDate: String(rawLot.receiptDate || rawLot.receipt_date || addedAt).slice(0, 10),
     storage,
     source: rawLot.source || 'receipt',
-    unconfirmed
+    unconfirmed,
+    history
   };
   if (rawLot.boughtName || rawLot.bought_name) lotObj.boughtName = String(rawLot.boughtName || rawLot.bought_name);
   if (rawLot.category) lotObj.category = String(rawLot.category);
@@ -13501,7 +13559,7 @@ function normalizePantryLot(baseKey, rawLot, todayStr) {
   const expInfo = computeLotExpiry(baseKey, lotObj, { todayYmd: today });
   lotObj.expiresAt = (rawLot.expiresAtExplicit && rawLot.expiresAt !== undefined)
     ? rawLot.expiresAt
-    : (expInfo.expiresAt !== null ? expInfo.expiresAt : (rawLot.expiresAt !== undefined ? rawLot.expiresAt : null));
+    : (expInfo.expiresAt !== null ? expInfo.expiresAt : null);
   if (rawLot.expiresAtExplicit) lotObj.expiresAtExplicit = true;
   if (expInfo.qualityOnly) lotObj.qualityOnly = true;
 
@@ -13515,6 +13573,7 @@ function normalizePantryLot(baseKey, rawLot, todayStr) {
 
 function recomputePantryEntry(baseKey, entry, todayStr) {
   if (!entry || typeof entry !== 'object') return null;
+  if (isPantryNonFoodKey(baseKey)) return null;
   const today = todayStr || todayPantryYmd();
   // Tombstone entry: `{ status: null, updatedAt }`
   if (entry.status === null) {
@@ -13530,8 +13589,8 @@ function recomputePantryEntry(baseKey, entry, todayStr) {
   for (let i = 0; i < rawLots.length; i++) {
     const nl = normalizePantryLot(baseKey, rawLots[i], today);
     if (!nl) continue;
-    // Keep unconfirmed (qty === null) lots and positive-qty lots
-    if (nl.qty === null || nl.qty > 1e-6) {
+    // Keep unconfirmed (qty === null) lots, positive-qty lots, and used-up (qty === 0) lots
+    if (nl.qty === null || nl.qty >= 0) {
       lots.push(nl);
     }
   }
@@ -13556,7 +13615,7 @@ function normalizePantryData(obj, todayStr) {
     const rawEntry = src[rawKey];
     if (!rawEntry || typeof rawEntry !== 'object') return;
     const bk = groupKey(String(rawKey || '').replace(/-/g, ' ')).toLowerCase() || String(rawKey || '').toLowerCase().trim();
-    if (!bk) return;
+    if (!bk || isPantryNonFoodKey(bk)) return;
     const normEntry = recomputePantryEntry(bk, rawEntry, today);
     if (!normEntry) return;
     const cur = out[bk];
@@ -13574,6 +13633,7 @@ function mergePantryData(fresh, local, todayStr) {
   const merged = {};
   const allKeys = new Set([...Object.keys(f), ...Object.keys(l)]);
   allKeys.forEach(bk => {
+    if (isPantryNonFoodKey(bk)) return;
     const fe = f[bk] || null;
     const le = l[bk] || null;
     if (fe && le) {
@@ -13610,6 +13670,8 @@ function mergePantryData(fresh, local, todayStr) {
  * Strict rules:
  * - Garlic: `lb_per_unit` is per HEAD (0.1 lb, Yidi-measured) — never divide `lb_per_unit` by `units_per_pack`.
  * - Chicken: `lb_per_serving` (1.25 lb) is for pricing 2-person servings only — pantry deduction uses recipe quantities, never `lb_per_serving`.
+ * - Sized measure packs (`"16 oz"`, `"6 oz"`, `"500 g"`, etc., NOT count packs like `"3 pk"`): recognized before `normalizePantryUnit` mangles them.
+ * - Container ↔ unit fallback: when one side is `can`/`jar`/`bottle`/`carton` and the other side is `unit`, convert 1:1 after conv-based paths.
  * - Unconvertible pairs return `{ convertible: false, qty: null }` ("have, amount unknown").
  */
 function convertPantryQty(baseKey, qty, fromUnit, toUnit, convMapOverride) {
@@ -13617,12 +13679,36 @@ function convertPantryQty(baseKey, qty, fromUnit, toUnit, convMapOverride) {
   if (!Number.isFinite(q) || q < 0) return { convertible: false, qty: null };
   if (q === 0) return { convertible: true, qty: 0 };
 
+  // Check raw measure-pack units (e.g. "16 oz", "6 oz", "500 g") BEFORE normalizePantryUnit
+  const packFrom = parsePantryPackUnit(fromUnit);
+  const packTo = parsePantryPackUnit(toUnit);
+  if (packFrom && packTo) {
+    if (packFrom.size === packTo.size && packFrom.baseUnit === packTo.baseUnit) {
+      return { convertible: true, qty: q };
+    }
+    const baseConv = convertPantryQty(baseKey, q * packFrom.size, packFrom.baseUnit, packTo.baseUnit, convMapOverride);
+    if (baseConv.convertible && Number.isFinite(baseConv.qty)) {
+      return { convertible: true, qty: baseConv.qty / packTo.size };
+    }
+    return { convertible: false, qty: null };
+  }
+  if (packFrom && !packTo) {
+    return convertPantryQty(baseKey, q * packFrom.size, packFrom.baseUnit, toUnit, convMapOverride);
+  }
+  if (!packFrom && packTo) {
+    const inBase = convertPantryQty(baseKey, q, fromUnit, packTo.baseUnit, convMapOverride);
+    if (inBase.convertible && Number.isFinite(inBase.qty)) {
+      return { convertible: true, qty: inBase.qty / packTo.size };
+    }
+    return { convertible: false, qty: null };
+  }
+
   const uFrom = normalizePantryUnit(fromUnit);
   const uTo = normalizePantryUnit(toUnit);
   if (uFrom === uTo) return { convertible: true, qty: q };
 
   // Direct volume-to-volume conversion via standard kitchen TSP_PER
-  const tspMap = { tsp: 1, tbsp: 3, fl_oz: 6, cup: 48, pint: 96, quart: 192 };
+  const tspMap = { tsp: 1, tbsp: 3, fl_oz: 6, cup: 48, pint: 96, quart: 192, ml: 1 / 4.92892159375, l: 1000 / 4.92892159375 };
   if (tspMap[uFrom] && tspMap[uTo]) {
     return { convertible: true, qty: (q * tspMap[uFrom]) / tspMap[uTo] };
   }
@@ -13634,124 +13720,142 @@ function convertPantryQty(baseKey, qty, fromUnit, toUnit, convMapOverride) {
   }
 
   const conv = lookupUnitConversion(baseKey, convMapOverride);
-  if (!conv || typeof conv !== 'object') {
-    return { convertible: false, qty: null };
-  }
+  if (conv && typeof conv === 'object') {
+    const bk = groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
+    const isGarlic = bk === 'garlic' || bk === 'fresh garlic' || conv.pack_name === 'sleeve' || conv.pack_unit === 'head';
 
-  const bk = groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
-  const isGarlic = bk === 'garlic' || bk === 'fresh garlic' || conv.pack_name === 'sleeve' || conv.pack_unit === 'head';
+    // Helper: convert 1 unit of `u` into pounds (or heads for garlic)
+    if (isGarlic && (conv.cloves_per_head || conv.lb_per_head)) {
+      const clovesPerHead = Number(conv.cloves_per_head) || 10;
+      const tspPerClove = Number(conv.tsp_per_clove) || 1;
+      // CRITICAL RULE: garlic lb_per_unit is per HEAD (0.1 lb) — NEVER divide lb_per_unit by units_per_pack!
+      const lbPerHead = Number(conv.lb_per_head) || Number(conv.lb_per_unit) || 0.1;
+      const headsPerPack = Number(conv.units_per_pack) || 5;
 
-  // Helper: convert 1 unit of `u` into pounds (or heads for garlic)
-  if (isGarlic && (conv.cloves_per_head || conv.lb_per_head)) {
-    const clovesPerHead = Number(conv.cloves_per_head) || 10;
-    const tspPerClove = Number(conv.tsp_per_clove) || 1;
-    // CRITICAL RULE: garlic lb_per_unit is per HEAD (0.1 lb) — NEVER divide lb_per_unit by units_per_pack!
-    const lbPerHead = Number(conv.lb_per_head) || Number(conv.lb_per_unit) || 0.1;
-    const headsPerPack = Number(conv.units_per_pack) || 5;
+      const toHeads = (val, u) => {
+        if (u === 'head' || u === 'unit') return val;
+        if (u === 'clove') return val / clovesPerHead;
+        if (u === 'sleeve' || u === 'pack' || u === 'bag') return val * headsPerPack;
+        if (tspMap[u]) return ((val * tspMap[u]) / tspPerClove) / clovesPerHead;
+        if (lbMap[u] && lbPerHead > 0) return (val * lbMap[u]) / lbPerHead;
+        return null;
+      };
+      const fromHeads = (heads, u) => {
+        if (u === 'head' || u === 'unit') return heads;
+        if (u === 'clove') return heads * clovesPerHead;
+        if (u === 'sleeve' || u === 'pack' || u === 'bag') return heads / headsPerPack;
+        if (tspMap[u]) return (heads * clovesPerHead * tspPerClove) / tspMap[u];
+        if (lbMap[u] && lbPerHead > 0) return (heads * lbPerHead) / lbMap[u];
+        return null;
+      };
+      const h = toHeads(q, uFrom);
+      if (h !== null && Number.isFinite(h)) {
+        const out = fromHeads(h, uTo);
+        if (out !== null && Number.isFinite(out)) {
+          return { convertible: true, qty: out };
+        }
+      }
+    }
 
-    const toHeads = (val, u) => {
-      if (u === 'head' || u === 'unit') return val;
-      if (u === 'clove') return val / clovesPerHead;
-      if (u === 'sleeve' || u === 'pack' || u === 'bag') return val * headsPerPack;
-      if (tspMap[u]) return ((val * tspMap[u]) / tspPerClove) / clovesPerHead;
-      if (lbMap[u] && lbPerHead > 0) return (val * lbMap[u]) / lbPerHead;
+    // Juice squeezed from fruit (lemon juice / lime juice: tbsp_juice_per_unit)
+    if (Number.isFinite(Number(conv.tbsp_juice_per_unit)) && Number(conv.tbsp_juice_per_unit) > 0) {
+      const tspPerUnit = Number(conv.tbsp_juice_per_unit) * 3;
+      if (tspMap[uFrom] && uTo === 'unit') {
+        return { convertible: true, qty: (q * tspMap[uFrom]) / tspPerUnit };
+      }
+      if (uFrom === 'unit' && tspMap[uTo]) {
+        return { convertible: true, qty: (q * tspPerUnit) / tspMap[uTo] };
+      }
+    }
+
+    // Count-based pack (e.g., dozen eggs -> 12 units; 3-pack romaine -> 3 heads)
+    const unitsPerPack = Number(conv.units_per_pack) || 0;
+    if (unitsPerPack > 0) {
+      const isPackUnit = u => u === 'pack' || u === 'dozen' || u === 'sleeve' || u === 'carton' || u === 'box' ||
+        (conv.pack_name && u === String(conv.pack_name).toLowerCase());
+      const isSingleUnit = u => u === 'unit' || u === 'head' || (conv.pack_unit && u === String(conv.pack_unit).toLowerCase());
+      if (isPackUnit(uFrom) && isSingleUnit(uTo)) {
+        return { convertible: true, qty: q * unitsPerPack };
+      }
+      if (isSingleUnit(uFrom) && isPackUnit(uTo)) {
+        return { convertible: true, qty: q / unitsPerPack };
+      }
+    }
+
+    // Bridge through pounds (`lb`) using data/unit-conversions.json
+    // Note: `serving` (lb_per_serving) is deliberately EXCLUDED from pantry stock deduction.
+    const unitToLbFactor = u => {
+      if (lbMap[u]) return lbMap[u];
+      if (u === 'unit') return Number.isFinite(Number(conv.lb_per_unit)) ? Number(conv.lb_per_unit) : null;
+      if (u === 'head') {
+        const lph = Number.isFinite(Number(conv.lb_per_head)) ? Number(conv.lb_per_head) : Number(conv.lb_per_unit);
+        return Number.isFinite(lph) ? lph : null;
+      }
+      if (u === 'clove') {
+        if (Number.isFinite(Number(conv.lb_per_clove))) return Number(conv.lb_per_clove);
+        if (Number.isFinite(Number(conv.lb_per_head)) && Number.isFinite(Number(conv.cloves_per_head)) && Number(conv.cloves_per_head) > 0) {
+          return Number(conv.lb_per_head) / Number(conv.cloves_per_head);
+        }
+        return null;
+      }
+      if (u === 'bunch') return Number.isFinite(Number(conv.lb_per_bunch)) ? Number(conv.lb_per_bunch) : null;
+      if (u === 'stalk') {
+        const lps = Number.isFinite(Number(conv.lb_per_stalk)) ? Number(conv.lb_per_stalk) : Number(conv.lb_per_unit);
+        return Number.isFinite(lps) ? lps : null;
+      }
+      if (u === 'sprig') return Number.isFinite(Number(conv.lb_per_sprig)) ? Number(conv.lb_per_sprig) : null;
+      if (u === 'can') return Number.isFinite(Number(conv.lb_per_can)) ? Number(conv.lb_per_can) : null;
+      if (u === 'jar') return Number.isFinite(Number(conv.lb_per_jar)) ? Number(conv.lb_per_jar) : null;
+      if (u === 'bottle') return Number.isFinite(Number(conv.lb_per_bottle)) ? Number(conv.lb_per_bottle) : null;
+      if (u === 'carton') return Number.isFinite(Number(conv.lb_per_carton)) ? Number(conv.lb_per_carton) : (Number.isFinite(Number(conv.lb_per_bag)) ? Number(conv.lb_per_bag) : null);
+      if (u === 'stick') return Number.isFinite(Number(conv.lb_per_stick)) ? Number(conv.lb_per_stick) : null;
+      if (u === 'bag' || u === 'box' || u === 'pack' || u === 'container' || u === 'pint') {
+        if (Number.isFinite(Number(conv.lb_per_bag))) return Number(conv.lb_per_bag);
+        if (Number.isFinite(Number(conv.lb_per_pack))) return Number(conv.lb_per_pack);
+        if (Number.isFinite(Number(conv.lb_per_box))) return Number(conv.lb_per_box);
+        if (Number.isFinite(Number(conv.lb_per_container))) return Number(conv.lb_per_container);
+        if (unitsPerPack > 0 && Number.isFinite(Number(conv.lb_per_unit))) return unitsPerPack * Number(conv.lb_per_unit);
+        return null;
+      }
+      if (tspMap[u]) {
+        if (Number.isFinite(Number(conv.lb_per_cup)) && Number(conv.lb_per_cup) > 0) {
+          return (tspMap[u] / 48) * Number(conv.lb_per_cup);
+        }
+        return null;
+      }
       return null;
     };
-    const fromHeads = (heads, u) => {
-      if (u === 'head' || u === 'unit') return heads;
-      if (u === 'clove') return heads * clovesPerHead;
-      if (u === 'sleeve' || u === 'pack' || u === 'bag') return heads / headsPerPack;
-      if (tspMap[u]) return (heads * clovesPerHead * tspPerClove) / tspMap[u];
-      if (lbMap[u] && lbPerHead > 0) return (heads * lbPerHead) / lbMap[u];
-      return null;
-    };
-    const h = toHeads(q, uFrom);
-    if (h !== null && Number.isFinite(h)) {
-      const out = fromHeads(h, uTo);
-      if (out !== null && Number.isFinite(out)) {
-        return { convertible: true, qty: out };
-      }
+
+    const fFrom = unitToLbFactor(uFrom);
+    const fTo = unitToLbFactor(uTo);
+    if (fFrom !== null && fTo !== null && Number.isFinite(fFrom) && Number.isFinite(fTo) && fFrom > 0 && fTo > 0) {
+      const inLb = q * fFrom;
+      return { convertible: true, qty: inLb / fTo };
     }
   }
 
-  // Juice squeezed from fruit (lemon juice / lime juice: tbsp_juice_per_unit)
-  if (Number.isFinite(Number(conv.tbsp_juice_per_unit)) && Number(conv.tbsp_juice_per_unit) > 0) {
-    const tspPerUnit = Number(conv.tbsp_juice_per_unit) * 3;
-    if (tspMap[uFrom] && uTo === 'unit') {
-      return { convertible: true, qty: (q * tspMap[uFrom]) / tspPerUnit };
-    }
-    if (uFrom === 'unit' && tspMap[uTo]) {
-      return { convertible: true, qty: (q * tspPerUnit) / tspMap[uTo] };
-    }
-  }
-
-  // Count-based pack (e.g., dozen eggs -> 12 units; 3-pack romaine -> 3 heads)
-  const unitsPerPack = Number(conv.units_per_pack) || 0;
-  if (unitsPerPack > 0) {
-    const isPackUnit = u => u === 'pack' || u === 'dozen' || u === 'sleeve' || u === 'carton' || u === 'box' ||
-      (conv.pack_name && u === String(conv.pack_name).toLowerCase());
-    const isSingleUnit = u => u === 'unit' || u === 'head' || (conv.pack_unit && u === String(conv.pack_unit).toLowerCase());
-    if (isPackUnit(uFrom) && isSingleUnit(uTo)) {
-      return { convertible: true, qty: q * unitsPerPack };
-    }
-    if (isSingleUnit(uFrom) && isPackUnit(uTo)) {
-      return { convertible: true, qty: q / unitsPerPack };
-    }
-  }
-
-  // Bridge through pounds (`lb`) using data/unit-conversions.json
-  // Note: `serving` (lb_per_serving) is deliberately EXCLUDED from pantry stock deduction.
-  const unitToLbFactor = u => {
-    if (lbMap[u]) return lbMap[u];
-    if (u === 'unit') return Number.isFinite(Number(conv.lb_per_unit)) ? Number(conv.lb_per_unit) : null;
-    if (u === 'head') {
-      const lph = Number.isFinite(Number(conv.lb_per_head)) ? Number(conv.lb_per_head) : Number(conv.lb_per_unit);
-      return Number.isFinite(lph) ? lph : null;
-    }
-    if (u === 'clove') {
-      if (Number.isFinite(Number(conv.lb_per_clove))) return Number(conv.lb_per_clove);
-      if (Number.isFinite(Number(conv.lb_per_head)) && Number.isFinite(Number(conv.cloves_per_head)) && Number(conv.cloves_per_head) > 0) {
-        return Number(conv.lb_per_head) / Number(conv.cloves_per_head);
-      }
-      return null;
-    }
-    if (u === 'bunch') return Number.isFinite(Number(conv.lb_per_bunch)) ? Number(conv.lb_per_bunch) : null;
-    if (u === 'stalk') {
-      const lps = Number.isFinite(Number(conv.lb_per_stalk)) ? Number(conv.lb_per_stalk) : Number(conv.lb_per_unit);
-      return Number.isFinite(lps) ? lps : null;
-    }
-    if (u === 'sprig') return Number.isFinite(Number(conv.lb_per_sprig)) ? Number(conv.lb_per_sprig) : null;
-    if (u === 'can') return Number.isFinite(Number(conv.lb_per_can)) ? Number(conv.lb_per_can) : null;
-    if (u === 'jar') return Number.isFinite(Number(conv.lb_per_jar)) ? Number(conv.lb_per_jar) : null;
-    if (u === 'bottle') return Number.isFinite(Number(conv.lb_per_bottle)) ? Number(conv.lb_per_bottle) : null;
-    if (u === 'carton') return Number.isFinite(Number(conv.lb_per_carton)) ? Number(conv.lb_per_carton) : (Number.isFinite(Number(conv.lb_per_bag)) ? Number(conv.lb_per_bag) : null);
-    if (u === 'stick') return Number.isFinite(Number(conv.lb_per_stick)) ? Number(conv.lb_per_stick) : null;
-    if (u === 'bag' || u === 'box' || u === 'pack' || u === 'container' || u === 'pint') {
-      if (Number.isFinite(Number(conv.lb_per_bag))) return Number(conv.lb_per_bag);
-      if (Number.isFinite(Number(conv.lb_per_pack))) return Number(conv.lb_per_pack);
-      if (Number.isFinite(Number(conv.lb_per_box))) return Number(conv.lb_per_box);
-      if (Number.isFinite(Number(conv.lb_per_container))) return Number(conv.lb_per_container);
-      if (unitsPerPack > 0 && Number.isFinite(Number(conv.lb_per_unit))) return unitsPerPack * Number(conv.lb_per_unit);
-      return null;
-    }
-    if (tspMap[u]) {
-      if (Number.isFinite(Number(conv.lb_per_cup)) && Number(conv.lb_per_cup) > 0) {
-        return (tspMap[u] / 48) * Number(conv.lb_per_cup);
-      }
-      return null;
-    }
-    return null;
-  };
-
-  const fFrom = unitToLbFactor(uFrom);
-  const fTo = unitToLbFactor(uTo);
-  if (fFrom !== null && fTo !== null && Number.isFinite(fFrom) && Number.isFinite(fTo) && fFrom > 0 && fTo > 0) {
-    const inLb = q * fFrom;
-    return { convertible: true, qty: inLb / fTo };
+  // Fallback after conv-based paths: single-container units (can, jar, bottle, carton) ↔ unit (ea) are 1:1
+  const CONTAINER_UNITS = new Set(['can', 'jar', 'bottle', 'carton']);
+  if ((CONTAINER_UNITS.has(uFrom) && uTo === 'unit') || (uFrom === 'unit' && CONTAINER_UNITS.has(uTo))) {
+    return { convertible: true, qty: q };
   }
 
   return { convertible: false, qty: null };
 }
+
+const PANTRY_GENERIC_MATCH_WORDS = new Set([
+  'pasta', 'bean', 'beans', 'rice', 'sauce', 'fresh', 'dried', 'canned',
+  'organic', 'loose', 'whole', 'cut', 'sliced', 'seed', 'seeds', 'powder',
+  'paste', 'juice', 'extract', 'syrup', 'flake', 'flakes', 'granulated',
+  'frozen', 'crushed', 'crumb', 'crumbs', 'noodle', 'noodles', 'roll', 'rolls',
+  'wrap', 'wraps', 'meal', 'starch', 'soup', 'mix', 'jam', 'jelly', 'puree',
+  'ketchup', 'vinegar', 'oil', 'milk', 'cheese', 'broth', 'stock', 'cream',
+  'butter', 'flour', 'sugar', 'salt', 'honey', 'green', 'black', 'white',
+  'red', 'yellow', 'sweet', 'ground', 'chopped', 'minced', 'peeled', 'roast',
+  'roasted', 'smoked', 'plain', 'extra', 'large', 'small', 'medium',
+  'chicken', 'beef', 'turkey', 'breast', 'breasts', 'thigh', 'thighs',
+  'wing', 'wings', 'drumstick', 'drumsticks', 'cutlet', 'cutlets', 'steak'
+]);
 
 function resolvePantryEntryKey(rawBaseKey, pantryMap) {
   const map = pantryMap || _pantryCache || {};
@@ -13788,6 +13892,61 @@ function resolvePantryEntryKey(rawBaseKey, pantryMap) {
       }
     }
   }
+
+  // Conservative word-containment fallback after exact and direct-match lookups fail:
+  // Tokenize ingredient name and each pantry key; require a shared distinctive word
+  // (>= 5 chars and NOT in PRICE_FORM_WORDS or PANTRY_GENERIC_MATCH_WORDS);
+  // score by number of shared distinctive words and require a unique best score.
+  const tokenizeDistinctive = str => {
+    const s = groupKey(String(str || '').replace(/-/g, ' ')).toLowerCase();
+    const rawTokens = s.split(/[^a-z0-9]+/).filter(Boolean);
+    const out = new Set();
+    rawTokens.forEach(tok => {
+      const sing = typeof singularizeWord === 'function' ? singularizeWord(tok) : tok;
+      [tok, sing].forEach(w => {
+        if (
+          w &&
+          w.length >= 5 &&
+          !PANTRY_GENERIC_MATCH_WORDS.has(w) &&
+          !(typeof PRICE_FORM_WORDS !== 'undefined' && PRICE_FORM_WORDS.has(w)) &&
+          !(typeof PRICE_MODIFIER_WORDS !== 'undefined' && PRICE_MODIFIER_WORDS.has(w))
+        ) {
+          out.add(w);
+        }
+      });
+    });
+    return out;
+  };
+
+  const queryDistinctive = tokenizeDistinctive(gk || raw);
+  if (queryDistinctive.size > 0) {
+    let bestScore = 0;
+    let bestKey = null;
+    let tied = false;
+    Object.keys(map).forEach(candKey => {
+      const entry = map[candKey];
+      if (!entry || entry.status === null) return;
+      const candDistinctive = tokenizeDistinctive(candKey);
+      if (!candDistinctive.size) return;
+      let shared = 0;
+      queryDistinctive.forEach(w => {
+        if (candDistinctive.has(w)) shared++;
+      });
+      if (shared > 0) {
+        if (shared > bestScore) {
+          bestScore = shared;
+          bestKey = candKey;
+          tied = false;
+        } else if (shared === bestScore && candKey !== bestKey) {
+          tied = true;
+        }
+      }
+    });
+    if (bestKey && !tied) {
+      return bestKey;
+    }
+  }
+
   return gk || raw;
 }
 
@@ -13897,20 +14056,25 @@ function getPantryHaveFor(itOrBase, targetUnit, options) {
       convertible: true,
       hasUnconfirmed: false,
       hasExpired: false,
+      hasUsedUp: false,
       activeLots: [],
       expiredLots: [],
-      unconfirmedLots: []
+      unconfirmedLots: [],
+      usedUpLots: []
     };
   }
 
   const activeLots = [];
   const expiredLots = [];
   const unconfirmedLots = [];
+  const usedUpLots = [];
   entry.lots.forEach(rawLot => {
     const lot = normalizePantryLot(resolvedKey, rawLot, today);
     if (!lot) return;
     if (lot.unconfirmed || lot.qty === null) {
       unconfirmedLots.push(lot);
+    } else if (lot.qty <= 1e-6) {
+      usedUpLots.push(lot);
     } else if (lot.status === 'expired') {
       expiredLots.push(lot);
     } else if (lot.qty > 1e-6 && (lot.status === 'good' || lot.status === 'overridden')) {
@@ -13918,7 +14082,7 @@ function getPantryHaveFor(itOrBase, targetUnit, options) {
     }
   });
 
-  const stockUnit = entry.unit || (activeLots[0] && activeLots[0].unit) || (unconfirmedLots[0] && unconfirmedLots[0].unit) || 'unit';
+  const stockUnit = entry.unit || (activeLots[0] && activeLots[0].unit) || (unconfirmedLots[0] && unconfirmedLots[0].unit) || (usedUpLots[0] && usedUpLots[0].unit) || 'unit';
   const reqUnit = (targetUnit !== undefined && targetUnit !== null && String(targetUnit).trim() !== '')
     ? String(targetUnit).trim()
     : stockUnit;
@@ -13941,7 +14105,7 @@ function getPantryHaveFor(itOrBase, targetUnit, options) {
   }
 
   return {
-    found: activeLots.length > 0 || unconfirmedLots.length > 0 || expiredLots.length > 0,
+    found: activeLots.length > 0 || unconfirmedLots.length > 0 || expiredLots.length > 0 || usedUpLots.length > 0,
     baseKey: resolvedKey,
     haveQty: allConvertible ? Math.round(totalTargetQty * 1000) / 1000 : null,
     targetUnit: reqUnit,
@@ -13950,9 +14114,11 @@ function getPantryHaveFor(itOrBase, targetUnit, options) {
     convertible: allConvertible,
     hasUnconfirmed: unconfirmedLots.length > 0,
     hasExpired: expiredLots.length > 0,
+    hasUsedUp: usedUpLots.length > 0,
     activeLots,
     expiredLots,
-    unconfirmedLots
+    unconfirmedLots,
+    usedUpLots
   };
 }
 
@@ -14118,11 +14284,14 @@ function applyPantryToShopItem(it, week, options) {
  * Deduct a single ingredient (`{ baseKey, qty, unit }`) from `pantryMap` in place.
  * Rules (SPEC.md & BUILD-INSTRUCTIONS.md):
  * - Deduction rounding: when a recipe quantity converted into a lot's stock unit is fractional,
- *   round UP (`Math.ceil`) in the stock unit.Wait: let's check partial-lot opening and ceiling rule carefully!
+ *   round UP (`Math.ceil`) in the stock unit.
+ * - Records a `history` event (`kind: 'cooked'`, `delta: -take`, `qtyAfter: lot.qty`, `dish`) on each deducted lot.
+ * - Lots that hit `qty === 0` stay in `entry.lots` as used-up lots so they remain visible and editable.
  */
 function deductIngredientFromPantryMap(pantryMap, baseKey, recipeQty, recipeUnit, options) {
   options = options || {};
   const today = options.todayYmd || todayPantryYmd();
+  const dishTitle = options.dishTitle ? String(options.dishTitle) : undefined;
   const reqQty = Number(recipeQty);
   if (!pantryMap || typeof pantryMap !== 'object' || !Number.isFinite(reqQty) || reqQty <= 0) {
     return [];
@@ -14160,12 +14329,6 @@ function deductIngredientFromPantryMap(pantryMap, baseKey, recipeQty, recipeUnit
     return [];
   }
 
-  // SPEC.md §4 / BUILD-INSTRUCTIONS.md:
-  // "Deduction rounding: round UP (ceiling) when a converted deduction is fractional in the stock unit."
-  // Note: if the recipe is already in the exact same unit as the stock unit and options.preserveExactSameUnit is not false,
-  // wait: SPEC.md says:
-  // "Deduction rounding: when a cooking deduction converts to a fractional quantity in the stock unit, round the deducted amount UP (ceiling) — e.g., a recipe needing 2.5 onions deducts 3 onions. Better to under-count stock than think you have an onion you don't."
-  // "Deduction rounding: round UP (ceiling) when a converted deduction is fractional in the stock unit."
   const rawStockNeed = convRes.qty;
   const roundedStockNeed = Math.ceil(rawStockNeed - 1e-9);
   const exactFractionUsed = rawStockNeed < roundedStockNeed - 1e-6;
@@ -14178,7 +14341,8 @@ function deductIngredientFromPantryMap(pantryMap, baseKey, recipeQty, recipeUnit
     const lot = lots[li];
     // Convert remainingToDeduct into this lot's unit if different from stockUnit
     let needInLotUnit = remainingToDeduct;
-    if (normalizePantryUnit(lot.unit) !== normalizePantryUnit(stockUnit)) {
+    if (String(lot.unit || '').trim().toLowerCase() !== String(stockUnit || '').trim().toLowerCase() &&
+        normalizePantryUnit(lot.unit) !== normalizePantryUnit(stockUnit)) {
       const cLot = convertPantryQty(baseKey, remainingToDeduct, stockUnit, lot.unit, options.convMap);
       if (!cLot.convertible || !Number.isFinite(cLot.qty)) continue;
       needInLotUnit = options.noCeiling ? cLot.qty : Math.ceil(cLot.qty - 1e-9);
@@ -14189,8 +14353,15 @@ function deductIngredientFromPantryMap(pantryMap, baseKey, recipeQty, recipeUnit
     lot.qty = Math.max(0, Math.round((lot.qty - take) * 1000) / 1000);
     remainingToDeduct = Math.max(0, Math.round((remainingToDeduct - take) * 1000) / 1000);
 
-    // If a lot still has remaining stock after a deduction (or if we mark openedAt on remaining stock),
-    // start its opened shelf-life clock at cook time!
+    appendPantryLotHistory(lot, {
+      at: today,
+      delta: -take,
+      qtyAfter: lot.qty,
+      kind: 'cooked',
+      dish: dishTitle
+    });
+
+    // If a lot still has remaining stock after a deduction, start its opened shelf-life clock at cook time
     if (lot.qty > 1e-6) {
       if (!lot.openedAt) {
         lot.openedAt = today;
@@ -14218,22 +14389,25 @@ function deductIngredientFromPantryMap(pantryMap, baseKey, recipeQty, recipeUnit
       ceilingDeductedQty: roundedStockNeed,
       exactFractionUsed,
       unit: lot.unit,
+      dishTitle,
       prevLot: prevLotSnap
     });
   }
 
-  entry.lots = lots.filter(l => l.qty === null || l.qty > 1e-6);
+  entry.lots = lots;
   entry.updatedAt = Date.now();
   pantryMap[resolvedKey] = recomputePantryEntry(resolvedKey, entry, today);
   return deductions;
 }
 
-function restorePantryDeductionsToMap(pantryMap, deductions, todayStr) {
-  const today = todayStr || todayPantryYmd();
+function restorePantryDeductionsToMap(pantryMap, deductions, todayOrOpts) {
+  const opts = (todayOrOpts && typeof todayOrOpts === 'object') ? todayOrOpts : {};
+  const today = (typeof todayOrOpts === 'string' && todayOrOpts) ? todayOrOpts : (opts.todayYmd || todayPantryYmd());
   if (!pantryMap || typeof pantryMap !== 'object' || !Array.isArray(deductions)) return;
   deductions.forEach(d => {
     if (!d || !d.baseKey || !d.prevLot) return;
     const bk = d.baseKey;
+    const dishName = d.dishTitle || opts.dishTitle;
     let entry = pantryMap[bk];
     if (!entry || entry.status === null) {
       entry = {
@@ -14257,13 +14431,174 @@ function restorePantryDeductionsToMap(pantryMap, deductions, todayStr) {
       curLot.storage = d.prevLot.storage || curLot.storage;
       curLot.expiresAt = d.prevLot.expiresAt;
       curLot.status = d.prevLot.status || 'good';
+      appendPantryLotHistory(curLot, {
+        at: today,
+        delta: Number(d.deductedQty) || 0,
+        qtyAfter: curLot.qty,
+        kind: 'restore',
+        dish: dishName
+      });
     } else {
       if (!Array.isArray(entry.lots)) entry.lots = [];
-      entry.lots.push(JSON.parse(JSON.stringify(d.prevLot)));
+      const restoredLot = JSON.parse(JSON.stringify(d.prevLot));
+      appendPantryLotHistory(restoredLot, {
+        at: today,
+        delta: -(Number(d.deductedQty) || 0),
+        qtyAfter: Math.max(0, Math.round(((Number(d.prevLot.qty) || 0) - (Number(d.deductedQty) || 0)) * 1000) / 1000),
+        kind: 'cooked',
+        dish: dishName
+      });
+      appendPantryLotHistory(restoredLot, {
+        at: today,
+        delta: Number(d.deductedQty) || 0,
+        qtyAfter: Number(d.prevLot.qty) || 0,
+        kind: 'restore',
+        dish: dishName
+      });
+      entry.lots.push(restoredLot);
     }
     entry.updatedAt = Date.now();
     pantryMap[bk] = recomputePantryEntry(bk, entry, today);
   });
+}
+
+/**
+ * Set a pantry lot's quantity directly on `map` (pure/testable mutation).
+ * - Zero is allowed (the lot becomes "used up" and stays visible & editable).
+ * - Editing an unconfirmed lot's quantity also confirms it (`unconfirmed: false`).
+ * - Appends a `{ kind: 'edit', at: today, delta, qtyAfter }` history event.
+ */
+function setPantryLotQty(map, baseKey, lotId, newQty, todayStr) {
+  const targetMap = map || _pantryCache;
+  if (!targetMap || typeof targetMap !== 'object') return { ok: false, entry: null, lot: null };
+  const today = todayStr || todayPantryYmd();
+  const numQty = Number(newQty);
+  if (!Number.isFinite(numQty) || numQty < 0) return { ok: false, entry: null, lot: null };
+  const cleanQty = Math.max(0, Math.round(numQty * 1000) / 1000);
+  const resolvedKey = resolvePantryEntryKey(baseKey, targetMap) || groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
+  const entry = targetMap[resolvedKey];
+  if (!entry || entry.status === null || !Array.isArray(entry.lots)) return { ok: false, entry: null, lot: null };
+
+  let updatedLot = null;
+  entry.lots.forEach(l => {
+    if (l && (!lotId || l.lotId === lotId)) {
+      const prevQty = (l.qty !== null && l.qty !== undefined && Number.isFinite(Number(l.qty))) ? Number(l.qty) : 0;
+      const delta = Math.round((cleanQty - prevQty) * 1000) / 1000;
+      l.qty = cleanQty;
+      l.unconfirmed = false;
+      appendPantryLotHistory(l, {
+        at: today,
+        delta,
+        qtyAfter: cleanQty,
+        kind: 'edit'
+      });
+      if (cleanQty <= 1e-6 && l.source === 'receipt' && l.lotId) {
+        if (!Array.isArray(entry.consumedReceiptLots)) entry.consumedReceiptLots = [];
+        if (!entry.consumedReceiptLots.includes(l.lotId)) entry.consumedReceiptLots.push(l.lotId);
+      }
+      updatedLot = l;
+    }
+  });
+  if (!updatedLot) return { ok: false, entry: null, lot: null };
+  entry.updatedAt = Date.now();
+  targetMap[resolvedKey] = recomputePantryEntry(resolvedKey, entry, today);
+  const normLot = (targetMap[resolvedKey].lots || []).find(l => l.lotId === updatedLot.lotId) || updatedLot;
+  return { ok: true, entry: targetMap[resolvedKey], lot: normLot };
+}
+
+/**
+ * Mark, adjust, or un-mark a pantry lot's `openedAt` date on `map` (pure/testable mutation).
+ * - Setting `openedAtOrNull` to a `YYYY-MM-DD` string marks the lot opened on that date and recomputes `expiresAt`.
+ * - Passing `null` or `""` clears `openedAt` and recomputes `expiresAt` back to unopened shelf life.
+ * - Appends a `{ kind: 'opened', at: today, delta: 0, qtyAfter: lot.qty }` history event.
+ */
+function setPantryLotOpened(map, baseKey, lotId, openedAtOrNull, todayStr) {
+  const targetMap = map || _pantryCache;
+  if (!targetMap || typeof targetMap !== 'object') return { ok: false, entry: null, lot: null };
+  const today = todayStr || todayPantryYmd();
+  const resolvedKey = resolvePantryEntryKey(baseKey, targetMap) || groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
+  const entry = targetMap[resolvedKey];
+  if (!entry || entry.status === null || !Array.isArray(entry.lots)) return { ok: false, entry: null, lot: null };
+
+  const cleanOpened = (openedAtOrNull && /^\d{4}-\d{2}-\d{2}/.test(String(openedAtOrNull).trim()))
+    ? String(openedAtOrNull).trim().slice(0, 10)
+    : null;
+
+  let updatedLot = null;
+  entry.lots.forEach(l => {
+    if (l && (!lotId || l.lotId === lotId)) {
+      if (cleanOpened) {
+        l.openedAt = cleanOpened;
+      } else {
+        delete l.openedAt;
+      }
+      delete l.expiresAtExplicit;
+      const expInfo = computeLotExpiry(resolvedKey, l, { todayYmd: today });
+      l.expiresAt = expInfo.expiresAt;
+      if (expInfo.qualityOnly) l.qualityOnly = true;
+      else delete l.qualityOnly;
+      if (l.status !== 'overridden') {
+        l.status = evaluateLotStatus(resolvedKey, l, today);
+      }
+      appendPantryLotHistory(l, {
+        at: cleanOpened || today,
+        delta: 0,
+        qtyAfter: (l.qty !== null && l.qty !== undefined && Number.isFinite(Number(l.qty))) ? Number(l.qty) : 0,
+        kind: 'opened',
+        openedAt: cleanOpened
+      });
+      updatedLot = l;
+    }
+  });
+  if (!updatedLot) return { ok: false, entry: null, lot: null };
+  entry.updatedAt = Date.now();
+  targetMap[resolvedKey] = recomputePantryEntry(resolvedKey, entry, today);
+  const normLot = (targetMap[resolvedKey].lots || []).find(l => l.lotId === updatedLot.lotId) || updatedLot;
+  return { ok: true, entry: targetMap[resolvedKey], lot: normLot };
+}
+
+function pantryItemSupportsOpened(baseKey, lot, options) {
+  const sl = lookupShelfLife(baseKey, {
+    ...(options || {}),
+    isOpened: true,
+    category: lot && lot.category,
+    boughtName: lot && (lot.boughtName || lot.bought_name)
+  });
+  if (!sl || typeof sl !== 'object') return false;
+  const hasFridge = sl.opened_fridge_days !== null && sl.opened_fridge_days !== undefined && Number.isFinite(Number(sl.opened_fridge_days));
+  const hasPantry = sl.opened_pantry_days !== null && sl.opened_pantry_days !== undefined && Number.isFinite(Number(sl.opened_pantry_days));
+  return hasFridge || hasPantry;
+}
+
+function formatPantryLotHistoryEvent(ev, unit, todayStr) {
+  if (!ev || typeof ev !== 'object') return '';
+  const dStr = fmtPantryDate(ev.at || '', todayStr);
+  const kind = String(ev.kind || 'edit');
+  if (kind === 'cooked') {
+    const absDelta = Math.abs(Number(ev.delta) || 0);
+    const qStr = fmtPantryQty(absDelta, unit);
+    const dishPart = ev.dish ? (' · ' + ev.dish) : '';
+    return dStr + ' · \u2212' + qStr + dishPart + ' (cooked)';
+  }
+  if (kind === 'restore') {
+    const absDelta = Math.abs(Number(ev.delta) || 0);
+    const qStr = fmtPantryQty(absDelta, unit);
+    const dishPart = ev.dish ? (' · ' + ev.dish) : '';
+    return dStr + ' · +' + qStr + dishPart + ' (restored)';
+  }
+  if (kind === 'opened') {
+    if (ev.openedAt === null) {
+      return dStr + ' · unmarked opened';
+    }
+    return dStr + ' · marked opened';
+  }
+  if (kind === 'added') {
+    const qStr = fmtPantryQty(ev.qtyAfter, unit);
+    return dStr + ' · added ' + qStr;
+  }
+  // edit
+  const afterStr = fmtPantryQty(ev.qtyAfter, unit);
+  return dStr + ' · set to ' + afterStr + ' (edit)';
 }
 
 /**
@@ -14327,6 +14662,7 @@ async function toggleDishCooked(weekKey, dayIdx, meal, dishIdx, options) {
     return { cooked: true, deductions: [] };
   }
 
+  const dishTitle = r.title || dish.custom || dish.recipe;
   const scale = Number(dish.scale) || 1;
   let effVariant = dish.variant || null;
   if (Array.isArray(r.variants) && r.variants.length) {
@@ -14368,7 +14704,8 @@ async function toggleDishCooked(weekKey, dayIdx, meal, dishIdx, options) {
   ingBuckets.forEach(b => {
     const deds = deductIngredientFromPantryMap(_pantryCache, b.baseKey, b.qty, b.unit, {
       todayYmd: today,
-      convMap: options.convMap
+      convMap: options.convMap,
+      dishTitle
     });
     if (deds.length) allDeductions.push(...deds);
   });
@@ -14817,14 +15154,31 @@ function fmtPantryQty(qty, unit) {
   if (!Number.isFinite(n)) return '';
   const u = String(unit || '').trim();
   if (!u || u === 'unit' || u === 'ea') return fmtQty(n);
-  if (/^\d+(\.\d+)?\s*(oz|lb|g|kg|ml|l)$/i.test(u)) return fmtQty(n) + ' × ' + u;
+  if (/^\d/.test(u)) return fmtQty(n) + ' × ' + u;
   return fmtQty(n) + ' ' + pluralizeUnit(u, n);
+}
+
+let _pantryEditingLotKey = null;
+let _pantrySavedLotKey = null;
+let _pantrySavedTimer = null;
+
+function flashPantryLotSaved(keyPair, rerender) {
+  _pantrySavedLotKey = keyPair;
+  if (_pantrySavedTimer) clearTimeout(_pantrySavedTimer);
+  _pantrySavedTimer = setTimeout(() => {
+    if (_pantrySavedLotKey === keyPair) {
+      _pantrySavedLotKey = null;
+      if (typeof rerender === 'function') rerender();
+    }
+  }, 2000);
 }
 
 function pantryViewHTML(options) {
   options = options || {};
   const today = options.todayYmd || todayPantryYmd();
   const pantryMap = normalizePantryData(options.pantryMap || _pantryCache || {}, today);
+  const editingKey = options.editingKey !== undefined ? options.editingKey : _pantryEditingLotKey;
+  const savedKey = options.savedKey !== undefined ? options.savedKey : _pantrySavedLotKey;
   const pricesMap = options.pricesMap !== undefined
     ? options.pricesMap
     : ((typeof _priceHistoryCache === 'object' && _priceHistoryCache)
@@ -14847,12 +15201,12 @@ function pantryViewHTML(options) {
     if (!pInfo.found) return;
 
     entry.lots.forEach(lot => {
-      if (lot.status !== 'expired' && isLotExpiringSoon(bk, lot, today)) {
+      if (lot.status !== 'expired' && lot.qty !== 0 && isLotExpiringSoon(bk, lot, today)) {
         expiringSoonLots.push({ baseKey: bk, displayName: entry.displayName || bk, lot });
       }
     });
 
-    if (pInfo.activeLots.length > 0 || pInfo.unconfirmedLots.length > 0) {
+    if (pInfo.activeLots.length > 0 || pInfo.unconfirmedLots.length > 0 || pInfo.usedUpLots.length > 0) {
       activeEntries.push({ baseKey: bk, entry, pInfo });
     } else if (pInfo.expiredLots.length > 0) {
       expiredEntries.push({ baseKey: bk, entry, pInfo });
@@ -14873,36 +15227,75 @@ function pantryViewHTML(options) {
   };
 
   const renderLotRow = (bk, lot) => {
+    const keyPair = bk + '|' + lot.lotId;
     const isExp = lot.status === 'expired';
     const isOv = lot.status === 'overridden';
-    const isSoon = !isExp && !isOv && isLotExpiringSoon(bk, lot, today);
     const isUnconf = Boolean(lot.unconfirmed) || lot.qty === null;
+    const isUsedUp = !isUnconf && Number(lot.qty) === 0;
+    const isSoon = !isExp && !isOv && !isUsedUp && isLotExpiringSoon(bk, lot, today);
+    const isEditing = editingKey === keyPair;
+    const isSaved = savedKey === keyPair;
 
-    const qtyLabel = isUnconf
+    const qtyDisplay = isUnconf
       ? '<span class="pantry-badge pantry-badge-unconfirmed">Amount unconfirmed</span>'
-      : esc(fmtPantryQty(lot.qty, lot.unit));
+      : '<button type="button" class="pantry-lot-qty pantry-lot-qty-btn" data-pantry-edit-qty="' + esc(keyPair) + '" title="Tap to edit quantity">' +
+          esc(fmtPantryQty(lot.qty, lot.unit)) +
+        '</button>';
+
+    const qtyEditRow = isEditing
+      ? '<div class="pantry-lot-qty-editor" data-pantry-qty-editor="' + esc(keyPair) + '">' +
+          '<input type="number" class="pantry-qty-edit-input" data-pantry-qty-in="' + esc(keyPair) + '" min="0" step="any" value="' + esc(lot.qty !== null && lot.qty !== undefined ? String(lot.qty) : '') + '" aria-label="Lot quantity (' + esc(lot.unit || 'unit') + ')">' +
+          '<span class="pantry-qty-edit-unit">' + esc(lot.unit && lot.unit !== 'unit' ? lot.unit : '') + '</span>' +
+          '<button type="button" class="btn pantry-qty-save-btn" data-pantry-qty-save="' + esc(keyPair) + '">Save</button>' +
+          '<button type="button" class="btn secondary pantry-qty-cancel-btn" data-pantry-qty-cancel="' + esc(keyPair) + '">Cancel</button>' +
+        '</div>'
+      : '';
+
+    const savedBadge = isSaved
+      ? '<span class="pantry-saved-confirm" data-pantry-saved="' + esc(keyPair) + '">Saved ✓</span>'
+      : '';
 
     const confirmRow = isUnconf
       ? '<div class="pantry-confirm-inline">' +
-          '<input type="number" class="pantry-confirm-input" data-pantry-confirm-in="' + esc(bk + '|' + lot.lotId) + '" step="any" min="0" placeholder="Qty (' + esc(lot.unit || 'unit') + ')" aria-label="Confirm quantity">' +
-          '<button type="button" class="btn secondary pantry-confirm-btn" data-pantry-confirm-btn="' + esc(bk + '|' + lot.lotId) + '">Confirm</button>' +
+          '<input type="number" class="pantry-confirm-input" data-pantry-confirm-in="' + esc(keyPair) + '" step="any" min="0" placeholder="Qty (' + esc(lot.unit || 'unit') + ')" aria-label="Confirm quantity">' +
+          '<button type="button" class="btn secondary pantry-confirm-btn" data-pantry-confirm-btn="' + esc(keyPair) + '">Confirm</button>' +
         '</div>'
+      : '';
+
+    const usedUpBadge = isUsedUp
+      ? '<span class="pantry-badge pantry-badge-usedup">used up</span>'
       : '';
 
     const statusBadge = isExp
       ? '<span class="pantry-badge pantry-badge-expired">expired</span>' +
-        '<button type="button" class="link-btn pantry-still-good-btn" data-pantry-stillgood="' + esc(bk + '|' + lot.lotId) + '">Still good</button>'
+        '<button type="button" class="link-btn pantry-still-good-btn" data-pantry-stillgood="' + esc(keyPair) + '">Still good</button>'
       : (isOv
         ? '<span class="pantry-badge pantry-badge-overridden">still good ✓</span>'
         : (isSoon ? '<span class="pantry-badge pantry-badge-soon">expiring soon</span>' : ''));
 
     const storageSelect =
-      '<select class="pantry-storage-select" data-pantry-storage="' + esc(bk + '|' + lot.lotId) + '" aria-label="Storage location">' +
+      '<select class="pantry-storage-select" data-pantry-storage="' + esc(keyPair) + '" aria-label="Storage location">' +
         ['pantry', 'fridge', 'freezer'].map(st =>
           '<option value="' + st + '"' + (lot.storage === st ? ' selected' : '') + '>' +
           (st === 'pantry' ? '🥫 Pantry' : (st === 'fridge' ? '🧊 Fridge' : '❄️ Freezer')) + '</option>'
         ).join('') +
       '</select>';
+
+    const supportsOpened = pantryItemSupportsOpened(bk, lot);
+    let openedControlHTML = '';
+    if (supportsOpened) {
+      if (lot.openedAt) {
+        openedControlHTML =
+          '<span class="pantry-opened-control">' +
+            '<span class="pantry-opened-label">opened ' + esc(fmtPantryDate(lot.openedAt, today)) + '</span>' +
+            '<input type="date" class="pantry-opened-date-input" data-pantry-opened-date="' + esc(keyPair) + '" value="' + esc(lot.openedAt) + '" aria-label="Opened date">' +
+            '<button type="button" class="link-btn pantry-unmark-opened-btn" data-pantry-unmark-opened="' + esc(keyPair) + '">Unmark</button>' +
+          '</span>';
+      } else {
+        openedControlHTML =
+          '<button type="button" class="link-btn pantry-mark-opened-btn" data-pantry-mark-opened="' + esc(keyPair) + '">Mark opened</button>';
+      }
+    }
 
     const boughtLabel = (lot.source === 'receipt' ? 'bought ' : 'added ') +
       fmtPantryDate(lot.receiptDate || lot.addedAt || '', today);
@@ -14911,26 +15304,44 @@ function pantryViewHTML(options) {
         ? ('best by ' + fmtPantryDate(lot.expiresAt, today))
         : (isExp ? ('expired ' + fmtPantryDate(lot.expiresAt, today)) : ('expires ' + fmtPantryDate(lot.expiresAt, today))))
       : '';
-    const openedLabel = lot.openedAt ? ('opened ' + fmtPantryDate(lot.openedAt, today)) : '';
+    const openedLabel = (!supportsOpened && lot.openedAt) ? ('opened ' + fmtPantryDate(lot.openedAt, today)) : '';
     const metaText = [boughtLabel, expLabel, openedLabel].filter(Boolean).join(' · ');
 
-    return '<div class="pantry-lot-row' + (isExp ? ' is-expired' : '') + (isSoon ? ' is-soon' : '') + '" data-pantry-lot="' + esc(lot.lotId) + '">' +
+    const histArr = Array.isArray(lot.history) ? lot.history.slice().reverse() : [];
+    const historyHTML = histArr.length > 0
+      ? '<details class="pantry-lot-history">' +
+          '<summary class="pantry-lot-history-summary">History (' + histArr.length + ')</summary>' +
+          '<ul class="pantry-lot-history-list">' +
+            histArr.map(ev => '<li class="pantry-lot-history-item">' + esc(formatPantryLotHistoryEvent(ev, lot.unit, today)) + '</li>').join('') +
+          '</ul>' +
+        '</details>'
+      : '';
+
+    return '<div class="pantry-lot-row' + (isExp ? ' is-expired' : '') + (isSoon ? ' is-soon' : '') + (isUsedUp ? ' is-used-up' : '') + '" data-pantry-lot="' + esc(lot.lotId) + '">' +
       '<div class="pantry-lot-top">' +
-        '<span class="pantry-lot-qty">' + qtyLabel + '</span>' +
+        qtyDisplay +
+        usedUpBadge +
         statusBadge +
+        savedBadge +
+        openedControlHTML +
         storageSelect +
       '</div>' +
+      qtyEditRow +
       '<div class="pantry-lot-meta">' + esc(metaText) + '</div>' +
       confirmRow +
+      historyHTML +
     '</div>';
   };
 
   const renderEntryCard = ({ baseKey, entry, pInfo }) => {
+    const allUsedUp = pInfo.stockQty === 0 && !pInfo.hasUnconfirmed && pInfo.activeLots.length === 0 && pInfo.usedUpLots.length > 0;
     const totalSummary = pInfo.stockQty > 0
       ? (fmtPantryQty(pInfo.stockQty, pInfo.stockUnit) + ' on hand')
-      : (pInfo.hasUnconfirmed ? 'Needs amount confirmation' : 'Expired');
+      : (pInfo.hasUnconfirmed
+        ? 'Needs amount confirmation'
+        : (allUsedUp ? '0 ' + (pInfo.stockUnit && pInfo.stockUnit !== 'unit' ? pluralizeUnit(pInfo.stockUnit, 0) + ' ' : '') + 'on hand (used up)' : 'Expired'));
 
-    return '<div class="pantry-card card" data-pantry-item="' + esc(baseKey) + '">' +
+    return '<div class="pantry-card card' + (allUsedUp ? ' is-used-up' : '') + '" data-pantry-item="' + esc(baseKey) + '">' +
       '<div class="pantry-card-head">' +
         '<div class="pantry-card-title-wrap">' +
           '<strong class="pantry-item-name">' + esc(entry.displayName || baseKey) + '</strong>' +
@@ -15059,26 +15470,81 @@ function wirePantryEvents(app, rerender) {
         renderPantry(app);
         return;
       }
+      const editQtyBtn = e.target.closest('[data-pantry-edit-qty]');
+      if (editQtyBtn) {
+        _pantryEditingLotKey = editQtyBtn.dataset.pantryEditQty;
+        renderPantry(app);
+        return;
+      }
+      const cancelQtyBtn = e.target.closest('[data-pantry-qty-cancel]');
+      if (cancelQtyBtn) {
+        _pantryEditingLotKey = null;
+        renderPantry(app);
+        return;
+      }
+      const saveQtyBtn = e.target.closest('[data-pantry-qty-save]');
+      if (saveQtyBtn) {
+        const keyPair = saveQtyBtn.dataset.pantryQtySave;
+        const [bk, lotId] = keyPair.split('|');
+        const inp = app.querySelector('[data-pantry-qty-in="' + keyPair.replace(/"/g, '\\"') + '"]');
+        const val = inp ? parseFloat(inp.value) : NaN;
+        if (Number.isFinite(val) && val >= 0) {
+          const res = setPantryLotQty(_pantryCache, bk, lotId, val);
+          if (res.ok) {
+            _pantryEditingLotKey = null;
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot quantity: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        }
+        return;
+      }
+      const markOpenedBtn = e.target.closest('[data-pantry-mark-opened]');
+      if (markOpenedBtn) {
+        const keyPair = markOpenedBtn.dataset.pantryMarkOpened;
+        const [bk, lotId] = keyPair.split('|');
+        const today = todayPantryYmd();
+        const res = setPantryLotOpened(_pantryCache, bk, lotId, today, today);
+        if (res.ok) {
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Mark pantry lot opened: ' + bk).catch(() => {});
+          flashPantryLotSaved(keyPair, () => renderPantry(app));
+          renderPantry(app);
+        }
+        return;
+      }
+      const unmarkOpenedBtn = e.target.closest('[data-pantry-unmark-opened]');
+      if (unmarkOpenedBtn) {
+        const keyPair = unmarkOpenedBtn.dataset.pantryUnmarkOpened;
+        const [bk, lotId] = keyPair.split('|');
+        const res = setPantryLotOpened(_pantryCache, bk, lotId, null);
+        if (res.ok) {
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Unmark pantry lot opened: ' + bk).catch(() => {});
+          flashPantryLotSaved(keyPair, () => renderPantry(app));
+          renderPantry(app);
+        }
+        return;
+      }
       const confBtn = e.target.closest('[data-pantry-confirm-btn]');
       if (confBtn) {
         const keyPair = confBtn.dataset.pantryConfirmBtn;
         const [bk, lotId] = keyPair.split('|');
         const inp = app.querySelector('[data-pantry-confirm-in="' + keyPair.replace(/"/g, '\\"') + '"]');
         const val = inp ? parseFloat(inp.value) : NaN;
-        if (Number.isFinite(val) && val > 0 && _pantryCache[bk]) {
-          const entry = _pantryCache[bk];
-          (entry.lots || []).forEach(l => {
-            if (l && l.lotId === lotId) {
-              l.qty = val;
-              l.unconfirmed = false;
-            }
-          });
-          entry.updatedAt = Date.now();
-          _pantryCache[bk] = recomputePantryEntry(bk, entry);
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Confirm pantry quantity: ' + bk).catch(() => {});
-          renderPantry(app);
+        if (Number.isFinite(val) && val >= 0) {
+          const res = setPantryLotQty(_pantryCache, bk, lotId, val);
+          if (res.ok) {
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Confirm pantry quantity: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
         }
         return;
       }
@@ -15091,6 +15557,21 @@ function wirePantryEvents(app, rerender) {
         const [bk, lotId] = stSel.dataset.pantryStorage.split('|');
         switchPantryLotStorage(bk, lotId, stSel.value).catch(() => {});
         renderPantry(app);
+        return;
+      }
+      const openedDateIn = e.target.closest('[data-pantry-opened-date]');
+      if (openedDateIn) {
+        const keyPair = openedDateIn.dataset.pantryOpenedDate;
+        const [bk, lotId] = keyPair.split('|');
+        const newDate = openedDateIn.value ? openedDateIn.value.trim() : null;
+        const res = setPantryLotOpened(_pantryCache, bk, lotId, newDate);
+        if (res.ok) {
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot opened date: ' + bk).catch(() => {});
+          flashPantryLotSaved(keyPair, () => renderPantry(app));
+          renderPantry(app);
+        }
       }
     });
   }
