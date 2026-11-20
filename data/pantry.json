@@ -364,23 +364,35 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-xeav3l71ft",
-        "qty": 1,
+        "qty": 3,
         "unit": "ea",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": 1,
+            "qtyAfter": 2,
+            "kind": "restore"
+          },
+          {
+            "at": "2026-11-20",
+            "delta": 1,
+            "qtyAfter": 3,
+            "kind": "restore"
+          }
+        ],
         "boughtName": "Limes",
         "category": "limes",
-        "openedAt": "2026-11-19",
-        "expiresAt": null,
+        "expiresAt": "2026-11-25",
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795142823890
+    "updatedAt": 1795174587708
   },
   "onion shallot": {
     "base": "onion shallot",
