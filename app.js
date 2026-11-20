@@ -13137,7 +13137,7 @@ function renderReceiptReviewCard(app, receipt) {
    ============================================================================ */
 
 /* ============================================================================
-   BEGIN DELIMITED PANTRY TRACKING MODULE (v20261119c + Bridge git-v18)
+   BEGIN DELIMITED PANTRY TRACKING MODULE (v20261119d + Bridge git-v19)
    ============================================================================ */
 
 const PANTRY_LOCAL_KEY = 'recipe-pantry-local';
@@ -13217,6 +13217,49 @@ function lookupShelfLife(itOrBase, options) {
     const head2 = words.slice(0, 2).join(' ');
     if (items[head2] && typeof items[head2] === 'object') return items[head2];
   }
+
+  // Processed-form checks run before the generic scans below: a smoked/deli
+  // meat or a named cheese must not resolve to the raw meat or fruit that
+  // shares a word ("turkey breast smoked" is deli meat, "orange muenster"
+  // is cheese, not an orange).
+  if (/\b(pastrami|deli|lox|nova)\b/i.test(clean) && items['deli meat']) return items['deli meat'];
+  if (/\bsmoked\b/i.test(clean) && /\b(turkey|chicken|beef|salmon)\b/i.test(clean) && items['deli meat']) return items['deli meat'];
+  if (/\bmozzarella\b/i.test(clean) && items['shredded cheese']) return items['shredded cheese'];
+  if (/\bfeta\b/i.test(clean) && items['soft cheese']) return items['soft cheese'];
+  if (/\b(muenster|cheddar|swiss|provolone)\b/i.test(clean) && items['hard cheese']) return items['hard cheese'];
+
+  // Receipt-name pass: strip size/variety/form filler words, then try every
+  // contiguous word run (longest first) so brand prefixes and trailing form
+  // words ("tuscanini capers in brine", "dyna sea imitation crab stick")
+  // still resolve to a canonical shelf-life key.
+  const SHELF_FILLER = new Set(['organic', 'loose', 'stem', 'hothouse', 'english', 'persian',
+    'seedless', 'bag', 'sliced', 'cut', 'peeled', 'raw', 'fresh', 'whole', 'mini', 'assorted',
+    'premium', 'prem', 'deep', 'dish', 'plain', 'part', 'skim', 'low', 'fat', 'half', 'gallon',
+    'va', 'ap', 'ch', 'go', 'gala', 'granny', 'smith', 'yukon', 'gold', 'idaho', 'hass', 'ha',
+    'green', 'red', 'yellow', 'globe', 'italian', 'asian', 'white', 'sweet', 'stick', 'in',
+    'brine', 'on', 'the', 'vine', 'w', 'with', 'real', 'semi', 'crunc', 'crunch']);
+  const stripped = clean.split(' ')
+    .filter(w => w && !SHELF_FILLER.has(w) &&
+      !SHELF_FILLER.has(typeof singularizeWord === 'function' ? singularizeWord(w) : w));
+  if (stripped.length) {
+    const sing = w => typeof singularizeWord === 'function' ? singularizeWord(w) : w;
+    for (let len = stripped.length; len >= 1; len--) {
+      for (let i = 0; i + len <= stripped.length; i++) {
+        const run = stripped.slice(i, i + len);
+        const variants = [
+          run.join(' '),
+          run.map((w, j) => j === run.length - 1 ? sing(w) : w).join(' '),
+          run.map(sing).join(' ')
+        ];
+        for (const gram of variants) {
+          if (gram !== '_meta' && items[gram] && typeof items[gram] === 'object') {
+            return items[gram];
+          }
+        }
+      }
+    }
+  }
+
   const head = typeof priceHeadNoun === 'function' ? priceHeadNoun(tailSing) : (words[words.length - 1] || '');
   if (head && items[head] && typeof items[head] === 'object') {
     return items[head];
@@ -13232,6 +13275,38 @@ function lookupShelfLife(itOrBase, options) {
   if (/\b(cutlet|tenderloin)\b/i.test(clean) && /\bchicken\b/i.test(clean) && items['chicken breast']) return items['chicken breast'];
   if (/\b(drumstick|thigh|leg|quarter)\b/i.test(clean) && /\bchicken\b/i.test(clean) && items['chicken leg']) return items['chicken leg'];
   if (/\b(tilapia|flounder|cod|halibut|sea\s+bass|branzino|trout|whitefish)\b/i.test(clean) && items['white fish']) return items['white fish'];
+
+  // Produce and grocery categories keyed by their head word in receipt names
+  if (/\bapple\b/i.test(clean) && items['apple']) return items['apple'];
+  if (/\bavocado\b/i.test(clean) && items['avocado']) return items['avocado'];
+  if (/\bbanana\b/i.test(clean) && items['banana']) return items['banana'];
+  if (/\bcucumber\b/i.test(clean) && items['cucumber']) return items['cucumber'];
+  if (/\btomato\b/i.test(clean) && items['tomato']) return items['tomato'];
+  if (/\bpotato\b/i.test(clean) && items['potato']) return items['potato'];
+  if (/\byam\b/i.test(clean) && items['sweet potato']) return items['sweet potato'];
+  if (/\bonion\b/i.test(clean) && items['onion']) return items['onion'];
+  if (/\bgarlic\b/i.test(clean) && items['garlic']) return items['garlic'];
+  if (/\bmushroom\b/i.test(clean) && items['mushroom']) return items['mushroom'];
+  if (/\bgrape\b/i.test(clean) && items['grape']) return items['grape'];
+  if (/\bpear\b/i.test(clean) && items['pear']) return items['pear'];
+  if (/\bbroccoli\b/i.test(clean) && items['broccoli']) return items['broccoli'];
+  if (/\bcarrot\b/i.test(clean) && items['carrot']) return items['carrot'];
+  if (/\bparsley\b/i.test(clean) && items['parsley']) return items['parsley'];
+  if (/\b(mandarin|orange|clementine|tangerine)\b/i.test(clean) && !/\bjuice\b/i.test(clean) && items['orange']) return items['orange'];
+  if (/\b(pecan|walnut|cashew|pistachio|hazelnut)\b/i.test(clean) && items['nut']) return items['nut'];
+  if (/\b(freeze\s+dried|dried)\b/i.test(clean) && /\b(raspberry|mango|apricot|raisin|cranberr\w*|blueberr\w*|strawberr\w*|apple|banana|pineapple|fig|date)\b/i.test(clean) && items['dried fruit']) return items['dried fruit'];
+  if (/\bhearts?\s+of\s+palm\b/i.test(clean) && items['canned low-acid']) return items['canned low-acid'];
+  if (/\b(black\s+bean|kidney\s+bean|chickpea|garbanzo|white\s+bean|cannellini|pinto)\b/i.test(clean) && items['canned low-acid']) return items['canned low-acid'];
+  if (/\bcapers?\b/i.test(clean) && items['pickle']) return items['pickle'];
+  if (/\bmarinara\b/i.test(clean) && items['pasta sauce']) return items['pasta sauce'];
+  if (/\b(fettuccine|spaghetti|penne|rigatoni|ziti|linguine|macaroni|fusilli|rotini|orzo)\b/i.test(clean) && items['dry pasta']) return items['dry pasta'];
+  if (/\b(pie\s+crusts?|pizza\s+dough|pizza\s+ball)\b/i.test(clean) && items['frozen dough']) return items['frozen dough'];
+  if (/\b(pastrami|deli|lox|nova)\b/i.test(clean) && items['deli meat']) return items['deli meat'];
+  if (/\bsmoked\b/i.test(clean) && /\b(turkey|chicken|beef|salmon)\b/i.test(clean) && items['deli meat']) return items['deli meat'];
+  if (/\bmozzarella\b/i.test(clean) && items['shredded cheese']) return items['shredded cheese'];
+  if (/\bfeta\b/i.test(clean) && items['soft cheese']) return items['soft cheese'];
+  if (/\b(muenster|cheddar|swiss|provolone)\b/i.test(clean) && items['hard cheese']) return items['hard cheese'];
+  if (/\bmilk\b/i.test(clean) && !/\b(chocolate|choco|candy|crispy|rice)\b/i.test(clean) && items['milk']) return items['milk'];
 
   // Fallback for raw meat/poultry/fish not explicitly keyed in shelf-life.json
   if (isRawMeatPoultryFishKey(clean, options.category, options.boughtName)) {
@@ -13251,9 +13326,12 @@ function lookupShelfLife(itOrBase, options) {
 
 function defaultStorageForPantryItem(baseKey, options) {
   options = options || {};
-  // Household rule (BUILD-NOTES.md): raw meat/poultry/fish always defaults to freezer storage
+  // Household rule (BUILD-NOTES.md): raw meat/poultry/fish always defaults to freezer storage.
+  // The shelf-life table encodes that per item (raw meats default_storage 'freezer';
+  // cooked/cured meats like deli meat and hot dogs default 'fridge'), so honor the
+  // table's own default instead of forcing every meat-category item to the freezer.
   const sl = lookupShelfLife(baseKey, options);
-  if (sl && (sl.category === 'meat' || sl.default_storage === 'freezer')) {
+  if (sl && sl.default_storage === 'freezer') {
     return 'freezer';
   }
   if (isRawMeatPoultryFishKey(baseKey, options.category, options.boughtName)) {
@@ -13714,6 +13792,16 @@ function resolvePantryEntryKey(rawBaseKey, pantryMap) {
 }
 
 /**
+ * Non-food receipt lines (bottle deposits, paper goods, sunscreen, fees)
+ * are never pantry stock. The bridge filters these too; this is the
+ * belt-and-braces copy so they cannot re-enter through receipt stock.
+ */
+const PANTRY_NON_FOOD_RE = /\b(bottle\s+deposit|deposit|sunscreen|aluminum\s+pan|paper\s+plates?|paper\s+bowls?|perfection\s+(?:plates?|bowls?|aluminum)|napkins?|foil|detergent|soap|shampoo|batter(?:y|ies)|bag\s+fee)\b/i;
+function isPantryNonFoodKey(key) {
+  return PANTRY_NON_FOOD_RE.test(String(key || ''));
+}
+
+/**
  * Ingest receipt-derived stock payload from GET /pantry-stock into pantry map.
  * Respects tombstones (`status: null` with `updatedAt` after the receipt date)
  * and `consumedReceiptLots` so deducted/removed receipt lots are not re-added.
@@ -13730,6 +13818,7 @@ function mergeReceiptStockIntoPantry(pantryObj, receiptStockPayload, todayStr) {
     if (!itemStock || !Array.isArray(itemStock.lots)) return;
     const bk = groupKey(String(rawKey || '').replace(/-/g, ' ')).toLowerCase();
     if (!bk) return;
+    if (isPantryNonFoodKey(bk)) return;
 
     let entry = merged[bk];
     const tombstoneDate = (entry && entry.status === null && entry.updatedAt)
@@ -14714,6 +14803,24 @@ function openPantryFlagDialog(shopKey, onDone) {
 
 /* ---------------- Pantry View (#/pantry) ---------------- */
 
+function fmtPantryDate(ymdStr, todayStr) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymdStr || ''));
+  if (!m) return String(ymdStr || '');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const label = months[Number(m[2]) - 1] + ' ' + Number(m[3]);
+  const todayYear = /^(\d{4})-/.exec(String(todayStr || todayPantryYmd()));
+  return (todayYear && todayYear[1] !== m[1]) ? (label + ', ' + m[1]) : label;
+}
+
+function fmtPantryQty(qty, unit) {
+  const n = Number(qty);
+  if (!Number.isFinite(n)) return '';
+  const u = String(unit || '').trim();
+  if (!u || u === 'unit' || u === 'ea') return fmtQty(n);
+  if (/^\d+(\.\d+)?\s*(oz|lb|g|kg|ml|l)$/i.test(u)) return fmtQty(n) + ' × ' + u;
+  return fmtQty(n) + ' ' + pluralizeUnit(u, n);
+}
+
 function pantryViewHTML(options) {
   options = options || {};
   const today = options.todayYmd || todayPantryYmd();
@@ -14770,26 +14877,24 @@ function pantryViewHTML(options) {
     const isOv = lot.status === 'overridden';
     const isSoon = !isExp && !isOv && isLotExpiringSoon(bk, lot, today);
     const isUnconf = Boolean(lot.unconfirmed) || lot.qty === null;
+
     const qtyLabel = isUnconf
-      ? '<span class="pantry-lot-unconfirmed">Amount unconfirmed</span>' +
-        ' <span class="pantry-confirm-inline">' +
+      ? '<span class="pantry-badge pantry-badge-unconfirmed">Amount unconfirmed</span>'
+      : esc(fmtPantryQty(lot.qty, lot.unit));
+
+    const confirmRow = isUnconf
+      ? '<div class="pantry-confirm-inline">' +
           '<input type="number" class="pantry-confirm-input" data-pantry-confirm-in="' + esc(bk + '|' + lot.lotId) + '" step="any" min="0" placeholder="Qty (' + esc(lot.unit || 'unit') + ')" aria-label="Confirm quantity">' +
           '<button type="button" class="btn secondary pantry-confirm-btn" data-pantry-confirm-btn="' + esc(bk + '|' + lot.lotId) + '">Confirm</button>' +
-        '</span>'
-      : '<strong>' + esc(fmtQty(lot.qty) + (lot.unit && lot.unit !== 'unit' ? ' ' + pluralizeUnit(lot.unit, lot.qty) : '')) + '</strong>';
+        '</div>'
+      : '';
 
-    const expLabel = lot.expiresAt
-      ? (lot.storage === 'freezer' || lot.qualityOnly
-        ? ('best by ' + lot.expiresAt + ' (freezer quality)')
-        : (isExp ? ('expired ' + lot.expiresAt) : ('exp ' + lot.expiresAt)))
-      : 'no expiry';
-    const openedBadge = lot.openedAt ? ' <span class="pantry-badge opened">opened ' + esc(lot.openedAt) + '</span>' : '';
     const statusBadge = isExp
-      ? ' <span class="pantry-badge expired">expired</span>' +
-        ' <button type="button" class="link-btn pantry-still-good-btn" data-pantry-stillgood="' + esc(bk + '|' + lot.lotId) + '">Still good</button>'
+      ? '<span class="pantry-badge pantry-badge-expired">expired</span>' +
+        '<button type="button" class="link-btn pantry-still-good-btn" data-pantry-stillgood="' + esc(bk + '|' + lot.lotId) + '">Still good</button>'
       : (isOv
-        ? ' <span class="pantry-badge overridden">still good ✓</span>'
-        : (isSoon ? ' <span class="pantry-badge expiring-soon">expiring soon</span>' : ''));
+        ? '<span class="pantry-badge pantry-badge-overridden">still good ✓</span>'
+        : (isSoon ? '<span class="pantry-badge pantry-badge-soon">expiring soon</span>' : ''));
 
     const storageSelect =
       '<select class="pantry-storage-select" data-pantry-storage="' + esc(bk + '|' + lot.lotId) + '" aria-label="Storage location">' +
@@ -14799,19 +14904,30 @@ function pantryViewHTML(options) {
         ).join('') +
       '</select>';
 
+    const boughtLabel = (lot.source === 'receipt' ? 'bought ' : 'added ') +
+      fmtPantryDate(lot.receiptDate || lot.addedAt || '', today);
+    const expLabel = lot.expiresAt
+      ? ((lot.storage === 'freezer' || lot.qualityOnly)
+        ? ('best by ' + fmtPantryDate(lot.expiresAt, today))
+        : (isExp ? ('expired ' + fmtPantryDate(lot.expiresAt, today)) : ('expires ' + fmtPantryDate(lot.expiresAt, today))))
+      : '';
+    const openedLabel = lot.openedAt ? ('opened ' + fmtPantryDate(lot.openedAt, today)) : '';
+    const metaText = [boughtLabel, expLabel, openedLabel].filter(Boolean).join(' · ');
+
     return '<div class="pantry-lot-row' + (isExp ? ' is-expired' : '') + (isSoon ? ' is-soon' : '') + '" data-pantry-lot="' + esc(lot.lotId) + '">' +
-      '<span class="pantry-lot-qty">' + qtyLabel + '</span>' +
-      '<span class="pantry-lot-meta">added ' + esc(lot.receiptDate || lot.addedAt || '') + ' · ' + esc(expLabel) + openedBadge + statusBadge + '</span>' +
-      storageSelect +
+      '<div class="pantry-lot-top">' +
+        '<span class="pantry-lot-qty">' + qtyLabel + '</span>' +
+        statusBadge +
+        storageSelect +
+      '</div>' +
+      '<div class="pantry-lot-meta">' + esc(metaText) + '</div>' +
+      confirmRow +
     '</div>';
   };
 
   const renderEntryCard = ({ baseKey, entry, pInfo }) => {
-    const uStr = pInfo.stockUnit && pInfo.stockUnit !== 'unit'
-      ? (' ' + pluralizeUnit(pInfo.stockUnit, pInfo.stockQty))
-      : '';
     const totalSummary = pInfo.stockQty > 0
-      ? (fmtQty(pInfo.stockQty) + uStr + ' on hand')
+      ? (fmtPantryQty(pInfo.stockQty, pInfo.stockUnit) + ' on hand')
       : (pInfo.hasUnconfirmed ? 'Needs amount confirmation' : 'Expired');
 
     return '<div class="pantry-card card" data-pantry-item="' + esc(baseKey) + '">' +
@@ -14838,8 +14954,9 @@ function pantryViewHTML(options) {
           expiringSoonLots.map(({ baseKey, displayName, lot }) =>
             '<div class="pantry-soon-chip">' +
               '<strong>' + esc(displayName) + '</strong> · ' +
-              esc((lot.qty ? fmtQty(lot.qty) + ' ' : '') + (lot.unit && lot.unit !== 'unit' ? lot.unit + ' · ' : '') +
-                (lot.storage === 'freezer' ? 'freezer quality date ' : 'expires ') + (lot.expiresAt || '')) +
+              esc([fmtPantryQty(lot.qty, lot.unit),
+                (lot.storage === 'freezer' ? 'best by ' : 'expires ') + fmtPantryDate(lot.expiresAt || '', today)
+              ].filter(Boolean).join(' · ')) +
             '</div>'
           ).join('') +
         '</div>' +
@@ -14866,9 +14983,9 @@ function pantryViewHTML(options) {
     '</section>' +
     '<form class="pantry-add-form card no-print" id="pantry-add-form">' +
       '<div class="pantry-add-row">' +
-        '<input type="text" id="pantry-add-name" placeholder="Ingredient (e.g. onion, olive oil, chicken breast)…" aria-label="Ingredient name" required>' +
+        '<input type="text" id="pantry-add-name" placeholder="Ingredient (e.g. onion, olive oil)" aria-label="Ingredient name" required>' +
         '<input type="number" id="pantry-add-qty" step="any" min="0.01" placeholder="Qty" aria-label="Quantity" required>' +
-        '<input type="text" id="pantry-add-unit" placeholder="Unit (lb, cup, head, unit…)" aria-label="Unit">' +
+        '<input type="text" id="pantry-add-unit" placeholder="Unit (lb, cup…)" aria-label="Unit">' +
         '<select id="pantry-add-storage" aria-label="Storage">' +
           '<option value="">Auto storage</option>' +
           '<option value="pantry">🥫 Pantry</option>' +
