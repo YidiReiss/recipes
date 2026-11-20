@@ -2081,31 +2081,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "crispy-chicken",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              },
-              {
-                "recipe": "roasted-potatoes",
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              },
-              {
-                "custom": "Soup",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": false,
-                "reason": null,
-                "locked": true
-              }
-            ]
+            "note": ""
           }
         },
         {
