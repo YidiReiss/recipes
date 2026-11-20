@@ -13169,7 +13169,15 @@ function getUnitConversionsMap(convMapOverride) {
 function lookupUnitConversion(itOrBase, convMapOverride) {
   const convMap = getUnitConversionsMap(convMapOverride);
   if (!convMap || typeof convMap !== 'object') return null;
-  return lookupPriceConversion(itOrBase, convMap);
+  const direct = lookupPriceConversion(itOrBase, convMap);
+  if (direct) return direct;
+  if (typeof itOrBase === 'string' && itOrBase.includes('(')) {
+    const stripped = itOrBase.replace(/\s*\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+    if (stripped && stripped !== itOrBase) {
+      return lookupPriceConversion(stripped, convMap);
+    }
+  }
+  return null;
 }
 
 const RAW_MEAT_POULTRY_FISH_RE = /\b(chicken|turkey|duck|beef|veal|brisket|chuck|flanken|roast|steak|ground\s+beef|ground\s+meat|ground\s+turkey|Ground\s+chicken|lamb|marrow\s+bone|neck\s+bone|pargiot|salmon|tilapia|flounder|cod|halibut|trout|branzino|sea\s+bass|whitefish|tuna\s+steak|fish\s+fillet)\b/i;
@@ -13421,8 +13429,8 @@ function evaluateLotStatus(baseKey, lot, todayStr) {
   const today = todayStr || todayPantryYmd();
   const expInfo = computeLotExpiry(baseKey, lot, { todayYmd: today });
   const expDate = lot.expiresAt !== undefined ? lot.expiresAt : expInfo.expiresAt;
-  const isFreezerQuality = lot.storage === 'freezer' || Boolean(lot.qualityOnly) || Boolean(expInfo.qualityOnly);
-  // Freezer days are quality alerts only — they do not hard-expire or exclude from have
+  const isFreezerQuality = !lot.expiresAtExplicit && (lot.storage === 'freezer' || Boolean(lot.qualityOnly) || Boolean(expInfo.qualityOnly));
+  // Freezer days are quality alerts only — they do not hard-expire or exclude from have (unless user set an explicit expiry date)
   if (expDate && expDate < today && !isFreezerQuality) {
     return 'expired';
   }
@@ -13437,7 +13445,7 @@ function isLotExpiringSoon(baseKey, lot, todayStr) {
   const expDate = lot.expiresAt !== undefined ? lot.expiresAt : expInfo.expiresAt;
   if (!expDate) return false;
   const soonCutoff = addDaysYmd(today, 3);
-  if (lot.storage === 'freezer' || expInfo.qualityOnly) {
+  if (!lot.expiresAtExplicit && (lot.storage === 'freezer' || expInfo.qualityOnly)) {
     // Freezer quality alert when past freezer_days
     return expDate <= today;
   }
@@ -13490,6 +13498,7 @@ function appendPantryLotHistory(lot, event) {
   };
   if (event.dish) ev.dish = String(event.dish);
   if (event.openedAt !== undefined) ev.openedAt = event.openedAt;
+  if (event.expiresAt !== undefined) ev.expiresAt = event.expiresAt;
   list.push(ev);
   lot.history = list.slice(-50);
   return lot.history;
@@ -13533,6 +13542,7 @@ function normalizePantryLot(baseKey, rawLot, todayStr) {
           };
           if (h.dish) ev.dish = String(h.dish);
           if (h.openedAt !== undefined) ev.openedAt = h.openedAt;
+          if (h.expiresAt !== undefined) ev.expiresAt = h.expiresAt;
           return ev;
         })
         .slice(-50)
@@ -13561,7 +13571,7 @@ function normalizePantryLot(baseKey, rawLot, todayStr) {
     ? rawLot.expiresAt
     : (expInfo.expiresAt !== null ? expInfo.expiresAt : null);
   if (rawLot.expiresAtExplicit) lotObj.expiresAtExplicit = true;
-  if (expInfo.qualityOnly) lotObj.qualityOnly = true;
+  if (expInfo.qualityOnly && !rawLot.expiresAtExplicit) lotObj.qualityOnly = true;
 
   if (rawLot.status === 'overridden') {
     lotObj.status = 'overridden';
@@ -13889,6 +13899,37 @@ function resolvePantryEntryKey(rawBaseKey, pantryMap) {
       if (targets.some(t => groupKey(String(t || '').replace(/-/g, ' ')).toLowerCase() === gk)) {
         const rk = groupKey(recipeKey).toLowerCase();
         if (map[rk]) return rk;
+      }
+    }
+  }
+
+  // If the ingredient name contains parenthetical pack/note info (e.g. "black beans (15 oz)"),
+  // strip parenthetical groups (...) and retry exact -> tail-singular -> direct-match resolution
+  // before falling through to the distinctive-word fallback.
+  if (raw.includes('(') || gk.includes('(')) {
+    const strippedRaw = raw.replace(/\s*\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+    if (strippedRaw && strippedRaw !== raw) {
+      const strippedGk = groupKey(strippedRaw.replace(/-/g, ' ')).toLowerCase();
+      const strippedTailSing = strippedGk.replace(/\b(\w+)$/, (_, w) => typeof singularizeWord === 'function' ? singularizeWord(w) : w);
+      if (map[strippedGk]) return strippedGk;
+      if (map[strippedRaw]) return strippedRaw;
+      if (map[strippedTailSing]) return strippedTailSing;
+      if (directMap && typeof directMap === 'object') {
+        const sTarget = directMap[strippedRaw] || directMap[strippedGk] || directMap[strippedTailSing];
+        if (sTarget) {
+          const targets = Array.isArray(sTarget) ? sTarget : [sTarget];
+          for (let i = 0; i < targets.length; i++) {
+            const t = groupKey(String(targets[i] || '').replace(/-/g, ' ')).toLowerCase();
+            if (t && map[t]) return t;
+          }
+        }
+        for (const [recipeKey, receiptTarget] of Object.entries(directMap)) {
+          const targets = Array.isArray(receiptTarget) ? receiptTarget : [receiptTarget];
+          if (targets.some(t => groupKey(String(t || '').replace(/-/g, ' ')).toLowerCase() === strippedGk)) {
+            const rk = groupKey(recipeKey).toLowerCase();
+            if (map[rk]) return rk;
+          }
+        }
       }
     }
   }
@@ -14557,6 +14598,204 @@ function setPantryLotOpened(map, baseKey, lotId, openedAtOrNull, todayStr) {
   return { ok: true, entry: targetMap[resolvedKey], lot: normLot };
 }
 
+/**
+ * Set a pantry item's total confirmed quantity on hand across its confirmed lots (pure/testable mutation).
+ * - Unconfirmed lots (`unconfirmed: true` or `qty === null`) stay untouched.
+ * - Decrease: drains across confirmed lots in FIFO order (`expiresAt` ascending, then `addedAt` ascending).
+ *   Lots drained to 0 become used-up (`qty: 0`, kept in `lots`, receipt lot ID recorded in `consumedReceiptLots`),
+ *   with an `'edit'` history event on each touched lot.
+ * - Increase: adds the difference to the newest confirmed lot (or creates a manual lot if none exist),
+ *   with an `'edit'` history event.
+ * - Zero: sets all confirmed lots to `0` (all become used-up, receipt lots recorded in `consumedReceiptLots`),
+ *   with `'edit'` history events.
+ */
+function setPantryTotalQty(map, baseKey, newTotal, todayStr) {
+  const targetMap = map || _pantryCache;
+  if (!targetMap || typeof targetMap !== 'object') return { ok: false, entry: null };
+  const today = todayStr || todayPantryYmd();
+  const numTotal = Number(newTotal);
+  if (!Number.isFinite(numTotal) || numTotal < 0) return { ok: false, entry: null };
+  const cleanTotal = Math.max(0, Math.round(numTotal * 1000) / 1000);
+  const resolvedKey = resolvePantryEntryKey(baseKey, targetMap) || groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
+  const entry = targetMap[resolvedKey];
+  if (!entry || entry.status === null || !Array.isArray(entry.lots)) return { ok: false, entry: null };
+
+  const lots = entry.lots.map(l => normalizePantryLot(resolvedKey, l, today)).filter(Boolean);
+  if (!Array.isArray(entry.consumedReceiptLots)) entry.consumedReceiptLots = [];
+
+  const confirmedIndices = [];
+  for (let i = 0; i < lots.length; i++) {
+    const l = lots[i];
+    if (!l.unconfirmed && l.qty !== null && l.status !== 'expired') {
+      confirmedIndices.push(i);
+    }
+  }
+
+  const curTotal = Math.round(
+    confirmedIndices.reduce((sum, idx) => sum + (Number(lots[idx].qty) || 0), 0) * 1000
+  ) / 1000;
+
+  if (cleanTotal <= 1e-6) {
+    // Zero: set all confirmed lots to 0 (used up)
+    confirmedIndices.forEach(idx => {
+      const l = lots[idx];
+      const prevQty = Number(l.qty) || 0;
+      l.qty = 0;
+      appendPantryLotHistory(l, {
+        at: today,
+        delta: -prevQty,
+        qtyAfter: 0,
+        kind: 'edit'
+      });
+      if (l.source === 'receipt' && l.lotId && !entry.consumedReceiptLots.includes(l.lotId)) {
+        entry.consumedReceiptLots.push(l.lotId);
+      }
+    });
+  } else if (cleanTotal < curTotal - 1e-6) {
+    // Decrease: drain across confirmed lots with qty > 0 in FIFO order (expiresAt asc, addedAt asc)
+    const posIndices = confirmedIndices.filter(idx => (Number(lots[idx].qty) || 0) > 1e-6);
+    posIndices.sort((ia, ib) => {
+      const a = lots[ia], b = lots[ib];
+      const ea = String(a.expiresAt || '9999-99-99'), eb = String(b.expiresAt || '9999-99-99');
+      if (ea !== eb) return ea.localeCompare(eb);
+      return String(a.addedAt || '').localeCompare(String(b.addedAt || ''));
+    });
+    let rem = Math.round((curTotal - cleanTotal) * 1000) / 1000;
+    for (let k = 0; k < posIndices.length && rem > 1e-6; k++) {
+      const l = lots[posIndices[k]];
+      const prevQty = Number(l.qty) || 0;
+      const take = Math.min(prevQty, rem);
+      l.qty = Math.max(0, Math.round((prevQty - take) * 1000) / 1000);
+      rem = Math.max(0, Math.round((rem - take) * 1000) / 1000);
+      appendPantryLotHistory(l, {
+        at: today,
+        delta: -take,
+        qtyAfter: l.qty,
+        kind: 'edit'
+      });
+      if (l.qty <= 1e-6 && l.source === 'receipt' && l.lotId && !entry.consumedReceiptLots.includes(l.lotId)) {
+        entry.consumedReceiptLots.push(l.lotId);
+      }
+    }
+  } else if (cleanTotal > curTotal + 1e-6) {
+    // Increase: add difference to the newest confirmed lot (or create a manual lot if none exist)
+    const diff = Math.round((cleanTotal - curTotal) * 1000) / 1000;
+    if (confirmedIndices.length > 0) {
+      const newestIdx = confirmedIndices.slice().sort((ia, ib) => {
+        const a = lots[ia], b = lots[ib];
+        const aa = String(a.addedAt || a.receiptDate || '');
+        const ab = String(b.addedAt || b.receiptDate || '');
+        if (aa !== ab) return ab.localeCompare(aa);
+        const ra = String(a.receiptDate || '');
+        const rb = String(b.receiptDate || '');
+        if (ra !== rb) return rb.localeCompare(ra);
+        return ib - ia;
+      })[0];
+      const l = lots[newestIdx];
+      const prevQty = Number(l.qty) || 0;
+      l.qty = Math.round((prevQty + diff) * 1000) / 1000;
+      appendPantryLotHistory(l, {
+        at: today,
+        delta: diff,
+        qtyAfter: l.qty,
+        kind: 'edit'
+      });
+      if (l.qty > 1e-6 && l.lotId) {
+        entry.consumedReceiptLots = entry.consumedReceiptLots.filter(id => id !== l.lotId);
+      }
+    } else {
+      const storage = defaultStorageForPantryItem(resolvedKey);
+      const newLot = normalizePantryLot(resolvedKey, {
+        lotId: 'man-' + today + '-' + Math.random().toString(36).slice(2, 7),
+        qty: cleanTotal,
+        unit: entry.unit || 'unit',
+        addedAt: today,
+        receiptDate: today,
+        storage,
+        source: 'manual',
+        boughtName: entry.displayName || resolvedKey,
+        unconfirmed: false
+      }, today);
+      appendPantryLotHistory(newLot, {
+        at: today,
+        delta: cleanTotal,
+        qtyAfter: cleanTotal,
+        kind: 'edit'
+      });
+      lots.push(newLot);
+    }
+  } else if (confirmedIndices.length > 0) {
+    // Same total saved explicitly: record a 0-delta edit on the newest confirmed lot
+    const newestIdx = confirmedIndices[confirmedIndices.length - 1];
+    const l = lots[newestIdx];
+    appendPantryLotHistory(l, {
+      at: today,
+      delta: 0,
+      qtyAfter: Number(l.qty) || 0,
+      kind: 'edit'
+    });
+  }
+
+  entry.lots = lots;
+  entry.updatedAt = Date.now();
+  targetMap[resolvedKey] = recomputePantryEntry(resolvedKey, entry, today);
+  return { ok: true, entry: targetMap[resolvedKey] };
+}
+
+/**
+ * Set or reset (Auto) an explicit expiration date on a pantry lot (pure/testable mutation).
+ * - Date given (`YYYY-MM-DD`): sets `expiresAt`, `expiresAtExplicit: true`, and re-evaluates status
+ *   (past date -> `'expired'` unless `'overridden'`).
+ * - `null` / `""` (Auto): clears `expiresAtExplicit`, recomputes `expiresAt` via `computeLotExpiry`,
+ *   and re-evaluates status.
+ * - Appends a history event of kind `'expiry'`.
+ */
+function setPantryLotExpiry(map, baseKey, lotId, dateOrNull, todayStr) {
+  const targetMap = map || _pantryCache;
+  if (!targetMap || typeof targetMap !== 'object') return { ok: false, entry: null, lot: null };
+  const today = todayStr || todayPantryYmd();
+  const resolvedKey = resolvePantryEntryKey(baseKey, targetMap) || groupKey(String(baseKey || '').replace(/-/g, ' ')).toLowerCase();
+  const entry = targetMap[resolvedKey];
+  if (!entry || entry.status === null || !Array.isArray(entry.lots)) return { ok: false, entry: null, lot: null };
+
+  const cleanDate = (dateOrNull && /^\d{4}-\d{2}-\d{2}/.test(String(dateOrNull).trim()))
+    ? String(dateOrNull).trim().slice(0, 10)
+    : null;
+
+  let updatedLot = null;
+  entry.lots.forEach(l => {
+    if (l && (!lotId || l.lotId === lotId)) {
+      if (cleanDate) {
+        l.expiresAt = cleanDate;
+        l.expiresAtExplicit = true;
+        delete l.qualityOnly;
+      } else {
+        delete l.expiresAtExplicit;
+        const expInfo = computeLotExpiry(resolvedKey, l, { todayYmd: today });
+        l.expiresAt = expInfo.expiresAt;
+        if (expInfo.qualityOnly) l.qualityOnly = true;
+        else delete l.qualityOnly;
+      }
+      if (l.status !== 'overridden') {
+        l.status = evaluateLotStatus(resolvedKey, l, today);
+      }
+      appendPantryLotHistory(l, {
+        at: today,
+        delta: 0,
+        qtyAfter: (l.qty !== null && l.qty !== undefined && Number.isFinite(Number(l.qty))) ? Number(l.qty) : 0,
+        kind: 'expiry',
+        expiresAt: cleanDate
+      });
+      updatedLot = l;
+    }
+  });
+  if (!updatedLot) return { ok: false, entry: null, lot: null };
+  entry.updatedAt = Date.now();
+  targetMap[resolvedKey] = recomputePantryEntry(resolvedKey, entry, today);
+  const normLot = (targetMap[resolvedKey].lots || []).find(l => l.lotId === updatedLot.lotId) || updatedLot;
+  return { ok: true, entry: targetMap[resolvedKey], lot: normLot };
+}
+
 function pantryItemSupportsOpened(baseKey, lot, options) {
   const sl = lookupShelfLife(baseKey, {
     ...(options || {}),
@@ -14591,6 +14830,12 @@ function formatPantryLotHistoryEvent(ev, unit, todayStr) {
       return dStr + ' · unmarked opened';
     }
     return dStr + ' · marked opened';
+  }
+  if (kind === 'expiry') {
+    if (ev.expiresAt) {
+      return dStr + ' · expiry set to ' + fmtPantryDate(ev.expiresAt, todayStr);
+    }
+    return dStr + ' · expiry reset to auto';
   }
   if (kind === 'added') {
     const qStr = fmtPantryQty(ev.qtyAfter, unit);
@@ -14627,8 +14872,13 @@ async function toggleDishCooked(weekKey, dayIdx, meal, dishIdx, options) {
       savePantryLocal();
       if (typeof globalThis !== 'undefined') globalThis.__pantryCache = _pantryCache;
       if (!options.skipRemoteSave) {
+        const affectedKeys = [...new Set(toRestore.map(d => d && d.baseKey).filter(Boolean))];
+        const snapEntries = {};
+        affectedKeys.forEach(k => {
+          if (_pantryCache[k]) snapEntries[k] = JSON.parse(JSON.stringify(_pantryCache[k]));
+        });
         await savePantry(merged => {
-          restorePantryDeductionsToMap(merged, toRestore, today);
+          Object.keys(snapEntries).forEach(k => { merged[k] = snapEntries[k]; });
         }, 'Restore pantry stock (unmarked cooked): ' + (dish.recipe || dish.custom || weekKey)).catch(() => {});
       }
     }
@@ -14767,6 +15017,11 @@ function resetPantrySession() {
   _pantryCache = {};
   _pantryInFlight = null;
   _pantryFetched = false;
+  _pantryEditingLotKey = null;
+  _pantryEditingTotalKey = null;
+  _pantryEditingExpiryKey = null;
+  _pantrySavedLotKey = null;
+  _pantrySearchQuery = '';
   if (typeof globalThis !== 'undefined') delete globalThis.__pantryCache;
 }
 
@@ -15159,8 +15414,12 @@ function fmtPantryQty(qty, unit) {
 }
 
 let _pantryEditingLotKey = null;
+let _pantryEditingTotalKey = null;
+let _pantryEditingExpiryKey = null;
 let _pantrySavedLotKey = null;
 let _pantrySavedTimer = null;
+let _pantrySearchQuery = '';
+let _pantryHighlightTimer = null;
 
 function flashPantryLotSaved(keyPair, rerender) {
   _pantrySavedLotKey = keyPair;
@@ -15173,12 +15432,54 @@ function flashPantryLotSaved(keyPair, rerender) {
   }, 2000);
 }
 
+function scrollToPantryCard(baseKey, app, rerender) {
+  const bk = String(baseKey || '').trim();
+  if (!bk || !app) return null;
+  const findCard = () => {
+    if (typeof app.querySelector !== 'function') return null;
+    return app.querySelector('[data-pantry-item="' + bk.replace(/"/g, '\\"') + '"]');
+  };
+  let cardEl = findCard();
+  if (!cardEl && _pantrySearchQuery) {
+    _pantrySearchQuery = '';
+    if (typeof rerender === 'function') {
+      rerender();
+    } else {
+      renderPantry(app);
+    }
+    cardEl = findCard();
+  }
+  if (cardEl) {
+    if (typeof cardEl.closest === 'function') {
+      const detailsEl = cardEl.closest('details');
+      if (detailsEl) detailsEl.open = true;
+    }
+    if (typeof cardEl.scrollIntoView === 'function') {
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (cardEl.classList && typeof cardEl.classList.add === 'function') {
+      cardEl.classList.add('pantry-card-highlight');
+      if (_pantryHighlightTimer) clearTimeout(_pantryHighlightTimer);
+      _pantryHighlightTimer = setTimeout(() => {
+        if (cardEl.classList && typeof cardEl.classList.remove === 'function') {
+          cardEl.classList.remove('pantry-card-highlight');
+        }
+      }, 2000);
+    }
+  }
+  return cardEl;
+}
+
 function pantryViewHTML(options) {
   options = options || {};
   const today = options.todayYmd || todayPantryYmd();
   const pantryMap = normalizePantryData(options.pantryMap || _pantryCache || {}, today);
   const editingKey = options.editingKey !== undefined ? options.editingKey : _pantryEditingLotKey;
+  const editingTotalKey = options.editingTotalKey !== undefined ? options.editingTotalKey : _pantryEditingTotalKey;
+  const editingExpiryKey = options.editingExpiryKey !== undefined ? options.editingExpiryKey : _pantryEditingExpiryKey;
   const savedKey = options.savedKey !== undefined ? options.savedKey : _pantrySavedLotKey;
+  const rawQuery = options.query !== undefined ? String(options.query || '') : String(_pantrySearchQuery || '');
+  const qNorm = rawQuery.trim().toLowerCase();
   const pricesMap = options.pricesMap !== undefined
     ? options.pricesMap
     : ((typeof _priceHistoryCache === 'object' && _priceHistoryCache)
@@ -15190,9 +15491,9 @@ function pantryViewHTML(options) {
     return Number.isFinite(n) ? ('$' + (n / 100).toFixed(2)) : '';
   };
 
-  const activeEntries = [];
+  const allActiveEntries = [];
   const expiringSoonLots = [];
-  const expiredEntries = [];
+  const allExpiredEntries = [];
 
   Object.keys(pantryMap).sort().forEach(bk => {
     const entry = pantryMap[bk];
@@ -15207,11 +15508,21 @@ function pantryViewHTML(options) {
     });
 
     if (pInfo.activeLots.length > 0 || pInfo.unconfirmedLots.length > 0 || pInfo.usedUpLots.length > 0) {
-      activeEntries.push({ baseKey: bk, entry, pInfo });
+      allActiveEntries.push({ baseKey: bk, entry, pInfo });
     } else if (pInfo.expiredLots.length > 0) {
-      expiredEntries.push({ baseKey: bk, entry, pInfo });
+      allExpiredEntries.push({ baseKey: bk, entry, pInfo });
     }
   });
+
+  const matchesSearch = ({ baseKey, entry }) => {
+    if (!qNorm) return true;
+    const disp = String((entry && entry.displayName) || baseKey || '').toLowerCase();
+    const bk = String(baseKey || '').toLowerCase();
+    return disp.includes(qNorm) || bk.includes(qNorm);
+  };
+
+  const activeEntries = allActiveEntries.filter(matchesSearch);
+  const expiredEntries = allExpiredEntries.filter(matchesSearch);
 
   const renderPriceTag = bk => {
     const p = priceMatchFor(bk, pricesMap);
@@ -15234,6 +15545,7 @@ function pantryViewHTML(options) {
     const isUsedUp = !isUnconf && Number(lot.qty) === 0;
     const isSoon = !isExp && !isOv && !isUsedUp && isLotExpiringSoon(bk, lot, today);
     const isEditing = editingKey === keyPair;
+    const isEditingExpiry = editingExpiryKey === keyPair;
     const isSaved = savedKey === keyPair;
 
     const qtyDisplay = isUnconf
@@ -15248,6 +15560,15 @@ function pantryViewHTML(options) {
           '<span class="pantry-qty-edit-unit">' + esc(lot.unit && lot.unit !== 'unit' ? lot.unit : '') + '</span>' +
           '<button type="button" class="btn pantry-qty-save-btn" data-pantry-qty-save="' + esc(keyPair) + '">Save</button>' +
           '<button type="button" class="btn secondary pantry-qty-cancel-btn" data-pantry-qty-cancel="' + esc(keyPair) + '">Cancel</button>' +
+        '</div>'
+      : '';
+
+    const expiryEditRow = isEditingExpiry
+      ? '<div class="pantry-lot-expiry-editor" data-pantry-expiry-editor="' + esc(keyPair) + '">' +
+          '<input type="date" class="pantry-expiry-date-input" data-pantry-expiry-in="' + esc(keyPair) + '" value="' + esc(lot.expiresAt || '') + '" aria-label="Expiration date">' +
+          '<button type="button" class="btn pantry-expiry-save-btn" data-pantry-expiry-save="' + esc(keyPair) + '">Save</button>' +
+          '<button type="button" class="btn secondary pantry-expiry-auto-btn" data-pantry-expiry-auto="' + esc(keyPair) + '">Auto</button>' +
+          '<button type="button" class="btn secondary pantry-expiry-cancel-btn" data-pantry-expiry-cancel="' + esc(keyPair) + '">Cancel</button>' +
         '</div>'
       : '';
 
@@ -15300,12 +15621,19 @@ function pantryViewHTML(options) {
     const boughtLabel = (lot.source === 'receipt' ? 'bought ' : 'added ') +
       fmtPantryDate(lot.receiptDate || lot.addedAt || '', today);
     const expLabel = lot.expiresAt
-      ? ((lot.storage === 'freezer' || lot.qualityOnly)
+      ? ((!lot.expiresAtExplicit && (lot.storage === 'freezer' || lot.qualityOnly))
         ? ('best by ' + fmtPantryDate(lot.expiresAt, today))
         : (isExp ? ('expired ' + fmtPantryDate(lot.expiresAt, today)) : ('expires ' + fmtPantryDate(lot.expiresAt, today))))
       : '';
+    const expBtnHTML = expLabel
+      ? '<button type="button" class="pantry-lot-expiry-btn" data-pantry-edit-expiry="' + esc(keyPair) + '" title="Tap to edit expiration date">' + esc(expLabel) + '</button>'
+      : '<button type="button" class="pantry-lot-expiry-btn" data-pantry-edit-expiry="' + esc(keyPair) + '" title="Tap to set expiration date">set expiry</button>';
     const openedLabel = (!supportsOpened && lot.openedAt) ? ('opened ' + fmtPantryDate(lot.openedAt, today)) : '';
-    const metaText = [boughtLabel, expLabel, openedLabel].filter(Boolean).join(' · ');
+    const metaPartsHTML = [
+      esc(boughtLabel),
+      expBtnHTML,
+      openedLabel ? esc(openedLabel) : ''
+    ].filter(Boolean).join(' · ');
 
     const histArr = Array.isArray(lot.history) ? lot.history.slice().reverse() : [];
     const historyHTML = histArr.length > 0
@@ -15327,7 +15655,8 @@ function pantryViewHTML(options) {
         storageSelect +
       '</div>' +
       qtyEditRow +
-      '<div class="pantry-lot-meta">' + esc(metaText) + '</div>' +
+      '<div class="pantry-lot-meta">' + metaPartsHTML + '</div>' +
+      expiryEditRow +
       confirmRow +
       historyHTML +
     '</div>';
@@ -15339,13 +15668,32 @@ function pantryViewHTML(options) {
       ? (fmtPantryQty(pInfo.stockQty, pInfo.stockUnit) + ' on hand')
       : (pInfo.hasUnconfirmed
         ? 'Needs amount confirmation'
-        : (allUsedUp ? '0 ' + (pInfo.stockUnit && pInfo.stockUnit !== 'unit' ? pluralizeUnit(pInfo.stockUnit, 0) + ' ' : '') + 'on hand (used up)' : 'Expired'));
+        : (allUsedUp ? 'None left' : 'Expired'));
+    const isEditingTotal = editingTotalKey === baseKey;
+    const isSavedTotal = savedKey === ('total|' + baseKey) || savedKey === baseKey;
+    const unitForTotal = pInfo.stockUnit || entry.unit || 'unit';
+
+    const totalControlHTML =
+      '<div class="pantry-item-total-row">' +
+        '<button type="button" class="pantry-item-total pantry-item-total-btn" data-pantry-edit-total="' + esc(baseKey) + '" title="Tap to edit total on hand">' +
+          esc(totalSummary) +
+        '</button>' +
+        (isSavedTotal ? '<span class="pantry-saved-confirm" data-pantry-saved="total|' + esc(baseKey) + '">Saved ✓</span>' : '') +
+      '</div>' +
+      (isEditingTotal
+        ? '<div class="pantry-total-qty-editor" data-pantry-total-editor="' + esc(baseKey) + '">' +
+            '<input type="number" class="pantry-total-edit-input" data-pantry-total-in="' + esc(baseKey) + '" min="0" step="any" value="' + esc(String(pInfo.stockQty || 0)) + '" aria-label="Total on hand (' + esc(unitForTotal) + ')">' +
+            '<span class="pantry-qty-edit-unit">' + esc(unitForTotal !== 'unit' ? unitForTotal : '') + '</span>' +
+            '<button type="button" class="btn pantry-total-save-btn" data-pantry-total-save="' + esc(baseKey) + '">Save</button>' +
+            '<button type="button" class="btn secondary pantry-total-cancel-btn" data-pantry-total-cancel="' + esc(baseKey) + '">Cancel</button>' +
+          '</div>'
+        : '');
 
     return '<div class="pantry-card card' + (allUsedUp ? ' is-used-up' : '') + '" data-pantry-item="' + esc(baseKey) + '">' +
       '<div class="pantry-card-head">' +
         '<div class="pantry-card-title-wrap">' +
           '<strong class="pantry-item-name">' + esc(entry.displayName || baseKey) + '</strong>' +
-          '<span class="pantry-item-total">' + esc(totalSummary) + '</span>' +
+          totalControlHTML +
           renderPriceTag(baseKey) +
         '</div>' +
         '<button type="button" class="link-btn danger pantry-remove-btn" data-pantry-remove="' + esc(baseKey) + '" title="I don\u2019t have this anymore">Remove</button>' +
@@ -15363,26 +15711,64 @@ function pantryViewHTML(options) {
         '<h2 class="pantry-sec-title">⚠️ Expiring soon (' + expiringSoonLots.length + ')</h2>' +
         '<div class="pantry-soon-list">' +
           expiringSoonLots.map(({ baseKey, displayName, lot }) =>
-            '<div class="pantry-soon-chip">' +
+            '<button type="button" class="pantry-soon-chip" data-pantry-soon-jump="' + esc(baseKey) + '">' +
               '<strong>' + esc(displayName) + '</strong> · ' +
               esc([fmtPantryQty(lot.qty, lot.unit),
-                (lot.storage === 'freezer' ? 'best by ' : 'expires ') + fmtPantryDate(lot.expiresAt || '', today)
+                ((!lot.expiresAtExplicit && (lot.storage === 'freezer' || lot.qualityOnly)) ? 'best by ' : 'expires ') + fmtPantryDate(lot.expiresAt || '', today)
               ].filter(Boolean).join(' · ')) +
-            '</div>'
+            '</button>'
           ).join('') +
         '</div>' +
       '</section>';
   }
 
+  // Group In Stock (activeEntries) by department in deptIndex order (Unsorted last)
+  const deptMap = new Map();
+  activeEntries.forEach(item => {
+    const sec = (typeof lookupShoppingSection === 'function')
+      ? lookupShoppingSection(item.baseKey)
+      : { department: 'Unsorted', subcategory: null, deptIndex: 999 };
+    const deptName = (sec && sec.department) ? String(sec.department) : 'Unsorted';
+    const deptIndex = (sec && Number.isFinite(Number(sec.deptIndex))) ? Number(sec.deptIndex) : 999;
+    if (!deptMap.has(deptName)) {
+      deptMap.set(deptName, { department: deptName, deptIndex, items: [] });
+    }
+    deptMap.get(deptName).items.push(item);
+  });
+  const deptGroups = Array.from(deptMap.values()).filter(g => g.items.length > 0).sort((a, b) => {
+    if (a.department === 'Unsorted' && b.department !== 'Unsorted') return 1;
+    if (b.department === 'Unsorted' && a.department !== 'Unsorted') return -1;
+    if (a.deptIndex !== b.deptIndex) return a.deptIndex - b.deptIndex;
+    return a.department.localeCompare(b.department);
+  });
+
+  const renderDeptGroup = g =>
+    '<div class="pantry-dept-group" data-pantry-dept="' + esc(g.department) + '">' +
+      '<h3 class="pantry-dept-header">' +
+        '<span class="pantry-dept-name">' + esc(g.department) + '</span> ' +
+        '<span class="pantry-dept-count">(' + g.items.length + ')</span>' +
+      '</h3>' +
+      '<div class="pantry-list">' + g.items.map(renderEntryCard).join('') + '</div>' +
+    '</div>';
+
+  const searchBarHTML =
+    '<div class="pantry-search-bar no-print">' +
+      '<input type="search" id="pantry-search-input" class="pantry-search-input" placeholder="Search pantry…" aria-label="Search pantry" value="' + esc(rawQuery) + '">' +
+    '</div>';
+
+  const noMatchesHTML = (qNorm && activeEntries.length === 0 && expiredEntries.length === 0)
+    ? '<p class="muted pantry-no-matches">No matches for \u201c' + esc(rawQuery.trim()) + '\u201d.</p>'
+    : '';
+
   const activeHTML = activeEntries.length
     ? '<section class="pantry-active-section">' +
         '<h2 class="pantry-sec-title">In Stock (' + activeEntries.length + ')</h2>' +
-        '<div class="pantry-list">' + activeEntries.map(renderEntryCard).join('') + '</div>' +
+        deptGroups.map(renderDeptGroup).join('') +
       '</section>'
-    : '<p class="muted">No items in your pantry yet — add what you have at home below or confirm a receipt.</p>';
+    : (qNorm ? '' : '<p class="muted">No items in your pantry yet — add what you have at home below or confirm a receipt.</p>');
 
   const expiredHTML = expiredEntries.length
-    ? '<details class="pantry-expired-section"><summary>Expired (' + expiredEntries.length + ')</summary>' +
+    ? '<details class="pantry-expired-section"' + (qNorm ? ' open' : '') + '><summary>Expired (' + expiredEntries.length + ')</summary>' +
         '<div class="pantry-list">' + expiredEntries.map(renderEntryCard).join('') + '</div>' +
       '</details>'
     : '';
@@ -15406,7 +15792,9 @@ function pantryViewHTML(options) {
         '<button type="submit" class="btn" id="pantry-add-btn">+ Add to pantry</button>' +
       '</div>' +
     '</form>' +
+    searchBarHTML +
     expiringSoonHTML +
+    noMatchesHTML +
     activeHTML +
     expiredHTML
   );
@@ -15417,8 +15805,26 @@ function renderPantry(app) {
   document.title = 'Pantry — Reiss Family Recipes';
   loadPantryLocal();
   const draw = () => {
+    const doc = (typeof document !== 'undefined') ? document : null;
+    const oldSearch = (typeof app.querySelector === 'function')
+      ? app.querySelector('#pantry-search-input')
+      : (doc && typeof doc.getElementById === 'function' ? doc.getElementById('pantry-search-input') : null);
+    const hadFocus = Boolean(doc && oldSearch && doc.activeElement === oldSearch);
+    let selStart = -1, selEnd = -1;
+    if (hadFocus) {
+      try { selStart = oldSearch.selectionStart; selEnd = oldSearch.selectionEnd; } catch (e) {}
+    }
     app.innerHTML = '<div id="pantry-wrap">' + pantryViewHTML() + '</div>';
     wirePantryEvents(app, draw);
+    if (hadFocus) {
+      const nextSearch = $('#pantry-search-input', app);
+      if (nextSearch) {
+        try { nextSearch.focus(); } catch (e) {}
+        if (typeof selStart === 'number' && typeof selEnd === 'number' && selStart >= 0 && selEnd >= 0) {
+          try { nextSearch.setSelectionRange(selStart, selEnd); } catch (e) {}
+        }
+      }
+    }
   };
   draw();
   ensurePantryLoaded(() => {
@@ -15452,13 +15858,35 @@ function wirePantryEvents(app, rerender) {
     });
   }
 
+  const searchIn = $('#pantry-search-input', app);
+  if (searchIn && typeof searchIn.addEventListener === 'function') {
+    searchIn.addEventListener('input', () => {
+      _pantrySearchQuery = searchIn.value;
+      rerender();
+    });
+  }
+
   if (typeof app.addEventListener === 'function' && !app._pantryDelegated) {
     app._pantryDelegated = true;
     app.addEventListener('click', e => {
       if ((typeof location !== 'undefined') && (location.hash || '#/') !== '#/pantry') return;
+      const jumpBtn = e.target.closest('[data-pantry-soon-jump]');
+      if (jumpBtn) {
+        const bk = jumpBtn.dataset.pantrySoonJump;
+        scrollToPantryCard(bk, app, () => renderPantry(app));
+        return;
+      }
       const remBtn = e.target.closest('[data-pantry-remove]');
       if (remBtn) {
         const bk = remBtn.dataset.pantryRemove;
+        const entry = _pantryCache && _pantryCache[bk];
+        const dispName = (entry && entry.displayName) || bk;
+        const confirmFn = (typeof confirm === 'function')
+          ? confirm
+          : ((typeof globalThis !== 'undefined' && typeof globalThis.confirm === 'function') ? globalThis.confirm : null);
+        if (confirmFn && !confirmFn('Remove ' + dispName + ' from the pantry?')) {
+          return;
+        }
         removePantryEntry(bk).catch(() => {});
         renderPantry(app);
         return;
@@ -15468,6 +15896,36 @@ function wirePantryEvents(app, rerender) {
         const [bk, lotId] = sgBtn.dataset.pantryStillgood.split('|');
         overridePantryLotStillGood(bk, lotId).catch(() => {});
         renderPantry(app);
+        return;
+      }
+      const editTotalBtn = e.target.closest('[data-pantry-edit-total]');
+      if (editTotalBtn) {
+        _pantryEditingTotalKey = editTotalBtn.dataset.pantryEditTotal;
+        renderPantry(app);
+        return;
+      }
+      const cancelTotalBtn = e.target.closest('[data-pantry-total-cancel]');
+      if (cancelTotalBtn) {
+        _pantryEditingTotalKey = null;
+        renderPantry(app);
+        return;
+      }
+      const saveTotalBtn = e.target.closest('[data-pantry-total-save]');
+      if (saveTotalBtn) {
+        const bk = saveTotalBtn.dataset.pantryTotalSave;
+        const inp = app.querySelector('[data-pantry-total-in="' + bk.replace(/"/g, '\\"') + '"]');
+        const val = inp ? parseFloat(inp.value) : NaN;
+        if (Number.isFinite(val) && val >= 0) {
+          const res = setPantryTotalQty(_pantryCache, bk, val);
+          if (res.ok) {
+            _pantryEditingTotalKey = null;
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Update pantry total: ' + bk).catch(() => {});
+            flashPantryLotSaved('total|' + bk, () => renderPantry(app));
+            renderPantry(app);
+          }
+        }
         return;
       }
       const editQtyBtn = e.target.closest('[data-pantry-edit-qty]');
@@ -15498,6 +15956,50 @@ function wirePantryEvents(app, rerender) {
             flashPantryLotSaved(keyPair, () => renderPantry(app));
             renderPantry(app);
           }
+        }
+        return;
+      }
+      const editExpiryBtn = e.target.closest('[data-pantry-edit-expiry]');
+      if (editExpiryBtn) {
+        _pantryEditingExpiryKey = editExpiryBtn.dataset.pantryEditExpiry;
+        renderPantry(app);
+        return;
+      }
+      const cancelExpiryBtn = e.target.closest('[data-pantry-expiry-cancel]');
+      if (cancelExpiryBtn) {
+        _pantryEditingExpiryKey = null;
+        renderPantry(app);
+        return;
+      }
+      const saveExpiryBtn = e.target.closest('[data-pantry-expiry-save]');
+      if (saveExpiryBtn) {
+        const keyPair = saveExpiryBtn.dataset.pantryExpirySave;
+        const [bk, lotId] = keyPair.split('|');
+        const inp = app.querySelector('[data-pantry-expiry-in="' + keyPair.replace(/"/g, '\\"') + '"]');
+        const val = inp && inp.value ? inp.value.trim() : null;
+        const res = setPantryLotExpiry(_pantryCache, bk, lotId, val);
+        if (res.ok) {
+          _pantryEditingExpiryKey = null;
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot expiry: ' + bk).catch(() => {});
+          flashPantryLotSaved(keyPair, () => renderPantry(app));
+          renderPantry(app);
+        }
+        return;
+      }
+      const autoExpiryBtn = e.target.closest('[data-pantry-expiry-auto]');
+      if (autoExpiryBtn) {
+        const keyPair = autoExpiryBtn.dataset.pantryExpiryAuto;
+        const [bk, lotId] = keyPair.split('|');
+        const res = setPantryLotExpiry(_pantryCache, bk, lotId, null);
+        if (res.ok) {
+          _pantryEditingExpiryKey = null;
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Reset pantry lot expiry to auto: ' + bk).catch(() => {});
+          flashPantryLotSaved(keyPair, () => renderPantry(app));
+          renderPantry(app);
         }
         return;
       }
