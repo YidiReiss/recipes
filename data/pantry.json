@@ -1223,22 +1223,31 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-08-1bv2xyy15w",
-        "qty": 1,
+        "qty": 0,
         "unit": "ea",
         "addedAt": "2026-11-08",
         "receiptDate": "2026-11-08",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "First Field Crushed",
         "category": "crushed tomatoes",
         "expiresAt": null,
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687708
+    "consumedReceiptLots": [
+      "rcpt-2026-11-08-1bv2xyy15w"
+    ],
+    "updatedAt": 1795186283492
   },
   "blueberry and vanilla go": {
     "base": "blueberry and vanilla go",
