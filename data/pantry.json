@@ -1080,22 +1080,31 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-08-1ehft9m104",
-        "qty": 1,
+        "qty": 0,
         "unit": "ea",
         "addedAt": "2026-11-08",
         "receiptDate": "2026-11-08",
         "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "Part Skim Mozzarella Cheese",
         "category": "mozzarella cheese",
         "expiresAt": "2026-12-08",
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687708
+    "consumedReceiptLots": [
+      "rcpt-2026-11-08-1ehft9m104"
+    ],
+    "updatedAt": 1795186341264
   },
   "black bean": {
     "base": "black bean",
