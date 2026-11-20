@@ -1986,7 +1986,7 @@ async function main() {
     groupKey('glass') === 'glass' &&
     groupKey('cheese') === 'cheese' &&
     groupKey('large egg') === 'egg');
-  const fixtureSections = { departments: ['Fresh Produce', 'Grocery', 'Dairy & Eggs', 'Meat, Poultry & Fish', 'Wine & Spirits'],
+  const fixtureSections = { departments: ['Fresh Produce', 'Grocery', 'Dairy', 'Refrigerated Items', 'Meat, Poultry & Fish', 'Wine & Spirits'],
     fallbackDepartment: 'Unsorted',
     items: {
       'ground beef': { department: 'Meat, Poultry & Fish', subcategory: 'Beef & Veal' },
@@ -1995,7 +1995,7 @@ async function main() {
       'crushed red pepper': { department: 'Grocery', subcategory: 'Spices & Seasonings' },
       'red pepper': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
       'tomato': { department: 'Fresh Produce', subcategory: 'Fresh Vegetables' },
-      'egg': { department: 'Dairy & Eggs', subcategory: 'Eggs' },
+      'egg': { department: 'Refrigerated Items', subcategory: 'Eggs' },
       'oil': { department: 'Grocery', subcategory: 'Oils & Vinegars' },
       'black pepper': { department: 'Grocery', subcategory: 'Spices & Seasonings' },
       'black pepper (plus 1/4 tsp more for the fish)': { department: 'Meat, Poultry & Fish', subcategory: 'Fish & Seafood' }
@@ -2011,7 +2011,7 @@ async function main() {
     lookupShoppingSection('grape tomato').department === 'Fresh Produce');
   check('Section 23 (fallback): word boundaries only — eggplant does not match egg, boiled does not match oil',
     lookupShoppingSection('eggplant').department === 'Unsorted' &&
-    lookupShoppingSection('boiled egg').department === 'Dairy & Eggs');
+    lookupShoppingSection('boiled egg').department === 'Refrigerated Items');
   check('Section 23 (fallback): clean entries beat note-carrying ones (spice blend -> black pepper in Grocery, not the fish-note entry)',
     lookupShoppingSection('garlic, hot paprika, cumin, coriander, and black pepper').department === 'Grocery');
   check('Section 23 (fallback): true unknowns still land in Unsorted (steamer, plain water)',
@@ -2024,7 +2024,7 @@ async function main() {
     !liveMap.items['tomatoe'] && !liveMap.items['bay leave'] && !liveMap.items['potatoe'] &&
     !liveMap.items['cherry tomatoe'] && !liveMap.items['fresh basil leave']);
   check('Section 23 (map): the screenshot items now sort right (mozzarella -> Dairy/Cheese, crushed San Marzano tomato -> Grocery/Canned, fusilli pasta -> Grocery, basil leaf -> Fresh Produce, crushed dried red pepper -> Grocery/Spices)',
-    lookupShoppingSection('mozzarella').department === 'Dairy & Eggs' &&
+    lookupShoppingSection('mozzarella').department === 'Dairy' &&
     lookupShoppingSection('mozzarella').subcategory === 'Cheese' &&
     lookupShoppingSection('crushed san marzano tomato').department === 'Grocery' &&
     lookupShoppingSection('crushed san marzano tomato').subcategory === 'Canned Goods & Soups' &&
@@ -5739,7 +5739,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      /v=20261120[ab]/.test(indexHtml43));
+      /v=20261120[a-z]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -6230,7 +6230,7 @@ async function main() {
       !htmlSearchApple44.includes('data-pantry-item="milk"') &&
       !htmlSearchApple44.includes('data-pantry-item="spinach"') &&
       htmlSearchApple44.includes('data-pantry-dept="Fresh Produce"') &&
-      !htmlSearchApple44.includes('data-pantry-dept="Dairy &amp; Eggs"') &&
+      !htmlSearchApple44.includes('data-pantry-dept="Dairy"') &&
       htmlSearchApple44.includes('data-pantry-soon-jump="milk"') &&
       htmlSearchNone44.includes('No matches for “dragonfruit”.'));
 
@@ -6259,20 +6259,44 @@ async function main() {
     }, '2026-11-20');
     const htmlDept44 = pantryViewHTML({ pantryMap: deptMap44, todayYmd: '2026-11-20', pricesMap: {} });
     const prodIdx44 = htmlDept44.indexOf('data-pantry-dept="Fresh Produce"');
-    const dairyIdx44 = htmlDept44.indexOf('data-pantry-dept="Dairy &amp; Eggs"');
+    const dairyIdx44 = htmlDept44.indexOf('data-pantry-dept="Dairy"');
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + v20261120b cache-buster): In Stock renders Fresh Produce before Dairy & Eggs before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120b',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120c',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
       htmlDept44.includes('<span class="pantry-dept-name">Fresh Produce</span> <span class="pantry-dept-count">(1)</span>') &&
-      htmlDept44.includes('<span class="pantry-dept-name">Dairy &amp; Eggs</span> <span class="pantry-dept-count">(1)</span>') &&
+      htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261120b') &&
-      indexHtml44.includes('app.js?v=20261120b'));
+      indexHtml44.includes('styles.css?v=20261120c') &&
+      indexHtml44.includes('app.js?v=20261120c'));
+
+    // Section 45 — v20261120c Pantry "Finished" button: one tap sets the card total
+    // to none left (setPantryTotalQty(0)); button shows only while stock remains.
+    const finMap45 = normalizePantryData({
+      'bamba': {
+        displayName: 'Bamba', unit: 'ea',
+        lots: [{ lotId: 'fin1', qty: 3, unit: 'ea', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }]
+      },
+      'pretzel': {
+        displayName: 'Pretzel', unit: 'ea',
+        lots: [{ lotId: 'fin2', qty: 0, unit: 'ea', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const htmlFin45 = pantryViewHTML({ pantryMap: finMap45, todayYmd: '2026-11-20', pricesMap: {} });
+    const finRes45 = setPantryTotalQty(finMap45, 'bamba', 0, '2026-11-20');
+    const finStock45 = getPantryHaveFor('bamba', 'ea', { todayYmd: '2026-11-20', pantryMap: finMap45 }).stockQty;
+    check('Section 45(a) (Finished button): stocked card renders a Finished button, used-up card does not, the button handler zeroes the total via setPantryTotalQty(..., 0), and zeroing leaves the card reading None left',
+      htmlFin45.includes('data-pantry-finished="bamba"') &&
+      !htmlFin45.includes('data-pantry-finished="pretzel"') &&
+      SRC.includes("closest('[data-pantry-finished]')") &&
+      SRC.includes('setPantryTotalQty(_pantryCache, bk, 0)') &&
+      finRes45.ok === true &&
+      finStock45 === 0 &&
+      finMap45['bamba'].lots[0].qty === 0);
 
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;
