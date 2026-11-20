@@ -2564,14 +2564,21 @@
     "lots": [
       {
         "lotId": "rcpt-2026-09-29-s887ym1i8p",
-        "qty": 1,
+        "qty": 0,
         "unit": "6 oz",
         "addedAt": "2026-09-29",
         "receiptDate": "2026-09-29",
         "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "Sliced Orange Muenster",
         "category": "muenster cheese",
         "packSize": "6 oz",
@@ -2579,8 +2586,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687716
+    "consumedReceiptLots": [
+      "rcpt-2026-09-29-s887ym1i8p"
+    ],
+    "updatedAt": 1795186360097
   },
   "starbucks iced coffee vanilla sweet cream": {
     "status": null,
