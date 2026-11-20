@@ -4137,3 +4137,21 @@ button.pantry-soon-chip:focus-visible {
   text-underline-offset: 3px;
   color: var(--muted, #666);
 }
+
+/* Pantry inline Remove confirmation (v20261120d): styled in-UI confirm, no native dialog. */
+.pantry-remove-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.pantry-remove-confirm-text {
+  font-size: 0.85em;
+  color: var(--muted, #666);
+}
+.pantry-remove-yes-btn,
+.pantry-remove-no-btn {
+  padding: 4px 10px;
+  font-size: 0.85em;
+}

@@ -15019,6 +15019,7 @@ function resetPantrySession() {
   _pantryFetched = false;
   _pantryEditingLotKey = null;
   _pantryEditingTotalKey = null;
+  _pantryConfirmRemoveKey = null;
   _pantryEditingExpiryKey = null;
   _pantrySavedLotKey = null;
   _pantrySearchQuery = '';
@@ -15415,6 +15416,7 @@ function fmtPantryQty(qty, unit) {
 
 let _pantryEditingLotKey = null;
 let _pantryEditingTotalKey = null;
+let _pantryConfirmRemoveKey = null;
 let _pantryEditingExpiryKey = null;
 let _pantrySavedLotKey = null;
 let _pantrySavedTimer = null;
@@ -15476,6 +15478,7 @@ function pantryViewHTML(options) {
   const pantryMap = normalizePantryData(options.pantryMap || _pantryCache || {}, today);
   const editingKey = options.editingKey !== undefined ? options.editingKey : _pantryEditingLotKey;
   const editingTotalKey = options.editingTotalKey !== undefined ? options.editingTotalKey : _pantryEditingTotalKey;
+  const confirmRemoveKey = options.confirmRemoveKey !== undefined ? options.confirmRemoveKey : _pantryConfirmRemoveKey;
   const editingExpiryKey = options.editingExpiryKey !== undefined ? options.editingExpiryKey : _pantryEditingExpiryKey;
   const savedKey = options.savedKey !== undefined ? options.savedKey : _pantrySavedLotKey;
   const rawQuery = options.query !== undefined ? String(options.query || '') : String(_pantrySearchQuery || '');
@@ -15699,7 +15702,11 @@ function pantryViewHTML(options) {
           totalControlHTML +
           renderPriceTag(baseKey) +
         '</div>' +
-        '<button type="button" class="link-btn danger pantry-remove-btn" data-pantry-remove="' + esc(baseKey) + '" title="I don\u2019t have this anymore">Remove</button>' +
+        (confirmRemoveKey === baseKey
+          ? '<span class="pantry-remove-confirm"><span class="pantry-remove-confirm-text">Remove?</span>' +
+            '<button type="button" class="btn danger pantry-remove-yes-btn" data-pantry-remove-confirm="' + esc(baseKey) + '">Yes, remove</button>' +
+            '<button type="button" class="btn secondary pantry-remove-no-btn" data-pantry-remove-cancel="' + esc(baseKey) + '">Cancel</button></span>'
+          : '<button type="button" class="link-btn danger pantry-remove-btn" data-pantry-remove="' + esc(baseKey) + '" title="I don\u2019t have this anymore">Remove</button>') +
       '</div>' +
       '<div class="pantry-lots-list">' +
         entry.lots.map(lot => renderLotRow(baseKey, lot)).join('') +
@@ -15881,16 +15888,20 @@ function wirePantryEvents(app, rerender) {
       }
       const remBtn = e.target.closest('[data-pantry-remove]');
       if (remBtn) {
-        const bk = remBtn.dataset.pantryRemove;
-        const entry = _pantryCache && _pantryCache[bk];
-        const dispName = (entry && entry.displayName) || bk;
-        const confirmFn = (typeof confirm === 'function')
-          ? confirm
-          : ((typeof globalThis !== 'undefined' && typeof globalThis.confirm === 'function') ? globalThis.confirm : null);
-        if (confirmFn && !confirmFn('Remove ' + dispName + ' from the pantry?')) {
-          return;
-        }
-        removePantryEntry(bk).catch(() => {});
+        _pantryConfirmRemoveKey = remBtn.dataset.pantryRemove;
+        renderPantry(app);
+        return;
+      }
+      const remYesBtn = e.target.closest('[data-pantry-remove-confirm]');
+      if (remYesBtn) {
+        _pantryConfirmRemoveKey = null;
+        removePantryEntry(remYesBtn.dataset.pantryRemoveConfirm).catch(() => {});
+        renderPantry(app);
+        return;
+      }
+      const remNoBtn = e.target.closest('[data-pantry-remove-cancel]');
+      if (remNoBtn) {
+        _pantryConfirmRemoveKey = null;
         renderPantry(app);
         return;
       }
