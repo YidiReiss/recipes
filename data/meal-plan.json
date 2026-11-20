@@ -1993,7 +1993,33 @@
                 "cookDate": null,
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795142823786,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "lime",
+                    "lotId": "rcpt-2026-11-15-xeav3l71ft",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 0.333,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "ea",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-xeav3l71ft",
+                      "qty": 2,
+                      "unit": "ea",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "boughtName": "Limes",
+                      "category": "limes",
+                      "expiresAt": "2026-11-25",
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           }
