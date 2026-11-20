@@ -1,0 +1,98 @@
+{
+  "id": "chocolate-chip-oreo-cookie-cake",
+  "title": "Chocolate Chip Oreo Cookie Cake",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "dessert",
+    "baking"
+  ],
+  "tags": [
+    "shabbat",
+    "freezer-friendly"
+  ],
+  "prep_minutes": 15,
+  "cook_minutes": 30,
+  "servings": "10",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/chocolate-chip-oreo-cookie-cake.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "oil"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "sugar"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "brown sugar"
+        },
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "eggs"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "vanilla extract"
+        },
+        {
+          "qty": "1 3/4",
+          "unit": "cup",
+          "item": "flour"
+        },
+        {
+          "qty": "1",
+          "unit": "tsp",
+          "item": "baking soda"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "9",
+          "unit": "oz",
+          "item": "chocolate chips"
+        },
+        {
+          "qty": "2",
+          "unit": "cup",
+          "item": "crushed Oreos or chocolate sandwich cookies",
+          "prep": "broken by hand"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350\u00b0F. Lightly coat a 10-inch round pan or springform pan with cooking spray.",
+    "In a bowl, combine oil, sugars, eggs, and vanilla. Mix well, until batter is light in color.",
+    "Add flour, baking soda, and salt. Fold in chocolate chips and crushed Oreos.",
+    "Press batter evenly into pan. Bake for 25-30 minutes."
+  ],
+  "tips": [
+    {
+      "title": "Make Ahead",
+      "text": "This cake freezes well."
+    }
+  ],
+  "pairings": [],
+  "notes": "By Daniella Silver. A simple Shabbos dessert that appeals to kids and adults, with the crispy texture of a cookie in a presentable cake.",
+  "source": "Daniella Silver",
+  "tags_need_review": false,
+  "pdf": "pdfs/chocolate-chip-oreo-cookie-cake.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false
+}
