@@ -364,7 +364,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-xeav3l71ft",
-        "qty": 3,
+        "qty": 2,
         "unit": "ea",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
@@ -383,16 +383,24 @@
             "delta": 1,
             "qtyAfter": 3,
             "kind": "restore"
+          },
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 2,
+            "kind": "cooked",
+            "dish": "Roasted Brussel Sprouts with Sriracha Aioli"
           }
         ],
         "boughtName": "Limes",
         "category": "limes",
-        "expiresAt": "2026-11-25",
+        "openedAt": "2026-11-20",
+        "expiresAt": null,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795174587708
+    "updatedAt": 1795174591852
   },
   "onion shallot": {
     "base": "onion shallot",
