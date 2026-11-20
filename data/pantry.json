@@ -2252,14 +2252,21 @@
     "lots": [
       {
         "lotId": "rcpt-2026-09-29-1ert9an16b",
-        "qty": 2,
+        "qty": 0,
         "unit": "9 oz",
         "addedAt": "2026-09-29",
         "receiptDate": "2026-09-29",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -2,
+            "qtyAfter": 0,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "Semi Sweet Real Choco Chips",
         "category": "chocolate chips",
         "packSize": "9 oz",
@@ -2267,8 +2274,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687715
+    "consumedReceiptLots": [
+      "rcpt-2026-09-29-1ert9an16b"
+    ],
+    "updatedAt": 1795186264998
   },
   "boulb distilled white vinegar": {
     "base": "boulb distilled white vinegar",
