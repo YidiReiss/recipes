@@ -935,17 +935,18 @@
         "unit": "ea",
         "addedAt": "2026-11-08",
         "receiptDate": "2026-11-08",
-        "storage": "pantry",
+        "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
         "boughtName": "Hot Honey Mustard",
         "category": "mustard",
-        "expiresAt": "2028-11-07",
+        "storageExplicit": true,
+        "expiresAt": null,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687708
+    "updatedAt": 1795144481656
   },
   "part skim mozzarella": {
     "base": "part skim mozzarella",
