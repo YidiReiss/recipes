@@ -108,7 +108,7 @@ globalThis._pantryInFlight = null;
 globalThis._pantryFetched = false;
 globalThis._savePantryChain = Promise.resolve();
 globalThis._savePantryInFlight = 0;
-['RAW_MEAT_POULTRY_FISH_RE', 'COOKED_DELI_CANNED_RE'].forEach(n => geval(extractDeclSemi(n)));
+['RAW_MEAT_POULTRY_FISH_RE', 'COOKED_DELI_CANNED_RE', 'PANTRY_NON_FOOD_RE'].forEach(n => geval(extractDeclSemi(n)));
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
       SRC.match(/let _savePlanInFlight = 0;/)[0] + '\n' +
       SRC.match(/let _shopSyncTimer = null;/)[0] + '\n' +
@@ -168,13 +168,13 @@ extract('parseQty', true).forEach(src => geval(src));
  'isRawMeatPoultryFishKey', 'lookupShelfLife', 'defaultStorageForPantryItem',
  'addDaysYmd', 'todayPantryYmd', 'computeLotExpiry', 'evaluateLotStatus', 'isLotExpiringSoon',
  'normalizePantryUnit', 'normalizePantryLot', 'recomputePantryEntry', 'normalizePantryData', 'mergePantryData',
- 'convertPantryQty', 'resolvePantryEntryKey', 'mergeReceiptStockIntoPantry',
+ 'convertPantryQty', 'resolvePantryEntryKey', 'isPantryNonFoodKey', 'mergeReceiptStockIntoPantry',
  'getPantryHaveFor', 'applyPantryToShopItem',
  'deductIngredientFromPantryMap', 'restorePantryDeductionsToMap', 'toggleDishCooked',
  'savePantryLocal', 'loadPantryLocal', 'setPantryCache', 'resetPantrySession',
  'bridgeReadPantry', 'fetchBridgePantryStock', 'ensurePantryLoaded', 'savePantry',
  'setPantryManualStock', 'removePantryEntry', 'overridePantryLotStillGood', 'switchPantryLotStorage',
- 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
+ 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'fmtPantryDate', 'fmtPantryQty', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
 ].forEach(n => geval(extract(n) + '\n;globalThis.' + n + ' = ' + n + ';'));
 /* speakTimerAlarm closes over the module-level _alarmWatchdogId (Fix 1):
    load both in ONE eval unit so the binding survives (a bare `let` in its
@@ -5587,6 +5587,126 @@ async function main() {
       resetPantrySession();
       delete globalThis.__pantryTodayYmd;
     }
+  }
+
+  /* ============ 42. Pantry readability fix batch (v20261119d + Bridge git-v19) ============ */
+  {
+    globalThis.shelfLifeTable = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shelf-life.json'), 'utf8'));
+    globalThis.unitConversions = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'unit-conversions.json'), 'utf8'));
+    resetPantrySession();
+    globalThis.__pantryTodayYmd = '2026-11-19';
+
+    // 42(a) Shelf-life matcher resolves real receipt group keys that missed before the fix
+    const slName = k => { const sl = lookupShelfLife(k, {}); return sl ? (sl.name || '') : null; };
+    const matcherCases42 = [
+      ['garlic sleeve', /garlic/i], ['garlic loose', /garlic/i],
+      ['cucumber hothouse english', /cucumber/i], ['cucumber persian', /cucumber/i],
+      ['yam sweet', /sweet potato/i], ['tomato stem', /tomato/i], ['tomatoes on the vine', /tomato/i],
+      ['potato yukon gold loose', /potato/i], ['potato idaho loose', /potato/i],
+      ['grapes seedless green', /grape/i], ['onion shallot', /onion/i], ['onion red', /onion/i],
+      ['onion yellow globe loose', /onion/i], ['apple gala', /apple/i], ['apple granny smith', /apple/i],
+      ['pear asian', /pear/i], ['banana organic', /banana/i], ['carrots cut peeled', /carrot/i],
+      ['mushrooms sliced white', /mushroom/i], ['galil mushrooms pieces stem', /mushroom/i],
+      ['parsley italian', /parsley/i], ['avocado ha', /avocado/i], ['raw pecan', /nut/i],
+      ['pardes farms broccoli floret', /broccoli/i], ['mandarin bag', /orange|mandarin/i],
+      ['solomons sliced beef pastrami', /deli/i], ['tirat zvi turkey breast smoked', /deli/i],
+      ['flaum smoked nova lox', /deli/i], ['polly o twist cheese mozzarella cheddar', /cheese/i],
+      ['part skim mozzarella', /cheese/i], ['feta cheese', /cheese/i],
+      ['millers sliced orange muenster', /cheese/i], ['milk half gallon low fat', /milk/i],
+      ['farms creamery margarine unsalted', /margarine/i], ['tuscanini capers in brine', /pickle/i],
+      ['tonnelli marinara sauce', /pasta sauce/i], ['bowl basket fettuccine', /pasta/i],
+      ['black bean', /canned/i], ['hearts of palm', /canned/i], ['pasta hearts of palm', /canned/i],
+      ['hummus chili onion crunc', /hummus/i], ['pickles sour', /pickle/i],
+      ['ungers pie crusts deep dish', /dough/i], ['plain pizza dough', /dough/i],
+      ['dyna sea imitation crab stick', /crab/i], ['jj cassone bagels assorted', /bagel/i],
+      ['freeze dried raspberry', /dried fruit/i]
+    ];
+    const matcherMisses42 = matcherCases42.filter(([k, re]) => { const n = slName(k); return !n || !re.test(n); }).map(([k]) => k);
+    check('Section 42(a) (shelf-life matcher on real receipt keys): all 47 previously-missed receipt group keys now resolve to the right canonical shelf-life entry (produce, deli, cheese, grocery, frozen)',
+      matcherMisses42.length === 0);
+
+    // 42(b) Non-food filter: site merge skip + bridge /pantry-stock exclusion
+    const mergedNonFood42 = mergeReceiptStockIntoPantry({}, {
+      ok: true,
+      stock: {
+        'bottle deposit': { bought_name: 'Bottle Deposit', lots: [{ lot_key: 'nf1', qty: 7, unit: 'ea', receipt_date: '2026-11-15', bought_name: 'Bottle Deposit', unconfirmed: false }] },
+        'sunscreen spf 30': { bought_name: 'Sunscreen SPF 30', lots: [{ lot_key: 'nf2', qty: 1, unit: 'ea', receipt_date: '2026-11-15', bought_name: 'Sunscreen SPF 30', unconfirmed: false }] },
+        'onion': { bought_name: 'Yellow Onions', lots: [{ lot_key: 'nf3', qty: 2, unit: 'lb', receipt_date: '2026-11-15', bought_name: 'Yellow Onions', unconfirmed: false }] }
+      }
+    }, '2026-11-19');
+    const worker19Path = path.join(SITE_DIR, 'bridge-git-v19', 'worker.js');
+    const receipts19Path = path.join(SITE_DIR, 'bridge-git-v19', 'receipts.js');
+    const worker19Mod = await import('file://' + worker19Path);
+    const receipts19Mod = await import('file://' + receipts19Path);
+    const health19Res = await worker19Mod.default.fetch(new Request('https://recipe-bridge.leibreiss.workers.dev/health'), makeMockEnv([]));
+    const health19Json = await health19Res.json();
+    const stockRes42 = await receipts19Mod.handlePantryStock(
+      new Request('https://recipe-bridge.leibreiss.workers.dev/pantry-stock'),
+      makeMockEnv([
+        { status: 'verified', needs_review: 0, group_key: 'bottle deposit', receipt_dept: 'GROCERY', category: 'grocery', paid_price_cents: 35, qty_or_weight: 7, unit: 'ea', pack_size: null, store: 'Trader Joe\'s', product_name: 'Bottle Deposit', raw_line: 'BOTTLE DEPOSIT', receipt_date: '2026-11-15', receipt_id: 'rcpt42_1', line_no: 1, id: 4201 },
+        { status: 'verified', needs_review: 0, group_key: 'onion', receipt_dept: 'PRODUCE', category: 'produce', paid_price_cents: 199, qty_or_weight: 2, unit: 'lb', pack_size: null, store: 'Trader Joe\'s', product_name: 'Yellow Onions', raw_line: 'ONIONS', receipt_date: '2026-11-15', receipt_id: 'rcpt42_2', line_no: 2, id: 4202 }
+      ]),
+      { nowMs: new Date('2026-11-19T12:00:00Z').getTime(), circularRates: {} }
+    );
+    const stockJson42 = await stockRes42.json();
+    check('Section 42(b) (non-food exclusion, bridge git-v19): /health reports "git-v19"; bridge /pantry-stock drops bottle-deposit rows; site mergeReceiptStockIntoPantry skips bottle deposit + sunscreen but keeps real food',
+      health19Json.version === 'git-v19' &&
+      !stockJson42.stock['bottle deposit'] &&
+      !!stockJson42.stock['onion'] &&
+      !mergedNonFood42['bottle deposit'] &&
+      !mergedNonFood42['sunscreen spf 30'] &&
+      !!mergedNonFood42['onion'] &&
+      isPantryNonFoodKey('perfection plates white') === true &&
+      isPantryNonFoodKey('onion') === false);
+
+    // 42(c) Plain-word formatting helpers
+    check('Section 42(c) (plain-word date/qty formatting): fmtPantryDate renders "Nov 8" same-year and "Nov 8, 2025" other-year; fmtPantryQty hides ea/unit, renders measure packs as "2 × 6 oz", pluralizes real units',
+      fmtPantryDate('2026-11-08', '2026-11-19') === 'Nov 8' &&
+      fmtPantryDate('2025-11-08', '2026-11-19') === 'Nov 8, 2025' &&
+      fmtPantryDate('2026-06-03', '2026-11-19') === 'Jun 3' &&
+      fmtPantryDate('not-a-date', '2026-11-19') === 'not-a-date' &&
+      fmtPantryQty(3, 'ea') === '3' &&
+      fmtPantryQty(1, 'unit') === '1' &&
+      fmtPantryQty(2, '6 oz') === '2 × 6 oz' &&
+      fmtPantryQty(1.5, 'lb') === '1½ lb');
+
+    // 42(d) Pantry view HTML: stacked lot structure, plain dates, no "no expiry", CSS badge class names
+    const viewMap42 = mergeReceiptStockIntoPantry({}, {
+      ok: true,
+      stock: {
+        'solomons sliced beef pastrami': { bought_name: 'Sliced Beef Pastrami', lots: [{ lot_key: 'v42a', qty: 2, unit: '6 oz', receipt_date: '2026-11-15', bought_name: 'Sliced Beef Pastrami', unconfirmed: false }] },
+        'brussel sprout': { bought_name: 'Brussel Sprouts', lots: [{ lot_key: 'v42b', qty: 1.82, unit: 'lb', receipt_date: '2026-11-01', bought_name: 'Brussel Sprouts', unconfirmed: false }] }
+      }
+    }, '2026-11-19');
+    const viewHTML42 = pantryViewHTML({ pantryMap: viewMap42, todayYmd: '2026-11-19', pricesMap: {} });
+    check('Section 42(d) (pantry view readability): lots render in .pantry-lot-top/.pantry-lot-meta blocks with "2 × 6 oz", "bought Nov 15", an "expires"/"expired" phrase in plain words, no "no expiry" text, no raw ISO dates, and expired lots use the pantry-badge-expired class',
+      viewHTML42.includes('pantry-lot-top') &&
+      viewHTML42.includes('pantry-lot-meta') &&
+      viewHTML42.includes('2 × 6 oz') &&
+      viewHTML42.includes('bought Nov 15') &&
+      /expires [A-Z][a-z]{2} \d+/.test(viewHTML42) &&
+      !viewHTML42.includes('no expiry') &&
+      !/\d{4}-\d{2}-\d{2}/.test(viewHTML42) &&
+      viewHTML42.includes('pantry-badge-expired'));
+
+    // 42(e) Storage defaults follow the table (raw meat freezer; cooked/cured meat fridge)
+    check('Section 42(e) (storage defaults): raw chicken breast defaults to freezer, while deli meat and hot dogs default to fridge per the shelf-life table (not forced to freezer by category)',
+      defaultStorageForPantryItem('chicken breast', {}) === 'freezer' &&
+      defaultStorageForPantryItem('solomons sliced beef pastrami', {}) === 'fridge' &&
+      defaultStorageForPantryItem('hot dog', {}) === 'fridge');
+
+    // 42(f) CSS source asserts: header wrap + stacked pantry layout + add-form grid
+    const cssSrc42 = fs.readFileSync(path.join(SITE_DIR, 'styles.css'), 'utf8');
+    const navWrap42 = /\.main-nav\s*\{[^}]*flex-wrap:\s*wrap/.test(cssSrc42.slice(cssSrc42.indexOf('@media')));
+    check('Section 42(f) (CSS source): mobile .main-nav wraps (no cutoff), .pantry-lot-top/.pantry-lot-meta exist, .pantry-add-row is a grid with full-width name field',
+      navWrap42 &&
+      cssSrc42.includes('.pantry-lot-top') &&
+      cssSrc42.includes('.pantry-lot-meta') &&
+      /\.pantry-add-row\s*\{[^}]*display:\s*grid/.test(cssSrc42) &&
+      cssSrc42.includes('#pantry-add-name'));
+
+    resetPantrySession();
+    delete globalThis.__pantryTodayYmd;
   }
 
   const failed = results.filter(r => !r.pass);
