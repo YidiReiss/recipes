@@ -1,0 +1,157 @@
+{
+  "id": "everything-kale-salad",
+  "title": "Everything Kale Salad",
+  "kosher_status": "pareve",
+  "kosher_for_passover": false,
+  "categories": [
+    "side",
+    "salad"
+  ],
+  "tags": [
+    "make-ahead"
+  ],
+  "prep_minutes": 35,
+  "cook_minutes": 40,
+  "servings": "6-8",
+  "leftover_friendly": false,
+  "leftover_note": "",
+  "banner_image": "assets/images/everything-kale-salad.jpg",
+  "ingredients": [
+    {
+      "section": "",
+      "items": [
+        {
+          "qty": "2",
+          "unit": null,
+          "item": "medium sweet potatoes",
+          "prep": "peeled and diced"
+        },
+        {
+          "qty": "1-2",
+          "unit": "tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "kosher salt"
+        },
+        {
+          "qty": null,
+          "unit": null,
+          "item": "black pepper"
+        },
+        {
+          "qty": "16",
+          "unit": "oz",
+          "item": "kale or other greens"
+        },
+        {
+          "qty": "16",
+          "unit": "oz",
+          "item": "shredded green cabbage (about 4 cups)"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "dried figs",
+          "prep": "chopped"
+        },
+        {
+          "qty": "3/4",
+          "unit": "cup",
+          "item": "dried blueberries or cranberries"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "pomegranate seeds"
+        },
+        {
+          "qty": "3",
+          "unit": null,
+          "item": "scallions",
+          "prep": "thinly sliced"
+        },
+        {
+          "qty": "1",
+          "unit": "cup",
+          "item": "candied or toasted pecans",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "section": "Maple-Balsamic Dressing",
+      "items": [
+        {
+          "qty": "1/2",
+          "unit": "cup",
+          "item": "olive oil"
+        },
+        {
+          "qty": "1/4",
+          "unit": "cup",
+          "item": "balsamic vinegar"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "maple syrup"
+        },
+        {
+          "qty": "2",
+          "unit": "tbsp",
+          "item": "honey"
+        },
+        {
+          "qty": "2",
+          "unit": "tsp",
+          "item": "Dijon mustard"
+        },
+        {
+          "qty": "1",
+          "unit": "pinch",
+          "item": "kosher salt"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 400°F. Line a baking sheet with parchment paper.",
+    "Spread sweet potatoes in a single layer on prepared baking sheet. Drizzle with oil; sprinkle with salt and pepper. Bake, uncovered, for 35-40 minutes, until golden and tender.",
+    "Place greens into a large serving bowl. Top with sweet potatoes, cabbage, dried figs, dried berries, pomegranate seeds, and scallions.",
+    "Prepare the dressing. Add ingredients to a glass jar; seal tightly and shake well. Refrigerate until serving time.",
+    "Shortly before serving, toss salad with dressing. Top with candied nuts, if using."
+  ],
+  "tips": [
+    {
+      "title": "Make ahead",
+      "text": "All salad ingredients can be prepped ahead. Toss with greens and dressing before serving."
+    },
+    {
+      "title": "Tip",
+      "text": "If using kale, discard the tough stalks and center veins."
+    }
+  ],
+  "pairings": [],
+  "notes": "Any hearty green will work, not just kale.",
+  "source": "Daniella Silver — Simple Elegance",
+  "tags_need_review": false,
+  "pdf": "pdfs/everything-kale-salad.pdf",
+  "needs_kosher_review": false,
+  "kosher_review_notes": "",
+  "pdf_stale": false,
+  "needs_side": false,
+  "history": [
+    {
+      "ts": "2026-11-20T12:40:19.940Z",
+      "actor": "sous-chef",
+      "action": "intake",
+      "changes": [
+        "Created recipe"
+      ],
+      "reasoning": "Intake from cookbook photos (Daniella Silver, Simple Elegance). Servings stated in source (YIELD 6-8) - used as written. Cook: bake 35-40 min, upper bound = 40. Prep estimated: 5 base + sweet potatoes peel 2 + dice 3.5 + olive oil (salad) 1 + kosher salt 1 + black pepper 1 + kale destalk/tear 3 + cabbage measure 1 + dried figs chop 3 + dried berries 1 + pomegranate seeds 1 + scallions slice 3 + pecans 1 + dressing (olive oil 1 + balsamic vinegar 1 + maple syrup 1 + honey 1 + Dijon mustard 1 + ko"
+    }
+  ]
+}
