@@ -6198,11 +6198,12 @@ async function main() {
       }
     }, '2026-11-20');
     const htmlNoneLeft44 = pantryViewHTML({ pantryMap: usedUpMap44, todayYmd: '2026-11-20', pricesMap: {} });
-    check('Section 44(f) (used-up "None left" header + Remove confirmation): all-used-up item card header reads "None left" (not "0 × 3 pk used up") while lot badge still shows "used up", and wirePantryEvents guards Remove with confirm("Remove <item> from the pantry?")',
+    check('Section 44(f) (used-up "None left" header + Remove confirmation): all-used-up item card header reads "None left" (not "0 × 3 pk used up") while lot badge still shows "used up", and Remove uses an inline styled confirmation (no native confirm dialog)',
       htmlNoneLeft44.includes('>None left</button>') &&
       !htmlNoneLeft44.includes('0 × 3 pk used up') &&
       htmlNoneLeft44.includes('<span class="pantry-badge pantry-badge-usedup">used up</span>') &&
-      SRC.includes("confirmFn('Remove ' + dispName + ' from the pantry?')"));
+      SRC.includes("closest('[data-pantry-remove-confirm]')") &&
+      !SRC.includes("confirmFn('Remove ' + dispName + ' from the pantry?')"));
 
     // 44(g) Item 7: Pantry search filter (filters In Stock & Expired, keeps Expiring soon unfiltered, hides empty dept headers, shows "No matches for ...")
     const searchMap44 = normalizePantryData({
@@ -6263,7 +6264,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120c',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120d',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6271,8 +6272,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261120c') &&
-      indexHtml44.includes('app.js?v=20261120c'));
+      indexHtml44.includes('styles.css?v=20261120d') &&
+      indexHtml44.includes('app.js?v=20261120d'));
 
     // Section 45 — v20261120c Pantry "Finished" button: one tap sets the card total
     // to none left (setPantryTotalQty(0)); button shows only while stock remains.
@@ -6297,6 +6298,23 @@ async function main() {
       finRes45.ok === true &&
       finStock45 === 0 &&
       finMap45['bamba'].lots[0].qty === 0);
+
+    // Section 46 — v20261120d Pantry inline Remove confirmation: tapping Remove swaps
+    // the button for an in-UI "Remove? Yes, remove / Cancel" confirm (no native dialog).
+    const htmlRemAsk46 = pantryViewHTML({ pantryMap: finMap45, todayYmd: '2026-11-20', confirmRemoveKey: 'pretzel', pricesMap: {} });
+    const htmlRemIdle46 = pantryViewHTML({ pantryMap: finMap45, todayYmd: '2026-11-20', pricesMap: {} });
+    check('Section 46(a) (inline Remove confirmation): with confirmRemoveKey set the card renders Yes, remove / Cancel buttons instead of Remove, other cards keep Remove, and the handlers exist with no native confirm() left',
+      htmlRemAsk46.includes('data-pantry-remove-confirm="pretzel"') &&
+      htmlRemAsk46.includes('data-pantry-remove-cancel="pretzel"') &&
+      htmlRemAsk46.includes('>Yes, remove</button>') &&
+      !htmlRemAsk46.includes('data-pantry-remove="pretzel"') &&
+      htmlRemAsk46.includes('data-pantry-remove="bamba"') &&
+      htmlRemIdle46.includes('data-pantry-remove="pretzel"') &&
+      !htmlRemIdle46.includes('data-pantry-remove-confirm=') &&
+      SRC.includes("closest('[data-pantry-remove]')") &&
+      SRC.includes('_pantryConfirmRemoveKey = remBtn.dataset.pantryRemove') &&
+      SRC.includes('removePantryEntry(remYesBtn.dataset.pantryRemoveConfirm)') &&
+      !SRC.includes('confirmFn('));
 
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;
