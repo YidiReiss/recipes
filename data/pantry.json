@@ -499,24 +499,36 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-1xu6tsggj6",
-        "qty": 1.76,
+        "qty": 5.76,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "freezer",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": 2,
+            "qtyAfter": 3.76,
+            "kind": "restore"
+          },
+          {
+            "at": "2026-11-20",
+            "delta": 2,
+            "qtyAfter": 5.76,
+            "kind": "restore"
+          }
+        ],
         "boughtName": "Butterfly Chicken Cutlets",
         "category": "meat",
-        "openedAt": "2026-11-19",
-        "expiresAt": "2027-08-16",
+        "expiresAt": "2027-08-12",
         "qualityOnly": true,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795142693038
+    "updatedAt": 1795174546392
   },
   "veal neck bone": {
     "base": "veal neck bone",
