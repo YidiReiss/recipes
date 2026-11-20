@@ -862,11 +862,11 @@
       "category": "dairy",
       "default_storage": "fridge",
       "pantry_days": null,
-      "fridge_days": null,
+      "fridge_days": 14,
       "freezer_days": 90,
       "opened_fridge_days": 9,
       "opened_pantry_days": null,
-      "source": "Yidi Nov 19 2026: opened milk 9 days; unopened by package date (FoodKeeper)",
+      "source": "Yidi Nov 19 2026: opened milk 9 days; Yidi Nov 20 2026: unopened fridge 14 days (was by-package-date, no day count)",
       "raw": {
         "pantry": "— (shelf-stable milk 180–360 unopened [B])",
         "fridge": "**By package date** (FoodKeeper gives no day count)†",

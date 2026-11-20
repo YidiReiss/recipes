@@ -1,5 +1,10 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-20 — Pantry "Finished" now removes the item (`app.js` `v=20261120e`, `styles.css` `v=20261120e`, `index.html`)
+
+- **What changed (Muse-built directly, requested by Yidi Nov 20, 2026):** The **Finished** button on stocked pantry cards no longer just zeroes the total. Tapping it swaps the button in place for a styled inline confirmation — **Finished? [Yes, finished] [Cancel]** (`.pantry-finished-confirm`, state in `_pantryConfirmFinishedKey`, threaded through `pantryViewHTML` options like `confirmRemoveKey`). **Yes, finished** removes the item from the pantry entirely (`removePantryEntry`), so finishing an item is two taps instead of three (Finished → Remove → confirm). **Cancel** restores the button. The total editor's zeroing (`setPantryTotalQty(0)`) is unchanged for manual amount edits.
+- **Verification:** Section 47(a) added to `smart-planning/commit2-ui-test.cjs`; Section 45(a) updated (button presence + zeroing engine); Section 44(h) cache-buster updated to `v20261120e`. Suites: commit1-merge 56/56, commit2 174/174, cookmode-render 27/27, commit2-ui 366/366 — **623/623**.
+
 ## 2026-11-20 — Pantry inline Remove confirmation (`app.js` `v=20261120d`, `styles.css` `v=20261120d`, `index.html`)
 
 - **What changed (Muse-built directly, requested by Yidi Nov 20, 2026):** Tapping **Remove** on a pantry card no longer opens the browser's native `confirm()` dialog. It now swaps the button in place for a styled inline confirmation — **Remove? [Yes, remove] [Cancel]** (`.pantry-remove-confirm`, danger styling via `.btn.danger`) — matching the site's UI. State lives in `_pantryConfirmRemoveKey` (threaded through `pantryViewHTML` options like `editingTotalKey`, reset in `resetPantrySession`); **Yes, remove** calls `removePantryEntry`, **Cancel** restores the Remove button. The **Finished** button remains one-tap with no confirmation (reversible via the total editor).

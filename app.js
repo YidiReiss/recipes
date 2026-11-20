@@ -15020,6 +15020,7 @@ function resetPantrySession() {
   _pantryEditingLotKey = null;
   _pantryEditingTotalKey = null;
   _pantryConfirmRemoveKey = null;
+  _pantryConfirmFinishedKey = null;
   _pantryEditingExpiryKey = null;
   _pantrySavedLotKey = null;
   _pantrySearchQuery = '';
@@ -15417,6 +15418,7 @@ function fmtPantryQty(qty, unit) {
 let _pantryEditingLotKey = null;
 let _pantryEditingTotalKey = null;
 let _pantryConfirmRemoveKey = null;
+let _pantryConfirmFinishedKey = null;
 let _pantryEditingExpiryKey = null;
 let _pantrySavedLotKey = null;
 let _pantrySavedTimer = null;
@@ -15479,6 +15481,7 @@ function pantryViewHTML(options) {
   const editingKey = options.editingKey !== undefined ? options.editingKey : _pantryEditingLotKey;
   const editingTotalKey = options.editingTotalKey !== undefined ? options.editingTotalKey : _pantryEditingTotalKey;
   const confirmRemoveKey = options.confirmRemoveKey !== undefined ? options.confirmRemoveKey : _pantryConfirmRemoveKey;
+  const confirmFinishedKey = options.confirmFinishedKey !== undefined ? options.confirmFinishedKey : _pantryConfirmFinishedKey;
   const editingExpiryKey = options.editingExpiryKey !== undefined ? options.editingExpiryKey : _pantryEditingExpiryKey;
   const savedKey = options.savedKey !== undefined ? options.savedKey : _pantrySavedLotKey;
   const rawQuery = options.query !== undefined ? String(options.query || '') : String(_pantrySearchQuery || '');
@@ -15682,7 +15685,11 @@ function pantryViewHTML(options) {
           esc(totalSummary) +
         '</button>' +
         (Number(pInfo.stockQty) > 0
-          ? '<button type="button" class="link-btn pantry-finished-btn" data-pantry-finished="' + esc(baseKey) + '" title="Mark finished — set total to none left">Finished</button>'
+          ? (confirmFinishedKey === baseKey
+            ? '<span class="pantry-finished-confirm"><span class="pantry-remove-confirm-text">Finished?</span>' +
+              '<button type="button" class="btn danger pantry-finished-yes-btn" data-pantry-finished-confirm="' + esc(baseKey) + '">Yes, finished</button>' +
+              '<button type="button" class="btn secondary pantry-finished-no-btn" data-pantry-finished-cancel="' + esc(baseKey) + '">Cancel</button></span>'
+            : '<button type="button" class="link-btn pantry-finished-btn" data-pantry-finished="' + esc(baseKey) + '" title="Finished — remove from pantry">Finished</button>')
           : '') +
         (isSavedTotal ? '<span class="pantry-saved-confirm" data-pantry-saved="total|' + esc(baseKey) + '">Saved ✓</span>' : '') +
       '</div>' +
@@ -15914,16 +15921,21 @@ function wirePantryEvents(app, rerender) {
       }
       const finishedBtn = e.target.closest('[data-pantry-finished]');
       if (finishedBtn) {
-        const bk = finishedBtn.dataset.pantryFinished;
-        const res = setPantryTotalQty(_pantryCache, bk, 0);
-        if (res.ok) {
-          _pantryEditingTotalKey = null;
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Mark pantry item finished: ' + bk).catch(() => {});
-          flashPantryLotSaved('total|' + bk, () => renderPantry(app));
-          renderPantry(app);
-        }
+        _pantryConfirmFinishedKey = finishedBtn.dataset.pantryFinished;
+        renderPantry(app);
+        return;
+      }
+      const finYesBtn = e.target.closest('[data-pantry-finished-confirm]');
+      if (finYesBtn) {
+        _pantryConfirmFinishedKey = null;
+        removePantryEntry(finYesBtn.dataset.pantryFinishedConfirm).catch(() => {});
+        renderPantry(app);
+        return;
+      }
+      const finNoBtn = e.target.closest('[data-pantry-finished-cancel]');
+      if (finNoBtn) {
+        _pantryConfirmFinishedKey = null;
+        renderPantry(app);
         return;
       }
       const editTotalBtn = e.target.closest('[data-pantry-edit-total]');

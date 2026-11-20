@@ -6264,7 +6264,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120d',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120e',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6272,11 +6272,12 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261120d') &&
-      indexHtml44.includes('app.js?v=20261120d'));
+      indexHtml44.includes('styles.css?v=20261120e') &&
+      indexHtml44.includes('app.js?v=20261120e'));
 
-    // Section 45 — v20261120c Pantry "Finished" button: one tap sets the card total
-    // to none left (setPantryTotalQty(0)); button shows only while stock remains.
+    // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
+    // v20261120e, Section 47): button shows only while stock remains;
+    // setPantryTotalQty(0) remains the total editor's zeroing engine.
     const finMap45 = normalizePantryData({
       'bamba': {
         displayName: 'Bamba', unit: 'ea',
@@ -6290,11 +6291,9 @@ async function main() {
     const htmlFin45 = pantryViewHTML({ pantryMap: finMap45, todayYmd: '2026-11-20', pricesMap: {} });
     const finRes45 = setPantryTotalQty(finMap45, 'bamba', 0, '2026-11-20');
     const finStock45 = getPantryHaveFor('bamba', 'ea', { todayYmd: '2026-11-20', pantryMap: finMap45 }).stockQty;
-    check('Section 45(a) (Finished button): stocked card renders a Finished button, used-up card does not, the button handler zeroes the total via setPantryTotalQty(..., 0), and zeroing leaves the card reading None left',
+    check('Section 45(a) (Finished button presence + zeroing engine): stocked card renders a Finished button, used-up card does not, and setPantryTotalQty(..., 0) zeroes the total leaving the card reading None left',
       htmlFin45.includes('data-pantry-finished="bamba"') &&
       !htmlFin45.includes('data-pantry-finished="pretzel"') &&
-      SRC.includes("closest('[data-pantry-finished]')") &&
-      SRC.includes('setPantryTotalQty(_pantryCache, bk, 0)') &&
       finRes45.ok === true &&
       finStock45 === 0 &&
       finMap45['bamba'].lots[0].qty === 0);
@@ -6315,6 +6314,28 @@ async function main() {
       SRC.includes('_pantryConfirmRemoveKey = remBtn.dataset.pantryRemove') &&
       SRC.includes('removePantryEntry(remYesBtn.dataset.pantryRemoveConfirm)') &&
       !SRC.includes('confirmFn('));
+
+    // Section 47 — v20261120e Pantry "Finished" removes the item: tapping Finished
+    // swaps the button for an inline "Finished? Yes, finished / Cancel" confirm;
+    // Yes removes the entry entirely (removePantryEntry), Cancel restores the button.
+    const finMap47 = normalizePantryData({
+      'bamba': {
+        displayName: 'Bamba', unit: 'ea',
+        lots: [{ lotId: 'fin47', qty: 3, unit: 'ea', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const htmlFinAsk47 = pantryViewHTML({ pantryMap: finMap47, todayYmd: '2026-11-20', confirmFinishedKey: 'bamba', pricesMap: {} });
+    const htmlFinIdle47 = pantryViewHTML({ pantryMap: finMap47, todayYmd: '2026-11-20', pricesMap: {} });
+    check('Section 47(a) (Finished removes item): with confirmFinishedKey set the card renders Yes, finished / Cancel instead of Finished, idle card keeps Finished, and the handlers arm the confirm then remove via removePantryEntry (no zeroing)',
+      htmlFinAsk47.includes('data-pantry-finished-confirm="bamba"') &&
+      htmlFinAsk47.includes('data-pantry-finished-cancel="bamba"') &&
+      htmlFinAsk47.includes('>Yes, finished</button>') &&
+      !htmlFinAsk47.includes('data-pantry-finished="bamba"') &&
+      htmlFinIdle47.includes('data-pantry-finished="bamba"') &&
+      !htmlFinIdle47.includes('data-pantry-finished-confirm=') &&
+      SRC.includes('_pantryConfirmFinishedKey = finishedBtn.dataset.pantryFinished') &&
+      SRC.includes('removePantryEntry(finYesBtn.dataset.pantryFinishedConfirm)') &&
+      !SRC.includes('Mark pantry item finished: '));
 
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;
