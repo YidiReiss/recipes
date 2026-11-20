@@ -16,7 +16,7 @@
         "boughtName": "Garlic Sleeve",
         "category": "garlic",
         "packSize": "sleeve",
-        "expiresAt": null,
+        "expiresAt": "2027-02-13",
         "status": "good"
       }
     ],
@@ -147,7 +147,7 @@
         "unconfirmed": false,
         "boughtName": "Yam Sweet",
         "category": "yams",
-        "expiresAt": null,
+        "expiresAt": "2026-11-29",
         "status": "good"
       },
       {
@@ -161,8 +161,8 @@
         "unconfirmed": false,
         "boughtName": "Yam Sweet",
         "category": "yams",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-11-15",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -224,7 +224,7 @@
         "unconfirmed": false,
         "boughtName": "Garlic Loose",
         "category": "garlic",
-        "expiresAt": null,
+        "expiresAt": "2027-02-13",
         "status": "good"
       },
       {
@@ -238,7 +238,7 @@
         "unconfirmed": false,
         "boughtName": "Garlic Loose",
         "category": "garlic",
-        "expiresAt": null,
+        "expiresAt": "2027-01-30",
         "status": "good"
       }
     ],
@@ -261,7 +261,7 @@
         "unconfirmed": false,
         "boughtName": "Potato Yukon Gold Large - Loose",
         "category": "potatoes",
-        "expiresAt": null,
+        "expiresAt": "2026-11-29",
         "status": "good"
       }
     ],
@@ -284,8 +284,8 @@
         "unconfirmed": false,
         "boughtName": "Grapes Seedless Green",
         "category": "grapes",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-11-16",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -331,7 +331,7 @@
         "unconfirmed": false,
         "boughtName": "Onion Shallots",
         "category": "shallots",
-        "expiresAt": null,
+        "expiresAt": "2026-12-15",
         "status": "good"
       }
     ],
@@ -354,7 +354,7 @@
         "unconfirmed": false,
         "boughtName": "Onion Red",
         "category": "onions",
-        "expiresAt": null,
+        "expiresAt": "2026-12-15",
         "status": "good"
       },
       {
@@ -392,7 +392,7 @@
         "unconfirmed": false,
         "boughtName": "Apple Granny Smith Large",
         "category": "apples",
-        "expiresAt": null,
+        "expiresAt": "2026-12-06",
         "status": "good"
       }
     ],
@@ -489,7 +489,7 @@
         "boughtName": "Capers in Brine",
         "category": "capers",
         "packSize": "4.59 oz",
-        "expiresAt": null,
+        "expiresAt": "2027-11-15",
         "status": "good"
       }
     ],
@@ -537,7 +537,7 @@
         "boughtName": "Marinara Sauce",
         "category": "pasta sauce",
         "packSize": "24 oz",
-        "expiresAt": null,
+        "expiresAt": "2028-05-08",
         "status": "good"
       }
     ],
@@ -561,7 +561,7 @@
         "boughtName": "Fettuccine",
         "category": "pasta",
         "packSize": "16 oz",
-        "expiresAt": null,
+        "expiresAt": "2028-11-14",
         "status": "good"
       }
     ],
@@ -801,7 +801,7 @@
         "unconfirmed": false,
         "boughtName": "Breakfast Overnight Oats Va",
         "category": "overnight oats",
-        "expiresAt": null,
+        "expiresAt": "2027-11-03",
         "status": "good"
       }
     ],
@@ -824,7 +824,7 @@
         "unconfirmed": false,
         "boughtName": "Breakfast Overnight Oats Ap",
         "category": "overnight oats",
-        "expiresAt": null,
+        "expiresAt": "2027-11-03",
         "status": "good"
       }
     ],
@@ -847,7 +847,7 @@
         "unconfirmed": false,
         "boughtName": "Pasta Hearts Of Palm",
         "category": "pasta",
-        "expiresAt": null,
+        "expiresAt": "2028-11-07",
         "status": "good"
       }
     ],
@@ -894,7 +894,7 @@
         "boughtName": "3 Pk Crispy Rice Milk Ch",
         "category": "chocolate",
         "packSize": "3 pk",
-        "expiresAt": null,
+        "expiresAt": "2028-11-07",
         "status": "good"
       }
     ],
@@ -940,7 +940,7 @@
         "unconfirmed": false,
         "boughtName": "Hot Honey Mustard",
         "category": "mustard",
-        "expiresAt": "2027-11-08",
+        "expiresAt": "2028-11-07",
         "status": "good"
       }
     ],
@@ -986,7 +986,7 @@
         "unconfirmed": false,
         "boughtName": "Black Beans",
         "category": "black beans",
-        "expiresAt": null,
+        "expiresAt": "2028-11-07",
         "status": "good"
       },
       {
@@ -1000,7 +1000,7 @@
         "unconfirmed": false,
         "boughtName": "Black Beans",
         "category": "black beans",
-        "expiresAt": null,
+        "expiresAt": "2028-11-07",
         "status": "good"
       }
     ],
@@ -1023,7 +1023,7 @@
         "unconfirmed": false,
         "boughtName": "Hearts Of Palm",
         "category": "hearts of palm",
-        "expiresAt": null,
+        "expiresAt": "2028-11-07",
         "status": "good"
       }
     ],
@@ -1162,27 +1162,12 @@
     "updatedAt": 1795128687709
   },
   "banana organic": {
-    "base": "banana organic",
-    "displayName": "Banana Organic",
-    "unit": "ea",
-    "lots": [
-      {
-        "lotId": "rcpt-2026-11-08-1sju07d1q1",
-        "qty": 5,
-        "unit": "ea",
-        "addedAt": "2026-11-08",
-        "receiptDate": "2026-11-08",
-        "storage": "pantry",
-        "source": "receipt",
-        "unconfirmed": false,
-        "boughtName": "Banana Organic",
-        "category": "bananas",
-        "expiresAt": null,
-        "status": "good"
-      }
-    ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687709
+    "status": null,
+    "updatedAt": 1795143592151,
+    "lots": [],
+    "consumedReceiptLots": [
+      "rcpt-2026-11-08-1sju07d1q1"
+    ]
   },
   "freeze dried raspberry": {
     "base": "freeze dried raspberry",
@@ -1200,7 +1185,7 @@
         "unconfirmed": false,
         "boughtName": "Freeze Dried Raspberries",
         "category": "freeze-dried fruit",
-        "expiresAt": null,
+        "expiresAt": "2027-05-07",
         "status": "good"
       }
     ],
@@ -1570,8 +1555,8 @@
         "boughtName": "Potato Bag Yukon Gold",
         "category": "potatoes",
         "packSize": "5 lb",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-11-15",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1594,8 +1579,8 @@
         "boughtName": "Mandarin Bag",
         "category": "mandarins",
         "packSize": "3 lb",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-11-11",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1617,7 +1602,7 @@
         "unconfirmed": false,
         "boughtName": "Onion Yellow Globe - Loose",
         "category": "onions",
-        "expiresAt": null,
+        "expiresAt": "2026-12-01",
         "status": "good"
       },
       {
@@ -1631,8 +1616,8 @@
         "unconfirmed": false,
         "boughtName": "Onion Yellow Globe - Loose",
         "category": "onions",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-10-29",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1796,7 +1781,7 @@
         "boughtName": "Pickles Sour",
         "category": "pickles",
         "packSize": "55 oz",
-        "expiresAt": null,
+        "expiresAt": "2027-11-01",
         "status": "good"
       }
     ],
@@ -1938,8 +1923,8 @@
         "unconfirmed": false,
         "boughtName": "Potato Idaho - Loose",
         "category": "potatoes",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-10-13",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1961,8 +1946,8 @@
         "unconfirmed": false,
         "boughtName": "Apple Gala Small",
         "category": "apples",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-10-20",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1984,7 +1969,7 @@
         "unconfirmed": true,
         "boughtName": "Raw Pecans",
         "category": "pecans",
-        "expiresAt": null,
+        "expiresAt": "2027-09-29",
         "status": "good"
       }
     ],
@@ -2008,8 +1993,8 @@
         "boughtName": "Bagels Assorted",
         "category": "bagels",
         "packSize": "6 pack",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-09-30",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -2056,8 +2041,8 @@
         "boughtName": "Sour Green Apple Candy",
         "category": "candy",
         "packSize": "10.2 oz",
-        "expiresAt": null,
-        "status": "good"
+        "expiresAt": "2026-10-20",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -2176,7 +2161,7 @@
         "boughtName": "Bamba Hazelnut Cream",
         "category": "snacks",
         "packSize": "2.1 oz",
-        "expiresAt": null,
+        "expiresAt": "2027-09-29",
         "status": "good"
       }
     ],
@@ -2200,8 +2185,8 @@
         "boughtName": "Potato Chips Olive Oil Salt&Vinegar",
         "category": "potato chips",
         "packSize": "1.1 oz",
-        "expiresAt": "2028-09-28",
-        "status": "good"
+        "expiresAt": "2026-10-13",
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -2392,7 +2377,7 @@
         "boughtName": "FDD Double Dunk",
         "category": "ice cream",
         "packSize": "46 oz",
-        "expiresAt": "2027-03-28",
+        "expiresAt": "2027-09-24",
         "qualityOnly": true,
         "status": "good"
       }
@@ -2441,7 +2426,7 @@
         "boughtName": "Cream Cheese Cup Strawberry",
         "category": "cream cheese",
         "packSize": "7.5 oz",
-        "expiresAt": "2026-10-01",
+        "expiresAt": "2026-10-13",
         "status": "expired"
       }
     ],
