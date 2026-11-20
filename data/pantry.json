@@ -329,45 +329,12 @@
     "updatedAt": 1795128687703
   },
   "grapes seedless green": {
-    "base": "grapes seedless green",
-    "displayName": "Grapes Seedless Green",
-    "unit": "lb",
-    "lots": [
-      {
-        "lotId": "rcpt-2026-11-15-r63i5ldiqd",
-        "qty": 0,
-        "unit": "lb",
-        "addedAt": "2026-11-15",
-        "receiptDate": "2026-11-15",
-        "storage": "fridge",
-        "source": "receipt",
-        "unconfirmed": false,
-        "history": [
-          {
-            "at": "2026-11-20",
-            "delta": 0,
-            "qtyAfter": 2.31,
-            "kind": "opened",
-            "openedAt": "2026-11-20"
-          },
-          {
-            "at": "2026-11-20",
-            "delta": -2.31,
-            "qtyAfter": 0,
-            "kind": "edit"
-          }
-        ],
-        "boughtName": "Grapes Seedless Green",
-        "category": "grapes",
-        "openedAt": "2026-11-20",
-        "expiresAt": "2026-11-23",
-        "status": "good"
-      }
-    ],
+    "status": null,
+    "updatedAt": 1795185978905,
+    "lots": [],
     "consumedReceiptLots": [
       "rcpt-2026-11-15-r63i5ldiqd"
-    ],
-    "updatedAt": 1795185968809
+    ]
   },
   "lime": {
     "base": "lime",
