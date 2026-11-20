@@ -298,7 +298,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-xeav3l71ft",
-        "qty": 2,
+        "qty": 1,
         "unit": "ea",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
@@ -307,12 +307,13 @@
         "unconfirmed": false,
         "boughtName": "Limes",
         "category": "limes",
-        "expiresAt": "2026-11-25",
+        "openedAt": "2026-11-19",
+        "expiresAt": null,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687703
+    "updatedAt": 1795142823890
   },
   "onion shallot": {
     "base": "onion shallot",
