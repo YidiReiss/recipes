@@ -1,5 +1,10 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-20 — Pantry inline Remove confirmation (`app.js` `v=20261120d`, `styles.css` `v=20261120d`, `index.html`)
+
+- **What changed (Muse-built directly, requested by Yidi Nov 20, 2026):** Tapping **Remove** on a pantry card no longer opens the browser's native `confirm()` dialog. It now swaps the button in place for a styled inline confirmation — **Remove? [Yes, remove] [Cancel]** (`.pantry-remove-confirm`, danger styling via `.btn.danger`) — matching the site's UI. State lives in `_pantryConfirmRemoveKey` (threaded through `pantryViewHTML` options like `editingTotalKey`, reset in `resetPantrySession`); **Yes, remove** calls `removePantryEntry`, **Cancel** restores the Remove button. The **Finished** button remains one-tap with no confirmation (reversible via the total editor).
+- **Verification:** Section 46(a) added to `smart-planning/commit2-ui-test.cjs`; Section 44(f) updated (inline confirm, no native `confirmFn`); Section 44(h) cache-buster updated to `v20261120d`. Suites: commit1-merge 56/56, commit2 174/174, cookmode-render 27/27, commit2-ui 365/365 — **622/622**.
+
 ## 2026-11-20 — Pantry "Finished" button + department classification fixes (`app.js` `v=20261120c`, `styles.css` `v=20261120c`, `index.html`, `data/shopping-sections.json`)
 
 - **What changed (Muse-built directly, approved by Yidi Nov 20, 2026):**
