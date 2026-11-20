@@ -1816,7 +1816,79 @@
                 "variant": "beef",
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795142686144,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "tomato stem",
+                    "lotId": "rcpt-2026-09-29-5652kt1wvx",
+                    "deductedQty": 0.81,
+                    "rawConvertedQty": 0.58,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-09-29-5652kt1wvx",
+                      "qty": 0.81,
+                      "unit": "lb",
+                      "addedAt": "2026-09-29",
+                      "receiptDate": "2026-09-29",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "boughtName": "Tomato Stem",
+                      "category": "tomatoes",
+                      "expiresAt": null,
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "tomato stem",
+                    "lotId": "rcpt-2026-11-01-1menk3sh34",
+                    "deductedQty": 0.19,
+                    "rawConvertedQty": 0.58,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-01-1menk3sh34",
+                      "qty": 0.79,
+                      "unit": "lb",
+                      "addedAt": "2026-11-01",
+                      "receiptDate": "2026-11-01",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "boughtName": "Tomato Stem",
+                      "category": "tomatoes",
+                      "expiresAt": null,
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "onion red",
+                    "lotId": "rcpt-2026-09-29-ac6vob10z3",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 0.72,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-09-29-ac6vob10z3",
+                      "qty": 1.15,
+                      "unit": "lb",
+                      "addedAt": "2026-09-29",
+                      "receiptDate": "2026-09-29",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "boughtName": "Onion Red",
+                      "category": "onions",
+                      "expiresAt": null,
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           }
