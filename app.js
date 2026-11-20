@@ -927,7 +927,7 @@ const SECTION_GENERIC_WORDS = new Set([
   'bunch', 'sprig', 'sprigs', 'clove', 'cloves', 'slice', 'slices', 'piece', 'pieces',
   'cube', 'cubes',
   'can', 'cans', 'package', 'packages', 'jar', 'jars', 'bottle', 'bottles', 'box', 'boxes',
-  'bag', 'bags', 'squeeze'
+  'bag', 'bags', 'squeeze', 'water'
 ]);
 /* Split a lookup key into distinctive, singularized words for the fallback
    match. Parentheticals are usually notes, not the item ("black pepper
@@ -15678,6 +15678,9 @@ function pantryViewHTML(options) {
         '<button type="button" class="pantry-item-total pantry-item-total-btn" data-pantry-edit-total="' + esc(baseKey) + '" title="Tap to edit total on hand">' +
           esc(totalSummary) +
         '</button>' +
+        (Number(pInfo.stockQty) > 0
+          ? '<button type="button" class="link-btn pantry-finished-btn" data-pantry-finished="' + esc(baseKey) + '" title="Mark finished — set total to none left">Finished</button>'
+          : '') +
         (isSavedTotal ? '<span class="pantry-saved-confirm" data-pantry-saved="total|' + esc(baseKey) + '">Saved ✓</span>' : '') +
       '</div>' +
       (isEditingTotal
@@ -15896,6 +15899,20 @@ function wirePantryEvents(app, rerender) {
         const [bk, lotId] = sgBtn.dataset.pantryStillgood.split('|');
         overridePantryLotStillGood(bk, lotId).catch(() => {});
         renderPantry(app);
+        return;
+      }
+      const finishedBtn = e.target.closest('[data-pantry-finished]');
+      if (finishedBtn) {
+        const bk = finishedBtn.dataset.pantryFinished;
+        const res = setPantryTotalQty(_pantryCache, bk, 0);
+        if (res.ok) {
+          _pantryEditingTotalKey = null;
+          savePantryLocal();
+          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+          savePantry(merged => { merged[bk] = snap; }, 'Mark pantry item finished: ' + bk).catch(() => {});
+          flashPantryLotSaved('total|' + bk, () => renderPantry(app));
+          renderPantry(app);
+        }
         return;
       }
       const editTotalBtn = e.target.closest('[data-pantry-edit-total]');

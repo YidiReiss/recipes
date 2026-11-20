@@ -6,7 +6,8 @@
     "Bread & Bakery",
     "Fresh Produce",
     "Cereal & Breakfast",
-    "Dairy & Eggs",
+    "Dairy",
+    "Refrigerated Items",
     "Grocery",
     "Deli & Sushi",
     "Frozen",
@@ -276,13 +277,13 @@
       "source": "seed-v1"
     },
     "butter": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
     },
     "buttermilk": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -318,7 +319,7 @@
       "source": "seed-v1"
     },
     "canned cream-style corn": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "low",
       "source": "seed-v1"
@@ -744,7 +745,7 @@
       "source": "seed-v1"
     },
     "cottage cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -756,7 +757,7 @@
       "source": "seed-v1"
     },
     "cream cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -942,7 +943,7 @@
       "source": "seed-v1"
     },
     "egg": {
-      "department": "Dairy & Eggs",
+      "department": "Refrigerated Items",
       "subcategory": "Eggs",
       "confidence": "high",
       "source": "seed-v1"
@@ -978,7 +979,7 @@
       "source": "seed-v1"
     },
     "feta": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1110,7 +1111,7 @@
       "source": "seed-v1"
     },
     "fresh mozzarella": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1296,13 +1297,13 @@
       "source": "seed-v1"
     },
     "grated parmesan": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
     },
     "grated parmesan cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1410,13 +1411,13 @@
       "source": "seed-v1"
     },
     "heavy cream": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
     },
     "heavy whipping cream": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -1597,7 +1598,7 @@
     },
     "lemon": {
       "department": "Fresh Produce",
-      "subcategory": "Fresh Fruit",
+      "subcategory": "Citrus Fruit",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1663,7 +1664,7 @@
     },
     "lime": {
       "department": "Fresh Produce",
-      "subcategory": "Fresh Fruit",
+      "subcategory": "Citrus Fruit",
       "confidence": "high",
       "source": "seed-v1"
     },
@@ -1698,7 +1699,7 @@
       "source": "seed-v1"
     },
     "low-fat milk": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -1770,19 +1771,19 @@
       "source": "seed-v1"
     },
     "milk": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
     },
     "milk (1 ½ tbsp)": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
     },
     "milk or soy milk": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "medium",
       "source": "seed-v1"
@@ -1806,7 +1807,7 @@
       "source": "seed-v1"
     },
     "mozzarella cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1818,7 +1819,7 @@
       "source": "seed-v1"
     },
     "muenster cheese (can mix mozzarella)": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1974,7 +1975,7 @@
       "source": "seed-v1"
     },
     "parmesan": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -1992,7 +1993,7 @@
       "source": "seed-v1"
     },
     "part-skim ricotta cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -2244,7 +2245,7 @@
       "source": "seed-v1"
     },
     "ricotta cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
@@ -2334,7 +2335,7 @@
       "source": "seed-v1"
     },
     "salted butter": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -2394,25 +2395,25 @@
       "source": "seed-v1"
     },
     "shredded cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
     },
     "shredded mozzarella": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
     },
     "shredded mozzarella cheese": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "seed-v1"
     },
     "shredded provolone or mozzarella": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "medium",
       "source": "seed-v1"
@@ -2472,7 +2473,7 @@
       "source": "seed-v1"
     },
     "sour cream": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -2754,13 +2755,13 @@
       "source": "seed-v1"
     },
     "unsalted butter": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
     },
     "unsalted butter (½ tbsp)": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Dairy",
       "confidence": "high",
       "source": "seed-v1"
@@ -3024,7 +3025,7 @@
       "source": "seed-v1"
     },
     "mozzarella": {
-      "department": "Dairy & Eggs",
+      "department": "Dairy",
       "subcategory": "Cheese",
       "confidence": "high",
       "source": "manual-20261115"
@@ -3100,6 +3101,258 @@
       "subcategory": "Baking Needs",
       "confidence": "high",
       "source": "manual-20261115"
+    },
+    "boulb distilled white vinegar": {
+      "department": "Grocery",
+      "subcategory": "Oils & Vinegars",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "hummus chili onion crunc": {
+      "department": "Refrigerated Items",
+      "subcategory": "Dips",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "pickles sour": {
+      "department": "Refrigerated Items",
+      "subcategory": "Pickles",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "jacks f x large egg": {
+      "department": "Refrigerated Items",
+      "subcategory": "Eggs",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "blueberry and vanilla go": {
+      "department": "Dairy",
+      "subcategory": "Cheese",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "kravy sour green apple candy": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Candy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "mr b feastables sour strikes assorted": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Candy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "3 pk crispy rice milk ch": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Candy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "osem bamba hazelnut cream": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Chips & Pretzels",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "boulb graham crackers sugar honey": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Chips & Pretzels",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "tuscanini potato chips olive oil salt vinegar": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Chips & Pretzels",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "oat bites peanut butter": {
+      "department": "Snacks & Sweets",
+      "subcategory": "Chips & Pretzels",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "sparkling water lemon 1": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "sparkling water cran cle": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "sparkling water raspber": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "holiday sparkling cranberry": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "starbucks iced coffee vanilla sweet cream": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "starbucks iced coffee white choco mocha": {
+      "department": "Beverages",
+      "subcategory": "Soft Drinks",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "tropicana prem oj w calcium": {
+      "department": "Beverages",
+      "subcategory": "Juice",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "freeze dried strawberry": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "freeze dried raspberry": {
+      "department": "Grocery",
+      "subcategory": "Dried Fruit & Nuts",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "galil mushrooms pieces stem": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "hearts of palm": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "first field crushed": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "roland coconut milk": {
+      "department": "Grocery",
+      "subcategory": "Canned Goods & Soups",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "pasta hearts of palm": {
+      "department": "Grocery",
+      "subcategory": "Pasta, Rice & Grains",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "paskesz mini marshmallows white": {
+      "department": "Grocery",
+      "subcategory": "Baking Needs",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "flaum smoked nova lox": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "tirat zvi turkey breast smoked": {
+      "department": "Deli & Sushi",
+      "subcategory": "Deli & Prepared Meats",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "turkey hill fdd double du": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "sorbet": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "kosher'us pelmeni homestyle beef": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "ungers pie crusts deep dish": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "plain pizza dough": {
+      "department": "Frozen",
+      "subcategory": "Frozen Foods",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "mandarin bag": {
+      "department": "Fresh Produce",
+      "subcategory": "Citrus Fruit",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "pear asian": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "grapes seedless green": {
+      "department": "Fresh Produce",
+      "subcategory": "Fresh Fruit",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "raw pecan": {
+      "department": "Fresh Produce",
+      "subcategory": "Nuts & Seeds",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "farms creamery margarine unsalted": {
+      "department": "Dairy",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "breakfast overnight oats ap": {
+      "department": "Dairy",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "breakfast overnight oats va": {
+      "department": "Dairy",
+      "subcategory": "Dairy",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
+    },
+    "veal neck bone": {
+      "department": "Meat, Poultry & Fish",
+      "subcategory": "Beef & Veal",
+      "confidence": "high",
+      "source": "pantry-audit-20261120"
     }
   }
 }
