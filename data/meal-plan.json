@@ -1923,34 +1923,7 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night · Favorite · Leftovers cover a lunch",
-                "cookedAt": 1795142692968,
-                "pantryDeductions": [
-                  {
-                    "baseKey": "butterfly chicken cutlet",
-                    "lotId": "rcpt-2026-11-15-1xu6tsggj6",
-                    "deductedQty": 2,
-                    "rawConvertedQty": 2,
-                    "ceilingDeductedQty": 2,
-                    "exactFractionUsed": false,
-                    "unit": "lb",
-                    "prevLot": {
-                      "lotId": "rcpt-2026-11-15-1xu6tsggj6",
-                      "qty": 3.76,
-                      "unit": "lb",
-                      "addedAt": "2026-11-15",
-                      "receiptDate": "2026-11-15",
-                      "storage": "freezer",
-                      "source": "receipt",
-                      "unconfirmed": false,
-                      "boughtName": "Butterfly Chicken Cutlets",
-                      "category": "meat",
-                      "expiresAt": "2027-08-12",
-                      "qualityOnly": true,
-                      "status": "good"
-                    }
-                  }
-                ]
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
               }
             ]
           }
