@@ -1,1 +1,2521 @@
-{}
+{
+  "garlic sleeve": {
+    "base": "garlic sleeve",
+    "displayName": "Garlic Sleeve",
+    "unit": "sleeve",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1j12eh31eq",
+        "qty": 1,
+        "unit": "sleeve",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Garlic Sleeve",
+        "category": "garlic",
+        "packSize": "sleeve",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687696
+  },
+  "solomons sliced beef pastrami": {
+    "base": "solomons sliced beef pastrami",
+    "displayName": "Sliced Beef Pastrami",
+    "unit": "6 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-vbh0371lvu",
+        "qty": 2,
+        "unit": "6 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sliced Beef Pastrami",
+        "category": "deli meat",
+        "packSize": "6 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687696
+  },
+  "tirat zvi turkey breast smoked": {
+    "base": "tirat zvi turkey breast smoked",
+    "displayName": "Turkey Breast Smoked (KP)",
+    "unit": "12 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1fl9w6zyve",
+        "qty": 1,
+        "unit": "12 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Turkey Breast Smoked (KP)",
+        "category": "deli meat",
+        "packSize": "12 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687697
+  },
+  "brussel sprout": {
+    "base": "brussel sprout",
+    "displayName": "Brussel Sprouts",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-hitrh31l3x",
+        "qty": 1.82,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Brussel Sprouts",
+        "category": "brussels sprouts",
+        "expiresAt": "2026-11-18",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687701
+  },
+  "cucumber hothouse english": {
+    "base": "cucumber hothouse english",
+    "displayName": "Cucumber Hothouse (English)",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1ktsk2l1xq",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Cucumber Hothouse (English)",
+        "category": "cucumbers",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-09-29-clfqqr1w9c",
+        "qty": 2,
+        "unit": "ea",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Cucumber Hothouse (English)",
+        "category": "cucumbers",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687702
+  },
+  "yam sweet": {
+    "base": "yam sweet",
+    "displayName": "Yam Sweet",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-55ftne1i49",
+        "qty": 1.3,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Yam Sweet",
+        "category": "yams",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-01-1bh9y2r1on",
+        "qty": 0.81,
+        "unit": "lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Yam Sweet",
+        "category": "yams",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687702
+  },
+  "tomato stem": {
+    "base": "tomato stem",
+    "displayName": "Tomato Stem",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-df799n9wbm",
+        "qty": 1.26,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Tomato Stem",
+        "category": "tomatoes",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-01-1menk3sh34",
+        "qty": 0.6,
+        "unit": "lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Tomato Stem",
+        "category": "tomatoes",
+        "openedAt": "2026-11-19",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [
+      "rcpt-2026-09-29-5652kt1wvx"
+    ],
+    "updatedAt": 1795142686256
+  },
+  "garlic loose": {
+    "base": "garlic loose",
+    "displayName": "Garlic Loose",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-h969c44vp2",
+        "qty": 0.09,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Garlic Loose",
+        "category": "garlic",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-01-hwf2sr1ns7",
+        "qty": 0.5,
+        "unit": "lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Garlic Loose",
+        "category": "garlic",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687703
+  },
+  "potato yukon gold loose": {
+    "base": "potato yukon gold loose",
+    "displayName": "Potato Yukon Gold Large - Loose",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1ta03sp1wv",
+        "qty": 1.83,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Potato Yukon Gold Large - Loose",
+        "category": "potatoes",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687703
+  },
+  "grapes seedless green": {
+    "base": "grapes seedless green",
+    "displayName": "Grapes Seedless Green",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-r63i5ldiqd",
+        "qty": 2.31,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Grapes Seedless Green",
+        "category": "grapes",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687703
+  },
+  "lime": {
+    "base": "lime",
+    "displayName": "Limes",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-xeav3l71ft",
+        "qty": 2,
+        "unit": "ea",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Limes",
+        "category": "limes",
+        "expiresAt": "2026-11-25",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687703
+  },
+  "onion shallot": {
+    "base": "onion shallot",
+    "displayName": "Onion Shallots",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-6l6b87hcan",
+        "qty": 0.4,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Onion Shallots",
+        "category": "shallots",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687704
+  },
+  "onion red": {
+    "base": "onion red",
+    "displayName": "Onion Red",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-pb3gad1lsc",
+        "qty": 0.66,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Onion Red",
+        "category": "onions",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-09-29-ac6vob10z3",
+        "qty": 0.15,
+        "unit": "lb",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Onion Red",
+        "category": "onions",
+        "openedAt": "2026-11-19",
+        "expiresAt": "2026-11-26",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795142686257
+  },
+  "apple granny smith": {
+    "base": "apple granny smith",
+    "displayName": "Apple Granny Smith Large",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1ocflo810r",
+        "qty": 1.08,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Apple Granny Smith Large",
+        "category": "apples",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687704
+  },
+  "butterfly chicken cutlet": {
+    "base": "butterfly chicken cutlet",
+    "displayName": "Butterfly Chicken Cutlets",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1xu6tsggj6",
+        "qty": 3.76,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "freezer",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Butterfly Chicken Cutlets",
+        "category": "meat",
+        "expiresAt": "2027-08-12",
+        "qualityOnly": true,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687704
+  },
+  "veal neck bone": {
+    "base": "veal neck bone",
+    "displayName": "Veal Neck Bones",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-10zhqp71w9",
+        "qty": null,
+        "unit": "lb",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "freezer",
+        "source": "receipt",
+        "unconfirmed": true,
+        "boughtName": "Veal Neck Bones",
+        "category": "meat",
+        "expiresAt": "2027-05-14",
+        "qualityOnly": true,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687704
+  },
+  "mr b feastables sour strikes assorted": {
+    "base": "mr b feastables sour strikes assorted",
+    "displayName": "Sour Strikes Assorted",
+    "unit": "4.5 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1p03hkyzsj",
+        "qty": 1,
+        "unit": "4.5 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sour Strikes Assorted",
+        "category": "candy",
+        "packSize": "4.5 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "tuscanini capers in brine": {
+    "base": "tuscanini capers in brine",
+    "displayName": "Capers in Brine",
+    "unit": "4.59 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-q2caucjuf9",
+        "qty": 1,
+        "unit": "4.59 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Capers in Brine",
+        "category": "capers",
+        "packSize": "4.59 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "galil mushrooms pieces stem": {
+    "base": "galil mushrooms pieces stem",
+    "displayName": "Mushrooms Pieces & Stems",
+    "unit": "8 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-d80j0etqfu",
+        "qty": 1,
+        "unit": "8 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Mushrooms Pieces & Stems",
+        "category": "mushrooms",
+        "packSize": "8 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "tonnelli marinara sauce": {
+    "base": "tonnelli marinara sauce",
+    "displayName": "Marinara Sauce",
+    "unit": "24 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-phd5tlpzyx",
+        "qty": 1,
+        "unit": "24 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Marinara Sauce",
+        "category": "pasta sauce",
+        "packSize": "24 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "bowl basket fettuccine": {
+    "base": "bowl basket fettuccine",
+    "displayName": "Fettuccine",
+    "unit": "16 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1et30vp1qx",
+        "qty": 1,
+        "unit": "16 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Fettuccine",
+        "category": "pasta",
+        "packSize": "16 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "roland coconut milk": {
+    "base": "roland coconut milk",
+    "displayName": "Coconut Milk",
+    "unit": "14 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-17v7ia0qzg",
+        "qty": 1,
+        "unit": "14 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Coconut Milk",
+        "category": "coconut milk",
+        "packSize": "14 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687705
+  },
+  "ungers pie crusts deep dish": {
+    "base": "ungers pie crusts deep dish",
+    "displayName": "Pie Crusts 9\" Deep Dish",
+    "unit": "17.5 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-v9k1pm14fi",
+        "qty": 1,
+        "unit": "17.5 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pie Crusts 9\" Deep Dish",
+        "category": "pie crusts",
+        "packSize": "17.5 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "dyna sea imitation crab stick": {
+    "base": "dyna sea imitation crab stick",
+    "displayName": "Imitation Crab Stick",
+    "unit": "16 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-15g0lexb6o",
+        "qty": 1,
+        "unit": "16 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Imitation Crab Stick",
+        "category": "imitation crab",
+        "packSize": "16 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "kosher'us pelmeni homestyle beef": {
+    "base": "kosher'us pelmeni homestyle beef",
+    "displayName": "Pelmeni Homestyle Beef",
+    "unit": "16 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1sp8u81adc",
+        "qty": 1,
+        "unit": "16 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "freezer",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pelmeni Homestyle Beef",
+        "category": "frozen dumplings",
+        "packSize": "16 oz",
+        "expiresAt": "2027-05-14",
+        "qualityOnly": true,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "tropicana prem oj w calcium": {
+    "base": "tropicana prem oj w calcium",
+    "displayName": "Prem OJ w/Calcium",
+    "unit": "46 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-aelu8s14qp",
+        "qty": 1,
+        "unit": "46 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Prem OJ w/Calcium",
+        "category": "orange juice",
+        "packSize": "46 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "starbucks iced coffee white choco mocha": {
+    "base": "starbucks iced coffee white choco mocha",
+    "displayName": "Iced Coffee White Choco Mocha",
+    "unit": "40 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-ggrn1v1v66",
+        "qty": 1,
+        "unit": "40 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Iced Coffee White Choco Mocha",
+        "category": "iced coffee",
+        "packSize": "40 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "tuscan milk plain 2%": {
+    "base": "tuscan milk plain 2%",
+    "displayName": "Milk Plain 2%",
+    "unit": "1/2 gal",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-1p5yd201yr",
+        "qty": 1,
+        "unit": "1/2 gal",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Milk Plain 2%",
+        "category": "milk",
+        "packSize": "1/2 gal",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687706
+  },
+  "jacks f x large egg": {
+    "base": "jacks f x large egg",
+    "displayName": "X-Large Eggs",
+    "unit": "12 ct",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-bhkajgkmuw",
+        "qty": 1,
+        "unit": "12 ct",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "X-Large Eggs",
+        "category": "eggs",
+        "packSize": "12 ct",
+        "expiresAt": "2026-12-06",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "polly o twist cheese mozzarella cheddar": {
+    "base": "polly o twist cheese mozzarella cheddar",
+    "displayName": "Twist Cheese Mozzarella & Cheddar",
+    "unit": "9 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-15-aamo81aat5",
+        "qty": 1,
+        "unit": "9 oz",
+        "addedAt": "2026-11-15",
+        "receiptDate": "2026-11-15",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Twist Cheese Mozzarella & Cheddar",
+        "category": "cheese",
+        "packSize": "9 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "breakfast overnight oats va": {
+    "base": "breakfast overnight oats va",
+    "displayName": "Breakfast Overnight Oats Va",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-51iwb21277",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Breakfast Overnight Oats Va",
+        "category": "overnight oats",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "breakfast overnight oats ap": {
+    "base": "breakfast overnight oats ap",
+    "displayName": "Breakfast Overnight Oats Ap",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-16f4m5unw8",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Breakfast Overnight Oats Ap",
+        "category": "overnight oats",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "pasta hearts of palm": {
+    "base": "pasta hearts of palm",
+    "displayName": "Pasta Hearts Of Palm",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1hc1qcq1yj",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pasta Hearts Of Palm",
+        "category": "pasta",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "pear asian": {
+    "base": "pear asian",
+    "displayName": "Pear Asian",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-6jnurd7kaq",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pear Asian",
+        "category": "asian pears",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "3 pk crispy rice milk ch": {
+    "base": "3 pk crispy rice milk ch",
+    "displayName": "3 Pk Crispy Rice Milk Ch",
+    "unit": "3 pk",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-2qtnxo1uov",
+        "qty": 1,
+        "unit": "3 pk",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "3 Pk Crispy Rice Milk Ch",
+        "category": "chocolate",
+        "packSize": "3 pk",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "sunscreen spf 30": {
+    "base": "sunscreen spf 30",
+    "displayName": "Sunscreen SPF 30",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-te1px83woj",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sunscreen SPF 30",
+        "category": "sunscreen",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687707
+  },
+  "hot honey mustard": {
+    "base": "hot honey mustard",
+    "displayName": "Hot Honey Mustard",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-yt1czoiuns",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Hot Honey Mustard",
+        "category": "mustard",
+        "expiresAt": "2027-11-08",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "part skim mozzarella": {
+    "base": "part skim mozzarella",
+    "displayName": "Part Skim Mozzarella Cheese",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1ehft9m104",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Part Skim Mozzarella Cheese",
+        "category": "mozzarella cheese",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "black bean": {
+    "base": "black bean",
+    "displayName": "Black Beans",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-capabo1j2j",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Black Beans",
+        "category": "black beans",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-08-1faz0p8l9v",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Black Beans",
+        "category": "black beans",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "hearts of palm": {
+    "base": "hearts of palm",
+    "displayName": "Hearts Of Palm",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-bb7s3k1ret",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Hearts Of Palm",
+        "category": "hearts of palm",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "hummus chili onion crunc": {
+    "base": "hummus chili onion crunc",
+    "displayName": "Hummus Chili Onion Crunc",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-kq7oh710fc",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Hummus Chili Onion Crunc",
+        "category": "hummus",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "plain pizza dough": {
+    "base": "plain pizza dough",
+    "displayName": "Plain Pizza Dough",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1pvtctf16s",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Plain Pizza Dough",
+        "category": "pizza dough",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "first field crushed": {
+    "base": "first field crushed",
+    "displayName": "First Field Crushed",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1bv2xyy15w",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "First Field Crushed",
+        "category": "crushed tomatoes",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687708
+  },
+  "blueberry and vanilla go": {
+    "base": "blueberry and vanilla go",
+    "displayName": "Blueberry And Vanilla Go",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1a8vxvj1a4",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Blueberry And Vanilla Go",
+        "category": "goat cheese",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "romaine heart": {
+    "base": "romaine heart",
+    "displayName": "Romaine Hearts",
+    "unit": "3 ct",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-14e1kug1ye",
+        "qty": 1,
+        "unit": "3 ct",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Romaine Hearts",
+        "category": "romaine lettuce",
+        "packSize": "3 ct",
+        "expiresAt": "2026-11-15",
+        "status": "expired"
+      },
+      {
+        "lotId": "rcpt-2026-09-29-k4c1jp1n3d",
+        "qty": 1,
+        "unit": "3 ct",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Romaine Hearts",
+        "category": "romaine lettuce",
+        "packSize": "3 ct",
+        "expiresAt": "2026-10-06",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "banana organic": {
+    "base": "banana organic",
+    "displayName": "Banana Organic",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1sju07d1q1",
+        "qty": 5,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Banana Organic",
+        "category": "bananas",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "freeze dried raspberry": {
+    "base": "freeze dried raspberry",
+    "displayName": "Freeze Dried Raspberries",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-r6meuy1to6",
+        "qty": 2,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Freeze Dried Raspberries",
+        "category": "freeze-dried fruit",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "tomatoes on the vine": {
+    "base": "tomatoes on the vine",
+    "displayName": "Tomatoes On The Vine",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1qkpbae1l7",
+        "qty": 2,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Tomatoes On The Vine",
+        "category": "tomatoes",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "strawberry": {
+    "base": "strawberry",
+    "displayName": "Strawberries",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-se9lbl13e9",
+        "qty": 1,
+        "unit": "lb",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Strawberries",
+        "category": "strawberries",
+        "packSize": "1 lb",
+        "expiresAt": "2026-11-10",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "freeze dried strawberry": {
+    "base": "freeze dried strawberry",
+    "displayName": "Freeze Dried Strawberrie",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1bvd7qq7dk",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Freeze Dried Strawberrie",
+        "category": "freeze-dried fruit",
+        "expiresAt": "2026-11-10",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "herb basil": {
+    "base": "herb basil",
+    "displayName": "Herb Basil",
+    "unit": "4 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1j84q8a1i6",
+        "qty": 1,
+        "unit": "4 oz",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Herb Basil",
+        "category": "basil",
+        "packSize": "4 oz",
+        "expiresAt": "2026-11-13",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687709
+  },
+  "bottle deposit": {
+    "base": "bottle deposit",
+    "displayName": "Bottle Deposit",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-v7qr7yw5s9",
+        "qty": 4,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bottle Deposit",
+        "category": "beverages",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-08-1t7gnuv51e",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bottle Deposit",
+        "category": "beverages",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-08-9e66w7crb9",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bottle Deposit",
+        "category": "beverages",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-11-08-btru3b773s",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bottle Deposit",
+        "category": "beverages",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687710
+  },
+  "holiday sparkling cranberry": {
+    "base": "holiday sparkling cranberry",
+    "displayName": "Holiday Sparkling Cranberry",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1u1627o1dz",
+        "qty": 4,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Holiday Sparkling Cranberry",
+        "category": "sparkling beverage",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687710
+  },
+  "carrots cut peeled": {
+    "base": "carrots cut peeled",
+    "displayName": "Carrots Cut & Peeled",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1bqcgtc19c",
+        "qty": 1.5,
+        "unit": "lb",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Carrots Cut & Peeled",
+        "category": "carrots",
+        "packSize": "1.5",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687710
+  },
+  "oat bites peanut butter": {
+    "base": "oat bites peanut butter",
+    "displayName": "Oat Bites Peanut Butter",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1f5ikngyr9",
+        "qty": 2,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Oat Bites Peanut Butter",
+        "category": "oat bites",
+        "expiresAt": "2027-05-07",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687710
+  },
+  "sparkling water lemon 1": {
+    "base": "sparkling water lemon 1",
+    "displayName": "Sparkling Water Lemon 1",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1wjlap92yq",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sparkling Water Lemon 1",
+        "category": "sparkling water",
+        "expiresAt": "2026-11-18",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687710
+  },
+  "sparkling water raspber": {
+    "base": "sparkling water raspber",
+    "displayName": "Sparkling Water Raspber",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-1dk0r1zql6",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sparkling Water Raspber",
+        "category": "sparkling water",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "sparkling water cran cle": {
+    "base": "sparkling water cran cle",
+    "displayName": "Sparkling Water Cran Cle",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-51spm7r3p7",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sparkling Water Cran Cle",
+        "category": "sparkling water",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "milk half gallon low fat": {
+    "base": "milk half gallon low fat",
+    "displayName": "Milk Half Gallon Low Fat",
+    "unit": "half gallon",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-08-he3gaq1n1u",
+        "qty": 1,
+        "unit": "half gallon",
+        "addedAt": "2026-11-08",
+        "receiptDate": "2026-11-08",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Milk Half Gallon Low Fat",
+        "category": "milk",
+        "packSize": "half gallon",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "mushrooms sliced white": {
+    "base": "mushrooms sliced white",
+    "displayName": "Mushrooms Sliced White",
+    "unit": "8 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1wkf8111td",
+        "qty": 1,
+        "unit": "8 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Mushrooms Sliced White",
+        "category": "mushrooms",
+        "packSize": "8 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "potato bag yukon gold": {
+    "base": "potato bag yukon gold",
+    "displayName": "Potato Bag Yukon Gold",
+    "unit": "5 lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-541hrukx4t",
+        "qty": 1,
+        "unit": "5 lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Potato Bag Yukon Gold",
+        "category": "potatoes",
+        "packSize": "5 lb",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "mandarin bag": {
+    "base": "mandarin bag",
+    "displayName": "Mandarin Bag",
+    "unit": "3 lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1ly656tpzz",
+        "qty": 1,
+        "unit": "3 lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Mandarin Bag",
+        "category": "mandarins",
+        "packSize": "3 lb",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "onion yellow globe loose": {
+    "base": "onion yellow globe loose",
+    "displayName": "Onion Yellow Globe - Loose",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-17xav0i1h4",
+        "qty": 2.23,
+        "unit": "lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Onion Yellow Globe - Loose",
+        "category": "onions",
+        "expiresAt": null,
+        "status": "good"
+      },
+      {
+        "lotId": "rcpt-2026-09-29-5w7dwrnfke",
+        "qty": 1.77,
+        "unit": "lb",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Onion Yellow Globe - Loose",
+        "category": "onions",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687711
+  },
+  "parsley italian": {
+    "base": "parsley italian",
+    "displayName": "Parsley Italian",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-88xrqt1snp",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Parsley Italian",
+        "category": "parsley",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "lemon": {
+    "base": "lemon",
+    "displayName": "Lemon Small",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1prp8uavk1",
+        "qty": 3,
+        "unit": "ea",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Lemon Small",
+        "category": "lemons",
+        "expiresAt": "2026-11-11",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "cucumber persian": {
+    "base": "cucumber persian",
+    "displayName": "Cucumber Persian",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-d17kw51pq2",
+        "qty": 0.88,
+        "unit": "lb",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Cucumber Persian",
+        "category": "cucumbers",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "pizza ball": {
+    "base": "pizza ball",
+    "displayName": "Pizza Balls",
+    "unit": "18 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-lfzmpl11wi",
+        "qty": 1,
+        "unit": "18 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pizza Balls",
+        "category": "pizza balls",
+        "packSize": "18 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "sorbet": {
+    "base": "sorbet",
+    "displayName": "Sorbet",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1hr6lqj17a",
+        "qty": 1,
+        "unit": "ea",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sorbet",
+        "category": "sorbet",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "puff pastry sheet": {
+    "base": "puff pastry sheet",
+    "displayName": "Puff Pastry Sheets",
+    "unit": "17.3 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1h9lrgjhzy",
+        "qty": 1,
+        "unit": "17.3 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "freezer",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Puff Pastry Sheets",
+        "category": "puff pastry",
+        "packSize": "17.3 oz",
+        "expiresAt": "2027-04-30",
+        "qualityOnly": true,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "pickles sour": {
+    "base": "pickles sour",
+    "displayName": "Pickles Sour",
+    "unit": "55 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1pbrst11ko",
+        "qty": 1,
+        "unit": "55 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Pickles Sour",
+        "category": "pickles",
+        "packSize": "55 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "cream cheese whipped": {
+    "base": "cream cheese whipped",
+    "displayName": "Cream Cheese Whipped",
+    "unit": "8 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-1mwfs9b1h5",
+        "qty": 1,
+        "unit": "8 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Cream Cheese Whipped",
+        "category": "cream cheese",
+        "packSize": "8 oz",
+        "expiresAt": "2026-11-15",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "string cheese mozzarella": {
+    "base": "string cheese mozzarella",
+    "displayName": "String Cheese Mozzarella",
+    "unit": "24 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-wjhhb5emmz",
+        "qty": 1,
+        "unit": "24 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "String Cheese Mozzarella",
+        "category": "string cheese",
+        "packSize": "24 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "feta cheese": {
+    "base": "feta cheese",
+    "displayName": "Feta Cheese 100% Sheep's Milk",
+    "unit": "8 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-11-01-iu04c51jk4",
+        "qty": 1,
+        "unit": "8 oz",
+        "addedAt": "2026-11-01",
+        "receiptDate": "2026-11-01",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Feta Cheese 100% Sheep's Milk",
+        "category": "feta cheese",
+        "packSize": "8 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "medley tomato": {
+    "base": "medley tomato",
+    "displayName": "Medley Tomatoes",
+    "unit": "1 pt",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-deo5t519nx",
+        "qty": 1,
+        "unit": "1 pt",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Medley Tomatoes",
+        "category": "tomatoes",
+        "packSize": "1 pt",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687712
+  },
+  "avocado ha": {
+    "base": "avocado ha",
+    "displayName": "Avocado Hass Large",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1ocqr0n1ku",
+        "qty": 3,
+        "unit": "ea",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Avocado Hass Large",
+        "category": "avocados",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687713
+  },
+  "potato idaho loose": {
+    "base": "potato idaho loose",
+    "displayName": "Potato Idaho - Loose",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1r8kttojwc",
+        "qty": 1.69,
+        "unit": "lb",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Potato Idaho - Loose",
+        "category": "potatoes",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687713
+  },
+  "apple gala": {
+    "base": "apple gala",
+    "displayName": "Apple Gala Small",
+    "unit": "lb",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-ipl0twdnzf",
+        "qty": 0.95,
+        "unit": "lb",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Apple Gala Small",
+        "category": "apples",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687713
+  },
+  "raw pecan": {
+    "base": "raw pecan",
+    "displayName": "Raw Pecans",
+    "unit": "ea",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-11cj7otg8q",
+        "qty": null,
+        "unit": "ea",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": true,
+        "boughtName": "Raw Pecans",
+        "category": "pecans",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687713
+  },
+  "jj cassone bagels assorted": {
+    "base": "jj cassone bagels assorted",
+    "displayName": "Bagels Assorted",
+    "unit": "6 pack",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-766794dhm3",
+        "qty": 1,
+        "unit": "6 pack",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bagels Assorted",
+        "category": "bagels",
+        "packSize": "6 pack",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "perfection aluminum pan": {
+    "base": "perfection aluminum pan",
+    "displayName": "Aluminum Pan",
+    "unit": "9x13 1/2 size deep (6051)",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1ljrrbzkje",
+        "qty": 5,
+        "unit": "9x13 1/2 size deep (6051)",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Aluminum Pan",
+        "category": "aluminum pans",
+        "packSize": "9x13 1/2 size deep (6051)",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "kravy sour green apple candy": {
+    "base": "kravy sour green apple candy",
+    "displayName": "Sour Green Apple Candy",
+    "unit": "10.2 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1dc5m7m1dn",
+        "qty": 1,
+        "unit": "10.2 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sour Green Apple Candy",
+        "category": "candy",
+        "packSize": "10.2 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "paskesz mini marshmallows white": {
+    "base": "paskesz mini marshmallows white",
+    "displayName": "Mini Marshmallows White",
+    "unit": "8 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1m4nsyt67q",
+        "qty": 1,
+        "unit": "8 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Mini Marshmallows White",
+        "category": "marshmallows",
+        "packSize": "8 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "perfection plates white": {
+    "base": "perfection plates white",
+    "displayName": "Plates 9\" White",
+    "unit": "100 ct",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-e5y1te18z8",
+        "qty": 1,
+        "unit": "100 ct",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Plates 9\" White",
+        "category": "plates",
+        "packSize": "100 ct",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "perfection bowls white": {
+    "base": "perfection bowls white",
+    "displayName": "Bowls White",
+    "unit": "12 oz 100 ct",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-3ms4k21rbt",
+        "qty": 1,
+        "unit": "12 oz 100 ct",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bowls White",
+        "category": "bowls",
+        "packSize": "12 oz 100 ct",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "boulb graham crackers sugar honey": {
+    "base": "boulb graham crackers sugar honey",
+    "displayName": "Graham Crackers L/F Sugar Honey",
+    "unit": "14.4 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1jc7xwug9x",
+        "qty": 1,
+        "unit": "14.4 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Graham Crackers L/F Sugar Honey",
+        "category": "graham crackers",
+        "packSize": "14.4 oz",
+        "expiresAt": "2028-09-28",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687714
+  },
+  "osem bamba hazelnut cream": {
+    "base": "osem bamba hazelnut cream",
+    "displayName": "Bamba Hazelnut Cream",
+    "unit": "2.1 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-vtzjyydfqv",
+        "qty": 2,
+        "unit": "2.1 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Bamba Hazelnut Cream",
+        "category": "snacks",
+        "packSize": "2.1 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "tuscanini potato chips olive oil salt vinegar": {
+    "base": "tuscanini potato chips olive oil salt vinegar",
+    "displayName": "Potato Chips Olive Oil Salt&Vinegar",
+    "unit": "1.1 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1ra88hs2ah",
+        "qty": 3,
+        "unit": "1.1 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Potato Chips Olive Oil Salt&Vinegar",
+        "category": "potato chips",
+        "packSize": "1.1 oz",
+        "expiresAt": "2028-09-28",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "liebers semi sweet real choco chip": {
+    "base": "liebers semi sweet real choco chip",
+    "displayName": "Semi Sweet Real Choco Chips",
+    "unit": "9 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1ert9an16b",
+        "qty": 2,
+        "unit": "9 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Semi Sweet Real Choco Chips",
+        "category": "chocolate chips",
+        "packSize": "9 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "boulb distilled white vinegar": {
+    "base": "boulb distilled white vinegar",
+    "displayName": "Distilled White Vinegar 5% Acidity",
+    "unit": "32 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-r28d4n1do9",
+        "qty": 1,
+        "unit": "32 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Distilled White Vinegar 5% Acidity",
+        "category": "vinegar",
+        "packSize": "32 oz",
+        "expiresAt": "2028-09-28",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "tabatchnick broth beef": {
+    "base": "tabatchnick broth beef",
+    "displayName": "Broth Beef",
+    "unit": "32 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1mgaa9ds6u",
+        "qty": 1,
+        "unit": "32 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Broth Beef",
+        "category": "beef broth",
+        "packSize": "32 oz",
+        "expiresAt": "2027-09-29",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "tabatchnick broth vegetable": {
+    "base": "tabatchnick broth vegetable",
+    "displayName": "Broth Vegetable",
+    "unit": "32 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-ppkv481e0n",
+        "qty": 1,
+        "unit": "32 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Broth Vegetable",
+        "category": "vegetable broth",
+        "packSize": "32 oz",
+        "expiresAt": "2027-09-29",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "tabatchnick broth chicken": {
+    "base": "tabatchnick broth chicken",
+    "displayName": "Broth Chicken",
+    "unit": "32 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1h2jyniryy",
+        "qty": 4,
+        "unit": "32 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Broth Chicken",
+        "category": "chicken broth",
+        "packSize": "32 oz",
+        "expiresAt": "2027-09-29",
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687715
+  },
+  "la flor oregano whole": {
+    "base": "la flor oregano whole",
+    "displayName": "Oregano Whole",
+    "unit": "4.5 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-10uta0b1lh",
+        "qty": 1,
+        "unit": "4.5 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Oregano Whole",
+        "category": "oregano",
+        "packSize": "4.5 oz",
+        "expiresAt": "2026-10-06",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "pardes farms broccoli floret": {
+    "base": "pardes farms broccoli floret",
+    "displayName": "Broccoli Florets",
+    "unit": "24 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1vgnl7h1y6",
+        "qty": 1,
+        "unit": "24 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Broccoli Florets",
+        "category": "frozen broccoli",
+        "packSize": "24 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "turkey hill fdd double du": {
+    "base": "turkey hill fdd double du",
+    "displayName": "FDD Double Dunk",
+    "unit": "46 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-36nsvn1o4h",
+        "qty": 1,
+        "unit": "46 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "freezer",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "FDD Double Dunk",
+        "category": "ice cream",
+        "packSize": "46 oz",
+        "expiresAt": "2027-03-28",
+        "qualityOnly": true,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "farms creamery margarine unsalted": {
+    "base": "farms creamery margarine unsalted",
+    "displayName": "Margarine Unsalted",
+    "unit": "4/16 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-yrun7l8cly",
+        "qty": 1,
+        "unit": "4/16 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Margarine Unsalted",
+        "category": "margarine",
+        "packSize": "4/16 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "philly cream cheese cup strawberry": {
+    "base": "philly cream cheese cup strawberry",
+    "displayName": "Cream Cheese Cup Strawberry",
+    "unit": "7.5 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1vanqvt14v",
+        "qty": 1,
+        "unit": "7.5 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "fridge",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Cream Cheese Cup Strawberry",
+        "category": "cream cheese",
+        "packSize": "7.5 oz",
+        "expiresAt": "2026-10-01",
+        "status": "expired"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "flaum smoked nova lox": {
+    "base": "flaum smoked nova lox",
+    "displayName": "Smoked Nova Lox",
+    "unit": "6 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-1u1pxnm1uv",
+        "qty": 1,
+        "unit": "6 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Smoked Nova Lox",
+        "category": "smoked salmon",
+        "packSize": "6 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "millers sliced orange muenster": {
+    "base": "millers sliced orange muenster",
+    "displayName": "Sliced Orange Muenster",
+    "unit": "6 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-s887ym1i8p",
+        "qty": 1,
+        "unit": "6 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Sliced Orange Muenster",
+        "category": "muenster cheese",
+        "packSize": "6 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687716
+  },
+  "starbucks iced coffee vanilla sweet cream": {
+    "base": "starbucks iced coffee vanilla sweet cream",
+    "displayName": "Iced Coffee C/B Vanilla Sweet Cream",
+    "unit": "40 oz",
+    "lots": [
+      {
+        "lotId": "rcpt-2026-09-29-12o5lql1wj",
+        "qty": 1,
+        "unit": "40 oz",
+        "addedAt": "2026-09-29",
+        "receiptDate": "2026-09-29",
+        "storage": "pantry",
+        "source": "receipt",
+        "unconfirmed": false,
+        "boughtName": "Iced Coffee C/B Vanilla Sweet Cream",
+        "category": "iced coffee",
+        "packSize": "40 oz",
+        "expiresAt": null,
+        "status": "good"
+      }
+    ],
+    "consumedReceiptLots": [],
+    "updatedAt": 1795128687717
+  }
+}
