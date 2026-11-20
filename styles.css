@@ -3981,6 +3981,150 @@ body.has-timer-dock .cook-mode-overlay {
   margin-bottom: 0.12rem;
 }
 
+/* Batch 3 (v20261120b): Search bar, department headers, tappable total & lot expiry editors, soon-chip button, card highlight */
+.pantry-search-bar {
+  margin: 0.25rem 0 0.9rem;
+}
+
+.pantry-search-input {
+  width: 100%;
+  max-width: 24rem;
+  font-size: 0.92rem;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.pantry-search-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pantry-no-matches {
+  margin: 0.75rem 0;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.pantry-dept-group {
+  margin-bottom: 1.15rem;
+}
+
+.pantry-dept-header {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0.65rem 0 0.45rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pantry-dept-count {
+  font-weight: 500;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.pantry-item-total-row {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.pantry-item-total-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px dashed transparent;
+  border-radius: 5px;
+  padding: 0.1rem 0.35rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.pantry-item-total-btn:hover,
+.pantry-item-total-btn:focus-visible {
+  border-color: var(--accent);
+  background: rgba(160, 61, 26, 0.06);
+}
+
+.pantry-total-qty-editor {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.pantry-total-edit-input {
+  width: 4.5rem;
+  font-size: 0.86rem;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.pantry-lot-expiry-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  padding: 0.05rem 0.25rem;
+  font: inherit;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.pantry-lot-expiry-btn:hover,
+.pantry-lot-expiry-btn:focus-visible {
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.pantry-lot-expiry-editor {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.pantry-expiry-date-input {
+  font-size: 0.82rem;
+  padding: 0.16rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+button.pantry-soon-chip {
+  appearance: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.pantry-soon-chip:hover,
+button.pantry-soon-chip:focus-visible {
+  border-color: #b7791f;
+  box-shadow: 0 0 0 2px rgba(183, 121, 31, 0.18);
+}
+
+.pantry-card-highlight {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(160, 61, 26, 0.18);
+  transition: box-shadow 0.25s ease, outline-color 0.25s ease;
+}
+
 /* ============================================================
    END PANTRY TRACKING STYLES
    ============================================================ */
