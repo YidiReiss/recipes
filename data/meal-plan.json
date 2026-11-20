@@ -2089,23 +2089,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "roasted-brussel-sprouts-with-sriracha-aioli",
-                "drafted": false,
-                "reason": null,
-                "locked": false
-              },
-              {
-                "recipe": "osvo-babulas",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": false,
-                "reason": null,
-                "locked": true
-              }
-            ]
+            "note": ""
           },
           "dinner": {
             "recipe": null,
