@@ -2015,14 +2015,21 @@
     "lots": [
       {
         "lotId": "rcpt-2026-09-29-1ocqr0n1ku",
-        "qty": 3,
+        "qty": 1,
         "unit": "ea",
         "addedAt": "2026-09-29",
         "receiptDate": "2026-09-29",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -2,
+            "qtyAfter": 1,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "Avocado Hass Large",
         "category": "avocados",
         "expiresAt": null,
@@ -2030,7 +2037,7 @@
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687713
+    "updatedAt": 1795179531472
   },
   "potato idaho loose": {
     "base": "potato idaho loose",
