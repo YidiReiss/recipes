@@ -1816,7 +1816,79 @@
                 "variant": "beef",
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795174528985,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "tomato stem",
+                    "lotId": "rcpt-2026-09-29-5652kt1wvx",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 0.58,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "dishTitle": "Burritos",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-09-29-5652kt1wvx",
+                      "qty": 1.62,
+                      "unit": "lb",
+                      "addedAt": "2026-09-29",
+                      "receiptDate": "2026-09-29",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [
+                        {
+                          "at": "2026-11-20",
+                          "delta": -0.81,
+                          "qtyAfter": 0,
+                          "kind": "cooked"
+                        },
+                        {
+                          "at": "2026-11-20",
+                          "delta": 0.81,
+                          "qtyAfter": 0.81,
+                          "kind": "restore"
+                        },
+                        {
+                          "at": "2026-11-20",
+                          "delta": 0.81,
+                          "qtyAfter": 1.62,
+                          "kind": "restore"
+                        }
+                      ],
+                      "boughtName": "Tomato Stem",
+                      "category": "tomatoes",
+                      "expiresAt": null,
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "onion red",
+                    "lotId": "rcpt-2026-11-15-pb3gad1lsc",
+                    "deductedQty": 0.66,
+                    "rawConvertedQty": 0.72,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "dishTitle": "Burritos",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-pb3gad1lsc",
+                      "qty": 0.66,
+                      "unit": "lb",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "Onion Red",
+                      "category": "onions",
+                      "expiresAt": "2026-12-15",
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           }
