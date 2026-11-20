@@ -111,6 +111,10 @@ globalThis._savePantryInFlight = 0;
  ['RAW_MEAT_POULTRY_FISH_RE', 'COOKED_DELI_CANNED_RE', 'PANTRY_NON_FOOD_RE'].forEach(n => geval(extractDeclSemi(n)));
 ['PANTRY_GENERIC_MATCH_WORDS'].forEach(n => geval(extractDecl(n)));
 globalThis._pantryEditingLotKey = null;
+globalThis._pantryEditingTotalKey = null;
+globalThis._pantryEditingExpiryKey = null;
+globalThis._pantrySearchQuery = '';
+globalThis._pantryHighlightTimer = null;
 globalThis._pantrySavedLotKey = null;
 globalThis._pantrySavedTimer = null;
 geval(SRC.match(/let _savePlanChain = Promise\.resolve\(\);/)[0] + '\n' +
@@ -167,7 +171,7 @@ extract('parseQty', true).forEach(src => geval(src));
  'clampCookStepIndex', 'formatScaledIngredientLine', 'cookModeIngredientsHTML',
  'cookModeStepHTML',
  'stopStepSpeech', 'speakRecipeStepText',
- /* Pantry Tracking (v20261119c + Bridge git-v18 + v20261120a Batch 2) */
+ /* Pantry Tracking (v20261119c + Bridge git-v18 + v20261120a Batch 2 + v20261120b Batch 3) */
  'getShelfLifeTable', 'getUnitConversionsMap', 'lookupUnitConversion',
  'isRawMeatPoultryFishKey', 'lookupShelfLife', 'defaultStorageForPantryItem',
  'addDaysYmd', 'todayPantryYmd', 'computeLotExpiry', 'evaluateLotStatus', 'isLotExpiringSoon',
@@ -176,12 +180,13 @@ extract('parseQty', true).forEach(src => geval(src));
  'convertPantryQty', 'resolvePantryEntryKey', 'isPantryNonFoodKey', 'mergeReceiptStockIntoPantry',
  'getPantryHaveFor', 'applyPantryToShopItem',
  'deductIngredientFromPantryMap', 'restorePantryDeductionsToMap',
- 'setPantryLotQty', 'setPantryLotOpened', 'pantryItemSupportsOpened', 'formatPantryLotHistoryEvent',
+ 'setPantryLotQty', 'setPantryTotalQty', 'setPantryLotOpened', 'setPantryLotExpiry',
+ 'pantryItemSupportsOpened', 'formatPantryLotHistoryEvent',
  'toggleDishCooked',
  'savePantryLocal', 'loadPantryLocal', 'setPantryCache', 'resetPantrySession',
  'bridgeReadPantry', 'fetchBridgePantryStock', 'ensurePantryLoaded', 'savePantry',
  'setPantryManualStock', 'removePantryEntry', 'overridePantryLotStillGood', 'switchPantryLotStorage',
- 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'fmtPantryDate', 'fmtPantryQty', 'flashPantryLotSaved', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
+ 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'fmtPantryDate', 'fmtPantryQty', 'flashPantryLotSaved', 'scrollToPantryCard', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
 ].forEach(n => geval(extract(n) + '\n;globalThis.' + n + ' = ' + n + ';'));
 /* speakTimerAlarm closes over the module-level _alarmWatchdogId (Fix 1):
    load both in ONE eval unit so the binding survives (a bare `let` in its
@@ -5734,7 +5739,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      indexHtml43.includes('v=20261120a'));
+      /v=20261120[ab]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -5945,6 +5950,330 @@ async function main() {
       contRev.convertible === true && contRev.qty === 3 &&
       contNarrow.convertible === false);
 
+    // =========================================================================
+    // Section 44 — v20261120b Pantry Batch 3 (8 items: 44a through 44h)
+    // =========================================================================
+
+    // 44(a) Item 1: Un-mark cooked restores pantry ONCE (no double-restore across savePantry)
+    globalThis.__pantryTodayYmd = '2026-11-20';
+    globalThis.shoppingSections = JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'data', 'shopping-sections.json'), 'utf8'));
+    const testBurritos44 = {
+      id: 'test-burritos-44',
+      title: 'Test Burritos 44',
+      categories: ['main'],
+      kosher_status: 'meat',
+      servings: '4',
+      ingredients: [
+        {
+          section: '',
+          items: [
+            { qty: '0.81', unit: 'lb', item: 'chicken breast' },
+            { qty: '1', unit: 'can', item: 'black beans (15 oz)' }
+          ]
+        }
+      ]
+    };
+    globalThis.byId['test-burritos-44'] = testBurritos44;
+    resetPantrySession();
+    const initialCook44 = normalizePantryData({
+      'chicken breast': {
+        displayName: 'Chicken Breast',
+        unit: 'lb',
+        lots: [{ lotId: 'cb-44', qty: 3.16, unit: 'lb', storage: 'freezer', storageExplicit: true, addedAt: '2026-11-15', source: 'receipt' }]
+      },
+      'black bean': {
+        displayName: 'Black Beans',
+        unit: 'unit',
+        lots: [{ lotId: 'bb-44', qty: 3, unit: 'unit', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    setPantryCache(initialCook44, '2026-11-20');
+    const days44 = blankDays();
+    days44[0].dinner.dishes = [{ recipe: 'test-burritos-44', scale: 1 }];
+    setPlan({ '2026-11-15': { days: days44 } });
+
+    // Intercept fetch & ghPut for data/pantry.json so savePantry runs its full merge+mutator path!
+    let remotePantryJson44 = JSON.stringify(_pantryCache);
+    const savedFetch44 = globalThis.fetch;
+    const savedGhPut44 = globalThis.ghPut;
+    globalThis.fetch = async (url) => {
+      if (String(url).includes('data%2Fpantry.json') || String(url).includes('data/pantry.json')) {
+        return { ok: true, status: 200, json: async () => ({ ok: true, content: remotePantryJson44 }) };
+      }
+      return savedFetch44(url);
+    };
+    globalThis.ghPut = async (p, text) => {
+      if (p === 'data/pantry.json') {
+        remotePantryJson44 = text;
+        return { ok: true };
+      }
+      return savedGhPut44(p, text);
+    };
+
+    // Mark cooked -> deducts 0.81 lb -> ceiling 1 lb chicken breast (3.16 -> 2.16) and 1 unit black bean (3 -> 2)
+    await toggleDishCooked('2026-11-15', 0, 'dinner', 0, {
+      todayYmd: '2026-11-20',
+      nowMs: 1795176000000
+    });
+    const cbAfterCook44 = JSON.parse(JSON.stringify(_pantryCache['chicken breast'].lots[0]));
+    const bbAfterCook44 = JSON.parse(JSON.stringify(_pantryCache['black bean'].lots[0]));
+
+    // Un-mark cooked (with full savePantry execution!) -> must restore ONCE back to 3.16 lb (not 4.16 lb) and 3 unit (not 4 unit)
+    await toggleDishCooked('2026-11-15', 0, 'dinner', 0, {
+      todayYmd: '2026-11-20'
+    });
+    const cbAfterUncook44 = JSON.parse(JSON.stringify(_pantryCache['chicken breast'].lots[0]));
+    const bbAfterUncook44 = JSON.parse(JSON.stringify(_pantryCache['black bean'].lots[0]));
+    const persistedAfterUncook44 = JSON.parse(remotePantryJson44);
+    globalThis.fetch = savedFetch44;
+    globalThis.ghPut = savedGhPut44;
+
+    check('Section 44(a) (un-mark cooked restores once): marking cooked deducts 3.16->2.16 lb and records 1 cooked event; un-marking cooked restores once to 3.16 lb (not 4.16) in both _pantryCache and persisted data/pantry.json with exactly 1 restore event',
+      Math.abs(cbAfterCook44.qty - 2.16) < 0.001 &&
+      cbAfterCook44.history.filter(h => h.kind === 'cooked').length === 1 &&
+      bbAfterCook44.qty === 2 &&
+      Math.abs(cbAfterUncook44.qty - 3.16) < 0.001 &&
+      Math.abs(persistedAfterUncook44['chicken breast'].lots[0].qty - 3.16) < 0.001 &&
+      cbAfterUncook44.history.filter(h => h.kind === 'cooked').length === 1 &&
+      cbAfterUncook44.history.filter(h => h.kind === 'restore').length === 1 &&
+      bbAfterUncook44.qty === 3 &&
+      persistedAfterUncook44['black bean'].lots[0].qty === 3 &&
+      bbAfterUncook44.history.filter(h => h.kind === 'restore').length === 1);
+
+    // 44(b) Item 2: Black beans with parenthetical pack size ("black beans (15 oz)")
+    const bbParenMap44 = normalizePantryData({
+      'black bean': {
+        displayName: 'Black Beans',
+        unit: 'unit',
+        lots: [{ lotId: 'bb-p1', qty: 3, unit: 'unit', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', source: 'receipt' }]
+      },
+      'green bean': {
+        displayName: 'Green Beans',
+        unit: 'lb',
+        lots: [{ lotId: 'gb-p1', qty: 1, unit: 'lb', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const resolvedParen44 = resolvePantryEntryKey('black beans (15 oz)', bbParenMap44);
+    const convParenCan44 = convertPantryQty('black beans (15 oz)', 1, 'can', 'unit');
+    const convParenLb44 = convertPantryQty('black beans (15 oz)', 1, 'unit', 'lb');
+    const dedParen44 = deductIngredientFromPantryMap(bbParenMap44, 'black beans (15 oz)', 1, 'can', { todayYmd: '2026-11-20', dishTitle: 'Chicken Black Bean Burritos' });
+    check('Section 44(b) (parenthetical pack size resolution & deduction): "black beans (15 oz)" resolves to "black bean", converts 1 can -> 1 unit and 1 unit -> 0.94 lb, and deducts 1 unit leaving qty 2 with cooked history',
+      resolvedParen44 === 'black bean' &&
+      convParenCan44.convertible === true && convParenCan44.qty === 1 &&
+      convParenLb44.convertible === true && Math.abs(convParenLb44.qty - 0.94) < 0.01 &&
+      dedParen44.length === 1 &&
+      dedParen44[0].deductedQty === 1 &&
+      bbParenMap44['black bean'].lots[0].qty === 2 &&
+      bbParenMap44['black bean'].lots[0].history.length === 1 &&
+      bbParenMap44['black bean'].lots[0].history[0].kind === 'cooked' &&
+      bbParenMap44['black bean'].lots[0].history[0].dish === 'Chicken Black Bean Burritos');
+
+    // 44(c) Item 3: Editable total quantity in card header (setPantryTotalQty + UI)
+    const totMap44 = normalizePantryData({
+      'onion': {
+        displayName: 'Onion',
+        unit: 'lb',
+        lots: [
+          { lotId: 'on-old', qty: 1, unit: 'lb', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-10', receiptDate: '2026-11-10', source: 'receipt' },
+          { lotId: 'on-new', qty: 2, unit: 'lb', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }
+        ]
+      }
+    }, '2026-11-20');
+    // Decrease from 3 -> 1.5: drains oldest lot (1 -> 0) and 0.5 from newest lot (2 -> 1.5)
+    const totDecRes = setPantryTotalQty(totMap44, 'onion', 1.5, '2026-11-20');
+    const lotsAfterDec44 = JSON.parse(JSON.stringify(totMap44['onion'].lots));
+    const totAfterDec44 = getPantryHaveFor('onion', 'lb', { todayYmd: '2026-11-20', pantryMap: totMap44 }).stockQty;
+    // Increase from 1.5 -> 4: adds +2.5 to newest confirmed lot (on-new: 1.5 -> 4)
+    const totIncRes = setPantryTotalQty(totMap44, 'onion', 4, '2026-11-20');
+    const lotsAfterInc44 = JSON.parse(JSON.stringify(totMap44['onion'].lots));
+    const totAfterInc44 = getPantryHaveFor('onion', 'lb', { todayYmd: '2026-11-20', pantryMap: totMap44 }).stockQty;
+    // Set to 0: sets all confirmed lots to 0 (used up)
+    const totZeroRes = setPantryTotalQty(totMap44, 'onion', 0, '2026-11-20');
+    const lotsAfterZero44 = JSON.parse(JSON.stringify(totMap44['onion'].lots));
+    const totAfterZero44 = getPantryHaveFor('onion', 'lb', { todayYmd: '2026-11-20', pantryMap: totMap44 }).stockQty;
+    const htmlTotalEdit44 = pantryViewHTML({ pantryMap: totMap44, todayYmd: '2026-11-20', editingTotalKey: 'onion', savedKey: 'total|onion', pricesMap: {} });
+    check('Section 44(c) (editable total quantity in card header): decreasing drains FIFO across lots with edit history, increasing adds to newest confirmed lot, 0 marks all lots used-up, and header renders inline total editor & Saved ✓',
+      totDecRes.ok === true &&
+      totAfterDec44 === 1.5 &&
+      lotsAfterDec44.find(l => l.lotId === 'on-old').qty === 0 &&
+      lotsAfterDec44.find(l => l.lotId === 'on-old').history.some(h => h.kind === 'edit' && h.delta === -1) &&
+      lotsAfterDec44.find(l => l.lotId === 'on-new').qty === 1.5 &&
+      lotsAfterDec44.find(l => l.lotId === 'on-new').history.some(h => h.kind === 'edit' && h.delta === -0.5) &&
+      totIncRes.ok === true &&
+      totAfterInc44 === 4 &&
+      lotsAfterInc44.find(l => l.lotId === 'on-new').qty === 4 &&
+      totZeroRes.ok === true &&
+      totAfterZero44 === 0 &&
+      lotsAfterZero44.every(l => l.qty === 0) &&
+      htmlTotalEdit44.includes('data-pantry-total-in="onion"') &&
+      htmlTotalEdit44.includes('data-pantry-total-save="onion"') &&
+      htmlTotalEdit44.includes('Saved ✓'));
+
+    // 44(d) Item 4: Editable expiry date per lot (setPantryLotExpiry + Reset to auto + UI)
+    const expMap44 = normalizePantryData({
+      'solomons sliced beef pastrami': {
+        displayName: 'Sliced Beef Pastrami',
+        unit: '6 oz',
+        lots: [{ lotId: 'pas-exp-1', qty: 2, unit: '6 oz', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const autoExp44 = expMap44['solomons sliced beef pastrami'].lots[0].expiresAt; // 2026-11-15 + 14 = 2026-11-29
+    // Set explicit future expiry
+    const setExpFuture = setPantryLotExpiry(expMap44, 'solomons sliced beef pastrami', 'pas-exp-1', '2026-12-05', '2026-11-20');
+    const lotAfterFutureExp = JSON.parse(JSON.stringify(expMap44['solomons sliced beef pastrami'].lots[0]));
+    // Re-normalizing preserves explicit expiresAt
+    const renormFuture = normalizePantryData(expMap44, '2026-11-20');
+    // Set explicit past expiry -> lot status flips to 'expired' and getPantryHaveFor moves lot to expiredLots
+    const setExpPast = setPantryLotExpiry(expMap44, 'solomons sliced beef pastrami', 'pas-exp-1', '2026-11-10', '2026-11-20');
+    const lotAfterPastExp = JSON.parse(JSON.stringify(expMap44['solomons sliced beef pastrami'].lots[0]));
+    const haveAfterPastExp = getPantryHaveFor('solomons sliced beef pastrami', '6 oz', { todayYmd: '2026-11-20', pantryMap: expMap44 });
+    // Reset to auto (null) -> clears expiresAtExplicit, recomputes auto expiry, flips back to 'good'
+    const setExpAuto = setPantryLotExpiry(expMap44, 'solomons sliced beef pastrami', 'pas-exp-1', null, '2026-11-20');
+    const lotAfterAutoExp = JSON.parse(JSON.stringify(expMap44['solomons sliced beef pastrami'].lots[0]));
+    const htmlExpiryClosed44 = pantryViewHTML({ pantryMap: expMap44, todayYmd: '2026-11-20', pricesMap: {} });
+    const htmlExpiryOpen44 = pantryViewHTML({ pantryMap: expMap44, todayYmd: '2026-11-20', editingExpiryKey: 'solomons sliced beef pastrami|pas-exp-1', pricesMap: {} });
+    check('Section 44(d) (editable lot expiry date + Reset to auto): explicit date persists across normalize, past date flips lot & entry to expired, null resets to auto shelf-life expiry, records expiry history, and UI renders tappable date button & inline date editor',
+      autoExp44 === '2026-11-29' &&
+      setExpFuture.ok === true &&
+      lotAfterFutureExp.expiresAt === '2026-12-05' &&
+      lotAfterFutureExp.expiresAtExplicit === true &&
+      renormFuture['solomons sliced beef pastrami'].lots[0].expiresAt === '2026-12-05' &&
+      lotAfterFutureExp.history.some(h => h.kind === 'expiry' && h.expiresAt === '2026-12-05') &&
+      formatPantryLotHistoryEvent(lotAfterFutureExp.history[0], '6 oz', '2026-11-20').includes('expiry set to Dec 5') &&
+      setExpPast.ok === true &&
+      lotAfterPastExp.status === 'expired' &&
+      haveAfterPastExp.activeLots.length === 0 &&
+      haveAfterPastExp.expiredLots.length === 1 &&
+      setExpAuto.ok === true &&
+      !lotAfterAutoExp.expiresAtExplicit &&
+      lotAfterAutoExp.expiresAt === '2026-11-29' &&
+      lotAfterAutoExp.status === 'good' &&
+      formatPantryLotHistoryEvent(lotAfterAutoExp.history[lotAfterAutoExp.history.length - 1], '6 oz', '2026-11-20').includes('expiry reset to auto') &&
+      htmlExpiryClosed44.includes('data-pantry-edit-expiry="solomons sliced beef pastrami|pas-exp-1"') &&
+      htmlExpiryOpen44.includes('data-pantry-expiry-in="solomons sliced beef pastrami|pas-exp-1"') &&
+      htmlExpiryOpen44.includes('data-pantry-expiry-auto="solomons sliced beef pastrami|pas-exp-1"'));
+
+    // 44(e) Item 5: Expiring-soon chip is a tappable button with data-pantry-soon-jump and scrollToPantryCard scrolls/highlights (and opens closed <details> / clears search filter)
+    const soonMap44 = normalizePantryData({
+      'spinach': {
+        displayName: 'Spinach',
+        unit: 'bag',
+        lots: [{ lotId: 'sp-1', qty: 1, unit: 'bag', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      }
+    }, '2026-11-20'); // leafy greens fridge_days=3 -> expires 2026-11-21 (within 3 days of 2026-11-20)
+    const htmlSoon44 = pantryViewHTML({ pantryMap: soonMap44, todayYmd: '2026-11-20', pricesMap: {} });
+    let scrolledCalled44 = false;
+    const addedClasses44 = new Set();
+    const fakeDetails44 = { open: false };
+    const fakeCard44 = {
+      getAttribute: (attr) => attr === 'data-pantry-item' ? 'spinach' : null,
+      closest: (sel) => sel === 'details' ? fakeDetails44 : null,
+      scrollIntoView: () => { scrolledCalled44 = true; },
+      classList: {
+        add: (c) => addedClasses44.add(c),
+        remove: (c) => addedClasses44.delete(c)
+      }
+    };
+    const fakeApp44 = {
+      querySelector: (sel) => sel === '[data-pantry-item="spinach"]' ? fakeCard44 : null
+    };
+    const jumpCard44 = scrollToPantryCard('spinach', fakeApp44);
+    if (globalThis._pantryHighlightTimer) {
+      clearTimeout(globalThis._pantryHighlightTimer);
+      globalThis._pantryHighlightTimer = null;
+    }
+    check('Section 44(e) (expiring-soon chip tap jumps to card): chip renders as <button class="pantry-soon-chip" data-pantry-soon-jump="spinach"> and scrollToPantryCard opens enclosing <details>, calls scrollIntoView, and applies pantry-card-highlight',
+      htmlSoon44.includes('<button type="button" class="pantry-soon-chip" data-pantry-soon-jump="spinach">') &&
+      jumpCard44 === fakeCard44 &&
+      fakeDetails44.open === true &&
+      scrolledCalled44 === true &&
+      addedClasses44.has('pantry-card-highlight'));
+
+    // 44(f) Item 6: Used-up clarity ("None left" header) + Remove confirmation dialog
+    const usedUpMap44 = normalizePantryData({
+      'garlic': {
+        displayName: 'Garlic',
+        unit: '3 pk',
+        lots: [{ lotId: 'g-u1', qty: 0, unit: '3 pk', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const htmlNoneLeft44 = pantryViewHTML({ pantryMap: usedUpMap44, todayYmd: '2026-11-20', pricesMap: {} });
+    check('Section 44(f) (used-up "None left" header + Remove confirmation): all-used-up item card header reads "None left" (not "0 × 3 pk used up") while lot badge still shows "used up", and wirePantryEvents guards Remove with confirm("Remove <item> from the pantry?")',
+      htmlNoneLeft44.includes('>None left</button>') &&
+      !htmlNoneLeft44.includes('0 × 3 pk used up') &&
+      htmlNoneLeft44.includes('<span class="pantry-badge pantry-badge-usedup">used up</span>') &&
+      SRC.includes("confirmFn('Remove ' + dispName + ' from the pantry?')"));
+
+    // 44(g) Item 7: Pantry search filter (filters In Stock & Expired, keeps Expiring soon unfiltered, hides empty dept headers, shows "No matches for ...")
+    const searchMap44 = normalizePantryData({
+      'apple': {
+        displayName: 'Honeycrisp Apples',
+        unit: 'lb',
+        lots: [{ lotId: 'ap-1', qty: 2, unit: 'lb', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-15', receiptDate: '2026-11-15', source: 'receipt' }]
+      },
+      'milk': {
+        displayName: 'Whole Milk',
+        unit: 'gal',
+        lots: [{ lotId: 'mk-1', qty: 1, unit: 'gal', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-13', receiptDate: '2026-11-13', openedAt: '2026-11-13', source: 'receipt' }]
+      },
+      'spinach': {
+        displayName: 'Baby Spinach',
+        unit: 'bag',
+        lots: [{ lotId: 'sp-2', qty: 1, unit: 'bag', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-10', receiptDate: '2026-11-10', source: 'receipt' }]
+      }
+    }, '2026-11-20'); // opened milk (9d) expires 2026-11-22 (expiring soon), spinach expired 2026-11-13
+    const htmlSearchApple44 = pantryViewHTML({ pantryMap: searchMap44, todayYmd: '2026-11-20', query: 'apple', pricesMap: {} });
+    const htmlSearchNone44 = pantryViewHTML({ pantryMap: searchMap44, todayYmd: '2026-11-20', query: 'dragonfruit', pricesMap: {} });
+    check('Section 44(g) (pantry search): search input filters In Stock and Expired cards case-insensitively, hides empty department headers, leaves Expiring soon chips unfiltered, and shows "No matches for “...”." when nothing matches',
+      htmlSearchApple44.includes('id="pantry-search-input"') &&
+      htmlSearchApple44.includes('data-pantry-item="apple"') &&
+      !htmlSearchApple44.includes('data-pantry-item="milk"') &&
+      !htmlSearchApple44.includes('data-pantry-item="spinach"') &&
+      htmlSearchApple44.includes('data-pantry-dept="Fresh Produce"') &&
+      !htmlSearchApple44.includes('data-pantry-dept="Dairy &amp; Eggs"') &&
+      htmlSearchApple44.includes('data-pantry-soon-jump="milk"') &&
+      htmlSearchNone44.includes('No matches for “dragonfruit”.'));
+
+    // 44(h) Item 8: Group In Stock items by store department in shopping-sections.json order with "Unsorted" last; Expired stays flat
+    const deptMap44 = normalizePantryData({
+      'mystery-widget-xyz': {
+        displayName: 'Mystery Widget XYZ',
+        unit: 'unit',
+        lots: [{ lotId: 'mw-1', qty: 1, unit: 'unit', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-15', source: 'manual' }]
+      },
+      'milk': {
+        displayName: 'Whole Milk',
+        unit: 'gal',
+        lots: [{ lotId: 'mk-2', qty: 1, unit: 'gal', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'apple': {
+        displayName: 'Apples',
+        unit: 'lb',
+        lots: [{ lotId: 'ap-2', qty: 3, unit: 'lb', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'spinach': {
+        displayName: 'Expired Spinach',
+        unit: 'bag',
+        lots: [{ lotId: 'sp-3', qty: 1, unit: 'bag', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-01', receiptDate: '2026-11-01', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const htmlDept44 = pantryViewHTML({ pantryMap: deptMap44, todayYmd: '2026-11-20', pricesMap: {} });
+    const prodIdx44 = htmlDept44.indexOf('data-pantry-dept="Fresh Produce"');
+    const dairyIdx44 = htmlDept44.indexOf('data-pantry-dept="Dairy &amp; Eggs"');
+    const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
+    const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
+    const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
+    check('Section 44(h) (In Stock grouped by store department + v20261120b cache-buster): In Stock renders Fresh Produce before Dairy & Eggs before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120b',
+      prodIdx44 > -1 &&
+      dairyIdx44 > prodIdx44 &&
+      unsortedIdx44 > dairyIdx44 &&
+      htmlDept44.includes('<span class="pantry-dept-name">Fresh Produce</span> <span class="pantry-dept-count">(1)</span>') &&
+      htmlDept44.includes('<span class="pantry-dept-name">Dairy &amp; Eggs</span> <span class="pantry-dept-count">(1)</span>') &&
+      htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
+      !expiredSectionPart44.includes('data-pantry-dept=') &&
+      indexHtml44.includes('styles.css?v=20261120b') &&
+      indexHtml44.includes('app.js?v=20261120b'));
+
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;
   }
@@ -5955,4 +6284,5 @@ async function main() {
 }
 
 main().catch(e => { console.error('ERROR', e); process.exitCode = 1; });
+
 
