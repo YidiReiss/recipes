@@ -2013,6 +2013,14 @@
                 "locked": false,
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
+              },
+              {
+                "custom": "Burrito and chulent",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           },
