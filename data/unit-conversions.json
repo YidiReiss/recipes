@@ -4,6 +4,13 @@
     "description": "Purchase-unit to recipe-unit conversions for pantry stock deduction. Base: live price-conversions.json (Yidi-measured values win; USDA standard otherwise). Additions Nov 19 2026 from Argon consult (missing staples). Unconvertible items stay unconvertible: the pantry asks, never guesses.",
     "base": "data/price-conversions.json v20261117b (203 entries)"
   },
+  "black bean": {
+    "lb_per_can": 0.94,
+    "lb_per_unit": 0.94,
+    "lb_per_cup": 0.58,
+    "cup_per_can": 1.625,
+    "source": "USDA standard (15 oz can black beans ~1.625 cups drained, 0.94 lb)"
+  },
   "tomato": {
     "lb_per_unit": 0.29,
     "lb_per_cup": 0.4,

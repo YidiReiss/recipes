@@ -3854,6 +3854,133 @@ body.has-timer-dock .cook-mode-overlay {
   border-color: var(--pareve);
 }
 
+.footer-guide-link {
+  margin-left: 0.75rem;
+  color: var(--accent-dark);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.footer-guide-link:hover {
+  color: var(--accent);
+}
+
+.shop-history-btn {
+  text-decoration: none;
+  font-size: 0.88rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.pantry-lot-qty-btn {
+  background: transparent;
+  border: 1px dashed var(--line);
+  border-radius: 5px;
+  padding: 0.15rem 0.45rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pantry-lot-qty-btn:hover {
+  border-color: var(--accent);
+  background: var(--cream);
+}
+
+.pantry-lot-qty-editor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.pantry-qty-edit-input {
+  width: 6.5rem;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.45rem;
+}
+
+.pantry-qty-edit-unit {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.pantry-saved-confirm {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pareve);
+  background: #e9f5ec;
+  border: 1px solid var(--pareve);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.pantry-badge-usedup {
+  background: #f0ede8;
+  color: var(--ink-soft);
+  border-color: var(--line);
+}
+
+.pantry-lot-row.is-used-up {
+  opacity: 0.65;
+}
+
+.pantry-card.is-used-up {
+  opacity: 0.75;
+}
+
+.pantry-opened-control {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.pantry-opened-label {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.pantry-opened-date-input {
+  font-size: 0.82rem;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.pantry-mark-opened-btn,
+.pantry-unmark-opened-btn {
+  font-size: 0.78rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.pantry-lot-history {
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.pantry-lot-history-summary {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+
+.pantry-lot-history-list {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.pantry-lot-history-item {
+  margin-bottom: 0.12rem;
+}
+
 /* ============================================================
    END PANTRY TRACKING STYLES
    ============================================================ */
