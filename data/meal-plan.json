@@ -1923,7 +1923,126 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Chicken night · Favorite · Leftovers cover a lunch"
+                "reason": "Chicken night · Favorite · Leftovers cover a lunch",
+                "cookedAt": 1795174555089,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "butterfly chicken cutlet",
+                    "lotId": "rcpt-2026-11-15-1xu6tsggj6",
+                    "deductedQty": 2,
+                    "rawConvertedQty": 2,
+                    "ceilingDeductedQty": 2,
+                    "exactFractionUsed": false,
+                    "unit": "lb",
+                    "dishTitle": "Dairy-Free Chicken Fettuccine Alfredo",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-1xu6tsggj6",
+                      "qty": 5.76,
+                      "unit": "lb",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "freezer",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [
+                        {
+                          "at": "2026-11-20",
+                          "delta": 2,
+                          "qtyAfter": 3.76,
+                          "kind": "restore"
+                        },
+                        {
+                          "at": "2026-11-20",
+                          "delta": 2,
+                          "qtyAfter": 5.76,
+                          "kind": "restore"
+                        }
+                      ],
+                      "boughtName": "Butterfly Chicken Cutlets",
+                      "category": "meat",
+                      "expiresAt": "2027-08-12",
+                      "qualityOnly": true,
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "bowl basket fettuccine",
+                    "lotId": "rcpt-2026-11-15-1et30vp1qx",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 0.75,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "16 oz",
+                    "dishTitle": "Dairy-Free Chicken Fettuccine Alfredo",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-1et30vp1qx",
+                      "qty": 1,
+                      "unit": "16 oz",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "Fettuccine",
+                      "category": "pasta",
+                      "packSize": "16 oz",
+                      "expiresAt": "2028-11-14",
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "onion shallot",
+                    "lotId": "rcpt-2026-11-15-6l6b87hcan",
+                    "deductedQty": 0.4,
+                    "rawConvertedQty": 0.1,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "dishTitle": "Dairy-Free Chicken Fettuccine Alfredo",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-6l6b87hcan",
+                      "qty": 0.4,
+                      "unit": "lb",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "Onion Shallots",
+                      "category": "shallots",
+                      "expiresAt": "2026-12-15",
+                      "status": "good"
+                    }
+                  },
+                  {
+                    "baseKey": "roland coconut milk",
+                    "lotId": "rcpt-2026-11-15-17v7ia0qzg",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 0.964,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "14 oz",
+                    "dishTitle": "Dairy-Free Chicken Fettuccine Alfredo",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-17v7ia0qzg",
+                      "qty": 1,
+                      "unit": "14 oz",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "fridge",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "Coconut Milk",
+                      "category": "coconut milk",
+                      "packSize": "14 oz",
+                      "expiresAt": null,
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           }
