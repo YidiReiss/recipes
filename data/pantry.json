@@ -1104,14 +1104,21 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-08-capabo1j2j",
-        "qty": 1,
+        "qty": 0,
         "unit": "ea",
         "addedAt": "2026-11-08",
         "receiptDate": "2026-11-08",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-20",
+            "delta": -1,
+            "qtyAfter": 0,
+            "kind": "edit"
+          }
+        ],
         "boughtName": "Black Beans",
         "category": "black beans",
         "expiresAt": "2028-11-07",
@@ -1133,8 +1140,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795128687708
+    "consumedReceiptLots": [
+      "rcpt-2026-11-08-capabo1j2j"
+    ],
+    "updatedAt": 1795186305786
   },
   "hearts of palm": {
     "base": "hearts of palm",
