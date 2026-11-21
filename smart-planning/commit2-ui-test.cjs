@@ -171,11 +171,14 @@ extract('parseQty', true).forEach(src => geval(src));
  'clampCookStepIndex', 'formatScaledIngredientLine', 'cookModeIngredientsHTML',
  'cookModeStepHTML',
  'stopStepSpeech', 'speakRecipeStepText',
- /* Pantry Tracking (v20261119c + Bridge git-v18 + v20261120a Batch 2 + v20261120b Batch 3) */
+ /* Pantry Tracking (v20261119c + Bridge git-v18 + v20261120a Batch 2 + v20261120b Batch 3 + v20261121a Usable Units) */
  'getShelfLifeTable', 'getUnitConversionsMap', 'lookupUnitConversion',
  'isRawMeatPoultryFishKey', 'lookupShelfLife', 'defaultStorageForPantryItem',
  'addDaysYmd', 'todayPantryYmd', 'computeLotExpiry', 'evaluateLotStatus', 'isLotExpiringSoon',
- 'normalizePantryUnit', 'parsePantryPackUnit', 'appendPantryLotHistory',
+ 'normalizePantryUnit', 'parsePantryPackUnit', 'parsePantryCountPackUnit',
+ 'pantryUsableUnit', 'pluralizePantryUsableUnit', 'formatPantryUsableQty',
+ 'pantryUsableWholeInputValue', 'pantryUsableToStoredQty',
+ 'appendPantryLotHistory',
  'normalizePantryLot', 'recomputePantryEntry', 'normalizePantryData', 'mergePantryData',
  'convertPantryQty', 'resolvePantryEntryKey', 'isPantryNonFoodKey', 'mergeReceiptStockIntoPantry',
  'getPantryHaveFor', 'applyPantryToShopItem',
@@ -186,7 +189,7 @@ extract('parseQty', true).forEach(src => geval(src));
  'savePantryLocal', 'loadPantryLocal', 'setPantryCache', 'resetPantrySession',
  'bridgeReadPantry', 'fetchBridgePantryStock', 'ensurePantryLoaded', 'savePantry',
  'setPantryManualStock', 'removePantryEntry', 'overridePantryLotStillGood', 'switchPantryLotStorage',
- 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'fmtPantryDate', 'fmtPantryQty', 'flashPantryLotSaved', 'scrollToPantryCard', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
+ 'buildPantryFlagDialogState', 'applyPantryFlagDialogConfirm', 'fmtPantryDate', 'fmtPantryNum', 'fmtPantryQty', 'fmtPantryUsableAndPurchase', 'flashPantryLotSaved', 'scrollToPantryCard', 'pantryViewHTML', 'renderPantry', 'wirePantryEvents'
 ].forEach(n => geval(extract(n) + '\n;globalThis.' + n + ' = ' + n + ';'));
 /* speakTimerAlarm closes over the module-level _alarmWatchdogId (Fix 1):
    load both in ONE eval unit so the binding survives (a bare `let` in its
@@ -5739,7 +5742,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      /v=20261120[a-z]/.test(indexHtml43));
+      /v=20261121[a-z]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -6264,7 +6267,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261120e',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261121a',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6272,8 +6275,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261120e') &&
-      indexHtml44.includes('app.js?v=20261120e'));
+      indexHtml44.includes('styles.css?v=20261121a') &&
+      indexHtml44.includes('app.js?v=20261121a'));
 
     // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
     // v20261120e, Section 47): button shows only while stock remains;
@@ -6336,6 +6339,225 @@ async function main() {
       SRC.includes('_pantryConfirmFinishedKey = finishedBtn.dataset.pantryFinished') &&
       SRC.includes('removePantryEntry(finYesBtn.dataset.pantryFinishedConfirm)') &&
       !SRC.includes('Mark pantry item finished: '));
+
+    // Section 48 — v20261121a Pantry Usable Units (display, editing, precision, deductions)
+    const uGarlicSleeve48 = pantryUsableUnit('garlic sleeve', 'sleeve');
+    const uGarlicLooseLb48 = pantryUsableUnit('garlic loose', 'lb');
+    const uFreshGarlicOz48 = pantryUsableUnit('fresh garlic', 'oz');
+    const uEggs12ct48 = pantryUsableUnit('egg', '12 ct');
+    const uEggsReceipt12ct48 = pantryUsableUnit('jacks f x large egg', '12 ct');
+    const uEggsDozen48 = pantryUsableUnit('egg white', 'dozen');
+    const uRomaine3ct48 = pantryUsableUnit('romaine', '3 ct');
+    const uRomaineHeart3pk48 = pantryUsableUnit('romaine heart', '3-pack');
+    const uMargarineBox48 = pantryUsableUnit('farms creamery margarine unsalted', 'box');
+    const uChickenLb48 = pantryUsableUnit('chicken cutlet', 'lb');
+    const uButterflyChickenLb48 = pantryUsableUnit('butterfly chicken cutlet', 'lb');
+    const uPastramiLb48 = pantryUsableUnit('pastrami', 'lb');
+    const uGreenBeanLb48 = pantryUsableUnit('green bean', 'lb');
+    const uFettuccine16oz48 = pantryUsableUnit('fettuccine', '16 oz');
+    const uCheese8ct48 = pantryUsableUnit('muenster cheese', '8 ct');
+    const uGarlicPowderLb48 = pantryUsableUnit('garlic powder', 'lb');
+    const uPeanutButterBox48 = pantryUsableUnit('peanut butter', 'box');
+    check('Section 48(a) (pantryUsableUnit resolver): count-packs (garlic sleeve, eggs 12 ct/dozen, romaine 3 ct, butter/margarine box) and explicit garlic lb/oz resolve with sub-unit cloves; raw lb_per_unit meats/veg, sized 16 oz packs, cheese slices, and processed forms return null',
+      uGarlicSleeve48 && uGarlicSleeve48.unit === 'head' && uGarlicSleeve48.factor === 5 && uGarlicSleeve48.subUnit === 'clove' && uGarlicSleeve48.subPerPrimary === 10 &&
+      uGarlicLooseLb48 && uGarlicLooseLb48.unit === 'head' && uGarlicLooseLb48.factor === 10 && uGarlicLooseLb48.subUnit === 'clove' && uGarlicLooseLb48.subPerPrimary === 10 &&
+      uFreshGarlicOz48 && uFreshGarlicOz48.unit === 'head' && Math.abs(uFreshGarlicOz48.factor - 0.625) < 1e-6 && uFreshGarlicOz48.subUnit === 'clove' && uFreshGarlicOz48.subPerPrimary === 10 &&
+      uEggs12ct48 && uEggs12ct48.unit === 'egg' && uEggs12ct48.factor === 12 && uEggs12ct48.subUnit === null &&
+      uEggsReceipt12ct48 && uEggsReceipt12ct48.unit === 'egg' && uEggsReceipt12ct48.factor === 12 &&
+      uEggsDozen48 && uEggsDozen48.unit === 'egg' && uEggsDozen48.factor === 12 &&
+      uRomaine3ct48 && uRomaine3ct48.unit === 'head' && uRomaine3ct48.factor === 3 && uRomaine3ct48.subUnit === null &&
+      uRomaineHeart3pk48 && uRomaineHeart3pk48.unit === 'head' && uRomaineHeart3pk48.factor === 3 &&
+      uMargarineBox48 && uMargarineBox48.unit === 'stick' && uMargarineBox48.factor === 4 && uMargarineBox48.subUnit === null &&
+      uChickenLb48 === null &&
+      uButterflyChickenLb48 === null &&
+      uPastramiLb48 === null &&
+      uGreenBeanLb48 === null &&
+      uFettuccine16oz48 === null &&
+      uCheese8ct48 === null &&
+      uGarlicPowderLb48 === null &&
+      uPeanutButterBox48 === null);
+
+    // 48(b): Display formatting (Rule A/B/C) + non-usable unchanged
+    const dispGarlic375 = fmtPantryUsableAndPurchase('garlic loose', 0.375, 'lb');
+    const dispGarlicSleeve = fmtPantryUsableAndPurchase('garlic sleeve', 1, 'sleeve');
+    const dispGarlic009 = fmtPantryUsableAndPurchase('garlic loose', 0.09, 'lb');
+    const dispGarlic05 = fmtPantryUsableAndPurchase('garlic loose', 0.5, 'lb');
+    const dispEggs12 = fmtPantryUsableAndPurchase('egg', 1.2, '12 ct');
+    const dispChicken = fmtPantryUsableAndPurchase('chicken cutlet', 1.5, 'lb');
+    check('Section 48(b) (display Rule A/B/C): garlic 0.375 lb -> "3 heads, 8 cloves · ⅜ lb", 1 sleeve -> "5 heads · 1 sleeve", 0.09 lb -> "9 cloves · 0.09 lb", 0.5 lb -> "5 heads · ½ lb", eggs 1.2×12 ct -> "15 eggs · 1.2 × 12 ct", non-usable stays plain',
+      dispGarlic375 === '3 heads, 8 cloves · ⅜ lb' &&
+      formatPantryUsableQty(0.375 * uGarlicLooseLb48.factor, uGarlicLooseLb48) === '3 heads, 8 cloves' &&
+      dispGarlicSleeve === '5 heads · 1 sleeve' &&
+      dispGarlic009 === '9 cloves · 0.09 lb' &&
+      dispGarlic05 === '5 heads · ½ lb' &&
+      dispEggs12 === '15 eggs · 1.2 × 12 ct' &&
+      dispChicken === '1½ lb');
+
+    // 48(c): Round-trip precision (10000 rounding + eps=0.01) for eggs 1..12 on 12 ct, garlic 1..10 on sleeve & lb, plus exact head edit dropping cloves
+    const rtMap48 = normalizePantryData({
+      'egg': {
+        displayName: 'Eggs', unit: '12 ct',
+        lots: [{ lotId: 'rt-egg', qty: 1, unit: '12 ct', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'garlic sleeve': {
+        displayName: 'Garlic Sleeve', unit: 'sleeve',
+        lots: [{ lotId: 'rt-gs', qty: 1, unit: 'sleeve', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'garlic loose': {
+        displayName: 'Garlic Loose', unit: 'lb',
+        lots: [{ lotId: 'rt-gl', qty: 0.375, unit: 'lb', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    let eggRtOk48 = true;
+    for (let n = 1; n <= 12; n++) {
+      const stored = pantryUsableToStoredQty('egg', n, '12 ct');
+      setPantryLotQty(rtMap48, 'egg', 'rt-egg', stored, '2026-11-20');
+      const lotQty = rtMap48['egg'].lots[0].qty;
+      const shown = formatPantryUsableQty(lotQty * uEggs12ct48.factor, uEggs12ct48);
+      const expected = n === 1 ? '1 egg' : (n + ' eggs');
+      if (shown !== expected) { eggRtOk48 = false; break; }
+    }
+    let garlicSleeveRtOk48 = true;
+    let garlicLbRtOk48 = true;
+    for (let n = 1; n <= 10; n++) {
+      const storedS = pantryUsableToStoredQty('garlic sleeve', n, 'sleeve');
+      setPantryLotQty(rtMap48, 'garlic sleeve', 'rt-gs', storedS, '2026-11-20');
+      const shownS = formatPantryUsableQty(rtMap48['garlic sleeve'].lots[0].qty * uGarlicSleeve48.factor, uGarlicSleeve48);
+      const expectedH = n === 1 ? '1 head' : (n + ' heads');
+      if (shownS !== expectedH) { garlicSleeveRtOk48 = false; break; }
+
+      const storedL = pantryUsableToStoredQty('garlic loose', n, 'lb');
+      setPantryLotQty(rtMap48, 'garlic loose', 'rt-gl', storedL, '2026-11-20');
+      const shownL = formatPantryUsableQty(rtMap48['garlic loose'].lots[0].qty * uGarlicLooseLb48.factor, uGarlicLooseLb48);
+      if (shownL !== expectedH) { garlicLbRtOk48 = false; break; }
+    }
+    // Editing garlic "3 heads, 8 cloves" (0.375 lb) to 3 heads drops leftover cloves -> 0.3 lb
+    setPantryLotQty(rtMap48, 'garlic loose', 'rt-gl', 0.375, '2026-11-20');
+    const prefill48 = pantryUsableWholeInputValue('garlic loose', rtMap48['garlic loose'].lots[0].qty, 'lb');
+    setPantryLotQty(rtMap48, 'garlic loose', 'rt-gl', pantryUsableToStoredQty('garlic loose', 3, 'lb'), '2026-11-20');
+    const afterDrop48 = fmtPantryUsableAndPurchase('garlic loose', rtMap48['garlic loose'].lots[0].qty, 'lb');
+    check('Section 48(c) (round-trip precision): n=1..12 eggs on 12 ct and n=1..10 garlic heads on sleeve & lb round-trip via setPantryLotQty to exact n, and editing 3 heads 8 cloves to 3 heads drops leftover cloves to 0.3 lb',
+      eggRtOk48 &&
+      garlicSleeveRtOk48 &&
+      garlicLbRtOk48 &&
+      prefill48 === 3 &&
+      rtMap48['garlic loose'].lots[0].qty === 0.3 &&
+      afterDrop48 === '3 heads · 0.3 lb');
+
+    // 48(d): Deductions in smallest usable unit (egg / clove) + un-cook restore + history usable display
+    const dedMap48 = normalizePantryData({
+      'jacks f x large egg': {
+        displayName: 'Jacks F X Large Eggs', unit: '12 ct',
+        lots: [{ lotId: 'de-1', qty: 1, unit: '12 ct', storage: 'fridge', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'garlic sleeve': {
+        displayName: 'Garlic Sleeve', unit: 'sleeve',
+        lots: [{ lotId: 'dg-1', qty: 1, unit: 'sleeve', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'bowl basket fettuccine': {
+        displayName: 'Bowl Basket Fettuccine', unit: '16 oz',
+        lots: [{ lotId: 'df-1', qty: 1, unit: '16 oz', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const eggDed48 = deductIngredientFromPantryMap(dedMap48, 'egg', 2, '', { todayYmd: '2026-11-20', dishTitle: 'Shakshuka' });
+    const eggAfterQty48 = dedMap48['jacks f x large egg'].lots[0].qty;
+    const eggAfterDisp48 = fmtPantryUsableAndPurchase('jacks f x large egg', eggAfterQty48, '12 ct');
+    const eggHistEv48 = dedMap48['jacks f x large egg'].lots[0].history[0];
+    const eggHistLine48 = formatPantryLotHistoryEvent(eggHistEv48, '12 ct', '2026-11-20', 'jacks f x large egg');
+
+    const garlicDed48 = deductIngredientFromPantryMap(dedMap48, 'garlic', 3, 'clove', { todayYmd: '2026-11-20', dishTitle: 'Garlic Chicken' });
+    const garlicAfterQty48 = dedMap48['garlic sleeve'].lots[0].qty;
+    const garlicAfterDisp48 = fmtPantryUsableAndPurchase('garlic sleeve', garlicAfterQty48, 'sleeve');
+    const garlicHistEv48 = dedMap48['garlic sleeve'].lots[0].history[0];
+    const garlicHistLine48 = formatPantryLotHistoryEvent(garlicHistEv48, 'sleeve', '2026-11-20', 'garlic sleeve');
+
+    // Sized pack ("16 oz") must still ceiling-deduct atomically (0.75 lb -> 1 whole pack)
+    const fettDed48 = deductIngredientFromPantryMap(dedMap48, 'fettuccine', 0.75, 'lb', { todayYmd: '2026-11-20', dishTitle: 'Alfredo' });
+    const fettAfter48 = dedMap48['bowl basket fettuccine'].lots[0].qty;
+
+    // Un-cook restores both cleanly
+    restorePantryDeductionsToMap(dedMap48, eggDed48.concat(garlicDed48), '2026-11-20');
+    const eggRestored48 = dedMap48['jacks f x large egg'].lots[0].qty;
+    const garlicRestored48 = dedMap48['garlic sleeve'].lots[0].qty;
+
+    check('Section 48(d) (usable-unit deductions + history + restore): 2 eggs from 1×12 ct leaves 10 eggs (0.8333) with history "−2 eggs"; 3 cloves from 1 sleeve leaves 4 heads, 7 cloves (0.94) with history "−3 cloves"; sized 16 oz fettuccine still deducts 1 whole pack; un-cook restores exact 1',
+      eggDed48.length === 1 &&
+      Math.abs(eggAfterQty48 - 0.8333) < 1e-6 &&
+      eggAfterDisp48 === '10 eggs · 0.83 × 12 ct' &&
+      Math.abs(eggHistEv48.delta - (-0.1667)) < 1e-6 &&
+      eggHistLine48.includes('−2 eggs') &&
+      eggHistLine48.includes('Shakshuka (cooked)') &&
+      garlicDed48.length === 1 &&
+      Math.abs(garlicAfterQty48 - 0.94) < 1e-6 &&
+      garlicAfterDisp48 === '4 heads, 7 cloves · 0.94 sleeve' &&
+      Math.abs(garlicHistEv48.delta - (-0.06)) < 1e-6 &&
+      garlicHistLine48.includes('−3 cloves') &&
+      garlicHistLine48.includes('Garlic Chicken (cooked)') &&
+      fettDed48.length === 1 &&
+      fettAfter48 === 0 &&
+      eggRestored48 === 1 &&
+      garlicRestored48 === 1);
+
+    // 48(e): Mixed-unit setPantryTotalQty (sleeve + lb under one entry) converts per-lot
+    const mixMap48 = normalizePantryData({
+      'garlic': {
+        displayName: 'Garlic', unit: 'sleeve',
+        lots: [
+          { lotId: 'mx-1', qty: 1, unit: 'sleeve', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-10', receiptDate: '2026-11-10', expiresAt: '2026-12-01', source: 'receipt' },
+          { lotId: 'mx-2', qty: 0.5, unit: 'lb', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', expiresAt: '2026-12-20', source: 'receipt' }
+        ]
+      }
+    }, '2026-11-20');
+    // Total is 5 heads (1 sleeve) + 5 heads (0.5 lb) = 10 heads = 2 sleeves.
+    // Decrease to 3 heads (= 0.6 sleeve): drains sleeve lot (5 heads -> 0) and takes 2 heads (0.2 lb) from lb lot -> 0.3 lb remaining.
+    const mixDec48 = setPantryTotalQty(mixMap48, 'garlic', pantryUsableToStoredQty('garlic', 3, 'sleeve'), '2026-11-20');
+    const mixAfterDecSleeve = mixMap48['garlic'].lots.find(l => l.lotId === 'mx-1').qty;
+    const mixAfterDecLb = mixMap48['garlic'].lots.find(l => l.lotId === 'mx-2').qty;
+    // Increase from 3 heads to 7 heads (= 1.4 sleeve): adds 4 heads (0.4 lb) to newest confirmed lot (mx-2, in lb) -> 0.7 lb.
+    const mixInc48 = setPantryTotalQty(mixMap48, 'garlic', pantryUsableToStoredQty('garlic', 7, 'sleeve'), '2026-11-20');
+    const mixAfterIncLb = mixMap48['garlic'].lots.find(l => l.lotId === 'mx-2').qty;
+    check('Section 48(e) (mixed-unit setPantryTotalQty): draining 10 heads (1 sleeve + 0.5 lb) to 3 heads zeroes the sleeve lot and leaves 0.3 lb; increasing to 7 heads adds 0.4 lb to the newest lb lot leaving 0.7 lb',
+      mixDec48.ok === true &&
+      mixAfterDecSleeve === 0 &&
+      Math.abs(mixAfterDecLb - 0.3) < 1e-6 &&
+      mixInc48.ok === true &&
+      Math.abs(mixAfterIncLb - 0.7) < 1e-6);
+
+    // 48(f): UI rendering — separate cards for garlic sleeve vs garlic loose, dual display on card total / lot rows / expiring-soon chip, whole usable unit editors & unconfirmed confirm placeholder
+    const uiMap48 = normalizePantryData({
+      'garlic sleeve': {
+        displayName: 'Garlic Sleeve', unit: 'sleeve',
+        lots: [{ lotId: 'ui-gs', qty: 1, unit: 'sleeve', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-01', receiptDate: '2026-11-01', expiresAt: '2026-11-21', expiresAtExplicit: true, source: 'receipt' }]
+      },
+      'garlic loose': {
+        displayName: 'Garlic Loose', unit: 'lb',
+        lots: [{ lotId: 'ui-gl', qty: 0.375, unit: 'lb', storage: 'pantry', storageExplicit: true, addedAt: '2026-11-18', receiptDate: '2026-11-18', source: 'receipt' }]
+      },
+      'jacks f x large egg': {
+        displayName: 'Jacks F X Large Eggs', unit: '12 ct',
+        lots: [{ lotId: 'ui-eg', qty: null, unit: '12 ct', unconfirmed: true, storage: 'fridge', storageExplicit: true, addedAt: '2026-11-19', receiptDate: '2026-11-19', source: 'receipt' }]
+      }
+    }, '2026-11-20');
+    const uiHtmlIdle48 = pantryViewHTML({ pantryMap: uiMap48, todayYmd: '2026-11-20', pricesMap: {} });
+    const uiHtmlEditLot48 = pantryViewHTML({ pantryMap: uiMap48, todayYmd: '2026-11-20', editingKey: 'garlic loose|ui-gl', pricesMap: {} });
+    const uiHtmlEditTot48 = pantryViewHTML({ pantryMap: uiMap48, todayYmd: '2026-11-20', editingTotalKey: 'garlic sleeve', pricesMap: {} });
+    check('Section 48(f) (pantry UI rendering): garlic sleeve & garlic loose stay separate cards, card totals / lot rows / expiring chips render usable + purchase text, unconfirmed eggs confirm input asks for Qty (eggs) with step=1, lot/total editors prefill whole usable heads, and wirePantryEvents converts back via pantryUsableToStoredQty',
+      uiHtmlIdle48.includes('data-pantry-item="garlic sleeve"') &&
+      uiHtmlIdle48.includes('data-pantry-item="garlic loose"') &&
+      uiHtmlIdle48.includes('5 heads · 1 sleeve on hand') &&
+      uiHtmlIdle48.includes('3 heads, 8 cloves · ⅜ lb on hand') &&
+      uiHtmlIdle48.includes('<strong>Garlic Sleeve</strong> · 5 heads · 1 sleeve · expires Nov 21') &&
+      uiHtmlIdle48.includes('placeholder="Qty (eggs)"') &&
+      uiHtmlIdle48.includes('data-pantry-confirm-in="jacks f x large egg|ui-eg" step="1"') &&
+      uiHtmlEditLot48.includes('data-pantry-qty-in="garlic loose|ui-gl"') &&
+      uiHtmlEditLot48.includes('value="3"') &&
+      uiHtmlEditLot48.includes('step="1"') &&
+      uiHtmlEditLot48.includes('class="pantry-qty-edit-unit">heads</span>') &&
+      uiHtmlEditTot48.includes('data-pantry-total-in="garlic sleeve"') &&
+      uiHtmlEditTot48.includes('value="5"') &&
+      uiHtmlEditTot48.includes('class="pantry-qty-edit-unit">heads</span>') &&
+      SRC.includes('pantryUsableToStoredQty(bk, val, unitForTotal)') &&
+      SRC.includes('pantryUsableToStoredQty(bk, val, lot.unit)'));
 
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;

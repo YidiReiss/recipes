@@ -4158,3 +4158,11 @@ button.pantry-soon-chip:focus-visible {
   padding: 4px 10px;
   font-size: 0.85em;
 }
+
+/* Pantry usable-units dual display (v20261121a): keep "usable · purchase" buttons readable on phones. */
+.pantry-lot-qty-btn,
+.pantry-item-total-btn {
+  text-align: left;
+  line-height: 1.3;
+}
+
