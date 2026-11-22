@@ -3473,6 +3473,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "margherita-pizza",
@@ -3482,9 +3486,7 @@
                 "reason": null,
                 "locked": true
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -3505,10 +3507,9 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Thanksgiving Dinnenr"
           }
         },
         {
