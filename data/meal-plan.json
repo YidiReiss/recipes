@@ -3374,12 +3374,12 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": false,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
@@ -3392,7 +3392,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3442,7 +3442,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3477,7 +3477,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3500,17 +3500,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -3568,6 +3558,12 @@
           "kind": "uncovered",
           "have": 0,
           "need": 2
+        },
+        {
+          "day": 5,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 1
         }
       ],
       "haveGenerated": [],
