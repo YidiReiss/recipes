@@ -1,5 +1,10 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-22 — Planner button labels: "Cooked it?" / "Ate it?" (`app.js` `v=20261122a`, `index.html`)
+
+- **What changed (Muse-built directly, requested by Yidi Nov 22, 2026):** The planner's mark-done button now asks before it's tapped: unmarked regular dishes read **Cooked it?** and marked ones **✓ Cooked**, so it's obvious at a glance whether a dish was already marked. Leftovers dishes read **Ate it?** / **✓ Ate** instead of "Cooked it" (leftovers were already cooked once; marking them eaten stamps `cookedAt` with no pantry deduction, unchanged behavior). Button tooltips updated to match ("Mark leftovers as eaten (no pantry deduction)" / "Eaten — tap to undo").
+- **Verification:** Section 49 added to `smart-planning/commit2-ui-test.cjs` (all four label states via `slotHTML`); Section 44(h) and Section 43(a) cache-buster checks updated to `v=20261122a`. All four suites green (373 + 56 + 174 + 27 = 630/630).
+
 ## 2026-11-21 — Pantry usable units: dual usable + purchase display, whole usable-unit editing, 4-decimal precision & smallest-usable-unit deductions (`app.js` `v=20261121a`, `styles.css` `v=20261121a`, `index.html`)
 
 - **What changed (Neon-built from Yidi's approved `BUILD-SPEC.md`, Nov 20, 2026):**
