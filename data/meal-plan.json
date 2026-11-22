@@ -3534,18 +3534,9 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "chicken-mushroom-marsala",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": false,
-                "reason": null,
-                "locked": true
-              }
-            ]
+            "skipped": true,
+            "note": "Going to Family",
+            "dishes": []
           }
         },
         {
