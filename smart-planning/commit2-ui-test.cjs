@@ -5742,7 +5742,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      /v=20261121[a-z]/.test(indexHtml43));
+      /v=20261122[a-z]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -6267,7 +6267,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261121a',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261122a',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6275,8 +6275,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261121a') &&
-      indexHtml44.includes('app.js?v=20261121a'));
+      indexHtml44.includes('styles.css?v=20261122a') &&
+      indexHtml44.includes('app.js?v=20261122a'));
 
     // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
     // v20261120e, Section 47): button shows only while stock remains;
@@ -6562,6 +6562,20 @@ async function main() {
     resetPantrySession();
     delete globalThis.__pantryTodayYmd;
   }
+
+  /* ============ 49. v20261122a: "Cooked it?" / "Ate it?" button labels ============ */
+  setMeta(META);
+  setPlan({ [PAST]: { days: blankDays(), lunchWarnings: [] } });
+  const lblSlot = (dish) => slotHTML(PAST, 2, 'dinner', { dishes: [dish], skipped: false, note: '' }, true, false);
+  const lblRegular = lblSlot({ recipe: 'tacos', leftovers: false, drafted: true, cookDate: null });
+  const lblRegularDone = lblSlot({ recipe: 'tacos', leftovers: false, drafted: true, cookDate: null, cookedAt: 123 });
+  const lblLeftovers = lblSlot({ recipe: 'brisket', leftovers: true, drafted: true, cookDate: null });
+  const lblLeftoversDone = lblSlot({ recipe: 'brisket', leftovers: true, drafted: true, cookDate: null, cookedAt: 123 });
+  check('Section 49 (cooked/ate button labels): unmarked regular dish reads "Cooked it?", marked reads "✓ Cooked"; unmarked leftovers reads "Ate it?" (never "Cooked it?"), marked leftovers reads "✓ Ate"',
+    lblRegular.includes('>Cooked it?</button>') && !lblRegular.includes('Ate it?') &&
+    lblRegularDone.includes('>✓ Cooked</button>') &&
+    lblLeftovers.includes('>Ate it?</button>') && !lblLeftovers.includes('Cooked it?') &&
+    lblLeftoversDone.includes('>✓ Ate</button>') && !lblLeftoversDone.includes('✓ Cooked'));
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');

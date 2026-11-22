@@ -7780,8 +7780,10 @@ function slotHTML(key, di, meal, slot, canEdit, shabbat) {
         : '';
       const cookedBtn = (canEdit && (dish.recipe || dish.custom))
         ? ' <button class="link-btn dish-cooked-btn' + (dish.cookedAt ? ' is-cooked' : '') + '" data-dishcooked="' + at + '" type="button" title="' +
-          (dish.cookedAt ? 'Cooked — tap to undo and restore pantry ingredients' : 'Mark as cooked and deduct ingredients from pantry') + '">' +
-          (dish.cookedAt ? '✓ Cooked' : 'Cooked it') + '</button>'
+          (dish.cookedAt
+            ? (dish.leftovers ? 'Eaten — tap to undo' : 'Cooked — tap to undo and restore pantry ingredients')
+            : (dish.leftovers ? 'Mark leftovers as eaten (no pantry deduction)' : 'Mark as cooked and deduct ingredients from pantry')) + '">' +
+          (dish.cookedAt ? (dish.leftovers ? '✓ Ate' : '✓ Cooked') : (dish.leftovers ? 'Ate it?' : 'Cooked it?')) + '</button>'
         : '';
       let row = '<div class="dish-row">' + dishBody + cookedBtn + editBtn + swapBtn + lockBtn + '</div>';
       if (dish.reason) row += '<div class="dish-reason">' + esc(dish.reason) + '</div>';
