@@ -719,7 +719,7 @@
         "boughtName": "Coconut Milk",
         "category": "coconut milk",
         "packSize": "14 oz",
-        "expiresAt": null,
+        "expiresAt": "2026-11-29",
         "status": "good"
       }
     ],
@@ -874,7 +874,7 @@
         "boughtName": "Milk Plain 2%",
         "category": "milk",
         "packSize": "1/2 gal",
-        "expiresAt": null,
+        "expiresAt": "2026-11-29",
         "status": "good"
       }
     ],
@@ -888,23 +888,32 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-bhkajgkmuw",
-        "qty": 1,
+        "qty": 0.8333,
         "unit": "12 ct",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-22",
+            "delta": -0.1667,
+            "qtyAfter": 0.8333,
+            "kind": "cooked",
+            "dish": "Chocolate Chip Oreo Cookie Cake"
+          }
+        ],
         "boughtName": "X-Large Eggs",
         "category": "eggs",
         "packSize": "12 ct",
-        "expiresAt": "2026-12-06",
+        "openedAt": "2026-11-22",
+        "expiresAt": null,
         "status": "good"
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687707
+    "updatedAt": 1795362219904
   },
   "polly o twist cheese mozzarella cheddar": {
     "base": "polly o twist cheese mozzarella cheddar",
@@ -1604,7 +1613,7 @@
         "boughtName": "Milk Half Gallon Low Fat",
         "category": "milk",
         "packSize": "half gallon",
-        "expiresAt": null,
+        "expiresAt": "2026-11-22",
         "status": "good"
       }
     ],
