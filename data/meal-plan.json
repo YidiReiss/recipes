@@ -2061,9 +2061,7 @@
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week",
-                "cookedAt": 1795174539394,
-                "pantryDeductions": []
+                "reason": "Leftovers from a dinner this week"
               }
             ]
           },
@@ -2187,8 +2185,16 @@
             "dishes": []
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "chocolate-chip-oreo-cookie-cake",
+                "leftovers": false,
+                "cookDate": "2026-11-19",
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ],
             "skipped": false,
             "note": ""
           }
