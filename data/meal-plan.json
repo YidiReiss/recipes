@@ -3541,9 +3541,9 @@
                 "recipe": "chicken-mushroom-marsala",
                 "leftovers": false,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat dinner · Favorite · Never made — worth a try"
+                "drafted": false,
+                "reason": null,
+                "locked": true
               }
             ]
           }
