@@ -3507,9 +3507,20 @@
             ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": true,
-            "note": "Thanksgiving Dinnenr"
+            "note": "Thanksgiving Dinner",
+            "dishes": [
+              {
+                "recipe": "deli-roll",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ]
           }
         },
         {
