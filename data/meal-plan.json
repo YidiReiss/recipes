@@ -2185,6 +2185,10 @@
             "dishes": []
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "chocolate-chip-oreo-cookie-cake",
@@ -2192,11 +2196,38 @@
                 "cookDate": "2026-11-19",
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795362219637,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "jacks f x large egg",
+                    "lotId": "rcpt-2026-11-15-bhkajgkmuw",
+                    "deductedQty": 0.1667,
+                    "rawConvertedQty": 0.1667,
+                    "ceilingDeductedQty": 0.1667,
+                    "exactFractionUsed": false,
+                    "unit": "12 ct",
+                    "dishTitle": "Chocolate Chip Oreo Cookie Cake",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-bhkajgkmuw",
+                      "qty": 1,
+                      "unit": "12 ct",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "fridge",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "X-Large Eggs",
+                      "category": "eggs",
+                      "packSize": "12 ct",
+                      "expiresAt": "2026-12-06",
+                      "status": "good"
+                    }
+                  }
+                ]
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
