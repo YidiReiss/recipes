@@ -3543,18 +3543,9 @@
           "lunch": {
             "recipe": null,
             "custom": null,
-            "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "chulent",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Shabbat lunch · Favorite"
-              }
-            ]
+            "skipped": true,
+            "note": "Going to Reiss Family",
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
