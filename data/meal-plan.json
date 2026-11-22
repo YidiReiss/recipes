@@ -3477,13 +3477,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
+                "recipe": "macarone-paflotski",
                 "leftovers": true,
                 "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
+                "drafted": false,
+                "reason": null,
+                "locked": true,
+                "orphan": true
               }
             ]
           },
@@ -3500,7 +3500,17 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -3554,16 +3564,16 @@
       "carryInPool": {},
       "lunchWarnings": [
         {
+          "day": 4,
+          "kind": "orphan",
+          "recipe": "macarone-paflotski",
+          "variant": null
+        },
+        {
           "day": 2,
           "kind": "uncovered",
           "have": 0,
           "need": 2
-        },
-        {
-          "day": 5,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 1
         }
       ],
       "haveGenerated": [],
