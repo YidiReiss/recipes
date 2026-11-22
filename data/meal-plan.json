@@ -3368,6 +3368,10 @@
             "note": ""
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "macarone-paflotski",
@@ -3377,13 +3381,15 @@
                 "locked": false,
                 "reason": "Ground-beef night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "macarone-paflotski",
@@ -3394,11 +3400,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "penne-alla-vodka",
@@ -3408,13 +3416,15 @@
                 "locked": false,
                 "reason": "Pasta night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "penne-alla-vodka",
@@ -3425,11 +3435,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "gochujang-korean-tofu",
@@ -3439,13 +3451,15 @@
                 "locked": false,
                 "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "macarone-paflotski",
@@ -3456,11 +3470,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "chicken-broccoli-and-mushroom-stir-fry",
@@ -3470,13 +3486,15 @@
                 "locked": false,
                 "reason": "Chicken night · Leftovers cover a lunch"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "penne-alla-vodka",
@@ -3487,27 +3505,21 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [
-              {
-                "custom": "Pizza",
-                "leftovers": false,
-                "cookDate": null,
-                "locked": true,
-                "drafted": true,
-                "reason": "Standing — Thursday pizza night"
-              }
-            ],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
             "note": ""
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "gochujang-korean-tofu",
@@ -3518,11 +3530,13 @@
                 "variant": null,
                 "reason": "Leftovers from a dinner this week"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "chicken-mushroom-marsala",
@@ -3532,13 +3546,15 @@
                 "locked": false,
                 "reason": "Shabbat dinner · Favorite · Never made — worth a try"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
           "lunch": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "chulent",
@@ -3548,14 +3564,14 @@
                 "locked": false,
                 "reason": "Shabbat lunch · Favorite"
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           },
           "dinner": {
-            "dishes": [],
+            "recipe": null,
+            "custom": null,
             "skipped": false,
-            "note": ""
+            "note": "",
+            "dishes": []
           }
         }
       ],
