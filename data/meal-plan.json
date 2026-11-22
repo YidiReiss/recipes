@@ -3509,9 +3509,17 @@
           "dinner": {
             "recipe": null,
             "custom": null,
-            "skipped": true,
+            "skipped": false,
             "note": "Thanksgiving Dinner",
             "dishes": [
+              {
+                "recipe": "deli-roll",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              },
               {
                 "recipe": "deli-roll",
                 "leftovers": false,
