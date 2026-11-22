@@ -2243,7 +2243,35 @@
                 "cookDate": null,
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795362242897,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "yam sweet",
+                    "lotId": "rcpt-2026-11-15-55ftne1i49",
+                    "deductedQty": 1,
+                    "rawConvertedQty": 1,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": false,
+                    "unit": "lb",
+                    "dishTitle": "Everything Kale Salad",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-15-55ftne1i49",
+                      "qty": 1.3,
+                      "unit": "lb",
+                      "addedAt": "2026-11-15",
+                      "receiptDate": "2026-11-15",
+                      "storage": "pantry",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [],
+                      "boughtName": "Yam Sweet",
+                      "category": "yams",
+                      "expiresAt": "2026-11-29",
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           },
