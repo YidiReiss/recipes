@@ -144,17 +144,26 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-55ftne1i49",
-        "qty": 1.3,
+        "qty": 0.3,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-22",
+            "delta": -1,
+            "qtyAfter": 0.3,
+            "kind": "cooked",
+            "dish": "Everything Kale Salad"
+          }
+        ],
         "boughtName": "Yam Sweet",
         "category": "yams",
-        "expiresAt": "2026-11-29",
+        "openedAt": "2026-11-22",
+        "expiresAt": null,
         "status": "good"
       },
       {
@@ -174,7 +183,7 @@
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687702
+    "updatedAt": 1795362242976
   },
   "tomato stem": {
     "base": "tomato stem",
