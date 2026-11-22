@@ -3403,6 +3403,10 @@
             ]
           },
           "dinner": {
+            "recipe": null,
+            "custom": null,
+            "skipped": false,
+            "note": "",
             "dishes": [
               {
                 "recipe": "macarone-paflotski",
@@ -3412,9 +3416,7 @@
                 "reason": null,
                 "locked": true
               }
-            ],
-            "skipped": false,
-            "note": ""
+            ]
           }
         },
         {
@@ -3471,8 +3473,16 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
+            "dishes": [
+              {
+                "recipe": "margherita-pizza",
+                "leftovers": false,
+                "cookDate": null,
+                "drafted": false,
+                "reason": null,
+                "locked": true
+              }
+            ],
             "skipped": false,
             "note": ""
           }
@@ -3507,7 +3517,17 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": []
+            "dishes": [
+              {
+                "recipe": "margherita-pizza",
+                "leftovers": true,
+                "cookDate": null,
+                "drafted": true,
+                "locked": false,
+                "variant": null,
+                "reason": "Leftovers from a dinner this week"
+              }
+            ]
           },
           "dinner": {
             "recipe": null,
@@ -3559,14 +3579,7 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [
-        {
-          "day": 5,
-          "kind": "uncovered",
-          "have": 0,
-          "need": 1
-        }
-      ],
+      "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": []
