@@ -3406,17 +3406,7 @@
             "recipe": null,
             "custom": null,
             "skipped": false,
-            "note": "",
-            "dishes": [
-              {
-                "recipe": "penne-alla-vodka",
-                "leftovers": false,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "reason": "Pasta night · Favorite · Leftovers cover a lunch"
-              }
-            ]
+            "note": ""
           }
         },
         {
@@ -3425,17 +3415,7 @@
             "custom": null,
             "skipped": false,
             "note": "",
-            "dishes": [
-              {
-                "recipe": "penne-alla-vodka",
-                "leftovers": true,
-                "cookDate": null,
-                "drafted": true,
-                "locked": false,
-                "variant": null,
-                "reason": "Leftovers from a dinner this week"
-              }
-            ]
+            "dishes": []
           },
           "dinner": {
             "recipe": null,
@@ -3497,7 +3477,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "penne-alla-vodka",
+                "recipe": "gochujang-korean-tofu",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3522,7 +3502,7 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
@@ -3582,7 +3562,14 @@
         "useUp": []
       },
       "carryInPool": {},
-      "lunchWarnings": [],
+      "lunchWarnings": [
+        {
+          "day": 2,
+          "kind": "uncovered",
+          "have": 0,
+          "need": 2
+        }
+      ],
       "haveGenerated": [],
       "manualItems": [],
       "optionalPromoted": []
