@@ -1,0 +1,1385 @@
+{
+  "week": "2026-11-22",
+  "valid_from": "2026-11-22",
+  "valid_to": "2026-11-27",
+  "store": "Aron's Kissena Farms",
+  "source_url": "https://www.kissenafarms.com/wp-content/uploads/2026/11/2-AKF-Weekly-Circular-11-22-2026.pdf",
+  "extracted_at": "2026-11-22T11:48:24Z",
+  "items": [
+    {
+      "canonical_key": "shredded cheese",
+      "raw_name": "Les Petites Shredded Cheese Assorted 8 oz",
+      "section": "Deals of the Week",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "egg",
+      "raw_name": "Eggland's Best Large White Eggs 18 Pack",
+      "section": "Deals of the Week",
+      "price_cents": 333,
+      "basis": "pack",
+      "pack_size": "18 ct",
+      "multi_buy": "3/$10",
+      "reg_price_cents": 333
+    },
+    {
+      "canonical_key": "puff pastry sheet",
+      "raw_name": "Pepperidge Farms Puff Pastry Sheets 17.3 oz",
+      "section": "Deals of the Week",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "17.3 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "pizza balls",
+      "raw_name": "Hoffmans Pizza Balls 18 oz",
+      "section": "Deals of the Week",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "18 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "instant coffee",
+      "raw_name": "Elite Platinum Classic Instant Coffee 7 oz",
+      "section": "Deals of the Week",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "7 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "mini mandel",
+      "raw_name": "Osem Mini Mandel Jar 14.1 oz",
+      "section": "Deals of the Week",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "14.1 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "pineapple",
+      "raw_name": "Honeyglow Pineapple",
+      "section": "Produce",
+      "price_cents": 399,
+      "basis": "each",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "mushroom",
+      "raw_name": "Cello Mushrooms 8 oz",
+      "section": "Produce",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "anise",
+      "raw_name": "Fresh Anise",
+      "section": "Produce",
+      "price_cents": 150,
+      "basis": "each",
+      "multi_buy": "2/$3",
+      "reg_price_cents": 150
+    },
+    {
+      "canonical_key": "broccoli crown",
+      "raw_name": "Broccoli Crowns",
+      "section": "Produce",
+      "price_cents": 149,
+      "basis": "lb",
+      "reg_price_cents": 149
+    },
+    {
+      "canonical_key": "carrot",
+      "raw_name": "Cello Carrots 5 lb Bag",
+      "section": "Produce",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "5 lb bag",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "romaine heart",
+      "raw_name": "Romaine Hearts 3 Pack",
+      "section": "Produce",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "3 ct",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "yellow onion",
+      "raw_name": "Yellow Onions 2 lb Bag",
+      "section": "Produce",
+      "price_cents": 150,
+      "basis": "pack",
+      "pack_size": "2 lb bag",
+      "multi_buy": "2/$3",
+      "reg_price_cents": 150
+    },
+    {
+      "canonical_key": "idaho potato",
+      "raw_name": "Idaho Potatoes 5 lb Bag",
+      "section": "Produce",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "5 lb bag",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "butternut squash",
+      "raw_name": "Whole Butternut Squash",
+      "section": "Produce",
+      "price_cents": 89,
+      "basis": "lb",
+      "reg_price_cents": 89
+    },
+    {
+      "canonical_key": "sweet potato",
+      "raw_name": "Sweet Potato Yams",
+      "section": "Produce",
+      "price_cents": 89,
+      "basis": "lb",
+      "reg_price_cents": 89
+    },
+    {
+      "canonical_key": "red baby potato",
+      "raw_name": "Red C Baby Potatoes",
+      "section": "Produce",
+      "price_cents": 89,
+      "basis": "lb",
+      "reg_price_cents": 89
+    },
+    {
+      "canonical_key": "persian cucumber",
+      "raw_name": "Persian Cucumbers Pkg",
+      "section": "Produce",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "pkg",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "whole turkey",
+      "raw_name": "Empire Whole Turkey All Sizes",
+      "section": "Meat",
+      "price_cents": 399,
+      "basis": "lb",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "boneless turkey roast",
+      "raw_name": "Boneless Turkey Roast White Meat",
+      "section": "Meat",
+      "price_cents": 749,
+      "basis": "lb",
+      "reg_price_cents": 749
+    },
+    {
+      "canonical_key": "boneless turkey thigh",
+      "raw_name": "Boneless Turkey Thighs",
+      "section": "Meat",
+      "price_cents": 699,
+      "basis": "lb",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "turkey cutlet",
+      "raw_name": "White Meat Turkey Cutlets",
+      "section": "Meat",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "turkey drumstick",
+      "raw_name": "Turkey Drumsticks",
+      "section": "Meat",
+      "price_cents": 199,
+      "basis": "lb",
+      "reg_price_cents": 199
+    },
+    {
+      "canonical_key": "chicken leg",
+      "raw_name": "Chicken Legs Super Family Pack",
+      "section": "Meat",
+      "price_cents": 229,
+      "basis": "lb",
+      "pack_size": "super family pack",
+      "reg_price_cents": 229
+    },
+    {
+      "canonical_key": "chicken cutlet",
+      "raw_name": "Chicken Cutlets Family Pack",
+      "section": "Meat",
+      "price_cents": 699,
+      "basis": "lb",
+      "pack_size": "family pack",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "chicken wing",
+      "raw_name": "Chicken Wings Super Family Pack",
+      "section": "Meat",
+      "price_cents": 199,
+      "basis": "lb",
+      "pack_size": "super family pack",
+      "reg_price_cents": 199
+    },
+    {
+      "canonical_key": "shoulder london broil",
+      "raw_name": "American Black Angus Beef Shoulder London Broil",
+      "section": "Meat",
+      "price_cents": 1399,
+      "basis": "lb",
+      "reg_price_cents": 1399
+    },
+    {
+      "canonical_key": "silver tip roast",
+      "raw_name": "American Black Angus Beef Silver Tip Roast",
+      "section": "Meat",
+      "price_cents": 1399,
+      "basis": "lb",
+      "reg_price_cents": 1399
+    },
+    {
+      "canonical_key": "flank steak",
+      "raw_name": "American Black Angus Beef Flank Steak",
+      "section": "Meat",
+      "price_cents": 1599,
+      "basis": "lb",
+      "reg_price_cents": 1599
+    },
+    {
+      "canonical_key": "second cut brisket",
+      "raw_name": "All Natural Grass Fed Beef Second Cut Brisket",
+      "section": "Meat",
+      "price_cents": 1299,
+      "basis": "lb",
+      "reg_price_cents": 1299
+    },
+    {
+      "canonical_key": "minute roast",
+      "raw_name": "All Natural Grass Fed Beef Minute Roast Whole Only",
+      "section": "Meat",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "miami strip steak",
+      "raw_name": "All Natural Grass Fed Beef Miami Strip Steak",
+      "section": "Meat",
+      "price_cents": 1299,
+      "basis": "lb",
+      "reg_price_cents": 1299
+    },
+    {
+      "canonical_key": "ground chuck",
+      "raw_name": "Ground Chuck Super Family Pack",
+      "section": "Meat",
+      "price_cents": 599,
+      "basis": "lb",
+      "pack_size": "super family pack",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "marinated chicken drumstick",
+      "raw_name": "Ready to Bake Marinated Chicken Drumsticks",
+      "section": "Meat",
+      "price_cents": 369,
+      "basis": "lb",
+      "reg_price_cents": 369
+    },
+    {
+      "canonical_key": "pastrami roast",
+      "raw_name": "Ready to Cook Homemade Pastrami Roast",
+      "section": "Meat",
+      "price_cents": 1299,
+      "basis": "lb",
+      "reg_price_cents": 1299
+    },
+    {
+      "canonical_key": "turkey shwarma",
+      "raw_name": "Ready to Cook Dark Meat Turkey Shwarma",
+      "section": "Meat",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "breaded chicken finger",
+      "raw_name": "Ready to Bake Breaded Chicken Fingers",
+      "section": "Meat",
+      "price_cents": 999,
+      "basis": "lb",
+      "reg_price_cents": 999
+    },
+    {
+      "canonical_key": "cheese variety pack",
+      "raw_name": "Les Petites Cheese Variety Pack 16 oz",
+      "section": "Dairy",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "organic milk",
+      "raw_name": "Stonyfield Organic Milk Assorted 64 oz",
+      "section": "Dairy",
+      "price_cents": 449,
+      "basis": "pack",
+      "pack_size": "64 oz",
+      "reg_price_cents": 449
+    },
+    {
+      "canonical_key": "cottage cheese",
+      "raw_name": "Friendship Cottage Cheese Assorted 16 oz",
+      "section": "Dairy",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "egg white",
+      "raw_name": "Bowl & Basket Egg Whites Liquid 32 oz",
+      "section": "Dairy",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "32 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "margarine",
+      "raw_name": "Farms Creamery Unsalted Margarine Sticks 16 oz",
+      "section": "Dairy",
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "greek yogurt",
+      "raw_name": "Chobani Greek Yogurt Assorted Excluding Zero or Less Sugar 5.3 oz",
+      "section": "Dairy",
+      "price_cents": 125,
+      "basis": "pack",
+      "pack_size": "5.3 oz",
+      "multi_buy": "4/$5",
+      "reg_price_cents": 125
+    },
+    {
+      "canonical_key": "leben",
+      "raw_name": "Mehadrin Leben Assorted 6 oz",
+      "section": "Dairy",
+      "price_cents": 125,
+      "basis": "pack",
+      "pack_size": "6 oz",
+      "multi_buy": "4/$5",
+      "reg_price_cents": 125
+    },
+    {
+      "canonical_key": "whipped cream cheese",
+      "raw_name": "J&J Whipped Cream Cheese Original 8 oz",
+      "section": "Dairy",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "halloumi cheese",
+      "raw_name": "Natural & Kosher Halloumi Cheese 7 oz",
+      "section": "Dairy",
+      "price_cents": 449,
+      "basis": "pack",
+      "pack_size": "7 oz",
+      "reg_price_cents": 449
+    },
+    {
+      "canonical_key": "yogurt",
+      "raw_name": "La Yogurt Assorted 6 oz",
+      "section": "Dairy",
+      "price_cents": 67,
+      "basis": "pack",
+      "pack_size": "6 oz",
+      "multi_buy": "3/$2",
+      "reg_price_cents": 67
+    },
+    {
+      "canonical_key": "cheese wedge",
+      "raw_name": "Tnuva Naama Wedges 8.46 oz",
+      "section": "Dairy",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "8.46 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "orange juice",
+      "raw_name": "Bowl & Basket Orange Juice Assorted 52 oz",
+      "section": "Dairy",
+      "price_cents": 350,
+      "basis": "pack",
+      "pack_size": "52 oz",
+      "multi_buy": "2/$7",
+      "reg_price_cents": 350
+    },
+    {
+      "canonical_key": "yogurt smoothie",
+      "raw_name": "Stonyfield Yokids Smoothie Strawberry 12 Pack",
+      "section": "Dairy",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "12 ct",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "whipped topping",
+      "raw_name": "Reddi Wip Topping Assorted 6.5 oz",
+      "section": "Dairy",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "6.5 oz",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "ricotta cheese",
+      "raw_name": "Polly-O Ricotta Assorted 32 oz",
+      "section": "Dairy",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "32 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "pizza bagel",
+      "raw_name": "Macabee Cheese Pizza Bagels 18 Pack",
+      "section": "Frozen",
+      "price_cents": 999,
+      "basis": "pack",
+      "pack_size": "18 ct",
+      "reg_price_cents": 999
+    },
+    {
+      "canonical_key": "pizza dough",
+      "raw_name": "Papa Sals Pizza Dough Original Only 16 oz",
+      "section": "Frozen",
+      "price_cents": 125,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "4/$5",
+      "reg_price_cents": 125
+    },
+    {
+      "canonical_key": "chicken nugget",
+      "raw_name": "Morning Star Buffalo Chikn Nuggets 10.5 oz",
+      "section": "Frozen",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "10.5 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "mixed vegetable",
+      "raw_name": "Yerek Mixed Vegetables 16 oz",
+      "section": "Frozen",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "edamame",
+      "raw_name": "Seapoint Farms Edamame Soybeans Shelled Only 12 oz",
+      "section": "Frozen",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "cheese ravioli",
+      "raw_name": "Yonis Mini Round Cheese Ravioli 30 oz",
+      "section": "Frozen",
+      "price_cents": 1099,
+      "basis": "pack",
+      "pack_size": "30 oz",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "cauliflower floret",
+      "raw_name": "Mothers Cauliflower Florets 24 oz",
+      "section": "Frozen",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "24 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "garlic cube",
+      "raw_name": "Gefen Crushed Garlic Cubes 2.8 oz",
+      "section": "Frozen",
+      "price_cents": 279,
+      "basis": "pack",
+      "pack_size": "2.8 oz",
+      "reg_price_cents": 279
+    },
+    {
+      "canonical_key": "bourekas",
+      "raw_name": "Tnuva Maadanot Jaffa Bourekas Cheese or Potato 21.16 oz",
+      "section": "Frozen",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "21.16 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "baby okra",
+      "raw_name": "Galil Baby Okra 14 oz",
+      "section": "Frozen",
+      "price_cents": 350,
+      "basis": "pack",
+      "pack_size": "14 oz",
+      "multi_buy": "2/$7",
+      "reg_price_cents": 350
+    },
+    {
+      "canonical_key": "baby sweet pea",
+      "raw_name": "Yerek Baby Sweet Peas 16 oz",
+      "section": "Frozen",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "fish stick",
+      "raw_name": "Kosherific Fish Sticks 25 oz",
+      "section": "Frozen",
+      "price_cents": 599,
+      "basis": "pack",
+      "pack_size": "25 oz",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "latke",
+      "raw_name": "Kineret Latkes Assorted 14 oz",
+      "section": "Frozen",
+      "price_cents": 449,
+      "basis": "pack",
+      "pack_size": "14 oz",
+      "reg_price_cents": 449
+    },
+    {
+      "canonical_key": "flounder fillet",
+      "raw_name": "Freunds Flounder Fillets 14 oz",
+      "section": "Frozen",
+      "price_cents": 599,
+      "basis": "pack",
+      "pack_size": "14 oz",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "matzo ball",
+      "raw_name": "Meal Mart Matzo Balls Family Pack 32 oz",
+      "section": "Frozen",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "32 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "turkey breast",
+      "raw_name": "Tirat Zvi Turkey Breast Assorted 5 oz",
+      "section": "Provisions",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "5 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "beef jerky",
+      "raw_name": "Aufschnitt Beef Jerky Assorted 2 oz",
+      "section": "Provisions",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "2 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "beef frank",
+      "raw_name": "Solomons Beef Franks 12 oz",
+      "section": "Provisions",
+      "price_cents": 699,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "smoked salmon",
+      "raw_name": "Ruby Bay Smoked Irish Style Salmon 3 oz",
+      "section": "Dairy Grab N Go",
+      "price_cents": 499,
+      "basis": "pack",
+      "pack_size": "3 oz",
+      "reg_price_cents": 499
+    },
+    {
+      "canonical_key": "guacamole",
+      "raw_name": "Sonny & Joes Guacamole 8 oz",
+      "section": "Dairy Grab N Go",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "hummus",
+      "raw_name": "Sonny & Joes Classic Hummus 7 oz",
+      "section": "Dairy Grab N Go",
+      "price_cents": 299,
+      "basis": "pack",
+      "pack_size": "7 oz",
+      "reg_price_cents": 299
+    },
+    {
+      "canonical_key": "corn on the cob",
+      "raw_name": "Birds Eye Corn on the Cob Mini 12 Pack",
+      "section": "Thanksgiving Specials",
+      "price_cents": 449,
+      "basis": "pack",
+      "pack_size": "12 ct",
+      "reg_price_cents": 449
+    },
+    {
+      "canonical_key": "frozen butternut squash",
+      "raw_name": "Birds Eye Southland Butternut Squash 12 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "french fry",
+      "raw_name": "McCain Fries Assorted Included Quick Cook 20-32 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 350,
+      "basis": "pack",
+      "pack_size": "20-32 oz",
+      "multi_buy": "2/$7",
+      "reg_price_cents": 350
+    },
+    {
+      "canonical_key": "broccoli floret",
+      "raw_name": "Mothers Broccoli Florets 24 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "24 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "cider",
+      "raw_name": "Zeigler's Cider Assorted 64 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 350,
+      "basis": "pack",
+      "pack_size": "64 oz",
+      "multi_buy": "2/$7",
+      "reg_price_cents": 350
+    },
+    {
+      "canonical_key": "heavy cream",
+      "raw_name": "Farmland Heavy Cream 32 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 599,
+      "basis": "pack",
+      "pack_size": "32 oz",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "cream cheese",
+      "raw_name": "Philadelphia Cream Cheese Bar Regular or Less Fat 8 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 279,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "reg_price_cents": 279
+    },
+    {
+      "canonical_key": "salad crouton",
+      "raw_name": "Gefen Salad Croutons Assorted 5.2 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "5.2 oz",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "pizza sauce",
+      "raw_name": "Gefen Pizza Sauce Classic Italian or Classic Marinara 14 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 125,
+      "basis": "pack",
+      "pack_size": "14 oz",
+      "multi_buy": "4/$5",
+      "reg_price_cents": 125
+    },
+    {
+      "canonical_key": "potato gnocchi",
+      "raw_name": "Bartenura Potato Gnocchi 16 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "whole kernel corn",
+      "raw_name": "Bowl & Basket Whole Kernel Corn Original Only 15.25 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 100,
+      "basis": "pack",
+      "pack_size": "15.25 oz",
+      "multi_buy": "5/$5",
+      "reg_price_cents": 100
+    },
+    {
+      "canonical_key": "canned pumpkin",
+      "raw_name": "Bowl & Basket Pumpkin 15 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 150,
+      "basis": "pack",
+      "pack_size": "15 oz",
+      "multi_buy": "2/$3",
+      "reg_price_cents": 150
+    },
+    {
+      "canonical_key": "cranberry sauce",
+      "raw_name": "Bowl & Basket Cranberry Jellied or Whole 14 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 150,
+      "basis": "pack",
+      "pack_size": "14 oz",
+      "multi_buy": "2/$3",
+      "reg_price_cents": 150
+    },
+    {
+      "canonical_key": "graham cracker pie crust",
+      "raw_name": "Bowl & Basket Graham Cracker Pie Crust 6 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "6 oz",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "granulated sugar",
+      "raw_name": "Domino Granulated Sugar 4 lb",
+      "section": "Thanksgiving Specials",
+      "price_cents": 333,
+      "basis": "pack",
+      "pack_size": "4 lb",
+      "multi_buy": "3/$10",
+      "reg_price_cents": 333
+    },
+    {
+      "canonical_key": "pie filling",
+      "raw_name": "Bowl & Basket Filling Assorted 21 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "21 oz",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "stuffing mix",
+      "raw_name": "Oroweat Stuffing Assorted 12 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "turkey gravy mix",
+      "raw_name": "Streit's Turkey Gravy Mix 4.2 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "4.2 oz",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "roaster pan",
+      "raw_name": "Handi Foil XL Oval Rack Roaster 1 ct",
+      "section": "Thanksgiving Specials",
+      "price_cents": 200,
+      "basis": "each",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "turkey oven bag",
+      "raw_name": "Reynolds Turkey Oven Bag 19x23.5 in 2 Pack",
+      "section": "Thanksgiving Specials",
+      "price_cents": 250,
+      "basis": "pack",
+      "pack_size": "2 ct",
+      "multi_buy": "2/$5",
+      "reg_price_cents": 250
+    },
+    {
+      "canonical_key": "spaghetti",
+      "raw_name": "Ronzoni Pasta Assorted 16 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 100,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "5/$5",
+      "reg_price_cents": 100
+    },
+    {
+      "canonical_key": "mashed potato mix",
+      "raw_name": "Idahoan Mashed Potatoes 13.75 oz",
+      "section": "Thanksgiving Specials",
+      "price_cents": 299,
+      "basis": "pack",
+      "pack_size": "13.75 oz",
+      "reg_price_cents": 299
+    },
+    {
+      "canonical_key": "lunch napkin",
+      "raw_name": "Silk Touch Lunch Napkins 500 Pack",
+      "section": "Thanksgiving Specials",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "500 ct",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "plastic cup",
+      "raw_name": "Perfection Clear Plastic Cups 100 Pack",
+      "section": "Thanksgiving Specials",
+      "price_cents": 125,
+      "basis": "pack",
+      "pack_size": "100 ct",
+      "multi_buy": "4/$5",
+      "reg_price_cents": 125
+    },
+    {
+      "canonical_key": "paper plate",
+      "raw_name": "Perfection 9\" White Plates 100 Pack",
+      "section": "Thanksgiving Specials",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "100 ct",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "aluminum pan",
+      "raw_name": "Perfection Aluminum Pan 9x13 1/2 Size Deep 1 ct",
+      "section": "Thanksgiving Specials",
+      "price_cents": 40,
+      "basis": "each",
+      "multi_buy": "5/$2",
+      "reg_price_cents": 40
+    },
+    {
+      "canonical_key": "high gluten flour",
+      "raw_name": "Tuscanini High Gluten Flour 5 lb",
+      "section": "Grocery",
+      "price_cents": 699,
+      "basis": "pack",
+      "pack_size": "5 lb",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "parchment paper",
+      "raw_name": "Geula Parchment Paper Pre-Cut 30 ct",
+      "section": "Grocery",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "30 ct",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "brownie mix",
+      "raw_name": "Duncan Hines Brownie Mixes Chewy, Dark, or Milk Only 15.25-18.3 oz",
+      "section": "Grocery",
+      "price_cents": 167,
+      "basis": "pack",
+      "pack_size": "15.25-18.3 oz",
+      "multi_buy": "3/$5",
+      "reg_price_cents": 167
+    },
+    {
+      "canonical_key": "date syrup",
+      "raw_name": "Heaven & Earth Organic Date Syrup 12 oz",
+      "section": "Grocery",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "pistachio paste",
+      "raw_name": "Bakers Choice Pistachio Paste 8 oz",
+      "section": "Grocery",
+      "price_cents": 1199,
+      "basis": "pack",
+      "pack_size": "8 oz",
+      "reg_price_cents": 1199
+    },
+    {
+      "canonical_key": "applesauce",
+      "raw_name": "Applesnax NSA Unsweetened Applesauce 46 oz",
+      "section": "Grocery",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "46 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "sesame teriyaki sauce",
+      "raw_name": "Mikee Sesame Teriyaki Sauce Original Only 20 oz",
+      "section": "Grocery",
+      "price_cents": 599,
+      "basis": "pack",
+      "pack_size": "20 oz",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "pearled barley",
+      "raw_name": "Nassau Foods Pearled Barley Yoshon 16 oz",
+      "section": "Grocery",
+      "price_cents": 100,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "multi_buy": "5/$5",
+      "reg_price_cents": 100
+    },
+    {
+      "canonical_key": "avocado oil",
+      "raw_name": "Chosen Foods Avocado Oil 16.9 oz",
+      "section": "Grocery",
+      "price_cents": 1299,
+      "basis": "pack",
+      "pack_size": "16.9 oz",
+      "reg_price_cents": 1299
+    },
+    {
+      "canonical_key": "basmati rice",
+      "raw_name": "Tilda Pure Basmati Rice 10 lb",
+      "section": "Grocery",
+      "price_cents": 1499,
+      "basis": "pack",
+      "pack_size": "10 lb",
+      "reg_price_cents": 1499
+    },
+    {
+      "canonical_key": "chocolate powder",
+      "raw_name": "Elite Chocolit Powder 17.6 oz",
+      "section": "Grocery",
+      "price_cents": 699,
+      "basis": "pack",
+      "pack_size": "17.6 oz",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "instant pudding",
+      "raw_name": "Osem Instant Pudding Chocolate or Vanilla 3.1 oz",
+      "section": "Grocery",
+      "price_cents": 167,
+      "basis": "pack",
+      "pack_size": "3.1 oz",
+      "multi_buy": "3/$5",
+      "reg_price_cents": 167
+    },
+    {
+      "canonical_key": "fruit gusher",
+      "raw_name": "Betty Crocker Fruit Gushers Variety Pack 6 Pack",
+      "section": "Grocery",
+      "price_cents": 300,
+      "basis": "pack",
+      "pack_size": "6 ct",
+      "multi_buy": "2/$6",
+      "reg_price_cents": 300
+    },
+    {
+      "canonical_key": "snacker cracker",
+      "raw_name": "Lieber's Original Snackers 13.7 oz",
+      "section": "Grocery",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "13.7 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "honey bunches of oats",
+      "raw_name": "Post Honey Bunches of Oats with Almond 28 oz",
+      "section": "Grocery",
+      "price_cents": 699,
+      "basis": "pack",
+      "pack_size": "28 oz",
+      "reg_price_cents": 699
+    },
+    {
+      "canonical_key": "bamba",
+      "raw_name": "Osem Bamba Small 1 oz",
+      "section": "Grocery",
+      "price_cents": 100,
+      "basis": "pack",
+      "pack_size": "1 oz",
+      "multi_buy": "5/$5",
+      "reg_price_cents": 100
+    },
+    {
+      "canonical_key": "cracker crisp",
+      "raw_name": "B&B Sour Cream & Onion Cracker Crisps 10.6 oz",
+      "section": "Grocery",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "10.6 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "baby corn",
+      "raw_name": "Asian Harvest Whole Sweet Baby Corn 15 oz",
+      "section": "Grocery",
+      "price_cents": 200,
+      "basis": "pack",
+      "pack_size": "15 oz",
+      "multi_buy": "2/$4",
+      "reg_price_cents": 200
+    },
+    {
+      "canonical_key": "grape leaf",
+      "raw_name": "Orlando Grape Leaves 16 oz",
+      "section": "Grocery",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "16 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "canola oil",
+      "raw_name": "Nassau Canola Oil 96 oz",
+      "section": "Grocery",
+      "price_cents": 899,
+      "basis": "pack",
+      "pack_size": "96 oz",
+      "reg_price_cents": 899
+    },
+    {
+      "canonical_key": "vanilla custard",
+      "raw_name": "Baker's Choice Vanilla Custard 12 oz",
+      "section": "Chanukah",
+      "price_cents": 399,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "reg_price_cents": 399
+    },
+    {
+      "canonical_key": "raspberry jelly filling",
+      "raw_name": "Bakers Choice Raspberry Jelly Doughnut Filling 12 oz",
+      "section": "Chanukah",
+      "price_cents": 599,
+      "basis": "pack",
+      "pack_size": "12 oz",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "colored sprinkle",
+      "raw_name": "Bakers Choice Colored Sprinkles 10 oz",
+      "section": "Chanukah",
+      "price_cents": 349,
+      "basis": "pack",
+      "pack_size": "10 oz",
+      "reg_price_cents": 349
+    },
+    {
+      "canonical_key": "olive oil",
+      "raw_name": "Liebers Olive Oil Extra Light 68 oz",
+      "section": "Chanukah",
+      "price_cents": 1699,
+      "basis": "pack",
+      "pack_size": "68 oz",
+      "reg_price_cents": 1699
+    },
+    {
+      "canonical_key": "tray candle",
+      "raw_name": "Ez Lite Tray Candles Blue Medium 44 Pack",
+      "section": "Chanukah",
+      "price_cents": 1999,
+      "basis": "pack",
+      "pack_size": "44 ct",
+      "reg_price_cents": 1999
+    },
+    {
+      "canonical_key": "dreidel",
+      "raw_name": "Izzy Dizzy Dreidel Medium Color 1 Pack",
+      "section": "Chanukah",
+      "price_cents": 40,
+      "basis": "each",
+      "multi_buy": "5/$2",
+      "reg_price_cents": 40
+    },
+    {
+      "canonical_key": "chanukah candle",
+      "raw_name": "Ohr Zion or Manischewitz Chanukah Candles 44 Pack",
+      "section": "Chanukah",
+      "price_cents": 100,
+      "basis": "pack",
+      "pack_size": "44 ct",
+      "multi_buy": "5/$5",
+      "reg_price_cents": 100
+    },
+    {
+      "canonical_key": "chocolate coin",
+      "raw_name": "Jerusalem Chocolate Coins Multicolored 1 Bag",
+      "section": "Chanukah",
+      "price_cents": 67,
+      "basis": "pack",
+      "pack_size": "1 bag",
+      "multi_buy": "3/$2",
+      "reg_price_cents": 67
+    },
+    {
+      "canonical_key": "candy dreidel",
+      "raw_name": "Lieber's Large Candy Dreidel 1 Pack",
+      "section": "Chanukah",
+      "price_cents": 150,
+      "basis": "each",
+      "multi_buy": "2/$3",
+      "reg_price_cents": 150
+    },
+    {
+      "canonical_key": "chanukah candle",
+      "raw_name": "Ohr E-Z Light 2.5hr Candles Jelled or Liquid Excluding Mini or Colored 44 Pack",
+      "section": "Chanukah",
+      "price_cents": 1099,
+      "basis": "pack",
+      "pack_size": "44 ct",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "pomace olive oil",
+      "raw_name": "Ohr Pomace Olive Oil 30 oz",
+      "section": "Chanukah",
+      "price_cents": 799,
+      "basis": "pack",
+      "pack_size": "30 oz",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "tilapia fillet",
+      "raw_name": "Tilapia Fillet Family Pack",
+      "section": "Fish",
+      "price_cents": 799,
+      "basis": "lb",
+      "pack_size": "family pack",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "tuna steak",
+      "raw_name": "Tuna Steaks",
+      "section": "Fish",
+      "price_cents": 1499,
+      "basis": "lb",
+      "reg_price_cents": 1499
+    },
+    {
+      "canonical_key": "lox bits",
+      "raw_name": "Lox Bits & Pieces",
+      "section": "Fish",
+      "price_cents": 999,
+      "basis": "each",
+      "reg_price_cents": 999
+    },
+    {
+      "canonical_key": "flavored nut",
+      "raw_name": "Flavored Nuts Assorted",
+      "section": "Nuts",
+      "price_cents": 1899,
+      "basis": "lb",
+      "reg_price_cents": 1899
+    },
+    {
+      "canonical_key": "pecan",
+      "raw_name": "Dry Roasted Pecans",
+      "section": "Nuts",
+      "price_cents": 1299,
+      "basis": "lb",
+      "reg_price_cents": 1299
+    },
+    {
+      "canonical_key": "pistachio",
+      "raw_name": "Dry Roasted Pistachios",
+      "section": "Nuts",
+      "price_cents": 999,
+      "basis": "lb",
+      "reg_price_cents": 999
+    },
+    {
+      "canonical_key": "cashew",
+      "raw_name": "Black Pepper Cashews",
+      "section": "Nuts",
+      "price_cents": 599,
+      "basis": "lb",
+      "reg_price_cents": 599
+    },
+    {
+      "canonical_key": "dried pineapple",
+      "raw_name": "Dried Natural Pineapples",
+      "section": "Nuts",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "crinkle cookie",
+      "raw_name": "Pastry to Go Crinkle Cookies",
+      "section": "Bakery",
+      "price_cents": 749,
+      "basis": "each",
+      "reg_price_cents": 749
+    },
+    {
+      "canonical_key": "mini cupcake topper",
+      "raw_name": "Mini Cupcake Toppers",
+      "section": "Bakery",
+      "price_cents": 899,
+      "basis": "each",
+      "reg_price_cents": 899
+    },
+    {
+      "canonical_key": "chocolate babka loaf",
+      "raw_name": "Homemade Chocolate Babka Loaf",
+      "section": "Bakery",
+      "price_cents": 949,
+      "basis": "each",
+      "reg_price_cents": 949
+    },
+    {
+      "canonical_key": "cheese bun",
+      "raw_name": "Cheese Buns",
+      "section": "Bakery",
+      "price_cents": 899,
+      "basis": "each",
+      "reg_price_cents": 899
+    },
+    {
+      "canonical_key": "sweet potato roll",
+      "raw_name": "Sweet Potato Roll",
+      "section": "Sushi",
+      "price_cents": 745,
+      "basis": "each",
+      "reg_price_cents": 745
+    },
+    {
+      "canonical_key": "black dragon roll",
+      "raw_name": "Black Dragon Roll",
+      "section": "Sushi",
+      "price_cents": 1495,
+      "basis": "each",
+      "reg_price_cents": 1495
+    },
+    {
+      "canonical_key": "israeli couscous",
+      "raw_name": "Israeli Couscous",
+      "section": "Deli",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "yellow rice",
+      "raw_name": "Yellow Rice",
+      "section": "Deli",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "garlic pasta",
+      "raw_name": "Garlic Pasta",
+      "section": "Deli",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "mashed sweet potato",
+      "raw_name": "Mashed Sweet Potatoes",
+      "section": "Deli",
+      "price_cents": 799,
+      "basis": "lb",
+      "reg_price_cents": 799
+    },
+    {
+      "canonical_key": "southern fried chicken",
+      "raw_name": "Southern Fried Chicken",
+      "section": "Deli",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "meatloaf",
+      "raw_name": "Classic Meatloaf",
+      "section": "Deli",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "stuffed capon",
+      "raw_name": "Rice & Mushrooms Stuffed Capons",
+      "section": "Deli",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    },
+    {
+      "canonical_key": "breaded chicken cutlet",
+      "raw_name": "Dark Meat Breaded Chicken Cutlets",
+      "section": "Deli",
+      "price_cents": 1099,
+      "basis": "lb",
+      "reg_price_cents": 1099
+    }
+  ]
+}
