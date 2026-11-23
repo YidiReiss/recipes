@@ -3,8 +3,17 @@
   "store": "Aron's Kissena Farms",
   "source_page": "https://www.aronskissenafarms.com/weekly-circular/",
   "retention_weeks_pdf": 4,
-  "latest_week": "2026-11-15",
+  "latest_week": "2026-11-22",
   "weeks": [
+    {
+      "week": "2026-11-22",
+      "valid_from": "2026-11-22",
+      "valid_to": "2026-11-27",
+      "pdf_url": "https://www.kissenafarms.com/wp-content/uploads/2026/11/2-AKF-Weekly-Circular-11-22-2026.pdf",
+      "items_path": "data/circulars/2026-11-22/items.json",
+      "item_count": 152,
+      "extracted_at": "2026-11-22T11:48:24Z"
+    },
     {
       "week": "2026-11-15",
       "valid_from": "2026-11-15",
