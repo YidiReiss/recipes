@@ -5742,7 +5742,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      /v=20261122[a-z]/.test(indexHtml43));
+      /v=20261124[a-z]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -6267,7 +6267,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261122a',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261124a',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6275,8 +6275,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261122a') &&
-      indexHtml44.includes('app.js?v=20261122a'));
+      indexHtml44.includes('styles.css?v=20261124a') &&
+      indexHtml44.includes('app.js?v=20261124a'));
 
     // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
     // v20261120e, Section 47): button shows only while stock remains;
@@ -6576,6 +6576,318 @@ async function main() {
     lblRegularDone.includes('>✓ Cooked</button>') &&
     lblLeftovers.includes('>Ate it?</button>') && !lblLeftovers.includes('Cooked it?') &&
     lblLeftoversDone.includes('>✓ Ate</button>') && !lblLeftoversDone.includes('✓ Cooked'));
+
+  // Section 50 — v20261124a PWA (manifest.json, icons, index.html parity, sw.js lifecycle & fetch/cache rules)
+  {
+    const vm = require('vm');
+    const manifestPath49 = path.join(SITE_DIR, 'manifest.json');
+    const swPath49 = path.join(SITE_DIR, 'sw.js');
+    const indexHtml49 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
+    const swSrc49 = fs.readFileSync(swPath49, 'utf8');
+    const manifest49 = JSON.parse(fs.readFileSync(manifestPath49, 'utf8'));
+
+    // Helper: read PNG width/height from IHDR header
+    function pngDims(filePath) {
+      if (!fs.existsSync(filePath)) return null;
+      const buf = fs.readFileSync(filePath);
+      if (buf.length < 24) return null;
+      const sig = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+      if (!buf.subarray(0, 8).equals(sig)) return null;
+      return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+    }
+
+    // 49(a): manifest.json fields, subpath-relative URLs, no orientation lock, separate any/maskable icons, PNG files on disk
+    const icons49 = Array.isArray(manifest49.icons) ? manifest49.icons : [];
+    const icon192 = icons49.find(i => i.src === 'assets/images/icon-192.png');
+    const icon512 = icons49.find(i => i.src === 'assets/images/icon-512.png');
+    const iconMask = icons49.find(i => i.src === 'assets/images/icon-512-maskable.png');
+    const dims192 = pngDims(path.join(SITE_DIR, 'assets/images/icon-192.png'));
+    const dims512 = pngDims(path.join(SITE_DIR, 'assets/images/icon-512.png'));
+    const dimsMask = pngDims(path.join(SITE_DIR, 'assets/images/icon-512-maskable.png'));
+    const noLeadingSlashManifest = [manifest49.id, manifest49.scope, manifest49.start_url, ...icons49.map(i => i.src)]
+      .every(v => typeof v === 'string' && !v.startsWith('/'));
+    check('Section 50(a) (PWA manifest & icons): valid manifest.json with id/scope/start_url "./", standalone display, terracotta/cream colors, NO orientation field, separate any/maskable icons, relative paths, and valid 192/512 PNG files on disk',
+      manifest49.name === 'Reiss Family Recipes' &&
+      manifest49.short_name === 'Recipes' &&
+      manifest49.short_name.length <= 12 &&
+      manifest49.description === 'Private family recipe collection.' &&
+      manifest49.display === 'standalone' &&
+      manifest49.id === './' &&
+      manifest49.scope === './' &&
+      manifest49.start_url === './' &&
+      manifest49.background_color === '#faf6ee' &&
+      manifest49.theme_color === '#b4552d' &&
+      !Object.prototype.hasOwnProperty.call(manifest49, 'orientation') &&
+      noLeadingSlashManifest &&
+      icons49.length === 3 &&
+      icon192 && icon192.sizes === '192x192' && icon192.type === 'image/png' && icon192.purpose === 'any' &&
+      icon512 && icon512.sizes === '512x512' && icon512.type === 'image/png' && icon512.purpose === 'any' &&
+      iconMask && iconMask.sizes === '512x512' && iconMask.type === 'image/png' && iconMask.purpose === 'maskable' &&
+      dims192 && dims192.w === 192 && dims192.h === 192 &&
+      dims512 && dims512.w === 512 && dims512.h === 512 &&
+      dimsMask && dimsMask.w === 512 && dimsMask.h === 512);
+
+    // 49(b): index.html PWA tags & version-label parity across index.html and sw.js
+    const cssVerMatch = indexHtml49.match(/styles\.css\?v=([0-9a-z]+)/);
+    const jsVerMatch = indexHtml49.match(/app\.js\?v=([0-9a-z]+)/);
+    const shellCacheMatch = swSrc49.match(/var\s+SHELL_CACHE\s*=\s*"reiss-recipes-shell-v([0-9a-z]+)"/);
+    const dataCacheMatch = swSrc49.match(/var\s+DATA_CACHE\s*=\s*"(reiss-recipes-data-v\d+)"/);
+    const verLabel49 = cssVerMatch ? cssVerMatch[1] : null;
+    check('Section 50(b) (index.html PWA tags & version-label parity): index.html has manifest, theme-color #b4552d, apple-touch-icon, Apple web-app tags, #b4552d SVG favicon, silent SW registration with updateViaCache:"none", no controllerchange reload, and matching v20261124a across index.html & sw.js',
+      verLabel49 === '20261124a' &&
+      jsVerMatch && jsVerMatch[1] === verLabel49 &&
+      shellCacheMatch && shellCacheMatch[1] === verLabel49 &&
+      dataCacheMatch && dataCacheMatch[1] === 'reiss-recipes-data-v1' &&
+      swSrc49.includes('./styles.css?v=' + verLabel49) &&
+      swSrc49.includes('./app.js?v=' + verLabel49) &&
+      indexHtml49.includes('<link rel="manifest" href="manifest.json">') &&
+      indexHtml49.includes('<meta name="theme-color" content="#b4552d">') &&
+      indexHtml49.includes('<link rel="apple-touch-icon" href="assets/images/icon-192.png">') &&
+      indexHtml49.includes('<meta name="apple-mobile-web-app-capable" content="yes">') &&
+      indexHtml49.includes('<meta name="apple-mobile-web-app-title" content="Recipes">') &&
+      indexHtml49.includes("fill='%23b4552d'") &&
+      !indexHtml49.includes("fill='%23a03d1a'") &&
+      indexHtml49.includes("navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })") &&
+      !indexHtml49.includes('controllerchange') &&
+      !/location\.reload\s*\(/.test(indexHtml49) &&
+      !/addEventListener\s*\(\s*['"]controllerchange['"]/.test(swSrc49));
+
+    // Harness to execute sw.js inside an isolated VM with mocked ServiceWorkerGlobalScope, CacheStorage, Response, and fetch
+    function createSwHarness49(initialFetchFn) {
+      const SCOPE = 'https://yidireiss.github.io/recipes/';
+      const stores = new Map(); // cacheName -> Map(absUrl -> MockRes)
+      const putLog = [];
+      let skipWaitingCalled = false;
+      let clientsClaimCalled = false;
+      let fetchFn = initialFetchFn;
+
+      function normKey(k) {
+        const raw = typeof k === 'string' ? k : (k && k.url ? k.url : String(k));
+        return new URL(raw, SCOPE).href;
+      }
+
+      class MockResponse {
+        constructor(body, init) {
+          this.body = body;
+          this.status = (init && init.status !== undefined) ? init.status : 200;
+          this.type = (init && init.type) ? init.type : 'basic';
+          this.ok = this.status >= 200 && this.status < 300;
+          this.headers = (init && init.headers) || {};
+        }
+        clone() {
+          return new MockResponse(this.body, { status: this.status, type: this.type, headers: Object.assign({}, this.headers) });
+        }
+        async text() { return String(this.body); }
+      }
+
+      function makeCache(name) {
+        if (!stores.has(name)) stores.set(name, new Map());
+        const map = stores.get(name);
+        return {
+          async addAll(urls) {
+            for (const u of urls) {
+              const abs = normKey(u);
+              map.set(abs, new MockResponse('precached:' + u, { status: 200, type: 'basic' }));
+            }
+          },
+          async put(key, res) {
+            const abs = normKey(key);
+            putLog.push({ cache: name, key: abs, status: res.status, type: res.type });
+            map.set(abs, res);
+          },
+          async match(key) {
+            const abs = normKey(key);
+            return map.has(abs) ? map.get(abs).clone() : undefined;
+          }
+        };
+      }
+
+      const cachesApi = {
+        async open(name) { return makeCache(name); },
+        async keys() { return Array.from(stores.keys()); },
+        async delete(name) { return stores.delete(name); },
+        async match(key) {
+          const abs = normKey(key);
+          for (const [, map] of stores) {
+            if (map.has(abs)) return map.get(abs).clone();
+          }
+          return undefined;
+        }
+      };
+
+      const listeners = {};
+      const sandbox = {
+        URL,
+        Response: MockResponse,
+        caches: cachesApi,
+        fetch: (req) => fetchFn(req),
+        location: { origin: 'https://yidireiss.github.io', href: SCOPE + 'sw.js' },
+        registration: { scope: SCOPE },
+        skipWaiting: () => { skipWaitingCalled = true; return Promise.resolve(); },
+        clients: { claim: () => { clientsClaimCalled = true; return Promise.resolve(); } },
+        addEventListener: (type, fn) => { listeners[type] = fn; }
+      };
+      sandbox.self = sandbox;
+
+      vm.runInNewContext(swSrc49, sandbox, { filename: 'sw.js' });
+
+      async function dispatchLifecycle(type) {
+        const waits = [];
+        listeners[type]({ waitUntil: (p) => waits.push(p) });
+        await Promise.all(waits);
+      }
+
+      async function dispatchFetch(reqObj) {
+        let responsePromise = null;
+        const waits = [];
+        const req = Object.assign({ method: 'GET', mode: 'cors', headers: new Map() }, reqObj);
+        listeners.fetch({
+          request: req,
+          respondWith: (p) => { responsePromise = Promise.resolve(p); },
+          waitUntil: (p) => waits.push(Promise.resolve(p))
+        });
+        if (!responsePromise) return { intercepted: false, response: null };
+        const res = await responsePromise;
+        await Promise.all(waits);
+        return { intercepted: true, response: res };
+      }
+
+      return {
+        sandbox,
+        stores,
+        putLog,
+        MockResponse,
+        setFetch: (fn) => { fetchFn = fn; },
+        getLifecycleFlags: () => ({ skipWaitingCalled, clientsClaimCalled }),
+        dispatchLifecycle,
+        dispatchFetch
+      };
+    }
+
+    // 49(c): SW lifecycle — install precaches strictly relative shell URLs + skipWaiting; activate deletes old shell caches ONLY, preserves DATA_CACHE, calls clients.claim
+    const sw49 = createSwHarness49(async () => { throw new Error('offline'); });
+    // Seed an old shell cache and an existing data cache before install/activate
+    sw49.stores.set('reiss-recipes-shell-v20261122a', new Map([['https://yidireiss.github.io/recipes/app.js?v=20261122a', new sw49.MockResponse('old', { status: 200 })]]));
+    sw49.stores.set('reiss-recipes-data-v1', new Map([['https://yidireiss.github.io/recipes/data/recipes/chulent.json', new sw49.MockResponse('{"id":"chulent"}', { status: 200 })]]));
+    await sw49.dispatchLifecycle('install');
+    await sw49.dispatchLifecycle('activate');
+    const shellUrls49 = Array.from(sw49.sandbox.SHELL || []);
+    const shellStore49 = sw49.stores.get('reiss-recipes-shell-v20261124a');
+    const flags49 = sw49.getLifecycleFlags();
+    check('Section 50(c) (SW lifecycle & two-cache separation): SHELL URLs strictly relative (no leading /), install precaches all 8 shell entries + calls skipWaiting, activate deletes old shell cache while keeping SHELL_CACHE and DATA_CACHE + calls clients.claim',
+      shellUrls49.length === 8 &&
+      shellUrls49.every(u => typeof u === 'string' && !u.startsWith('/')) &&
+      shellStore49 && shellStore49.size === 8 &&
+      !sw49.stores.has('reiss-recipes-shell-v20261122a') &&
+      sw49.stores.has('reiss-recipes-data-v1') &&
+      sw49.stores.get('reiss-recipes-data-v1').has('https://yidireiss.github.io/recipes/data/recipes/chulent.json') &&
+      flags49.skipWaitingCalled === true &&
+      flags49.clientsClaimCalled === true);
+
+    // 49(d): Query-stripping network-first for read-only data/*.json + offline fallback + offline navigation fallback + 503 on double miss (never undefined)
+    sw49.setFetch(async (req) => {
+      if (req.url.includes('meta.json')) return new sw49.MockResponse('[{"id":"a"}]', { status: 200, type: 'basic' });
+      if (req.url.includes('shak.json')) return new sw49.MockResponse('{"id":"shak"}', { status: 200, type: 'basic' });
+      if (req.mode === 'navigate') return new sw49.MockResponse('<html>LIVE</html>', { status: 200, type: 'basic' });
+      return new sw49.MockResponse('ok', { status: 200, type: 'basic' });
+    });
+    const metaOnline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/meta.json?v=1700000001111' });
+    const recipeOnline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/shak.json?v=1700000002222' });
+    // Now go offline and request with completely different ?v=Date.now() timestamps
+    sw49.setFetch(async () => { throw new Error('TypeError: Failed to fetch'); });
+    const metaOffline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/meta.json?v=1700000099999' });
+    const recipeOffline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/shak.json?v=1700000088888' });
+    const uncachedOffline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/never-opened.json?v=1700000077777' });
+    const navOffline49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/', mode: 'navigate' });
+    const dataKeys49 = Array.from(sw49.stores.get('reiss-recipes-data-v1').keys());
+    check('Section 50(d) (SW query-stripping & offline fallbacks): data/*.json caches under query-stripped key in DATA_CACHE and hits offline with a new ?v= timestamp; uncached offline returns HTTP 503 Response (never undefined); offline navigation falls back to cached index.html',
+      metaOnline49.intercepted && metaOnline49.response.status === 200 &&
+      recipeOnline49.intercepted && recipeOnline49.response.status === 200 &&
+      dataKeys49.includes('https://yidireiss.github.io/recipes/data/recipes/meta.json') &&
+      dataKeys49.every(k => !k.includes('?v=')) &&
+      metaOffline49.intercepted && metaOffline49.response && metaOffline49.response.status === 200 && (await metaOffline49.response.text()) === '[{"id":"a"}]' &&
+      recipeOffline49.intercepted && recipeOffline49.response && recipeOffline49.response.status === 200 && (await recipeOffline49.response.text()) === '{"id":"shak"}' &&
+      uncachedOffline49.intercepted && uncachedOffline49.response && uncachedOffline49.response.status === 503 &&
+      navOffline49.intercepted && navOffline49.response && navOffline49.response.status === 200);
+
+    // 49(e): Security & sync safety bypasses (POST, non-http, /read, /receipts/*, Authorization header, /price-check-flag, /health, mutable JSONs, non-200 & opaque responses never cached)
+    const putCountBefore49e = sw49.putLog.length;
+    sw49.setFetch(async (req) => {
+      if (req.url.includes('missing.json')) return new sw49.MockResponse('Not Found', { status: 404, type: 'basic' });
+      if (req.url.includes('server-err.json')) return new sw49.MockResponse('Error', { status: 500, type: 'basic' });
+      if (req.url.includes('partial.json')) return new sw49.MockResponse('Part', { status: 206, type: 'basic' });
+      if (req.url.includes('opaque.json')) return new sw49.MockResponse('', { status: 0, type: 'opaque' });
+      return new sw49.MockResponse('secret', { status: 200, type: 'cors' });
+    });
+    const postRes49 = await sw49.dispatchFetch({ method: 'POST', url: 'https://recipe-bridge.leibreiss.workers.dev/save' });
+    const extRes49 = await sw49.dispatchFetch({ url: 'chrome-extension://abcdef/script.js' });
+    const bridgeRead49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/read?path=data%2Fmeal-plan.json' });
+    const bridgeRcpt49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/receipts/list' });
+    const authHeaders49 = new Map([['Authorization', 'Bearer secret-token']]);
+    const authReq49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-history', headers: authHeaders49 });
+    const flagRes49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-check-flag' });
+    const healthRes49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/health' });
+    const mealPlanRes49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/meal-plan.json?t=123' });
+    const pantryRes49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/pantry.json?t=123' });
+    const notesRes49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/store-notes.json?t=123' });
+    const inboxRes49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/inbox/index.json?v=123' });
+    const err404 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/missing.json' });
+    const err500 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/server-err.json' });
+    const err206 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/partial.json' });
+    const errOpaque = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/data/recipes/opaque.json' });
+    const putCountAfter49e = sw49.putLog.length;
+    check('Section 50(e) (SW security & sync bypasses): POST, chrome-extension, bridge /read /receipts/* /price-check-flag /health, Authorization requests, and same-origin meal-plan/pantry/store-notes/inbox/* are NEVER intercepted; 404/500/206/opaque responses are NEVER written via cache.put',
+      !postRes49.intercepted &&
+      !extRes49.intercepted &&
+      !bridgeRead49.intercepted &&
+      !bridgeRcpt49.intercepted &&
+      !authReq49.intercepted &&
+      !flagRes49.intercepted &&
+      !healthRes49.intercepted &&
+      !mealPlanRes49.intercepted &&
+      !pantryRes49.intercepted &&
+      !notesRes49.intercepted &&
+      !inboxRes49.intercepted &&
+      err404.response.status === 404 &&
+      err500.response.status === 500 &&
+      err206.response.status === 206 &&
+      errOpaque.response.type === 'opaque' &&
+      putCountAfter49e === putCountBefore49e);
+
+    // 49(f): Allow-listed public bridge GETs (/price-history, /pantry-stock), exact-version shell match, and static asset SWR
+    sw49.setFetch(async (req) => {
+      if (req.url.endsWith('/price-history')) return new sw49.MockResponse('{"prices":{}}', { status: 200, type: 'cors' });
+      if (req.url.endsWith('/pantry-stock')) return new sw49.MockResponse('{"stock":{}}', { status: 200, type: 'cors' });
+      if (req.url.includes('chulent.jpg')) return new sw49.MockResponse('jpg-v1', { status: 200, type: 'basic' });
+      return new sw49.MockResponse('other', { status: 200, type: 'basic' });
+    });
+    const phOn49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-history' });
+    const psOn49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/pantry-stock' });
+    const img1On49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/assets/images/chulent.jpg' });
+    // Now simulate updated image on network: SWR returns cached v1 immediately and refreshes cache to v2
+    sw49.setFetch(async (req) => {
+      if (req.url.includes('chulent.jpg')) return new sw49.MockResponse('jpg-v2', { status: 200, type: 'basic' });
+      throw new Error('offline');
+    });
+    const img2Swr49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/assets/images/chulent.jpg' });
+    // Now go fully offline: bridge /price-history & /pantry-stock fall back to DATA_CACHE, image serves refreshed v2, exact versioned app.js?v=20261124a hits SHELL_CACHE while unknown v=99999999z returns 503
+    sw49.setFetch(async () => { throw new Error('offline'); });
+    const phOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-history' });
+    const psOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/pantry-stock' });
+    const img3Off49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/assets/images/chulent.jpg' });
+    const appExact49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=20261124a' });
+    const appWrongVer49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=99999999z' });
+    check('Section 50(f) (allow-listed bridge GETs, static SWR & exact versioned shell match): /price-history and /pantry-stock cache cors 200 and serve offline; static images use SWR into DATA_CACHE; app.js?v=20261124a matches SHELL_CACHE strictly by version query',
+      phOn49.intercepted && phOn49.response.status === 200 &&
+      psOn49.intercepted && psOn49.response.status === 200 &&
+      img1On49.intercepted && (await img1On49.response.text()) === 'jpg-v1' &&
+      img2Swr49.intercepted && (await img2Swr49.response.text()) === 'jpg-v1' &&
+      phOff49.intercepted && (await phOff49.response.text()) === '{"prices":{}}' &&
+      psOff49.intercepted && (await psOff49.response.text()) === '{"stock":{}}' &&
+      img3Off49.intercepted && (await img3Off49.response.text()) === 'jpg-v2' &&
+      appExact49.intercepted && appExact49.response.status === 200 &&
+      appWrongVer49.intercepted && appWrongVer49.response.status === 503);
+  }
 
   const failed = results.filter(r => !r.pass);
   console.log('\n==== ' + (results.length - failed.length) + '/' + results.length + ' assertions passed ====');
