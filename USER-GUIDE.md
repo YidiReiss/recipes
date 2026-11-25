@@ -38,6 +38,21 @@ Welcome to the **Reiss Family Recipes** user guide. This guide walks through eve
 
 <img src="assets/guide/shot-01.jpg" alt="Shot 1 — Home landing page (#/) showing the top navigation bar (Reiss Family Recipes, Recipes, Meal Planner, Shopping List, Receipts), the three summary cards, and an empty This week strip" width="373">
 
+### Installing as an App & Using Offline
+You can install **Reiss Family Recipes** onto your phone's home screen so it opens full-screen like a regular app (with no browser address bar).
+
+1. **Install on Android (Chrome):**
+   - Open the site in Chrome.
+   - Tap Chrome's three-dot menu (`⋮`) in the top right and tap **Install app** (or **Add to Home screen** → **Install**).
+   - Confirm **Install**. A terracotta **R** icon labeled **Recipes** appears on your home screen.
+   - *(Note: On iPhone/iPad Safari, you can tap the Share button → **Add to Home Screen** for a shortcut, though iOS Safari has more limited offline support than Chrome on Android.)*
+2. **What works offline:**
+   - Once you have visited the site online, the home page, full recipe list, Meal Planner, Shopping List, Pantry, and **any recipe you have opened before** continue to load even without Wi-Fi or cell service (for example, in the supermarket basement or kitchen).
+   - **Recipes you have never opened on this phone yet** need a connection the first time you open them so they can be saved for offline use.
+   - Changes that save back to the shared family collection (editing recipes, updating the planner, uploading receipts) require a connection; shopping-list checkmarks stay saved on your phone and sync once you are back online.
+3. **Landscape Cook Mode still works:**
+   - The installed app does not lock your phone to portrait orientation—turn your phone sideways in **Cook Mode** anytime and the wide two-pane landscape kitchen layout rotates normally.
+
 ---
 
 ## 2. Browsing, Searching, Filtering, and Sorting Recipes
