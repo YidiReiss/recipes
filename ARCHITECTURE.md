@@ -1,7 +1,7 @@
 # Reiss Family Recipes — Architecture
 
 ## Overview
-A recipe collection site for Yidi and Nava Reiss. Vanilla HTML/CSS/JS, no build step, no login gate. Hosted on GitHub Pages at https://yidireiss.github.io/recipes/.
+A recipe collection site for Yidi and Nava Reiss. Vanilla HTML/CSS/JS, no build step. Browsing recipes, Cook Mode, and public reads require no login; all write actions (editing/adding/deleting recipes, meal planning, shopping-list sync, pantry updates, inbox actions, and price-check flags) are gated behind allowlisted Google Sign-In (`v20261125a`). Hosted on GitHub Pages at https://yidireiss.github.io/recipes/.
 
 ## Components
 
@@ -19,10 +19,11 @@ A recipe collection site for Yidi and Nava Reiss. Vanilla HTML/CSS/JS, no build 
 - **Endpoints:**
   - `GET /health` — liveness check (returns a `version` marker identifying the deployed build)
   - `GET /read?path=` — fetch file content + SHA from GitHub
-  - `POST /save` — raw file write `{path, content, message, encoding}` (PDFs, images, index files)
-  - `POST /save-recipe` — recipe write with server-side history `{path, recipe, actor, reasoning, base_sha, action, skip_log}`. The worker fetches the live file, diffs against incoming, appends a history entry, and commits. Returns 409 if `base_sha` doesn't match (optimistic concurrency — prevents lost-update races). Also auto-logs every edit to `data/inbox/index.json` (type `direct-edit`) unless `skip_log` is set — see §2b.
-  - `POST /delete` — file deletion
-- **Security:** Token never touches the repo or browser. Allowlisted paths only.
+  - `POST /save` — raw file write `{path, content, message, encoding}` (PDFs, images, index files); gated by `checkWriteAuth`
+  - `POST /save-recipe` — recipe write with server-side history `{path, recipe, actor, reasoning, base_sha, action, skip_log}`; gated by `checkWriteAuth`. The worker fetches the live file, diffs against incoming, appends a history entry, and commits. Returns 409 if `base_sha` doesn't match (optimistic concurrency — prevents lost-update races). Also auto-logs every edit to `data/inbox/index.json` (type `direct-edit`) unless `skip_log` is set — see §2b.
+  - `POST /delete` — file deletion; gated by `checkWriteAuth`
+  - `POST /price-check-flag` — sets/clears the weekly price-check request flag in KV; gated by `checkWriteAuth` (`GET /price-check-flag` remains public)
+- **Security:** Token never touches the repo or browser. Allowlisted paths only. CORS allows `Content-Type, Authorization` (including on `OPTIONS` preflight and `401` responses). Write endpoints validate `Authorization: Bearer <token>` via `authorizeWriteRequest()` in `receipts.js` (see §2c).
 - **Deploy record:** `bridge/DEPLOYED.md`
 
 ### 2a. Recipe Change History
@@ -34,6 +35,17 @@ Each recipe JSON has a `history` array logging all changes. Entries: `{ts, actor
 
 ### 2b. Recent Submissions Auto-Log
 Every `/save-recipe` **edit** is mirrored into `data/inbox/index.json` as a `type: "direct-edit"` entry (index-only, no per-entry file), so no edit path can bypass the Recent submissions log. Skipped: new recipes, `action: "re-press"`, callers passing `skip_log: true` (the intake checker, whose edits are already represented by their submission entry), and saves whose only diff is the `pdf_stale` flag flip. A reasoning-only save still logs. Entries carry `edit_target`, `recipe_id`, the recipe's current title, the actor, and a note (the reasoning, or a changed-field summary). Logging is best-effort (2-attempt SHA retry) and never fails the recipe save; the index is capped at 300 entries, never evicting pending/needs_input.
+
+### 2c. Google-Auth Write Gate (`v20261125a`)
+Reuses the existing Receipts Google Identity Services + 90-day HMAC session token (`POST /receipts/auth`, stored in `localStorage` under `reiss_receipt_token` — unchanged so existing Receipts sessions authorize edits immediately).
+- **Client 3-layer defense (`app.js`, `index.html`, `styles.css`):**
+  1. **Route gate:** `route()` checks the 5 write-only routes (`#/edit/*`, `#/delete/*`, `#/add`, `#/submit`, `#/planner/tune`) and redirects unsigned visitors to `#/` with `"Sign in to edit"`.
+  2. **Entry-time tap gate:** `requireAuthForWrite()` / `runWithWriteAuth()` runs at every in-page write handler (Recipe Detail, Meal Planner, Shopping List, Pantry, Inbox) *before* inline forms open or state mutates. One-tap actions auto-complete after sign-in; dismissing the modal rejects with tagged `AUTH_CANCELLED` and changes nothing. Multi-attempt save loops (`attemptSaveMealPlan`, `savePantry`, `saveStoreNotes`, `syncInboxIndexPatch`) bail immediately on `AUTH_CANCELLED` / `AUTH_MID_SEQUENCE`. Background `syncShop()` skips silently when unsigned (`_shopDirty` stays `true`).
+  3. **Save-time 401 backstop:** All 4 write paths (`bridgeSave`, `bridgeSaveRecipe`, `bridgeDelete`, `triggerPriceCheckFlag`) attach `Authorization: Bearer <token>` via `buildWriteHeaders()` and use `fetchWriteWithAuthBackstop()`. On `401` only (never `409`/`5xx`), clears the stale token and retries once; inside `withMultiStepWrite()`, aborts with `"Signed out mid-save — please sign in and retry."`.
+  - **Shared GIS & UI:** Single `initGisOnce()` (button-only `renderButton`, no One Tap `prompt()`) serves both the `#/receipts` unlock panel and the write-auth modal. Header `#header-auth-slot` sits beside `.site-title` (outside the 4-pill `.main-nav`), paired with quiet unsigned strips (`unsignedEditStripHTML()`) on Planner, Shopping List, Pantry, and Recipe Detail, plus subtle `.needs-signin-cue` styling on major write buttons.
+- **Worker enforcement & dry-run rollout (`worker.js`, `receipts.js`):**
+  - `authorizeWriteRequest(request, env, nowSec)` accepts either `RECEIPTS_INTAKE_SECRET` (`timingSafeEqualStrings`, `actorType: 'intake'`) for automations or a valid allowlisted 90-day HMAC session token (`verifySessionToken`, `actorType: 'user'`), failing closed when secrets are unset or placeholders.
+  - Controlled by `env.ENFORCE_WRITE_AUTH === '1'` (default OFF). When OFF, unauthenticated writes log `[auth-dry-run]` without rejecting so cached SW clients and cron automations can roll over cleanly before flipping enforcement ON in Cloudflare settings. Public read endpoints (`/health`, `/read`, `GET /price-check-flag`, `/price-history`, `/pantry-stock`, `/intake-probe`, `POST /receipts/auth`) remain unauthenticated.
 
 ### 3. Sous Chef Skill (`~/workspace/skills/sous-chef/SKILL.md`)
 The intake compiler. Takes any input (link, photo, pasted text, YouTube) and produces standardized recipe JSON + banner photo. Used by the intake checker.

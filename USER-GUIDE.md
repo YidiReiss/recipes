@@ -53,6 +53,14 @@ You can install **Reiss Family Recipes** onto your phone's home screen so it ope
 3. **Landscape Cook Mode still works:**
    - The installed app does not lock your phone to portrait orientation—turn your phone sideways in **Cook Mode** anytime and the wide two-pane landscape kitchen layout rotates normally.
 
+### Signing In to Edit
+1. **Browsing never needs sign-in:** Anyone with the link can browse recipes, search, scale ingredients, use Cook Mode and timers, and view the Meal Planner, Shopping List, and Pantry without signing in.
+2. **One family sign-in for all edits:** To make changes that save back to the shared site (adding, editing, or deleting recipes; updating the Meal Planner; checking off or adding Shopping List items; updating Pantry stock; or viewing Receipts), sign in with an allowlisted family Google account.
+   - Tap **Sign in** next to the site title at the top of any screen, or tap **Sign in** in the quiet notice bar shown on editable pages when you are signed out.
+   - If you tap an edit button (like **Edit**, **+ Add a recipe**, **Draft Week ✨**, **Cooked it?**, or a shopping-list checkbox) while signed out, a **Sign in to edit** box appears first—once you sign in, your action finishes automatically without needing a second tap. If you tap **Cancel**, nothing changes.
+   - If you already signed in on the **Shopping History / Receipts** screen, you are already signed in for editing too—your session lasts 90 days on that device.
+3. **Signing out:** Tap **Sign out** next to the site title (or inside **Shopping History / Receipts**) to clear your session on that device.
+
 ---
 
 ## 2. Browsing, Searching, Filtering, and Sorting Recipes

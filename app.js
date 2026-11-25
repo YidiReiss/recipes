@@ -18,7 +18,7 @@
 const REPO = { owner: 'YidiReiss', repo: 'recipes', branch: 'main' };
 /* Private write bridge — set to the deployed Worker URL. */
 const BRIDGE = 'https://recipe-bridge.leibreiss.workers.dev';
-const editingEnabled = () => true; // editing is always on; no login gate
+const editingEnabled = () => true; // write controls remain visible; gated by Google sign-in at action time
 const KNOWN_CATEGORIES = [
   'main', 'side', 'soup', 'salad', 'appetizer', 'dips',
   'fish', 'chicken', 'beef', 'meat', 'pasta', 'kugel',
@@ -103,21 +103,194 @@ function toast(msg) {
 function closeModal() {
   const m = $('#modal');
   if (m) m.remove();
+  if (typeof _pendingAuthGate !== 'undefined' && _pendingAuthGate) {
+    const pending = _pendingAuthGate;
+    _pendingAuthGate = null;
+    _activeGisFlow = 'receipts';
+    pending.reject(makeAuthCancelledError());
+  }
   if (typeof closeInboxLightbox === 'function') closeInboxLightbox();
+}
+
+/* ---------------- Google-auth write gate helpers ---------------- */
+let _multiStepWriteDepth = 0;
+
+function makeAuthCancelledError() {
+  const err = new Error('Sign-in cancelled');
+  err.code = 'AUTH_CANCELLED';
+  err.authCancelled = true;
+  return err;
+}
+
+function isAuthCancelledError(e) {
+  return Boolean(e && (e.code === 'AUTH_CANCELLED' || e.authCancelled === true));
+}
+
+function makeAuthMidSequenceError() {
+  const err = new Error('Signed out mid-save — please sign in and retry.');
+  err.code = 'AUTH_MID_SEQUENCE';
+  err.authMidSequence = true;
+  return err;
+}
+
+function isAuthMidSequenceError(e) {
+  return Boolean(e && (e.code === 'AUTH_MID_SEQUENCE' || e.authMidSequence === true));
+}
+
+async function withMultiStepWrite(fn) {
+  _multiStepWriteDepth++;
+  try {
+    return await fn();
+  } finally {
+    _multiStepWriteDepth = Math.max(0, _multiStepWriteDepth - 1);
+  }
+}
+
+function isSignedInForWrite(storageObj, nowSec) {
+  if (typeof getValidReceiptSession !== 'function') return false;
+  return Boolean(getValidReceiptSession(storageObj, nowSec));
+}
+
+function isWriteOnlyHash(h) {
+  const s = String(h || '');
+  return s.startsWith('#/edit/') ||
+    s.startsWith('#/delete/') ||
+    s === '#/add' ||
+    s === '#/submit' ||
+    s === '#/planner/tune';
+}
+
+function buildWriteHeaders(extraHeaders) {
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {});
+  const session = typeof getValidReceiptSession === 'function' ? getValidReceiptSession() : null;
+  if (session && session.token) {
+    headers['Authorization'] = 'Bearer ' + session.token;
+  }
+  return headers;
+}
+
+function runWithWriteAuth(fn, opts) {
+  if (typeof requireAuthForWrite !== 'function') return fn();
+  if (isSignedInForWrite()) return fn();
+  return requireAuthForWrite(opts).then(() => fn(), err => {
+    if (isAuthCancelledError(err)) return;
+    throw err;
+  });
+}
+
+function unsignedEditStripHTML(opts) {
+  if (isSignedInForWrite()) return '';
+  const compact = Boolean(opts && opts.compact);
+  return (
+    '<div class="auth-edit-strip no-print' + (compact ? ' is-compact' : '') + '" role="note">' +
+      '<span>Sign in to edit \u2014 your changes won\u2019t save until you do.</span>' +
+      '<button type="button" class="auth-edit-strip-btn" data-auth-signin-trigger>Sign in</button>' +
+    '</div>'
+  );
+}
+
+function updateHeaderAuthUI() {
+  if (typeof document === 'undefined' || typeof $ !== 'function') return;
+  const slot = $('#header-auth-slot');
+  if (!slot) return;
+  const session = typeof getValidReceiptSession === 'function' ? getValidReceiptSession() : null;
+  if (session && session.email) {
+    slot.innerHTML =
+      '<button type="button" class="header-auth-btn is-signed-in" id="header-auth-btn" ' +
+      'data-header-auth="signout" title="Signed in as ' + esc(session.email) + '">Sign out</button>';
+  } else {
+    slot.innerHTML =
+      '<button type="button" class="header-auth-btn" id="header-auth-btn" ' +
+      'data-header-auth="signin">Sign in</button>';
+  }
+}
+
+function wireAuthUIEvents() {
+  if (typeof document === 'undefined' || typeof document.addEventListener !== 'function') return;
+  if (document._writeAuthUiWired) return;
+  document._writeAuthUiWired = true;
+  document.addEventListener('click', e => {
+    if (!e || !e.target || typeof e.target.closest !== 'function') return;
+    const hdrBtn = e.target.closest('[data-header-auth]');
+    if (hdrBtn) {
+      const act = hdrBtn.dataset.headerAuth;
+      if (act === 'signout') {
+        if (typeof clearReceiptSession === 'function') clearReceiptSession();
+        updateHeaderAuthUI();
+        if (typeof toast === 'function') toast('Signed out');
+        if (typeof route === 'function') route();
+        return;
+      }
+      if (act === 'signin') {
+        requireAuthForWrite({ reason: 'header' }).then(() => {
+          updateHeaderAuthUI();
+          if (typeof route === 'function') route();
+        }).catch(() => {});
+        return;
+      }
+    }
+    const stripBtn = e.target.closest('[data-auth-signin-trigger]');
+    if (stripBtn) {
+      requireAuthForWrite({ reason: 'strip' }).then(() => {
+        updateHeaderAuthUI();
+        if (typeof route === 'function') route();
+      }).catch(() => {});
+      return;
+    }
+    const writeLink = e.target.closest('a[href]');
+    if (writeLink) {
+      const href = writeLink.getAttribute('href') || '';
+      if (isWriteOnlyHash(href) && !isSignedInForWrite()) {
+        e.preventDefault();
+        requireAuthForWrite({ reason: 'route', targetHash: href }).then(() => {
+          updateHeaderAuthUI();
+          if (typeof location !== 'undefined') {
+            if (location.hash === href) {
+              if (typeof route === 'function') route();
+            } else {
+              location.hash = href;
+            }
+          }
+        }).catch(() => {});
+      }
+    }
+  });
+}
+
+/* Backstop for a session expiring mid-edit:
+   - Attaches Authorization: Bearer <token> via buildWriteHeaders()
+   - On HTTP 401 ONLY: clears stale session, refreshes header UI.
+     * Inside a multi-step sequence (_multiStepWriteDepth > 0 or opts.noRetryOn401),
+       stops immediately with "Signed out mid-save — please sign in and retry."
+     * Otherwise, opens sign-in modal via requireAuthForWrite() and retries ONCE.
+   - Never retries on 409 or 5xx. */
+async function fetchWriteWithAuthBackstop(doFetch, opts) {
+  let res = await doFetch(buildWriteHeaders());
+  if (res && res.status === 401) {
+    if (typeof clearReceiptSession === 'function') clearReceiptSession();
+    updateHeaderAuthUI();
+    if (_multiStepWriteDepth > 0 || (opts && opts.noRetryOn401)) {
+      throw makeAuthMidSequenceError();
+    }
+    await requireAuthForWrite({ reason: 'session_expired' });
+    res = await doFetch(buildWriteHeaders());
+  }
+  return res;
 }
 
 /* ---------------- Write bridge ----------------
    Reads go straight to the public repo (no auth needed).
-   Every write POSTs to the private bridge, which holds the GitHub
-   token securely and commits on the site's behalf. */
+   Every write POSTs to the private bridge with Authorization: Bearer <token>;
+   the bridge verifies the Google-signed session token and holds the GitHub
+   token securely server-side. */
 const GH = 'https://api.github.com';
 
 async function bridgeSave(path, content, message, encoding) {
-  const res = await fetch(BRIDGE + '/save', {
+  const res = await fetchWriteWithAuthBackstop(headers => fetch(BRIDGE + '/save', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ path, content, message, encoding: encoding || 'utf8' })
-  });
+  }));
   if (!res.ok) {
     let detail = '';
     try { detail = (await res.text()).slice(0, 160); } catch (e) {}
@@ -133,11 +306,11 @@ async function bridgeSave(path, content, message, encoding) {
    submissions auto-log — for quiet single-field saves such as the
    Tune-the-rotation needs-a-side toggle, which must not flood the log. */
 async function bridgeSaveRecipe(path, recipe, actor, reasoning, baseSha, action, skipLog) {
-  const res = await fetch(BRIDGE + '/save-recipe', {
+  const res = await fetchWriteWithAuthBackstop(headers => fetch(BRIDGE + '/save-recipe', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ path, recipe, actor, reasoning, base_sha: baseSha, action, skip_log: !!skipLog })
-  });
+  }));
   const data = await res.json().catch(() => ({}));
   if (res.status === 409) {
     const err = new Error(data.detail || 'Conflict');
@@ -169,11 +342,11 @@ function getEditorName() {
 }
 
 async function bridgeDelete(path, message) {
-  const res = await fetch(BRIDGE + '/delete', {
+  const res = await fetchWriteWithAuthBackstop(headers => fetch(BRIDGE + '/delete', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ path, message })
-  });
+  }));
   if (!res.ok) {
     let detail = '';
     try { detail = (await res.text()).slice(0, 160); } catch (e) {}
@@ -307,6 +480,8 @@ async function boot() {
   ensureTimerDockMounted();
   renderTimerDock();
 
+  if (typeof wireAuthUIEvents === 'function') wireAuthUIEvents();
+  if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
   window.addEventListener('hashchange', route);
   route();
   preloadCategoryTileImages();
@@ -320,7 +495,9 @@ async function boot() {
         const app = $('#app');
         if (h === '#/' || h === '') renderLanding(app);
         else if (h === '#/planner') renderPlanner(app);
-        else if (h === '#/planner/tune') renderQuickSort(app);
+        else if (h === '#/planner/tune') {
+          if (typeof isSignedInForWrite !== 'function' || isSignedInForWrite()) renderQuickSort(app);
+        }
         else if (h === '#/shopping') renderShopping(app);
       }
     }
@@ -635,8 +812,16 @@ function route() {
   if (!h.startsWith('#/receipts') && typeof stopReceiptExtractPoll === 'function') {
     stopReceiptExtractPoll();
   }
+  if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
   if (!h.startsWith('#/recipe/')) window.scrollTo(0, 0);
   document.title = 'Reiss Family Recipes';
+  const isWriteRoute = h.startsWith('#/edit/') || h.startsWith('#/delete/') ||
+    h === '#/add' || h === '#/submit' || h === '#/planner/tune';
+  if (isWriteRoute && typeof isSignedInForWrite === 'function' && !isSignedInForWrite()) {
+    if (typeof toast === 'function') toast('Sign in to edit');
+    if (typeof location !== 'undefined') location.hash = '#/';
+    return renderLanding(app);
+  }
   if (h === '#/guide' || h.startsWith('#/guide/')) {
     const slug = h.startsWith('#/guide/') ? decodeURIComponent(h.slice('#/guide/'.length)).trim() : '';
     return renderGuide(app, slug);
@@ -648,7 +833,12 @@ function route() {
   if (h === '#/submit') return renderSubmit(app);
   if (h === '#/recipes') return renderRecipes(app);
   if (h === '#/planner/tune') {
-    refreshMealPlan().then(() => { if ((location.hash || '#/') === '#/planner/tune') renderQuickSort(app); });
+    refreshMealPlan().then(() => {
+      if ((location.hash || '#/') === '#/planner/tune' &&
+          (typeof isSignedInForWrite !== 'function' || isSignedInForWrite())) {
+        renderQuickSort(app);
+      }
+    });
     return renderQuickSort(app);
   }
   if (h === '#/planner') {
@@ -1960,6 +2150,9 @@ function saveStoreNotes(mutator, message) {
             message || 'Update store notes');
           return _storeNotesCache;
         } catch (e) {
+          if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled || e.code === 'AUTH_MID_SEQUENCE')) {
+            throw e;
+          }
           lastErr = e;
         }
       }
@@ -3222,15 +3415,19 @@ async function triggerPriceCheckFlag(weekOverride) {
   if (typeof fetch !== 'function') return { ok: false };
   const baseUrl = (typeof BRIDGE === 'string' && BRIDGE) ? BRIDGE : 'https://recipe-bridge.leibreiss.workers.dev';
   const wk = weekOverride || (typeof thisWeekKey === 'function' ? thisWeekKey() : null);
+  const doPost = headers => fetch(baseUrl + '/price-check-flag', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ requested: true, week: wk })
+  });
   try {
-    const res = await fetch(baseUrl + '/price-check-flag', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requested: true, week: wk })
-    });
+    const res = typeof fetchWriteWithAuthBackstop === 'function'
+      ? await fetchWriteWithAuthBackstop(doPost)
+      : await doPost(typeof buildWriteHeaders === 'function' ? buildWriteHeaders() : { 'Content-Type': 'application/json' });
     if (!res || !res.ok) return { ok: false };
     return await res.json();
-  } catch (_) {
+  } catch (e) {
+    if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return { ok: false, cancelled: true };
     return { ok: false };
   }
 }
@@ -3867,7 +4064,9 @@ function renderRecipes(app) {
       '<div class="filter-actions"><button class="btn secondary" id="f-clear" type="button">Clear filters</button></div>' +
     '</div>' +
     '<p class="result-count" id="result-count"></p>' +
-    '<div class="no-print" style="margin:0 0 1rem"><a class="btn" id="recipes-add-recipe-btn" href="#/submit">+ Add a recipe</a></div>' +
+    '<div class="no-print" style="margin:0 0 1rem"><a class="btn' +
+      (typeof isSignedInForWrite === 'function' && !isSignedInForWrite() ? ' needs-signin-cue' : '') +
+      '" id="recipes-add-recipe-btn" href="#/submit">+ Add a recipe</a></div>' +
     '<div class="card-grid" id="grid"></div></section>';
 
   $('#q').addEventListener('input', e => { filters.q = e.target.value; drawGrid(); });
@@ -3949,10 +4148,12 @@ async function ensurePlannedRecipes() {
 }
 async function renderShopping(app) {
   document.title = 'Shopping List — Reiss Family Recipes';
+  const authStripHTML = typeof unsignedEditStripHTML === 'function' ? unsignedEditStripHTML() : '';
   app.innerHTML =
     '<section class="page-head"><h1>Shopping List ' + helpLinkHTML('shopping-list') + '</h1>' +
     '<p class="muted">' + (shoppingFromLabel() || 'Based on your meal plan') + '</p>' +
     '<label class="shop-staple-toggle no-print"><input type="checkbox" id="shop-hide-staples"' + (getHideStaples() ? ' checked' : '') + '> Hide pantry staples</label></section>' +
+    authStripHTML +
     '<div id="shop-wrap"></div>' +
     '<div class="no-print" style="margin-top:1rem"><a class="link-btn" href="#/planner">← Back to planner</a></div>';
 
@@ -4011,16 +4212,32 @@ async function renderShopping(app) {
   // Start 15s background sync while the shopping page is open
   startShopPoll();
 
+  const runAuthedShop = fn => {
+    if (typeof requireAuthForWrite !== 'function') return fn();
+    if (typeof isSignedInForWrite === 'function' && isSignedInForWrite()) return fn();
+    return requireAuthForWrite({ reason: 'shopping' }).then(() => {
+      const strip = app && typeof app.querySelector === 'function' ? app.querySelector('.auth-edit-strip') : null;
+      if (strip && strip.remove) strip.remove();
+      return fn();
+    }, err => {
+      if (err && (err.code === 'AUTH_CANCELLED' || err.authCancelled)) return;
+      throw err;
+    });
+  };
+
   shopWrap.addEventListener('click', e => {
     // 0. "Meals planned — check prices" flag button
     const checkPricesBtn = e.target.closest('#shop-check-prices');
     if (checkPricesBtn) {
-      checkPricesBtn.disabled = true;
-      triggerPriceCheckFlag().then(out => {
-        checkPricesBtn.disabled = false;
-        if (typeof toast === 'function') {
-          toast(out && out.ok ? 'Price check queued for this week' : 'Could not queue price check');
-        }
+      runAuthedShop(() => {
+        checkPricesBtn.disabled = true;
+        triggerPriceCheckFlag().then(out => {
+          checkPricesBtn.disabled = false;
+          if (out && out.cancelled) return;
+          if (typeof toast === 'function') {
+            toast(out && out.ok ? 'Price check queued for this week' : 'Could not queue price check');
+          }
+        });
       });
       return;
     }
@@ -4029,9 +4246,11 @@ async function renderShopping(app) {
     if (pantryFlagBtn) {
       closeAllShopMenus();
       const k = pantryFlagBtn.dataset.pantryFlag;
-      if (k && typeof openPantryFlagDialog === 'function') {
-        openPantryFlagDialog(k, () => { markShopDirty(); rerender(); });
-      }
+      runAuthedShop(() => {
+        if (k && typeof openPantryFlagDialog === 'function') {
+          openPantryFlagDialog(k, () => { markShopDirty(); rerender(); });
+        }
+      });
       return;
     }
     // 1. Row ⋮ menu toggle
@@ -4052,26 +4271,29 @@ async function renderShopping(app) {
     if (menuAct) {
       const act = menuAct.dataset.shopAct;
       const k = menuAct.dataset.shopKey;
-      const week = getWeek(thisWeekKey());
+      const shopBaseAttr = menuAct.dataset.shopBase;
       closeAllShopMenus();
-      if (act === 'delete' && k) {
-        dismissShopKey(week, k);
-        markShopDirty(); rerender(); return;
-      }
-      if (act === 'move-to-buy' && k) {
-        setPromoted(week, k, true);
-        markShopDirty(); rerender(); return;
-      }
-      if ((act === 'note-carries' || act === 'note-not-carried') && k) {
-        const picked = getShopStore();
-        if (picked && picked !== 'all') {
-          const bk = menuAct.dataset.shopBase || String(k).split('|')[0].toLowerCase();
-          const targetSt = act === 'note-carries' ? 'carries' : 'not-carried';
-          toggleStoreNote(bk, picked, targetSt).catch(() => {});
-          rerender();
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        if (act === 'delete' && k) {
+          dismissShopKey(week, k);
+          markShopDirty(); rerender(); return;
         }
-        return;
-      }
+        if (act === 'move-to-buy' && k) {
+          setPromoted(week, k, true);
+          markShopDirty(); rerender(); return;
+        }
+        if ((act === 'note-carries' || act === 'note-not-carried') && k) {
+          const picked = getShopStore();
+          if (picked && picked !== 'all') {
+            const bk = shopBaseAttr || String(k).split('|')[0].toLowerCase();
+            const targetSt = act === 'note-carries' ? 'carries' : 'not-carried';
+            toggleStoreNote(bk, picked, targetSt).catch(() => {});
+            rerender();
+          }
+          return;
+        }
+      });
       return;
     }
     // 3. Price badge tap: toggle inline detail line (last 3 purchases + 12-mo avg)
@@ -4113,165 +4335,187 @@ async function renderShopping(app) {
     // Toggle have / to-buy (local-first: works offline, syncs in background)
     const haveBtn = e.target.closest('.shop-have-btn');
     if (haveBtn) {
-      const week = getWeek(thisWeekKey());
-      const sid = getSessionId(), now = Date.now();
       const genItem = haveBtn.closest('[data-shop]');
       const manItem = haveBtn.closest('[data-manual]');
-      if (genItem) {
-        week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
-        const k = genItem.dataset.shop;
-        const split = genItem.dataset.shopSplit || null;
-        const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
-        const existing = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
-        // "Have" belongs to the item, not to the session that checked it:
-        // sessions live in sessionStorage, so every new tab or device is a
-        // new session. Unchecking must therefore work from ANY session —
-        // keying it to the checking session made cross-session items
-        // impossible to uncheck and added the tapper as a false second
-        // checker instead (Argon QA, 2026-10-20).
-        const anyHave = week.haveGenerated.some(x => !x.removed && matchKeyFn(x.key, k));
-        // Promoted optional item: tapping "○" sends it back to Optional.
-        const isPromoted = promotedKeySet(week).has(k);
-        if (isPromoted && !anyHave && split !== 'need') {
-          setPromoted(week, k, false);
+      const genKey = genItem ? genItem.dataset.shop : null;
+      const genSplit = genItem ? (genItem.dataset.shopSplit || null) : null;
+      const genPantryCovered = genItem ? (genItem.dataset.pantryCovered === '1') : false;
+      const manId = manItem ? manItem.dataset.manual : null;
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        const sid = getSessionId(), now = Date.now();
+        if (genKey) {
+          week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
+          const k = genKey;
+          const split = genSplit;
+          const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
+          const existing = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
+          // "Have" belongs to the item, not to the session that checked it:
+          // sessions live in sessionStorage, so every new tab or device is a
+          // new session. Unchecking must therefore work from ANY session —
+          // keying it to the checking session made cross-session items
+          // impossible to uncheck and added the tapper as a false second
+          // checker instead (Argon QA, 2026-10-20).
+          const anyHave = week.haveGenerated.some(x => !x.removed && matchKeyFn(x.key, k));
+          // Promoted optional item: tapping "○" sends it back to Optional.
+          const isPromoted = promotedKeySet(week).has(k);
+          if (isPromoted && !anyHave && split !== 'need') {
+            setPromoted(week, k, false);
+            markShopDirty(); rerender(); return;
+          }
+          // Pantry-covered row in Already Have: tapping "●" overrides pantry cover
+          // for this week so the full recipe amount moves back to To Buy.
+          if (genPantryCovered && !anyHave) {
+            const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
+            const base = line ? (line.base || String(k).split('|')[0].toLowerCase()) : String(k).split('|')[0].toLowerCase();
+            if (!week.pantryOverrides || typeof week.pantryOverrides !== 'object') week.pantryOverrides = {};
+            week.pantryOverrides[base] = {
+              buyQty: (line && Number.isFinite(Number(line.qty))) ? Number(line.qty) : 1,
+              unit: (line && (line.rawUnit || line.unit)) || '',
+              updatedAt: now
+            };
+            markShopDirty(); rerender(); return;
+          }
+          if (anyHave && split !== 'need') {
+            // Uncheck: tombstone EVERY active mark for this key (any session,
+            // any canonical/legacy key) and ensure a tombstone for the current
+            // session exists so late-arriving remote marks are suppressed.
+            let hadCurrentSession = false;
+            week.haveGenerated.forEach(x => {
+              if (matchKeyFn(x.key, k)) {
+                if (x.session === sid) hadCurrentSession = true;
+                if (!x.removed || (x.at || 0) < now) { x.removed = true; x.at = now; }
+              }
+            });
+            if (!hadCurrentSession) {
+              week.haveGenerated.push({ key: k, session: sid, at: now, removed: true });
+            }
+          } else {
+            // Check: capture the quantity on the line at check time, so later additions
+            // of the same ingredient split into a separate unchecked line.
+            // Tapping a split "need" line checks the full current quantity and
+            // supersedes/tombstones all older marks for the item across all sessions.
+            const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
+            const mark = { key: k, session: sid, at: now };
+            if (line && line.qty !== null && line.qty !== undefined) {
+              mark.qty = line.qty;
+              mark.unit = line.rawUnit || line.unit || '';
+            }
+            week.haveGenerated.forEach(x => {
+              if (x !== existing && !x.removed && matchKeyFn(x.key, k)) {
+                x.removed = true;
+                x.at = now - 1;
+              }
+            });
+            if (existing) {
+              // Update existing mark (split "need" tap, or re-check after an
+              // uncheck) instead of duplicating.
+              Object.assign(existing, mark);
+              delete existing.removed;
+            } else {
+              week.haveGenerated.push(mark);
+            }
+          }
           markShopDirty(); rerender(); return;
         }
-        // Pantry-covered row in Already Have: tapping "●" overrides pantry cover
-        // for this week so the full recipe amount moves back to To Buy.
-        const isPantryCoveredRow = genItem.dataset.pantryCovered === '1';
-        if (isPantryCoveredRow && !anyHave) {
-          const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
-          const base = line ? (line.base || String(k).split('|')[0].toLowerCase()) : String(k).split('|')[0].toLowerCase();
-          if (!week.pantryOverrides || typeof week.pantryOverrides !== 'object') week.pantryOverrides = {};
-          week.pantryOverrides[base] = {
-            buyQty: (line && Number.isFinite(Number(line.qty))) ? Number(line.qty) : 1,
-            unit: (line && (line.rawUnit || line.unit)) || '',
-            updatedAt: now
-          };
+        if (manId) {
+          const m = (week.manualItems || []).find(x => x.id === manId);
+          if (m) {
+            if (m.have) {
+              // Any session can uncheck a manual item (the checking session may
+              // be a closed tab or another device); newest updatedAt wins in
+              // sync, so this uncheck propagates.
+              m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = []; m.updatedAt = now; m.updatedBy = sid;
+            } else {
+              m.have = true; m.haveSession = sid; m.haveAt = now;
+              if (!Array.isArray(m.haveSessions)) m.haveSessions = [];
+              if (!m.haveSessions.includes(sid)) m.haveSessions.push(sid);
+              m.updatedAt = now; m.updatedBy = sid;
+            }
+          }
           markShopDirty(); rerender(); return;
         }
-        if (anyHave && split !== 'need') {
-          // Uncheck: tombstone EVERY active mark for this key (any session,
-          // any canonical/legacy key) and ensure a tombstone for the current
-          // session exists so late-arriving remote marks are suppressed.
-          let hadCurrentSession = false;
-          week.haveGenerated.forEach(x => {
-            if (matchKeyFn(x.key, k)) {
-              if (x.session === sid) hadCurrentSession = true;
-              if (!x.removed || (x.at || 0) < now) { x.removed = true; x.at = now; }
-            }
-          });
-          if (!hadCurrentSession) {
-            week.haveGenerated.push({ key: k, session: sid, at: now, removed: true });
-          }
-        } else {
-          // Check: capture the quantity on the line at check time, so later additions
-          // of the same ingredient split into a separate unchecked line.
-          // Tapping a split "need" line checks the full current quantity and
-          // supersedes/tombstones all older marks for the item across all sessions.
-          const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
-          const mark = { key: k, session: sid, at: now };
-          if (line && line.qty !== null && line.qty !== undefined) {
-            mark.qty = line.qty;
-            mark.unit = line.rawUnit || line.unit || '';
-          }
-          week.haveGenerated.forEach(x => {
-            if (x !== existing && !x.removed && matchKeyFn(x.key, k)) {
-              x.removed = true;
-              x.at = now - 1;
-            }
-          });
-          if (existing) {
-            // Update existing mark (split "need" tap, or re-check after an
-            // uncheck) instead of duplicating.
-            Object.assign(existing, mark);
-            delete existing.removed;
-          } else {
-            week.haveGenerated.push(mark);
-          }
-        }
-        markShopDirty(); rerender(); return;
-      }
-      if (manItem) {
-        const m = (week.manualItems || []).find(x => x.id === manItem.dataset.manual);
-        if (m) {
-          if (m.have) {
-            // Any session can uncheck a manual item (the checking session may
-            // be a closed tab or another device); newest updatedAt wins in
-            // sync, so this uncheck propagates.
-            m.have = false; m.haveSession = null; m.haveAt = 0; m.haveSessions = []; m.updatedAt = now; m.updatedBy = sid;
-          } else {
-            m.have = true; m.haveSession = sid; m.haveAt = now;
-            if (!Array.isArray(m.haveSessions)) m.haveSessions = [];
-            if (!m.haveSessions.includes(sid)) m.haveSessions.push(sid);
-            m.updatedAt = now; m.updatedBy = sid;
-          }
-        }
-        markShopDirty(); rerender(); return;
-      }
+      });
+      return;
     }
     // Optional items: "+" promotes to To Buy, "✓" marks Already Have.
     const optAdd = e.target.closest('[data-opt-add]');
     if (optAdd) {
-      const week = getWeek(thisWeekKey());
       const k = optAdd.dataset.optAdd;
-      setPromoted(week, k, true);
-      markShopDirty(); rerender(); return;
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        setPromoted(week, k, true);
+        markShopDirty(); rerender();
+      });
+      return;
     }
     const optHave = e.target.closest('[data-opt-have]');
     if (optHave) {
-      const week = getWeek(thisWeekKey());
-      const sid = getSessionId(), now = Date.now();
       const k = optHave.dataset.optHave;
-      const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
-      week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
-      // Remove from promoted if it was there.
-      setPromoted(week, k, false);
-      const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
-      const mark = { key: k, session: sid, at: now };
-      if (line && line.qty !== null && line.qty !== undefined) {
-        mark.qty = line.qty;
-        mark.unit = line.rawUnit || line.unit || '';
-      }
-      const exMark = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
-      week.haveGenerated.forEach(x => {
-        if (x !== exMark && !x.removed && matchKeyFn(x.key, k)) {
-          x.removed = true;
-          x.at = now - 1;
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        const sid = getSessionId(), now = Date.now();
+        const matchKeyFn = typeof markMatchesShopKey === 'function' ? markMatchesShopKey : ((a, b) => a === b);
+        week.haveGenerated = normalizeHaveMarks(week.haveGenerated);
+        // Remove from promoted if it was there.
+        setPromoted(week, k, false);
+        const line = buildShoppingList().find(it => it.key === k || matchKeyFn(it.key, k));
+        const mark = { key: k, session: sid, at: now };
+        if (line && line.qty !== null && line.qty !== undefined) {
+          mark.qty = line.qty;
+          mark.unit = line.rawUnit || line.unit || '';
         }
+        const exMark = week.haveGenerated.find(x => x.session === sid && matchKeyFn(x.key, k));
+        week.haveGenerated.forEach(x => {
+          if (x !== exMark && !x.removed && matchKeyFn(x.key, k)) {
+            x.removed = true;
+            x.at = now - 1;
+          }
+        });
+        if (exMark) { Object.assign(exMark, mark); delete exMark.removed; }
+        else week.haveGenerated.push(mark);
+        markShopDirty(); rerender();
       });
-      if (exMark) { Object.assign(exMark, mark); delete exMark.removed; }
-      else week.haveGenerated.push(mark);
-      markShopDirty(); rerender(); return;
+      return;
     }
     // Dismiss conflict warning
     const conflictBtn = e.target.closest('[data-confack]');
     if (conflictBtn) {
-      const week = getWeek(thisWeekKey());
-      if (!week.conflictAcked) week.conflictAcked = {};
-      week.conflictAcked[conflictBtn.dataset.confack] = true;
-      markShopDirty(); rerender(); return;
+      const ackKey = conflictBtn.dataset.confack;
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        if (!week.conflictAcked) week.conflictAcked = {};
+        week.conflictAcked[ackKey] = true;
+        markShopDirty(); rerender();
+      });
+      return;
     }
     // Delete manual item
     const del = e.target.closest('[data-mandel]');
     if (del) {
-      const week = getWeek(thisWeekKey());
-      const dm = (week.manualItems || []).find(x => x.id === del.dataset.mandel);
-      if (dm) { dm.deleted = true; dm.updatedAt = Date.now(); dm.updatedBy = getSessionId(); }
-      saveShop(); rerender(); return;
+      const delId = del.dataset.mandel;
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        const dm = (week.manualItems || []).find(x => x.id === delId);
+        if (dm) { dm.deleted = true; dm.updatedAt = Date.now(); dm.updatedBy = getSessionId(); }
+        saveShop(); rerender();
+      });
+      return;
     }
     // Add manual item
     if (e.target.closest('#shop-add')) {
       const input = $('#shop-new');
       const text = (input.value || '').trim();
       if (!text) return;
-      const week = getWeek(thisWeekKey());
-      if (!Array.isArray(week.manualItems)) week.manualItems = [];
-      week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false, updatedAt: Date.now(), updatedBy: getSessionId() });
-      input.value = ''; // clear the box now: renderShopWrap restores the live draft across the rebuild, so without this the text would come back
-      saveShop(); rerender();
-      const ni = $('#shop-new');
-      if (ni) ni.focus();
+      runAuthedShop(() => {
+        const week = getWeek(thisWeekKey());
+        if (!Array.isArray(week.manualItems)) week.manualItems = [];
+        week.manualItems.push({ id: 'm' + Date.now().toString(36), text, have: false, updatedAt: Date.now(), updatedBy: getSessionId() });
+        input.value = ''; // clear the box now: renderShopWrap restores the live draft across the rebuild, so without this the text would come back
+        saveShop(); rerender();
+        const ni = $('#shop-new');
+        if (ni) ni.focus();
+      });
     }
   });
   // Enter in the add box adds the item: delegated on shopWrap (not bound to
@@ -4401,7 +4645,9 @@ function renderLanding(app) {
         '<h2>Shopping History</h2><p>Receipts &amp; price history</p></a>' +
     '</section>' +
     '<div class="landing-add-row no-print">' +
-      '<a class="btn landing-add-btn" id="home-add-recipe-btn" href="#/submit">+ Add a recipe</a>' +
+      '<a class="btn landing-add-btn' +
+        (typeof isSignedInForWrite === 'function' && !isSignedInForWrite() ? ' needs-signin-cue' : '') +
+        '" id="home-add-recipe-btn" href="#/submit">+ Add a recipe</a>' +
     '</div>' +
     '<section class="home-section">' +
       '<div class="section-head"><h2>This week</h2>' +
@@ -5197,14 +5443,19 @@ async function renderRecipe(app, id) {
     ((r.notes || r.source)
       ? '<p class="source-line">' + esc([r.notes, r.source].filter(Boolean).join(' — ')) + '</p>'
       : '') +
+    (typeof unsignedEditStripHTML === 'function' ? unsignedEditStripHTML({ compact: true }) : '') +
     '<div class="actions no-print">' +
-      '<a class="btn secondary" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
+      '<a class="btn secondary' +
+        (typeof isSignedInForWrite === 'function' && !isSignedInForWrite() ? ' needs-signin-cue' : '') +
+        '" href="#/edit/' + encodeURIComponent(r.id) + '">Edit</a>' +
       (pdfUrl(r) ? '<a class="btn" href="' + esc(pdfUrl(r)) + '" target="_blank" rel="noopener">View PDF</a>' : '') +
       '<button class="btn secondary" id="share-btn" type="button">Share</button>' +
       '<button class="btn' + (pdfUrl(r) ? ' secondary' : '') + '" id="print-btn" type="button">Print / PDF</button>' +
     '</div>' +
     '<div class="danger-zone no-print">' +
-      '<a class="btn danger-outline" href="#/delete/' + encodeURIComponent(r.id) + '">Delete recipe</a>' +
+      '<a class="btn danger-outline' +
+        (typeof isSignedInForWrite === 'function' && !isSignedInForWrite() ? ' needs-signin-cue' : '') +
+        '" href="#/delete/' + encodeURIComponent(r.id) + '">Delete recipe</a>' +
     '</div>';
 
   if (shellPainted) {
@@ -5337,6 +5588,10 @@ async function renderRecipe(app, id) {
   // Family rating: tap to set; tap the active one again to clear.
   app.querySelectorAll('[data-rating]').forEach(btn => {
     btn.addEventListener('click', async () => {
+      if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+        try { await requireAuthForWrite({ reason: 'rating' }); }
+        catch (e) { if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return; throw e; }
+      }
       const next = curRating === btn.dataset.rating ? null : btn.dataset.rating;
       try {
         await setRecipePref(r.id, { rating: next });
@@ -5344,6 +5599,7 @@ async function renderRecipe(app, id) {
         app.querySelectorAll('[data-rating]').forEach(b =>
           b.classList.toggle('active', b.dataset.rating === next));
       } catch (e) {
+        if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return;
         toast('Couldn\u2019t save rating: ' + e.message);
       }
     });
@@ -5421,15 +5677,7 @@ async function renderRecipe(app, id) {
         });
       }
     };
-    addPlannerBtn.addEventListener('click', () => {
-      if (!addPlannerHost) return;
-      const existingPanel = addPlannerHost.querySelector
-        ? addPlannerHost.querySelector('#add-planner-panel')
-        : (addPlannerHost.innerHTML.includes('id="add-planner-panel"') ? true : null);
-      if (existingPanel) {
-        closeAddPlannerPanel();
-        return;
-      }
+    const openAddPlannerPanel = () => {
       apMeal = 'dinner';
       addPlannerBtn.classList.add('active');
       addPlannerBtn.setAttribute('aria-expanded', 'true');
@@ -5461,6 +5709,10 @@ async function renderRecipe(app, id) {
             }
             return;
           }
+          if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+            try { await requireAuthForWrite({ reason: 'add-to-planner' }); }
+            catch (e) { if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return; throw e; }
+          }
           submitBtn.disabled = true;
           try {
             const res = await addRecipeToPlannerSlot(r, dateVal, apMeal, selectedVariant, statusEl);
@@ -5476,6 +5728,7 @@ async function renderRecipe(app, id) {
             }
           } catch (err) {
             submitBtn.disabled = false;
+            if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(err)) return;
             if (statusEl) {
               statusEl.className = 'form-status error';
               statusEl.textContent = err.message || 'Could not add to planner.';
@@ -5485,6 +5738,23 @@ async function renderRecipe(app, id) {
           }
         });
       }
+    };
+    addPlannerBtn.addEventListener('click', () => {
+      if (!addPlannerHost) return;
+      const existingPanel = addPlannerHost.querySelector
+        ? addPlannerHost.querySelector('#add-planner-panel')
+        : (addPlannerHost.innerHTML.includes('id="add-planner-panel"') ? true : null);
+      if (existingPanel) {
+        closeAddPlannerPanel();
+        return;
+      }
+      if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+        requireAuthForWrite({ reason: 'add-to-planner' }).then(() => {
+          openAddPlannerPanel();
+        }).catch(() => {});
+        return;
+      }
+      openAddPlannerPanel();
     });
   }
   // Normalize initial render (e.g. "1 cups" in stored data → "1 cup").
@@ -7053,63 +7323,75 @@ async function renderDelete(app, id) {
   };
   const onConfirm = async () => {
     if (busy) return;
+    if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+      try { await requireAuthForWrite({ reason: 'delete' }); }
+      catch (e) { if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return; throw e; }
+    }
     busy = true; err = ''; draw();
     try {
-      // Delete the recipe JSON and its PDF (PDF may not exist — bridge treats that as ok).
-      await bridgeDelete('data/recipes/' + r.id + '.json', 'Delete recipe ' + r.id + ' via site');
-      await bridgeDelete('pdfs/' + r.id + '.pdf', 'Delete PDF for ' + r.id + ' via site');
-      // Remove from the index.
-      const idxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/index.json'));
-      if (!idxRes.ok) throw new Error('could not read recipe index');
-      const idx = await idxRes.json();
-      const ids = Array.isArray(idx.content) ? idx.content : JSON.parse(idx.content);
-      const next = ids.filter(x => x !== r.id);
-      await bridgeSave('data/recipes/index.json', JSON.stringify(next, null, 2) + '\n',
-        'Remove ' + r.id + ' from recipe index via site');
-      // Remove from meta.json too (drives list/search/filter).
-      try {
-        const metaRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/meta.json'));
-        if (metaRes.ok) {
-          const metaJson = await metaRes.json();
-          const meta = JSON.parse(metaJson.content);
-          if (Array.isArray(meta)) {
-            const nextMeta = meta.filter(m => m.id !== r.id);
-            await bridgeSave('data/recipes/meta.json', JSON.stringify(nextMeta),
-              'Remove ' + r.id + ' from meta via site');
+      await withMultiStepWrite(async () => {
+        // Delete the recipe JSON and its PDF (PDF may not exist — bridge treats that as ok).
+        await bridgeDelete('data/recipes/' + r.id + '.json', 'Delete recipe ' + r.id + ' via site');
+        await bridgeDelete('pdfs/' + r.id + '.pdf', 'Delete PDF for ' + r.id + ' via site');
+        // Remove from the index.
+        const idxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/index.json'));
+        if (!idxRes.ok) throw new Error('could not read recipe index');
+        const idx = await idxRes.json();
+        const ids = Array.isArray(idx.content) ? idx.content : JSON.parse(idx.content);
+        const next = ids.filter(x => x !== r.id);
+        await bridgeSave('data/recipes/index.json', JSON.stringify(next, null, 2) + '\n',
+          'Remove ' + r.id + ' from recipe index via site');
+        // Remove from meta.json too (drives list/search/filter).
+        try {
+          const metaRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/recipes/meta.json'));
+          if (metaRes.ok) {
+            const metaJson = await metaRes.json();
+            const meta = JSON.parse(metaJson.content);
+            if (Array.isArray(meta)) {
+              const nextMeta = meta.filter(m => m.id !== r.id);
+              await bridgeSave('data/recipes/meta.json', JSON.stringify(nextMeta),
+                'Remove ' + r.id + ' from meta via site');
+            }
           }
+        } catch (e) {
+          if (isAuthMidSequenceError(e) || isAuthCancelledError(e)) throw e;
+          console.warn('meta.json cleanup failed', e);
         }
-      } catch (e) { console.warn('meta.json cleanup failed', e); }
-      // Update local state so the list reflects the deletion immediately.
-      delete byId[r.id];
-      delete metaById[r.id];
-      const ri = recipes.findIndex(m => m.id === r.id);
-      if (ri >= 0) recipes.splice(ri, 1);
-      // Log the deletion in Recent submissions.
-      try {
-        const entryId = 'delete-' + Date.now().toString(36);
-        const entry = {
-          id: entryId, type: 'delete', edit_target: r.id,
-          text: null, url: null, image: null, note: 'Deleted via site: ' + r.title,
-          status: 'done', created_at: new Date().toISOString(),
-          recipe_id: null, fail_reason: null
-        };
-        await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
-          'Delete log: ' + r.title);
-        const inboxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/inbox/index.json'));
-        let inboxIdx = [];
-        if (inboxRes.ok) {
-          const inboxJson = await inboxRes.json();
-          inboxIdx = JSON.parse(inboxJson.content);
+        // Update local state so the list reflects the deletion immediately.
+        delete byId[r.id];
+        delete metaById[r.id];
+        const ri = recipes.findIndex(m => m.id === r.id);
+        if (ri >= 0) recipes.splice(ri, 1);
+        // Log the deletion in Recent submissions.
+        try {
+          const entryId = 'delete-' + Date.now().toString(36);
+          const entry = {
+            id: entryId, type: 'delete', edit_target: r.id,
+            text: null, url: null, image: null, note: 'Deleted via site: ' + r.title,
+            status: 'done', created_at: new Date().toISOString(),
+            recipe_id: null, fail_reason: null
+          };
+          await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
+            'Delete log: ' + r.title);
+          const inboxRes = await fetch(BRIDGE + '/read?path=' + encodeURIComponent('data/inbox/index.json'));
+          let inboxIdx = [];
+          if (inboxRes.ok) {
+            const inboxJson = await inboxRes.json();
+            inboxIdx = JSON.parse(inboxJson.content);
+          }
+          inboxIdx.push({ id: entryId, status: 'done', type: 'delete',
+            edit_target: r.id, created_at: entry.created_at });
+          await bridgeSave('data/inbox/index.json', JSON.stringify(inboxIdx, null, 2),
+            'Delete log index: ' + entryId);
+        } catch (e) {
+          if (isAuthMidSequenceError(e) || isAuthCancelledError(e)) throw e;
+          console.warn('delete log failed', e);
         }
-        inboxIdx.push({ id: entryId, status: 'done', type: 'delete',
-          edit_target: r.id, created_at: entry.created_at });
-        await bridgeSave('data/inbox/index.json', JSON.stringify(inboxIdx, null, 2),
-          'Delete log index: ' + entryId);
-      } catch (e) { console.warn('delete log failed', e); }
+      });
       location.hash = '#/recipes';
     } catch (e) {
       busy = false;
-      err = 'Delete failed: ' + (e.message || e);
+      err = isAuthMidSequenceError(e) ? e.message : ('Delete failed: ' + (e.message || e));
       draw();
     }
   };
@@ -7159,41 +7441,47 @@ async function wireAiEdit(recipeId) {
       st.textContent = 'Describe the changes first.';
       return;
     }
+    if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+      try { await requireAuthForWrite({ reason: 'ai_edit' }); }
+      catch (e) { if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return; throw e; }
+    }
     st.className = 'form-status';
     st.textContent = 'Submitting…';
     btn.disabled = true;
     try {
-      const entryId = 'inbox-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
-      const entry = {
-        id: entryId,
-        type: 'edit',
-        edit_target: recipeId,
-        text: text,
-        url: null,
-        image: null,
-        note: null,
-        status: 'pending',
-        created_at: new Date().toISOString(),
-        recipe_id: null,
-        fail_reason: null
-      };
-      // Upload via the bridge (same as submissions)
-      await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
-        'Edit request: ' + recipeId);
-      // Update the inbox index — include the request text inline so the
-      // log can show it without fetching each entry file.
-      const idxRes = await fetch('data/inbox/index.json?v=' + Date.now());
-      let idx = idxRes.ok ? await idxRes.json() : [];
-      idx.push({ id: entryId, status: 'pending', type: 'edit', edit_target: recipeId,
-        created_at: entry.created_at, text: text.slice(0, 140) });
-      await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2),
-        'Edit request index: ' + entryId);
+      await withMultiStepWrite(async () => {
+        const entryId = 'inbox-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+        const entry = {
+          id: entryId,
+          type: 'edit',
+          edit_target: recipeId,
+          text: text,
+          url: null,
+          image: null,
+          note: null,
+          status: 'pending',
+          created_at: new Date().toISOString(),
+          recipe_id: null,
+          fail_reason: null
+        };
+        // Upload via the bridge (same as submissions)
+        await ghPut('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2),
+          'Edit request: ' + recipeId);
+        // Update the inbox index — include the request text inline so the
+        // log can show it without fetching each entry file.
+        const idxRes = await fetch('data/inbox/index.json?v=' + Date.now());
+        let idx = idxRes.ok ? await idxRes.json() : [];
+        idx.push({ id: entryId, status: 'pending', type: 'edit', edit_target: recipeId,
+          created_at: entry.created_at, text: text.slice(0, 140) });
+        await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2),
+          'Edit request index: ' + entryId);
+      });
       st.className = 'form-status ok';
       st.textContent = 'Submitted — check Recent submissions for progress (up to 30 min).';
       $('#ai-edit-request').value = '';
     } catch (e) {
       st.className = 'form-status error';
-      st.textContent = 'Could not submit: ' + (e.message || e);
+      st.textContent = isAuthMidSequenceError(e) ? e.message : ('Could not submit: ' + (e.message || e));
     }
     btn.disabled = false;
   };
@@ -7586,6 +7874,10 @@ async function saveRecipe(id) {
     st.textContent = 'Give the recipe a title first.';
     return;
   }
+  if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+    try { await requireAuthForWrite({ reason: 'save_recipe' }); }
+    catch (e) { if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return; throw e; }
+  }
   // Flag for PDF re-press — the intake checker picks this up and runs Recipe Press.
   d.pdf_stale = true;
   st.className = 'form-status';
@@ -7595,21 +7887,25 @@ async function saveRecipe(id) {
     // window.prompt() called after an await (e.g. the photo upload) is
     // silently swallowed by mobile browsers and returns null.
     const editorName = getEditorName();
-    await maybeUploadPhoto(d);
-    // Save via the worker-side history endpoint (server diffs + appends history).
-    const actor = 'site-editor (' + editorName + ')';
-    const reasoningEl = $('#edit-reasoning');
-    let reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
-    // Photo-only edit: the banner path doesn't change, so give the save a
-    // reasoning so the auto-log records it (and drop the temp flag so it
-    // never lands in the recipe JSON).
-    if (d._photoReplaced) {
-      delete d._photoReplaced;
-      if (!reasoning) reasoning = 'Replaced photo';
-    }
+    const hasPendingPhoto = Boolean(d._pendingPhotoFile || d._pendingPhotoB64);
+    const doSaveSteps = async () => {
+      await maybeUploadPhoto(d);
+      // Save via the worker-side history endpoint (server diffs + appends history).
+      const actor = 'site-editor (' + editorName + ')';
+      const reasoningEl = $('#edit-reasoning');
+      let reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+      // Photo-only edit: the banner path doesn't change, so give the save a
+      // reasoning so the auto-log records it (and drop the temp flag so it
+      // never lands in the recipe JSON).
+      if (d._photoReplaced) {
+        delete d._photoReplaced;
+        if (!reasoning) reasoning = 'Replaced photo';
+      }
+      return bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, currentEditSha, 'edit');
+    };
     let saveResult;
     try {
-      saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, currentEditSha, 'edit');
+      saveResult = hasPendingPhoto ? await withMultiStepWrite(doSaveSteps) : await doSaveSteps();
     } catch (e) {
       if (e.code === 409) {
         st.className = 'form-status error';
@@ -7638,10 +7934,13 @@ async function saveRecipe(id) {
     st.textContent = 'Saved — the site rebuilds in about a minute.';
     toast('Saved — the site rebuilds in about a minute.');
   } catch (e) {
+    if (isAuthCancelledError(e)) { st.textContent = ''; return; }
     st.className = 'form-status error';
-    st.textContent = e.message === 'key'
-      ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
-      : 'Save failed: ' + e.message;
+    st.textContent = isAuthMidSequenceError(e)
+      ? e.message
+      : (e.message === 'key'
+        ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
+        : 'Save failed: ' + e.message);
   }
 }
 
@@ -7653,6 +7952,10 @@ async function saveNewRecipe() {
     st.className = 'form-status error';
     st.textContent = 'Give the recipe a title first.';
     return;
+  }
+  if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+    try { await requireAuthForWrite({ reason: 'save_new_recipe' }); }
+    catch (e) { if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled)) return; throw e; }
   }
   let id = slugify(d.title), n = 2;
   while (byId[id]) id = slugify(d.title) + '-' + (n++);
@@ -7666,17 +7969,20 @@ async function saveNewRecipe() {
     // Editor name first, inside the tap (see saveRecipe — prompt() after
     // an await gets swallowed by mobile browsers).
     const editorName = getEditorName();
-    await maybeUploadPhoto(d);
-    // Save via the worker-side history endpoint (initializes history with creation entry).
-    const actor = 'site-editor (' + editorName + ')';
-    const reasoningEl = $('#edit-reasoning');
-    const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
-    delete d._photoReplaced; // temp flag from maybeUploadPhoto — never persisted
-    const saveResult = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, null, 'intake');
-    if (saveResult.history) d.history = saveResult.history;
-    const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
-    idx.push(id);
-    await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
+    const saveResult = await withMultiStepWrite(async () => {
+      await maybeUploadPhoto(d);
+      // Save via the worker-side history endpoint (initializes history with creation entry).
+      const actor = 'site-editor (' + editorName + ')';
+      const reasoningEl = $('#edit-reasoning');
+      const reasoning = reasoningEl ? (reasoningEl.value.trim() || null) : null;
+      delete d._photoReplaced; // temp flag from maybeUploadPhoto — never persisted
+      const res = await bridgeSaveRecipe('data/recipes/' + id + '.json', d, actor, reasoning, null, 'intake');
+      if (res.history) d.history = res.history;
+      const idx = JSON.parse((await ghGet('data/recipes/index.json')).text);
+      idx.push(id);
+      await ghPut('data/recipes/index.json', JSON.stringify(idx), 'Add to index: ' + d.title);
+      return res;
+    });
     // Single-writer handoff: Worker /save-recipe rebuilds and upserts the card
     // into data/recipes/meta.json and returns it on saveResult.card.
     const metaEntry = (saveResult && saveResult.card) ? saveResult.card : buildRecipeCard(d);
@@ -7690,10 +7996,13 @@ async function saveNewRecipe() {
     toast('Saved — the site rebuilds in about a minute.');
     location.hash = '#/recipe/' + encodeURIComponent(id);
   } catch (e) {
+    if (isAuthCancelledError(e)) { st.textContent = ''; return; }
     st.className = 'form-status error';
-    st.textContent = e.message === 'key'
-      ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
-      : 'Save failed: ' + e.message;
+    st.textContent = isAuthMidSequenceError(e)
+      ? e.message
+      : (e.message === 'key'
+        ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
+        : 'Save failed: ' + e.message);
   }
 }
 
@@ -7924,12 +8233,27 @@ function renderPlanner(app) {
       '</div>';
   }
 
+  const unsignedCue = (typeof isSignedInForWrite === 'function' && !isSignedInForWrite()) ? ' needs-signin-cue' : '';
+  const editStrip = typeof unsignedEditStripHTML === 'function' ? unsignedEditStripHTML() : '';
+  const runAuthedPlanner = fn => {
+    if (typeof requireAuthForWrite !== 'function') return fn();
+    if (typeof isSignedInForWrite === 'function' && isSignedInForWrite()) return fn();
+    return requireAuthForWrite({ reason: 'planner' }).then(() => {
+      if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
+      return fn();
+    }).catch(err => {
+      if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(err)) return;
+      throw err;
+    });
+  };
+
   app.innerHTML =
     '<div class="planner-nav no-print">' +
       '<button class="btn secondary" id="wk-prev" type="button">‹ Prev</button>' +
       '<h2>' + esc(label) + ' ' + helpLinkHTML('meal-planner') + '</h2>' +
       '<button class="btn secondary" id="wk-next" type="button">Next ›</button>' +
     '</div>' +
+    editStrip +
     '<div class="shop-day-row no-print">' +
       '<label for="shop-day">🛒 Shopping day</label>' +
       '<input type="date" id="shop-day" value="' + esc(week.shoppingDay || '') + '">' +
@@ -7967,7 +8291,7 @@ function renderPlanner(app) {
       '</div>' +
       '<div class="draft-actions">' +
         '<a class="link-btn" href="#/planner/tune">Tune rotation</a>' +
-        '<button class="btn" id="draft-week-btn" type="button">Draft Week ✨</button>' +
+        '<button class="btn' + unsignedCue + '" id="draft-week-btn" type="button">Draft Week ✨</button>' +
       '</div>' +
     '</div>' +
     planWarningsHTML(key, week) +
@@ -7980,13 +8304,26 @@ function renderPlanner(app) {
 
   const shopDay = $('#shop-day');
   if (shopDay) shopDay.addEventListener('change', () => {
-    getWeek(key).shoppingDay = shopDay.value || null;
+    const prevVal = getWeek(key).shoppingDay || '';
+    const nextVal = shopDay.value || null;
+    if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+      shopDay.value = prevVal;
+      runAuthedPlanner(() => {
+        shopDay.value = nextVal || '';
+        getWeek(key).shoppingDay = nextVal;
+        persistWeek(key, null, () => renderPlanner(app));
+      });
+      return;
+    }
+    getWeek(key).shoppingDay = nextVal;
     persistWeek(key, null, () => renderPlanner(app));
   });
   const shopClear = $('#shop-day-clear');
   if (shopClear) shopClear.addEventListener('click', () => {
-    getWeek(key).shoppingDay = null;
-    persistWeek(key, null, () => renderPlanner(app));
+    runAuthedPlanner(() => {
+      getWeek(key).shoppingDay = null;
+      persistWeek(key, null, () => renderPlanner(app));
+    });
   });
 
   // --- Draft Week chip bar wiring ---
@@ -7996,30 +8333,51 @@ function renderPlanner(app) {
   // on, so it kept coming back checked). No re-render here: a toggle
   // must not rebuild the planner under the user's finger.
   app.querySelectorAll('[data-eatout]').forEach(b =>
-    b.addEventListener('click', () => { b.classList.toggle('active'); persistDraftChips(key); }));
+    b.addEventListener('click', () => {
+      runAuthedPlanner(() => {
+        b.classList.toggle('active');
+        persistDraftChips(key);
+      });
+    }));
   ['draft-hosting-fri', 'draft-hosting-sat'].forEach(id => {
     const box = $('#' + id);
-    if (box) box.addEventListener('change', () => persistDraftChips(key));
+    if (box) box.addEventListener('change', () => {
+      const nextChecked = box.checked;
+      if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+        box.checked = !nextChecked;
+        runAuthedPlanner(() => {
+          box.checked = nextChecked;
+          persistDraftChips(key);
+        });
+        return;
+      }
+      persistDraftChips(key);
+    });
   });
   renderUseUpChips();
   const useUpHost = $('#draft-useup-chips');
   if (useUpHost) useUpHost.addEventListener('click', e => {
     const del = e.target.closest('[data-useup-del]');
     if (!del) return;
-    draftUseUp.splice(+del.dataset.useupDel, 1);
-    renderUseUpChips();
-    persistDraftChips(key);
+    const idx = +del.dataset.useupDel;
+    runAuthedPlanner(() => {
+      draftUseUp.splice(idx, 1);
+      renderUseUpChips();
+      persistDraftChips(key);
+    });
   });
   const addUseUp = () => {
     const inp = $('#draft-useup-input');
     const v = inp ? inp.value.trim() : '';
     if (!v) return;
     if (draftUseUp.length >= 5) { toast('Up to 5 use-up items.'); return; }
-    draftUseUp.push(v);
-    inp.value = '';
-    renderUseUpChips();
-    persistDraftChips(key);
-    inp.focus();
+    runAuthedPlanner(() => {
+      draftUseUp.push(v);
+      if (inp) inp.value = '';
+      renderUseUpChips();
+      persistDraftChips(key);
+      if (inp) inp.focus();
+    });
   };
   const useUpAdd = $('#draft-useup-add');
   if (useUpAdd) useUpAdd.addEventListener('click', addUseUp);
@@ -8028,82 +8386,133 @@ function renderPlanner(app) {
     if (e.key === 'Enter') { e.preventDefault(); addUseUp(); }
   });
   const draftBtn = $('#draft-week-btn');
-  if (draftBtn) draftBtn.addEventListener('click', () => runDraftWeek(key, app));
+  if (draftBtn) draftBtn.addEventListener('click', () => runAuthedPlanner(() => runDraftWeek(key, app)));
   const dismissBtn = app.querySelector('[data-dismiss-warnings]');
   if (dismissBtn) dismissBtn.addEventListener('click', () => {
-    const wk = getWeek(key);
-    wk.dismissedWarnings = (Array.isArray(wk.lunchWarnings) ? wk.lunchWarnings : []).map(warningSignature);
-    persistWeek(key, null, () => renderPlanner(app));
+    runAuthedPlanner(() => {
+      const wk = getWeek(key);
+      wk.dismissedWarnings = (Array.isArray(wk.lunchWarnings) ? wk.lunchWarnings : []).map(warningSignature);
+      persistWeek(key, null, () => renderPlanner(app));
+    });
   });
 
   $('#days').addEventListener('click', e => {
     const t = e.target;
-    if (t.id === 'se-save') return saveSlot(key);
+    if (t.id === 'se-save') return runAuthedPlanner(() => saveSlot(key));
     if (t.id === 'se-cancel') { editingSlot = null; return renderPlanner(app); }
     if (t.dataset.slotadd) {
       const [k, di, meal] = t.dataset.slotadd.split('|');
-      editingSlot = { key: k, di: +di, meal, dishIdx: -1 }; // -1 = new dish
-      return renderPlanner(app);
+      return runAuthedPlanner(() => {
+        editingSlot = { key: k, di: +di, meal, dishIdx: -1 }; // -1 = new dish
+        renderPlanner(app);
+      });
     }
     if (t.dataset.dishedit) {
       const [k, di, meal, idx] = t.dataset.dishedit.split('|');
-      editingSlot = { key: k, di: +di, meal, dishIdx: +idx };
-      return renderPlanner(app);
+      return runAuthedPlanner(() => {
+        editingSlot = { key: k, di: +di, meal, dishIdx: +idx };
+        renderPlanner(app);
+      });
     }
     if (t.dataset.dishswap) {
       const [k, di, meal, idx] = t.dataset.dishswap.split('|');
-      applySwap(k, +di, meal, +idx)
-        .then(d => {
-          if (!d) toast('No swap options for this dish.');
-          renderPlanner(app);
-        })
-        .catch(err => { toast('Swap failed: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        applySwap(k, +di, meal, +idx)
+          .then(d => {
+            if (!d) toast('No swap options for this dish.');
+            renderPlanner(app);
+          })
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Swap failed: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.dishlock) {
       const [k, di, meal, idx] = t.dataset.dishlock.split('|');
-      const s = planSlot(getWeek(k), +di, meal);
-      const dish = s.dishes[+idx];
-      if (!dish) return;
-      dish.locked = !dish.locked;
-      persistPlannedWeek(k, 'Lock dish: ' + k)
-        .then(() => renderPlanner(app))
-        .catch(err => { toast('Couldn\u2019t save: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        const s = planSlot(getWeek(k), +di, meal);
+        const dish = s.dishes[+idx];
+        if (!dish) return;
+        dish.locked = !dish.locked;
+        persistPlannedWeek(k, 'Lock dish: ' + k)
+          .then(() => renderPlanner(app))
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Couldn\u2019t save: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.dishcooked) {
       const [k, di, meal, idx] = t.dataset.dishcooked.split('|');
-      toggleDishCooked(k, +di, meal, +idx)
-        .then(() => renderPlanner(app))
-        .catch(err => { toast('Couldn\u2019t update cooked state: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        const runCook = () => toggleDishCooked(k, +di, meal, +idx);
+        const p = typeof withMultiStepWrite === 'function' ? withMultiStepWrite(runCook) : runCook();
+        p.then(() => renderPlanner(app))
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Couldn\u2019t update cooked state: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.fbrate) {
       const [k, di, meal, idx, rating] = t.dataset.fbrate.split('|');
-      recordMealFeedback(k, +di, meal, +idx, { rating })
-        .then(() => renderPlanner(app))
-        .catch(err => { toast('Couldn\u2019t save rating: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        recordMealFeedback(k, +di, meal, +idx, { rating })
+          .then(() => renderPlanner(app))
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Couldn\u2019t save rating: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.fbleft) {
       const [k, di, meal, idx, left] = t.dataset.fbleft.split('|');
-      recordMealFeedback(k, +di, meal, +idx, { left })
-        .then(() => renderPlanner(app))
-        .catch(err => { toast('Couldn\u2019t save feedback: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        recordMealFeedback(k, +di, meal, +idx, { left })
+          .then(() => renderPlanner(app))
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Couldn\u2019t save feedback: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.fbdismiss) {
       const [k, di, meal, idx] = t.dataset.fbdismiss.split('|');
-      recordMealFeedback(k, +di, meal, +idx, { dismiss: true })
-        .then(() => renderPlanner(app))
-        .catch(err => { toast('Couldn\u2019t save feedback: ' + err.message); renderPlanner(app); });
+      runAuthedPlanner(() => {
+        recordMealFeedback(k, +di, meal, +idx, { dismiss: true })
+          .then(() => renderPlanner(app))
+          .catch(err => {
+            if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(err))) {
+              toast('Couldn\u2019t save feedback: ' + err.message);
+            }
+            renderPlanner(app);
+          });
+      });
       return;
     }
     if (t.dataset.clear) {
       const [k, di, meal] = t.dataset.clear.split('|');
-      getWeek(k).days[+di][meal] = blankSlot();
-      recomputeWeekLunches(k);   // clearing a dinner can uncover lunches
-      return persistWeek(k, null, () => renderPlanner(app));
+      return runAuthedPlanner(() => {
+        getWeek(k).days[+di][meal] = blankSlot();
+        recomputeWeekLunches(k);   // clearing a dinner can uncover lunches
+        return persistWeek(k, null, () => renderPlanner(app));
+      });
     }
   });
 
@@ -8333,6 +8742,9 @@ async function attemptSaveMealPlan(mutator, message) {
       return merged;
     } catch (e) {
       lastErr = e;
+      if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled || e.code === 'AUTH_MID_SEQUENCE' || e.authMidSequence)) {
+        throw e;
+      }
       if (attempt < 2) await new Promise(res => setTimeout(res, 400));
     }
   }
@@ -8362,6 +8774,7 @@ async function persistWeek(key, statusEl, done) {
     toast('Saved — the site rebuilds in about a minute.');
     if (done) done();
   } catch (e) {
+    if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return;
     const msg = e.message === 'key'
       ? 'Couldn\u2019t save — editing isn\u2019t set up yet.'
       : 'Save failed: ' + e.message;
@@ -9773,7 +10186,9 @@ async function runDraftWeek(key, app) {
     await draftWeek(key, chips);
     toast('Week drafted — the site rebuilds in about a minute.');
   } catch (e) {
-    toast('Draft failed: ' + e.message);
+    if (!(typeof isAuthCancelledError === 'function' && isAuthCancelledError(e))) {
+      toast('Draft failed: ' + e.message);
+    }
   }
   renderPlanner(app || $('#app'));
 }
@@ -9877,21 +10292,29 @@ function renderQuickSort(app) {
   app.querySelectorAll('[data-qs]').forEach(b => b.addEventListener('click', async () => {
     const [kind, id, val] = b.dataset.qs.split('|');
     try {
+      if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+        await requireAuthForWrite({ reason: 'quick-sort' });
+      }
       await setRecipePref(id, { [kind]: val || null });
       renderQuickSort(app);
     } catch (e) {
+      if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return;
       toast('Couldn\u2019t save: ' + e.message);
     }
   }));
   app.querySelectorAll('[data-needsside]').forEach(b => b.addEventListener('click', async () => {
     const id = b.dataset.needsside;
-    const name = getEditorName();
     const next = !(metaById[id] && metaById[id].needs_side);
-    b.disabled = true;
     try {
+      if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+        await requireAuthForWrite({ reason: 'needs-side' });
+      }
+      const name = getEditorName();
+      b.disabled = true;
       await setNeedsSide(id, next, name);
       renderQuickSort(app);
     } catch (e) {
+      if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return;
       toast('Couldn\u2019t save: ' + e.message);
       renderQuickSort(app);
     }
@@ -10119,6 +10542,10 @@ async function syncShop() {
   _shopSyncTimer = null;
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     _shopDirty = true;  // offline — stay dirty, retry on 'online' event
+    return;
+  }
+  if (typeof isSignedInForWrite === 'function' && !isSignedInForWrite()) {
+    _shopDirty = true;  // unsigned — skip background sync silently, keep local changes dirty
     return;
   }
   // saveMealPlan itself re-reads the fresh server copy and merges before
@@ -10835,13 +11262,21 @@ async function loadInboxList(showAll = !!window._inboxShowAll) {
     const respBtn = e.target.closest('[data-inbox-respond]');
     if (respBtn) {
       const entryId = respBtn.dataset.inboxRespond;
-      toggleInboxRespondForm(entryId);
+      if (typeof runWithWriteAuth === 'function') {
+        runWithWriteAuth(() => toggleInboxRespondForm(entryId), { reason: 'inbox-respond' });
+      } else {
+        toggleInboxRespondForm(entryId);
+      }
       return;
     }
     const retryBtn = e.target.closest('[data-inbox-retry]');
     if (retryBtn) {
       const entryId = retryBtn.dataset.inboxRetry;
-      retryFailedInboxEntry(entryId, retryBtn);
+      if (typeof runWithWriteAuth === 'function') {
+        runWithWriteAuth(() => retryFailedInboxEntry(entryId, retryBtn), { reason: 'inbox-retry' });
+      } else {
+        retryFailedInboxEntry(entryId, retryBtn);
+      }
     }
   };
 }
@@ -11080,6 +11515,9 @@ async function syncInboxIndexPatch(entryId, patch, commitMsg, fallbackEntry) {
       return updated;
     } catch (e) {
       lastErr = e;
+      if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled || e.code === 'AUTH_MID_SEQUENCE' || e.authMidSequence)) {
+        throw e;
+      }
     }
   }
   throw lastErr || new Error('index update failed');
@@ -11226,6 +11664,11 @@ async function submitInboxResponse(entryId) {
   const photoBtn = $('#respond-photo-btn-' + entryId);
   const textEl = $('#respond-text-' + entryId);
 
+  if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+    try { await requireAuthForWrite({ reason: 'inbox-respond' }); }
+    catch (e) { if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return; throw e; }
+  }
+
   // Step 8 recovery path: if Step 6 already succeeded and the user tapped
   // "Retry", redo ONLY Step 7 (index update).
   if (_respondState.savedPatch) {
@@ -11280,93 +11723,100 @@ async function submitInboxResponse(entryId) {
     entry = Object.assign({}, _respondState.row, { id: entryId });
   }
 
-  // Step 3: upload any attached photos sequentially BEFORE mutating entry
-  const existingImgs = inboxEntryImages(entry);
-  const newPaths = [];
-  try {
-    for (let i = 0; i < attached.length; i++) {
-      if (st) st.textContent = 'Uploading photo ' + (i + 1) + ' of ' + attached.length + '…';
-      const num = existingImgs.length + i + 1;
-      const ext = (attached[i].ext || 'jpg').toLowerCase();
-      const rPath = 'data/inbox/' + entryId + '-r' + num + '.' + ext;
-      await bridgeSave(rPath, String(attached[i].b64).replace(/\s+/g, ''),
-        'Log response photo ' + entryId + ' (-r' + num + ')', 'base64');
-      newPaths.push(rPath);
+  const runSeq = async () => {
+    // Step 3: upload any attached photos sequentially BEFORE mutating entry
+    const existingImgs = inboxEntryImages(entry);
+    const newPaths = [];
+    try {
+      for (let i = 0; i < attached.length; i++) {
+        if (st) st.textContent = 'Uploading photo ' + (i + 1) + ' of ' + attached.length + '…';
+        const num = existingImgs.length + i + 1;
+        const ext = (attached[i].ext || 'jpg').toLowerCase();
+        const rPath = 'data/inbox/' + entryId + '-r' + num + '.' + ext;
+        await bridgeSave(rPath, String(attached[i].b64).replace(/\s+/g, ''),
+          'Log response photo ' + entryId + ' (-r' + num + ')', 'base64');
+        newPaths.push(rPath);
+      }
+    } catch (e) {
+      if (sendBtn) sendBtn.disabled = false;
+      if (cancelBtn) cancelBtn.disabled = false;
+      if (photoBtn) photoBtn.disabled = false;
+      if (st) {
+        st.className = 'form-status error';
+        st.textContent = 'Photo upload failed: ' + (e.message || e);
+      }
+      return;
     }
-  } catch (e) {
-    if (sendBtn) sendBtn.disabled = false;
-    if (cancelBtn) cancelBtn.disabled = false;
-    if (photoBtn) photoBtn.disabled = false;
-    if (st) {
-      st.className = 'form-status error';
-      st.textContent = 'Photo upload failed: ' + (e.message || e);
+
+    if (newPaths.length) {
+      const combined = existingImgs.concat(newPaths);
+      entry.images = combined;
+      if (!entry.image) entry.image = combined[0];
     }
-    return;
-  }
 
-  if (newPaths.length) {
-    const combined = existingImgs.concat(newPaths);
-    entry.images = combined;
-    if (!entry.image) entry.image = combined[0];
-  }
+    // Step 4 & 5: compose note addition and clear needs/fail_reason, set status='pending'
+    entry.note = composeInboxAnswerNote(entry.note, editorName, answerText, formatInboxAnswerDate(new Date()));
+    entry.needs = null;
+    entry.fail_reason = null;
+    entry.status = 'pending';
 
-  // Step 4 & 5: compose note addition and clear needs/fail_reason, set status='pending'
-  entry.note = composeInboxAnswerNote(entry.note, editorName, answerText, formatInboxAnswerDate(new Date()));
-  entry.needs = null;
-  entry.fail_reason = null;
-  entry.status = 'pending';
-
-  // Step 6: bridgeSave the entry file
-  if (st) st.textContent = 'Saving answer…';
-  try {
-    await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Log response ' + entryId);
-  } catch (e) {
-    if (sendBtn) sendBtn.disabled = false;
-    if (cancelBtn) cancelBtn.disabled = false;
-    if (photoBtn) photoBtn.disabled = false;
-    if (st) {
-      st.className = 'form-status error';
-      st.textContent = 'Could not save response: ' + (e.message || e);
+    // Step 6: bridgeSave the entry file
+    if (st) st.textContent = 'Saving answer…';
+    try {
+      await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Log response ' + entryId);
+    } catch (e) {
+      if (sendBtn) sendBtn.disabled = false;
+      if (cancelBtn) cancelBtn.disabled = false;
+      if (photoBtn) photoBtn.disabled = false;
+      if (st) {
+        st.className = 'form-status error';
+        st.textContent = 'Could not save response: ' + (e.message || e);
+      }
+      return;
     }
-    return;
-  }
 
-  // Step 7 & 8: re-fetch and patch data/inbox/index.json (with 1 automatic retry)
-  const patch = {
-    note: entry.note,
-    needs: null,
-    fail_reason: null,
-    status: 'pending'
+    // Step 7 & 8: re-fetch and patch data/inbox/index.json (with 1 automatic retry)
+    const patch = {
+      note: entry.note,
+      needs: null,
+      fail_reason: null,
+      status: 'pending'
+    };
+    if (entry.image) patch.image = entry.image;
+    if (Array.isArray(entry.images) && entry.images.length) patch.images = entry.images;
+
+    if (st) st.textContent = 'Updating inbox list…';
+    try {
+      await syncInboxIndexPatch(entryId, patch, 'Log response index ' + entryId, entry);
+    } catch (e) {
+      _respondState.savedPatch = patch;
+      _respondState.savedEntry = entry;
+      if (textEl) textEl.disabled = true;
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Retry'; }
+      if (cancelBtn) cancelBtn.disabled = false;
+      if (st) {
+        st.className = 'form-status error';
+        st.textContent = 'Your answer was saved to the entry, but updating the list failed (' + (e.message || e) + '). Tap Retry to finish re-queuing it.';
+      }
+      return;
+    }
+
+    // Step 9: success
+    closeInboxRespondForm();
+    toast('Answer sent — it’ll be picked up within about 30 minutes.');
+    await loadInboxList(!!window._inboxShowAll);
   };
-  if (entry.image) patch.image = entry.image;
-  if (Array.isArray(entry.images) && entry.images.length) patch.images = entry.images;
-
-  if (st) st.textContent = 'Updating inbox list…';
-  try {
-    await syncInboxIndexPatch(entryId, patch, 'Log response index ' + entryId, entry);
-  } catch (e) {
-    _respondState.savedPatch = patch;
-    _respondState.savedEntry = entry;
-    if (textEl) textEl.disabled = true;
-    if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Retry'; }
-    if (cancelBtn) cancelBtn.disabled = false;
-    if (st) {
-      st.className = 'form-status error';
-      st.textContent = 'Your answer was saved to the entry, but updating the list failed (' + (e.message || e) + '). Tap Retry to finish re-queuing it.';
-    }
-    return;
-  }
-
-  // Step 9: success
-  closeInboxRespondForm();
-  toast('Answer sent — it’ll be picked up within about 30 minutes.');
-  await loadInboxList(!!window._inboxShowAll);
+  await (typeof withMultiStepWrite === 'function' ? withMultiStepWrite(runSeq) : runSeq());
 }
 
 const _retryPendingIndexPatches = {};
 
 async function retryFailedInboxEntry(entryId, btnEl) {
   if (!entryId) return;
+  if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+    try { await requireAuthForWrite({ reason: 'inbox-retry' }); }
+    catch (e) { if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return; throw e; }
+  }
   const stEl = $('#retry-status-' + entryId);
   const row = (window._inboxRowsById || {})[entryId] || { id: entryId };
   if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Retrying…'; }
@@ -11374,44 +11824,47 @@ async function retryFailedInboxEntry(entryId, btnEl) {
 
   const patch = { status: 'pending', fail_reason: null, needs: null };
 
-  // Step 6 equivalent: update the entry file unless already saved on a prior attempt
-  if (!_retryPendingIndexPatches[entryId]) {
-    let entry = null;
-    try {
-      const fetched = await fetchLiveInboxJson('data/inbox/' + entryId + '.json');
-      if (fetched && typeof fetched === 'object' && fetched.id) {
-        entry = Object.assign({}, row, fetched);
+  const runRetry = async () => {
+    // Step 6 equivalent: update the entry file unless already saved on a prior attempt
+    if (!_retryPendingIndexPatches[entryId]) {
+      let entry = null;
+      try {
+        const fetched = await fetchLiveInboxJson('data/inbox/' + entryId + '.json');
+        if (fetched && typeof fetched === 'object' && fetched.id) {
+          entry = Object.assign({}, row, fetched);
+        }
+      } catch (e) { /* synthesize below */ }
+      if (!entry) {
+        entry = Object.assign({}, row, { id: entryId });
       }
-    } catch (e) { /* synthesize below */ }
-    if (!entry) {
-      entry = Object.assign({}, row, { id: entryId });
+      entry.status = 'pending';
+      entry.fail_reason = null;
+      entry.needs = null;
+      try {
+        await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Retry inbox ' + entryId);
+        _retryPendingIndexPatches[entryId] = entry;
+      } catch (e) {
+        if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Retry'; }
+        if (stEl) { stEl.style.color = 'var(--danger)'; stEl.textContent = 'Retry failed: ' + (e.message || e); }
+        return;
+      }
     }
-    entry.status = 'pending';
-    entry.fail_reason = null;
-    entry.needs = null;
+
+    // Step 7 equivalent: update data/inbox/index.json (with 1 auto-retry)
     try {
-      await bridgeSave('data/inbox/' + entryId + '.json', JSON.stringify(entry, null, 2), 'Retry inbox ' + entryId);
-      _retryPendingIndexPatches[entryId] = entry;
+      await syncInboxIndexPatch(entryId, patch, 'Retry inbox index ' + entryId, _retryPendingIndexPatches[entryId]);
+      delete _retryPendingIndexPatches[entryId];
+      toast('Re-queued — it’ll be retried within about 30 minutes.');
+      await loadInboxList(!!window._inboxShowAll);
     } catch (e) {
       if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Retry'; }
-      if (stEl) { stEl.style.color = 'var(--danger)'; stEl.textContent = 'Retry failed: ' + (e.message || e); }
-      return;
+      if (stEl) {
+        stEl.style.color = 'var(--danger)';
+        stEl.textContent = 'Entry reset, but list update failed — tap Retry again.';
+      }
     }
-  }
-
-  // Step 7 equivalent: update data/inbox/index.json (with 1 auto-retry)
-  try {
-    await syncInboxIndexPatch(entryId, patch, 'Retry inbox index ' + entryId, _retryPendingIndexPatches[entryId]);
-    delete _retryPendingIndexPatches[entryId];
-    toast('Re-queued — it’ll be retried within about 30 minutes.');
-    await loadInboxList(!!window._inboxShowAll);
-  } catch (e) {
-    if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Retry'; }
-    if (stEl) {
-      stEl.style.color = 'var(--danger)';
-      stEl.textContent = 'Entry reset, but list update failed — tap Retry again.';
-    }
-  }
+  };
+  await (typeof withMultiStepWrite === 'function' ? withMultiStepWrite(runRetry) : runRetry());
 }
 
 async function sendSubmission() {
@@ -11427,51 +11880,58 @@ async function sendSubmission() {
     st.textContent = 'Add a link, a photo, a PDF, recipe text, or a combination.';
     return;
   }
+  if (typeof requireAuthForWrite === 'function' && (typeof isSignedInForWrite !== 'function' || !isSignedInForWrite())) {
+    try { await requireAuthForWrite({ reason: 'submit' }); }
+    catch (e) { if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) return; throw e; }
+  }
   if (sendBtn) sendBtn.disabled = true;
   st.className = 'form-status';
   st.textContent = 'Submitting…';
   const id = 'inbox-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e4).toString(36);
   try {
-    const imagePaths = [];
-    for (let i = 0; i < photos.length; i++) {
-      st.textContent = 'Submitting photo ' + (i + 1) + ' of ' + photos.length + '…';
-      const ext = (photos[i].ext || 'jpg').toLowerCase();
-      const pPath = i === 0
-        ? ('data/inbox/' + id + '.' + ext)
-        : ('data/inbox/' + id + '-p' + (i + 1) + '.' + ext);
-      await ghPutB64(pPath, photos[i].b64,
-        'Inbox photo ' + id + (photos.length > 1 ? ' (' + (i + 1) + '/' + photos.length + ')' : ''));
-      imagePaths.push(pPath);
-    }
-    // PDF upload: store as-is (no resizing), checker extracts text + renders pages.
-    let pdfPath = null;
-    if (pdfFile) {
-      st.textContent = 'Submitting…';
-      if (!pdfFile.size) throw new Error('That PDF didn\u2019t come through — try selecting it again.');
-      const pdfB64 = String(await readAsDataURL(pdfFile)).split(',')[1];
-      if (!pdfB64) throw new Error('Could not read that PDF — try downloading it first.');
-      pdfPath = 'data/inbox/' + id + '.pdf';
-      await ghPutB64(pdfPath, pdfB64, 'Inbox PDF ' + id);
-    }
-    if (photos.length) st.textContent = 'Submitting…';
-    const entry = {
-      id,
-      url: url || null,
-      image: imagePaths[0] || null,
-      images: imagePaths.length ? imagePaths : null,
-      file: pdfPath,
-      note: note || null,
-      text: text || null,
-      status: 'pending',
-      created_at: new Date().toISOString(),
-      recipe_id: null,
-      fail_reason: null
+    const runSub = async () => {
+      const imagePaths = [];
+      for (let i = 0; i < photos.length; i++) {
+        st.textContent = 'Submitting photo ' + (i + 1) + ' of ' + photos.length + '…';
+        const ext = (photos[i].ext || 'jpg').toLowerCase();
+        const pPath = i === 0
+          ? ('data/inbox/' + id + '.' + ext)
+          : ('data/inbox/' + id + '-p' + (i + 1) + '.' + ext);
+        await ghPutB64(pPath, photos[i].b64,
+          'Inbox photo ' + id + (photos.length > 1 ? ' (' + (i + 1) + '/' + photos.length + ')' : ''));
+        imagePaths.push(pPath);
+      }
+      // PDF upload: store as-is (no resizing), checker extracts text + renders pages.
+      let pdfPath = null;
+      if (pdfFile) {
+        st.textContent = 'Submitting…';
+        if (!pdfFile.size) throw new Error('That PDF didn\u2019t come through — try selecting it again.');
+        const pdfB64 = String(await readAsDataURL(pdfFile)).split(',')[1];
+        if (!pdfB64) throw new Error('Could not read that PDF — try downloading it first.');
+        pdfPath = 'data/inbox/' + id + '.pdf';
+        await ghPutB64(pdfPath, pdfB64, 'Inbox PDF ' + id);
+      }
+      if (photos.length) st.textContent = 'Submitting…';
+      const entry = {
+        id,
+        url: url || null,
+        image: imagePaths[0] || null,
+        images: imagePaths.length ? imagePaths : null,
+        file: pdfPath,
+        note: note || null,
+        text: text || null,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        recipe_id: null,
+        fail_reason: null
+      };
+      await ghPut('data/inbox/' + id + '.json', JSON.stringify(entry, null, 2), 'Inbox submission ' + id);
+      let idx = [];
+      try { idx = JSON.parse((await ghGet('data/inbox/index.json')).text); } catch (e) { idx = []; }
+      idx.push(entry);
+      await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2), 'Inbox index ' + id);
     };
-    await ghPut('data/inbox/' + id + '.json', JSON.stringify(entry, null, 2), 'Inbox submission ' + id);
-    let idx = [];
-    try { idx = JSON.parse((await ghGet('data/inbox/index.json')).text); } catch (e) { idx = []; }
-    idx.push(entry);
-    await ghPut('data/inbox/index.json', JSON.stringify(idx, null, 2), 'Inbox index ' + id);
+    await (typeof withMultiStepWrite === 'function' ? withMultiStepWrite(runSub) : runSub());
     // The bridge throws on HTTP errors, so reaching here means the uploads succeeded.
     // No additional verification needed — GitHub Pages cache would give false negatives.
     st.className = 'form-status ok';
@@ -11488,6 +11948,11 @@ async function sendSubmission() {
     loadInboxList();
   } catch (e) {
     if (sendBtn) sendBtn.disabled = false;
+    if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(e)) {
+      st.className = 'form-status';
+      st.textContent = '';
+      return;
+    }
     st.className = 'form-status error';
     st.textContent = e.message === 'key'
       ? 'Couldn\u2019t submit — editing isn\u2019t set up yet.'
@@ -11750,6 +12215,7 @@ function saveReceiptSession(sessionData, storageObj) {
       expires_at: sessionData.expires_at || 0
     }));
   } catch (e) {}
+  if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
 }
 
 function clearReceiptSession(storageObj) {
@@ -11757,9 +12223,10 @@ function clearReceiptSession(storageObj) {
   if (store) {
     try { store.removeItem(RECEIPTS_TOKEN_KEY); } catch (e) {}
   }
-  stopReceiptExtractPoll();
-  revokeReceiptObjectUrl();
-  clearStagedReceiptPhotos();
+  if (typeof stopReceiptExtractPoll === 'function') stopReceiptExtractPoll();
+  if (typeof revokeReceiptObjectUrl === 'function') revokeReceiptObjectUrl();
+  if (typeof clearStagedReceiptPhotos === 'function') clearStagedReceiptPhotos();
+  if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
 }
 
 function stopReceiptExtractPoll() {
@@ -12136,18 +12603,134 @@ async function handleGisCredentialResponse(resp) {
   }
 }
 
+/* Shared GIS initializer (button-only, NO One Tap / NO prompt()).
+   Initializes google.accounts.id once and dispatches credentials to whichever
+   flow is currently active ('receipts' unlock panel vs 'gate' sign-in modal). */
+let _gisInitialized = false;
+let _activeGisFlow = 'receipts';
+let _pendingAuthGate = null;
+
+function initGisOnce() {
+  if (_gisInitialized) return true;
+  if (typeof window === 'undefined' || !window.google || !window.google.accounts || !window.google.accounts.id) {
+    return false;
+  }
+  window.google.accounts.id.initialize({
+    client_id: RECEIPTS_GOOGLE_CLIENT_ID,
+    callback: handleSharedGisCredential
+  });
+  _gisInitialized = true;
+  return true;
+}
+
+async function handleSharedGisCredential(resp) {
+  if (_activeGisFlow === 'gate' && _pendingAuthGate) {
+    const st = $('#auth-modal-status');
+    if (!resp || !resp.credential) {
+      if (st) st.textContent = 'Sign-in did not return a credential.';
+      return;
+    }
+    if (st) st.textContent = 'Verifying sign-in…';
+    try {
+      const res = await fetch(BRIDGE + '/receipts/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_token: resp.credential })
+      });
+      if (!res.ok) {
+        if (st) st.textContent = 'This Google account isn\u2019t authorized to edit this recipe book.';
+        return;
+      }
+      const data = await res.json();
+      if (!data || !data.token) {
+        if (st) st.textContent = 'Could not start session — please try again.';
+        return;
+      }
+      saveReceiptSession(data);
+      const pending = _pendingAuthGate;
+      _pendingAuthGate = null;
+      _activeGisFlow = 'receipts';
+      const modalEl = $('#modal');
+      if (modalEl) modalEl.remove();
+      if (typeof toast === 'function') toast('Signed in as ' + (data.email || 'family editor'));
+      pending.resolve(data);
+    } catch (e) {
+      if (st) st.textContent = 'Sign-in failed — check your connection and try again.';
+    }
+    return;
+  }
+  return handleGisCredentialResponse(resp);
+}
+
+function openWriteAuthModal(opts) {
+  if (typeof document === 'undefined' || !document.body) return;
+  const existing = $('#modal');
+  if (existing) existing.remove();
+  _activeGisFlow = 'gate';
+  const expiredNote = opts && opts.reason === 'session_expired'
+    ? 'Your sign-in session expired. Sign in with your family Google account to finish saving.'
+    : 'Sign in with your family Google account to save changes. Browsing recipes never needs sign-in.';
+  const back = document.createElement('div');
+  back.id = 'modal';
+  back.className = 'modal-back';
+  back.innerHTML =
+    '<div class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">' +
+      '<h3 id="auth-modal-title">Sign in to edit</h3>' +
+      '<p class="muted">' + esc(expiredNote) + '</p>' +
+      '<div id="auth-modal-gis" class="auth-modal-gis"></div>' +
+      '<p id="auth-modal-status" class="auth-modal-status" role="status"></p>' +
+      '<div class="auth-modal-actions">' +
+        '<button type="button" class="btn secondary" id="auth-modal-cancel">Cancel</button>' +
+      '</div>' +
+    '</div>';
+  back.addEventListener('click', e => {
+    if (e.target === back) closeModal();
+  });
+  document.body.appendChild(back);
+  const cancelBtn = $('#auth-modal-cancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', () => closeModal());
+  loadGisScriptOnce()
+    .then(() => {
+      const slot = $('#auth-modal-gis');
+      if (!slot || !initGisOnce()) return;
+      _activeGisFlow = 'gate';
+      window.google.accounts.id.renderButton(slot, {
+        theme: 'outline',
+        size: 'large',
+        text: 'signin_with',
+        shape: 'pill'
+      });
+    })
+    .catch(() => {
+      const st = $('#auth-modal-status');
+      if (st) st.textContent = 'Sign in with Google could not load right now.';
+    });
+}
+
+function requireAuthForWrite(opts) {
+  const existingSession = typeof getValidReceiptSession === 'function' ? getValidReceiptSession() : null;
+  if (existingSession) return Promise.resolve(existingSession);
+  if (_pendingAuthGate) return _pendingAuthGate.promise;
+  let resolveFn, rejectFn;
+  const promise = new Promise((resolve, reject) => {
+    resolveFn = resolve;
+    rejectFn = reject;
+  });
+  _pendingAuthGate = { promise, resolve: resolveFn, reject: rejectFn };
+  openWriteAuthModal(opts || {});
+  return promise;
+}
+
 function renderReceiptsUnlockPanel(app) {
   if (!app) return;
   app.innerHTML = receiptsUnlockHTML();
   if (typeof document === 'undefined' || !document.head) return;
+  _activeGisFlow = 'receipts';
   loadGisScriptOnce()
     .then(() => {
       const slot = $('#rcpt-gis-btn');
-      if (!slot || !window.google || !window.google.accounts || !window.google.accounts.id) return;
-      window.google.accounts.id.initialize({
-        client_id: RECEIPTS_GOOGLE_CLIENT_ID,
-        callback: handleGisCredentialResponse
-      });
+      if (!slot || !initGisOnce()) return;
+      _activeGisFlow = 'receipts';
       window.google.accounts.id.renderButton(slot, {
         theme: 'outline',
         size: 'large',
@@ -15440,6 +16023,9 @@ function savePantry(mutator, message) {
           return _pantryCache;
         } catch (e) {
           lastErr = e;
+          if (e && (e.code === 'AUTH_CANCELLED' || e.authCancelled || e.code === 'AUTH_MID_SEQUENCE' || e.authMidSequence)) {
+            throw e;
+          }
         }
       }
       throw lastErr;
@@ -16173,11 +16759,15 @@ function pantryViewHTML(options) {
       '</details>'
     : '';
 
+  const unsignedCue = (typeof isSignedInForWrite === 'function' && !isSignedInForWrite()) ? ' needs-signin-cue' : '';
+  const editStrip = typeof unsignedEditStripHTML === 'function' ? unsignedEditStripHTML() : '';
+
   return (
     '<section class="page-head">' +
       '<h1>Pantry ' + helpLinkHTML('shopping-list') + '</h1>' +
       '<p class="muted">What\u2019s at home from verified receipts and manual entries. Cooking a planned dish deducts its ingredients automatically.</p>' +
     '</section>' +
+    editStrip +
     '<form class="pantry-add-form card no-print" id="pantry-add-form">' +
       '<div class="pantry-add-row">' +
         '<input type="text" id="pantry-add-name" placeholder="Ingredient (e.g. onion, olive oil)" aria-label="Ingredient name" required>' +
@@ -16189,7 +16779,7 @@ function pantryViewHTML(options) {
           '<option value="fridge">🧊 Fridge</option>' +
           '<option value="freezer">❄️ Freezer</option>' +
         '</select>' +
-        '<button type="submit" class="btn" id="pantry-add-btn">+ Add to pantry</button>' +
+        '<button type="submit" class="btn' + unsignedCue + '" id="pantry-add-btn">+ Add to pantry</button>' +
       '</div>' +
     '</form>' +
     searchBarHTML +
@@ -16240,6 +16830,19 @@ function renderPantry(app) {
 }
 
 function wirePantryEvents(app, rerender) {
+  const runAuthedPantry = (fn, onCancel) => {
+    if (typeof requireAuthForWrite !== 'function') return fn();
+    if (typeof isSignedInForWrite === 'function' && isSignedInForWrite()) return fn();
+    return requireAuthForWrite({ reason: 'pantry' }).then(() => {
+      if (typeof updateHeaderAuthUI === 'function') updateHeaderAuthUI();
+      return fn();
+    }).catch(err => {
+      if (typeof onCancel === 'function') onCancel();
+      if (typeof isAuthCancelledError === 'function' && isAuthCancelledError(err)) return;
+      throw err;
+    });
+  };
+
   const form = $('#pantry-add-form', app);
   if (form && typeof form.addEventListener === 'function') {
     form.addEventListener('submit', e => {
@@ -16253,8 +16856,10 @@ function wirePantryEvents(app, rerender) {
       const unit = (unitIn && unitIn.value.trim()) ? unitIn.value.trim() : 'unit';
       const storage = (storageIn && storageIn.value) ? storageIn.value : undefined;
       if (!name || !Number.isFinite(qty) || qty <= 0) return;
-      setPantryManualStock(name, qty, unit, { storage, source: 'manual' }).catch(() => {});
-      rerender();
+      runAuthedPantry(() => {
+        setPantryManualStock(name, qty, unit, { storage, source: 'manual' }).catch(() => {});
+        rerender();
+      });
     });
   }
 
@@ -16278,15 +16883,19 @@ function wirePantryEvents(app, rerender) {
       }
       const remBtn = e.target.closest('[data-pantry-remove]');
       if (remBtn) {
-        _pantryConfirmRemoveKey = remBtn.dataset.pantryRemove;
-        renderPantry(app);
+        runAuthedPantry(() => {
+          _pantryConfirmRemoveKey = remBtn.dataset.pantryRemove;
+          renderPantry(app);
+        });
         return;
       }
       const remYesBtn = e.target.closest('[data-pantry-remove-confirm]');
       if (remYesBtn) {
-        _pantryConfirmRemoveKey = null;
-        removePantryEntry(remYesBtn.dataset.pantryRemoveConfirm).catch(() => {});
-        renderPantry(app);
+        runAuthedPantry(() => {
+          _pantryConfirmRemoveKey = null;
+          removePantryEntry(remYesBtn.dataset.pantryRemoveConfirm).catch(() => {});
+          renderPantry(app);
+        });
         return;
       }
       const remNoBtn = e.target.closest('[data-pantry-remove-cancel]');
@@ -16298,21 +16907,27 @@ function wirePantryEvents(app, rerender) {
       const sgBtn = e.target.closest('[data-pantry-stillgood]');
       if (sgBtn) {
         const [bk, lotId] = sgBtn.dataset.pantryStillgood.split('|');
-        overridePantryLotStillGood(bk, lotId).catch(() => {});
-        renderPantry(app);
+        runAuthedPantry(() => {
+          overridePantryLotStillGood(bk, lotId).catch(() => {});
+          renderPantry(app);
+        });
         return;
       }
       const finishedBtn = e.target.closest('[data-pantry-finished]');
       if (finishedBtn) {
-        _pantryConfirmFinishedKey = finishedBtn.dataset.pantryFinished;
-        renderPantry(app);
+        runAuthedPantry(() => {
+          _pantryConfirmFinishedKey = finishedBtn.dataset.pantryFinished;
+          renderPantry(app);
+        });
         return;
       }
       const finYesBtn = e.target.closest('[data-pantry-finished-confirm]');
       if (finYesBtn) {
-        _pantryConfirmFinishedKey = null;
-        removePantryEntry(finYesBtn.dataset.pantryFinishedConfirm).catch(() => {});
-        renderPantry(app);
+        runAuthedPantry(() => {
+          _pantryConfirmFinishedKey = null;
+          removePantryEntry(finYesBtn.dataset.pantryFinishedConfirm).catch(() => {});
+          renderPantry(app);
+        });
         return;
       }
       const finNoBtn = e.target.closest('[data-pantry-finished-cancel]');
@@ -16323,8 +16938,11 @@ function wirePantryEvents(app, rerender) {
       }
       const editTotalBtn = e.target.closest('[data-pantry-edit-total]');
       if (editTotalBtn) {
-        _pantryEditingTotalKey = editTotalBtn.dataset.pantryEditTotal;
-        renderPantry(app);
+        const key = editTotalBtn.dataset.pantryEditTotal;
+        runAuthedPantry(() => {
+          _pantryEditingTotalKey = key;
+          renderPantry(app);
+        });
         return;
       }
       const cancelTotalBtn = e.target.closest('[data-pantry-total-cancel]');
@@ -16339,25 +16957,30 @@ function wirePantryEvents(app, rerender) {
         const inp = app.querySelector('[data-pantry-total-in="' + bk.replace(/"/g, '\\"') + '"]');
         const val = inp ? parseFloat(inp.value) : NaN;
         if (Number.isFinite(val) && val >= 0) {
-          const entry = _pantryCache[bk];
-          const unitForTotal = (entry && entry.unit) || (entry && Array.isArray(entry.lots) && entry.lots[0] && entry.lots[0].unit) || 'unit';
-          const storedTotal = pantryUsableToStoredQty(bk, val, unitForTotal);
-          const res = setPantryTotalQty(_pantryCache, bk, storedTotal);
-          if (res.ok) {
-            _pantryEditingTotalKey = null;
-            savePantryLocal();
-            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-            savePantry(merged => { merged[bk] = snap; }, 'Update pantry total: ' + bk).catch(() => {});
-            flashPantryLotSaved('total|' + bk, () => renderPantry(app));
-            renderPantry(app);
-          }
+          runAuthedPantry(() => {
+            const entry = _pantryCache[bk];
+            const unitForTotal = (entry && entry.unit) || (entry && Array.isArray(entry.lots) && entry.lots[0] && entry.lots[0].unit) || 'unit';
+            const storedTotal = pantryUsableToStoredQty(bk, val, unitForTotal);
+            const res = setPantryTotalQty(_pantryCache, bk, storedTotal);
+            if (res.ok) {
+              _pantryEditingTotalKey = null;
+              savePantryLocal();
+              const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+              savePantry(merged => { merged[bk] = snap; }, 'Update pantry total: ' + bk).catch(() => {});
+              flashPantryLotSaved('total|' + bk, () => renderPantry(app));
+              renderPantry(app);
+            }
+          });
         }
         return;
       }
       const editQtyBtn = e.target.closest('[data-pantry-edit-qty]');
       if (editQtyBtn) {
-        _pantryEditingLotKey = editQtyBtn.dataset.pantryEditQty;
-        renderPantry(app);
+        const key = editQtyBtn.dataset.pantryEditQty;
+        runAuthedPantry(() => {
+          _pantryEditingLotKey = key;
+          renderPantry(app);
+        });
         return;
       }
       const cancelQtyBtn = e.target.closest('[data-pantry-qty-cancel]');
@@ -16373,25 +16996,30 @@ function wirePantryEvents(app, rerender) {
         const inp = app.querySelector('[data-pantry-qty-in="' + keyPair.replace(/"/g, '\\"') + '"]');
         const val = inp ? parseFloat(inp.value) : NaN;
         if (Number.isFinite(val) && val >= 0) {
-          const entry = _pantryCache[bk];
-          const lot = entry && Array.isArray(entry.lots) ? entry.lots.find(l => l && l.lotId === lotId) : null;
-          const storedVal = lot ? pantryUsableToStoredQty(bk, val, lot.unit) : val;
-          const res = setPantryLotQty(_pantryCache, bk, lotId, storedVal);
-          if (res.ok) {
-            _pantryEditingLotKey = null;
-            savePantryLocal();
-            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-            savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot quantity: ' + bk).catch(() => {});
-            flashPantryLotSaved(keyPair, () => renderPantry(app));
-            renderPantry(app);
-          }
+          runAuthedPantry(() => {
+            const entry = _pantryCache[bk];
+            const lot = entry && Array.isArray(entry.lots) ? entry.lots.find(l => l && l.lotId === lotId) : null;
+            const storedVal = lot ? pantryUsableToStoredQty(bk, val, lot.unit) : val;
+            const res = setPantryLotQty(_pantryCache, bk, lotId, storedVal);
+            if (res.ok) {
+              _pantryEditingLotKey = null;
+              savePantryLocal();
+              const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+              savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot quantity: ' + bk).catch(() => {});
+              flashPantryLotSaved(keyPair, () => renderPantry(app));
+              renderPantry(app);
+            }
+          });
         }
         return;
       }
       const editExpiryBtn = e.target.closest('[data-pantry-edit-expiry]');
       if (editExpiryBtn) {
-        _pantryEditingExpiryKey = editExpiryBtn.dataset.pantryEditExpiry;
-        renderPantry(app);
+        const key = editExpiryBtn.dataset.pantryEditExpiry;
+        runAuthedPantry(() => {
+          _pantryEditingExpiryKey = key;
+          renderPantry(app);
+        });
         return;
       }
       const cancelExpiryBtn = e.target.closest('[data-pantry-expiry-cancel]');
@@ -16406,59 +17034,67 @@ function wirePantryEvents(app, rerender) {
         const [bk, lotId] = keyPair.split('|');
         const inp = app.querySelector('[data-pantry-expiry-in="' + keyPair.replace(/"/g, '\\"') + '"]');
         const val = inp && inp.value ? inp.value.trim() : null;
-        const res = setPantryLotExpiry(_pantryCache, bk, lotId, val);
-        if (res.ok) {
-          _pantryEditingExpiryKey = null;
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot expiry: ' + bk).catch(() => {});
-          flashPantryLotSaved(keyPair, () => renderPantry(app));
-          renderPantry(app);
-        }
+        runAuthedPantry(() => {
+          const res = setPantryLotExpiry(_pantryCache, bk, lotId, val);
+          if (res.ok) {
+            _pantryEditingExpiryKey = null;
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot expiry: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        });
         return;
       }
       const autoExpiryBtn = e.target.closest('[data-pantry-expiry-auto]');
       if (autoExpiryBtn) {
         const keyPair = autoExpiryBtn.dataset.pantryExpiryAuto;
         const [bk, lotId] = keyPair.split('|');
-        const res = setPantryLotExpiry(_pantryCache, bk, lotId, null);
-        if (res.ok) {
-          _pantryEditingExpiryKey = null;
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Reset pantry lot expiry to auto: ' + bk).catch(() => {});
-          flashPantryLotSaved(keyPair, () => renderPantry(app));
-          renderPantry(app);
-        }
+        runAuthedPantry(() => {
+          const res = setPantryLotExpiry(_pantryCache, bk, lotId, null);
+          if (res.ok) {
+            _pantryEditingExpiryKey = null;
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Reset pantry lot expiry to auto: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        });
         return;
       }
       const markOpenedBtn = e.target.closest('[data-pantry-mark-opened]');
       if (markOpenedBtn) {
         const keyPair = markOpenedBtn.dataset.pantryMarkOpened;
         const [bk, lotId] = keyPair.split('|');
-        const today = todayPantryYmd();
-        const res = setPantryLotOpened(_pantryCache, bk, lotId, today, today);
-        if (res.ok) {
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Mark pantry lot opened: ' + bk).catch(() => {});
-          flashPantryLotSaved(keyPair, () => renderPantry(app));
-          renderPantry(app);
-        }
+        runAuthedPantry(() => {
+          const today = todayPantryYmd();
+          const res = setPantryLotOpened(_pantryCache, bk, lotId, today, today);
+          if (res.ok) {
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Mark pantry lot opened: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        });
         return;
       }
       const unmarkOpenedBtn = e.target.closest('[data-pantry-unmark-opened]');
       if (unmarkOpenedBtn) {
         const keyPair = unmarkOpenedBtn.dataset.pantryUnmarkOpened;
         const [bk, lotId] = keyPair.split('|');
-        const res = setPantryLotOpened(_pantryCache, bk, lotId, null);
-        if (res.ok) {
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Unmark pantry lot opened: ' + bk).catch(() => {});
-          flashPantryLotSaved(keyPair, () => renderPantry(app));
-          renderPantry(app);
-        }
+        runAuthedPantry(() => {
+          const res = setPantryLotOpened(_pantryCache, bk, lotId, null);
+          if (res.ok) {
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Unmark pantry lot opened: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        });
         return;
       }
       const confBtn = e.target.closest('[data-pantry-confirm-btn]');
@@ -16468,17 +17104,19 @@ function wirePantryEvents(app, rerender) {
         const inp = app.querySelector('[data-pantry-confirm-in="' + keyPair.replace(/"/g, '\\"') + '"]');
         const val = inp ? parseFloat(inp.value) : NaN;
         if (Number.isFinite(val) && val >= 0) {
-          const entry = _pantryCache[bk];
-          const lot = entry && Array.isArray(entry.lots) ? entry.lots.find(l => l && l.lotId === lotId) : null;
-          const storedVal = lot ? pantryUsableToStoredQty(bk, val, lot.unit) : val;
-          const res = setPantryLotQty(_pantryCache, bk, lotId, storedVal);
-          if (res.ok) {
-            savePantryLocal();
-            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-            savePantry(merged => { merged[bk] = snap; }, 'Confirm pantry quantity: ' + bk).catch(() => {});
-            flashPantryLotSaved(keyPair, () => renderPantry(app));
-            renderPantry(app);
-          }
+          runAuthedPantry(() => {
+            const entry = _pantryCache[bk];
+            const lot = entry && Array.isArray(entry.lots) ? entry.lots.find(l => l && l.lotId === lotId) : null;
+            const storedVal = lot ? pantryUsableToStoredQty(bk, val, lot.unit) : val;
+            const res = setPantryLotQty(_pantryCache, bk, lotId, storedVal);
+            if (res.ok) {
+              savePantryLocal();
+              const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+              savePantry(merged => { merged[bk] = snap; }, 'Confirm pantry quantity: ' + bk).catch(() => {});
+              flashPantryLotSaved(keyPair, () => renderPantry(app));
+              renderPantry(app);
+            }
+          });
         }
         return;
       }
@@ -16489,8 +17127,11 @@ function wirePantryEvents(app, rerender) {
       const stSel = e.target.closest('[data-pantry-storage]');
       if (stSel) {
         const [bk, lotId] = stSel.dataset.pantryStorage.split('|');
-        switchPantryLotStorage(bk, lotId, stSel.value).catch(() => {});
-        renderPantry(app);
+        const nextStorage = stSel.value;
+        runAuthedPantry(() => {
+          switchPantryLotStorage(bk, lotId, nextStorage).catch(() => {});
+          renderPantry(app);
+        }, () => renderPantry(app));
         return;
       }
       const openedDateIn = e.target.closest('[data-pantry-opened-date]');
@@ -16498,14 +17139,16 @@ function wirePantryEvents(app, rerender) {
         const keyPair = openedDateIn.dataset.pantryOpenedDate;
         const [bk, lotId] = keyPair.split('|');
         const newDate = openedDateIn.value ? openedDateIn.value.trim() : null;
-        const res = setPantryLotOpened(_pantryCache, bk, lotId, newDate);
-        if (res.ok) {
-          savePantryLocal();
-          const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
-          savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot opened date: ' + bk).catch(() => {});
-          flashPantryLotSaved(keyPair, () => renderPantry(app));
-          renderPantry(app);
-        }
+        runAuthedPantry(() => {
+          const res = setPantryLotOpened(_pantryCache, bk, lotId, newDate);
+          if (res.ok) {
+            savePantryLocal();
+            const snap = JSON.parse(JSON.stringify(_pantryCache[bk]));
+            savePantry(merged => { merged[bk] = snap; }, 'Update pantry lot opened date: ' + bk).catch(() => {});
+            flashPantryLotSaved(keyPair, () => renderPantry(app));
+            renderPantry(app);
+          }
+        }, () => renderPantry(app));
       }
     });
   }

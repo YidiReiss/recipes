@@ -12,12 +12,15 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="assets/images/icon-192.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b4552d'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23fff8f0' font-family='Georgia,serif'%3ER%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261124a">
+  <link rel="stylesheet" href="styles.css?v=20261125a">
 </head>
 <body>
   <header class="site-header no-print">
     <div class="header-inner">
-      <a class="site-title" href="#/">Reiss Family Recipes</a>
+      <div class="header-title-row">
+        <a class="site-title" href="#/">Reiss Family Recipes</a>
+        <span class="header-auth-slot no-print" id="header-auth-slot"></span>
+      </div>
       <nav class="main-nav" aria-label="Main">
         <a href="#/recipes" id="nav-recipes">Recipes</a>
         <a href="#/planner" id="nav-planner">Meal Planner</a>
@@ -37,7 +40,7 @@
     A private family collection &mdash; please don&rsquo;t share the link. &middot; <a class="footer-guide-link" href="#/guide" id="nav-guide">User guide</a>
   </footer>
 
-  <script src="app.js?v=20261124a"></script>
+  <script src="app.js?v=20261125a"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
