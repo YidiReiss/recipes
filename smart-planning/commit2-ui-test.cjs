@@ -5742,7 +5742,7 @@ async function main() {
       footerHtml43.includes('id="nav-guide"') &&
       footerHtml43.includes('href="#/guide"') &&
       SRC.includes('href="#/receipts" id="shop-history-link"') &&
-      /v=20261124[a-z]/.test(indexHtml43));
+      /v=20261125[a-z]/.test(indexHtml43));
 
     // 43(b) fmtPantryQty with digit-starting units ("3 pk", "6 oz")
     check('Section 43(b) (fmtPantryQty digit-starting units): fmtPantryQty(1, "3 pk") === "1 × 3 pk", fmtPantryQty(2, "6 oz") === "2 × 6 oz", fmtPantryQty(1.5, "lb") === "1½ lb"',
@@ -6267,7 +6267,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261124a',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261125a',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6275,8 +6275,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261124a') &&
-      indexHtml44.includes('app.js?v=20261124a'));
+      indexHtml44.includes('styles.css?v=20261125a') &&
+      indexHtml44.includes('app.js?v=20261125a'));
 
     // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
     // v20261120e, Section 47): button shows only while stock remains;
@@ -6633,8 +6633,8 @@ async function main() {
     const shellCacheMatch = swSrc49.match(/var\s+SHELL_CACHE\s*=\s*"reiss-recipes-shell-v([0-9a-z]+)"/);
     const dataCacheMatch = swSrc49.match(/var\s+DATA_CACHE\s*=\s*"(reiss-recipes-data-v\d+)"/);
     const verLabel49 = cssVerMatch ? cssVerMatch[1] : null;
-    check('Section 50(b) (index.html PWA tags & version-label parity): index.html has manifest, theme-color #b4552d, apple-touch-icon, Apple web-app tags, #b4552d SVG favicon, silent SW registration with updateViaCache:"none", no controllerchange reload, and matching v20261124a across index.html & sw.js',
-      verLabel49 === '20261124a' &&
+    check('Section 50(b) (index.html PWA tags & version-label parity): index.html has manifest, theme-color #b4552d, apple-touch-icon, Apple web-app tags, #b4552d SVG favicon, silent SW registration with updateViaCache:"none", no controllerchange reload, and matching v20261125a across index.html & sw.js',
+      verLabel49 === '20261125a' &&
       jsVerMatch && jsVerMatch[1] === verLabel49 &&
       shellCacheMatch && shellCacheMatch[1] === verLabel49 &&
       dataCacheMatch && dataCacheMatch[1] === 'reiss-recipes-data-v1' &&
@@ -6772,7 +6772,7 @@ async function main() {
     await sw49.dispatchLifecycle('install');
     await sw49.dispatchLifecycle('activate');
     const shellUrls49 = Array.from(sw49.sandbox.SHELL || []);
-    const shellStore49 = sw49.stores.get('reiss-recipes-shell-v20261124a');
+    const shellStore49 = sw49.stores.get('reiss-recipes-shell-v20261125a');
     const flags49 = sw49.getLifecycleFlags();
     check('Section 50(c) (SW lifecycle & two-cache separation): SHELL URLs strictly relative (no leading /), install precaches all 8 shell entries + calls skipWaiting, activate deletes old shell cache while keeping SHELL_CACHE and DATA_CACHE + calls clients.claim',
       shellUrls49.length === 8 &&
@@ -6875,9 +6875,9 @@ async function main() {
     const phOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-history' });
     const psOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/pantry-stock' });
     const img3Off49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/assets/images/chulent.jpg' });
-    const appExact49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=20261124a' });
+    const appExact49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=20261125a' });
     const appWrongVer49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=99999999z' });
-    check('Section 50(f) (allow-listed bridge GETs, static SWR & exact versioned shell match): /price-history and /pantry-stock cache cors 200 and serve offline; static images use SWR into DATA_CACHE; app.js?v=20261124a matches SHELL_CACHE strictly by version query',
+    check('Section 50(f) (allow-listed bridge GETs, static SWR & exact versioned shell match): /price-history and /pantry-stock cache cors 200 and serve offline; static images use SWR into DATA_CACHE; app.js?v=20261125a matches SHELL_CACHE strictly by version query',
       phOn49.intercepted && phOn49.response.status === 200 &&
       psOn49.intercepted && psOn49.response.status === 200 &&
       img1On49.intercepted && (await img1On49.response.text()) === 'jpg-v1' &&
@@ -6887,6 +6887,421 @@ async function main() {
       img3Off49.intercepted && (await img3Off49.response.text()) === 'jpg-v2' &&
       appExact49.intercepted && appExact49.response.status === 200 &&
       appWrongVer49.intercepted && appWrongVer49.response.status === 503);
+  }
+
+  /* ============ 51. Google-auth write gate (v20261125a) — site + worker ============ */
+  {
+    const vm = require('vm');
+    const { pathToFileURL } = require('url');
+    const indexHtml51 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
+    const workerSrc51 = fs.readFileSync(path.join(SITE_DIR, 'worker.js'), 'utf8');
+
+    // 51(a): Static & fetch-path audit — every write fetch routes through Bearer/backstop, no One Tap, single initGisOnce, RECEIPTS_TOKEN_KEY unchanged
+    const writeEndpointMatches51 = SRC.match(/fetch\([^)]*['"]\/(?:save|save-recipe|delete|price-check-flag)['"]/g) || [];
+    const writeHelperSlices51 = ['bridgeSave', 'bridgeSaveRecipe', 'bridgeDelete', 'triggerPriceCheckFlag']
+      .map(fnName => extract(fnName));
+    const allHelpersUseBackstop51 = writeHelperSlices51.every(code =>
+      code.includes('fetchWriteWithAuthBackstop') && code.includes('headers'));
+    const gisInitCount51 = (SRC.match(/google\.accounts\.id\.initialize\s*\(/g) || []).length;
+    const gisPromptCount51 = (SRC.match(/google\.accounts\.id\.prompt\s*\(/g) || []).length;
+
+    // Functional check: all 4 write helpers send Authorization: Bearer <token> when signed in
+    const bearerLog51 = [];
+    const authFetch51 = async (url, opts) => {
+      bearerLog51.push({ url, auth: opts && opts.headers && opts.headers.Authorization });
+      return {
+        ok: true,
+        status: 200,
+        async json() { return { ok: true, sha: 'abc123' }; },
+        async text() { return '{"ok":true}'; }
+      };
+    };
+    const writeEnv51 = vm.createContext({
+      BRIDGE: 'https://recipe-bridge.leibreiss.workers.dev',
+      fetch: authFetch51,
+      thisWeekKey: () => '2026-11-22',
+      getValidReceiptSession: () => ({ valid: true, token: 'tok-live-51', email: 'yidireiss@gmail.com', expires_at: 9999999999 }),
+      clearReceiptSession: () => {},
+      updateHeaderAuthUI: () => {},
+      requireAuthForWrite: async () => ({ token: 'tok-live-51' }),
+      console
+    });
+    vm.runInContext([
+      'let _multiStepWriteDepth = 0;',
+      extract('makeAuthCancelledError'),
+      extract('isAuthCancelledError'),
+      extract('makeAuthMidSequenceError'),
+      extract('isAuthMidSequenceError'),
+      extract('withMultiStepWrite'),
+      extract('buildWriteHeaders'),
+      extract('fetchWriteWithAuthBackstop'),
+      extract('bridgeSave'),
+      extract('bridgeSaveRecipe'),
+      extract('bridgeDelete'),
+      extract('triggerPriceCheckFlag')
+    ].join('\n'), writeEnv51);
+
+    await writeEnv51.bridgeSave('data/meal-plan.json', '{}', 'msg');
+    await writeEnv51.bridgeSaveRecipe('data/recipes/x.json', { id: 'x' }, 'site', 'edit', 'sha1', 'edit');
+    await writeEnv51.bridgeDelete('data/recipes/x.json', 'del');
+    await writeEnv51.triggerPriceCheckFlag('2026-11-22');
+
+    check('Section 51(a) (Write-path Bearer audit & GIS hygiene): all 4 write endpoints (/save, /save-recipe, /delete, /price-check-flag) route through fetchWriteWithAuthBackstop and send Authorization: Bearer <token>; RECEIPTS_TOKEN_KEY unchanged; zero One Tap prompt(); single initGisOnce',
+      writeEndpointMatches51.length === 4 &&
+      allHelpersUseBackstop51 &&
+      SRC.includes("const RECEIPTS_TOKEN_KEY = 'reiss_receipt_token';") &&
+      gisPromptCount51 === 0 &&
+      gisInitCount51 === 1 &&
+      bearerLog51.length === 4 &&
+      bearerLog51.every(r => r.auth === 'Bearer tok-live-51'));
+
+    // 51(b): Route-level gate for all 5 write-only routes (unsigned redirects home with notice; signed renders each route)
+    const writeRoutes51 = ['#/edit/chulent', '#/delete/chulent', '#/add', '#/submit', '#/planner/tune'];
+    let signedIn51 = false;
+    const routeCalls51 = [];
+    const routeToasts51 = [];
+    const fakeApp51 = { innerHTML: '' };
+    const stubEl51 = { classList: { toggle: () => {}, add: () => {}, remove: () => {} }, setAttribute: () => {} };
+    const routeEnv51 = vm.createContext({
+      $: (sel) => (sel === '#app' ? fakeApp51 : stubEl51),
+      $$: () => [],
+      document: { body: stubEl51, title: '' },
+      location: { hash: '' },
+      window: { scrollTo: () => {} },
+      closeModal: () => {},
+      updateHeaderAuthUI: () => {},
+      stopShopPoll: () => {},
+      startShopPoll: () => {},
+      stopInboxPoll: () => {},
+      startInboxPoll: () => {},
+      stopReceiptExtractPoll: () => {},
+      revokeReceiptObjectUrl: () => {},
+      exitCookMode: () => {},
+      refreshMealPlan: () => Promise.resolve(),
+      getValidReceiptSession: () => (signedIn51 ? { valid: true, token: 'tok', email: 'yidireiss@gmail.com' } : null),
+      toast: (m) => routeToasts51.push(m),
+      renderLanding: () => routeCalls51.push('landing'),
+      renderEdit: (a, id) => routeCalls51.push('edit:' + id),
+      renderDelete: (a, id) => routeCalls51.push('delete:' + id),
+      renderAdd: () => routeCalls51.push('add'),
+      renderSubmit: () => routeCalls51.push('submit'),
+      renderQuickSort: () => routeCalls51.push('tune'),
+      renderRecipes: () => routeCalls51.push('recipes'),
+      renderRecipe: () => routeCalls51.push('recipe'),
+      renderPlanner: () => routeCalls51.push('planner'),
+      renderShopping: () => routeCalls51.push('shopping'),
+      renderPantry: () => routeCalls51.push('pantry'),
+      renderReceiptsRoute: () => routeCalls51.push('receipts'),
+      renderGuide: () => routeCalls51.push('guide')
+    });
+    vm.runInContext([
+      extract('isSignedInForWrite'),
+      extract('isWriteOnlyHash'),
+      extract('route')
+    ].join('\n'), routeEnv51);
+
+    let unsignedAllRedirected51 = true;
+    for (const h of writeRoutes51) {
+      routeCalls51.length = 0;
+      routeToasts51.length = 0;
+      routeEnv51.location.hash = h;
+      routeEnv51.route();
+      if (routeEnv51.location.hash !== '#/' || !routeToasts51.includes('Sign in to edit') || routeCalls51[0] !== 'landing' || routeCalls51.length !== 1) {
+        unsignedAllRedirected51 = false;
+      }
+    }
+
+    signedIn51 = true;
+    const signedRendered51 = [];
+    for (const h of writeRoutes51) {
+      routeCalls51.length = 0;
+      routeToasts51.length = 0;
+      routeEnv51.location.hash = h;
+      routeEnv51.route();
+      signedRendered51.push({ hash: h, calls: routeCalls51.slice(), toasts: routeToasts51.slice() });
+    }
+    const signedAllAllowed51 =
+      signedRendered51[0].calls[0] === 'edit:chulent' &&
+      signedRendered51[1].calls[0] === 'delete:chulent' &&
+      signedRendered51[2].calls[0] === 'add' &&
+      signedRendered51[3].calls[0] === 'submit' &&
+      signedRendered51[4].calls[0] === 'tune' &&
+      signedRendered51.every(x => x.toasts.length === 0);
+
+    check('Section 51(b) (Route-level gate for all 5 write-only routes): unsigned redirects #/edit/*, #/delete/*, #/add, #/submit, #/planner/tune to #/ with "Sign in to edit" and renders landing; signed-in renders each route cleanly',
+      unsignedAllRedirected51 && signedAllAllowed51);
+
+    // 51(c): AUTH_CANCELLED bail in 3-attempt save loops, syncShop silent skip when unsigned, and 401 backstop (single retry vs multi-step abort vs 409/500 no-retry)
+    let mpAttempts51 = 0;
+    const mpEnv51 = vm.createContext({
+      mealPlan: { weeks: {} },
+      _shopDirtyGen: 0,
+      _shopDirty: false,
+      bridgeReadMealPlan: async () => ({ weeks: {} }),
+      mergeMealPlan: (a) => a,
+      saveShopLocal: () => {},
+      syncShopSoon: () => {},
+      ghPut: async () => { mpAttempts51++; const e = new Error('Sign-in cancelled'); e.code = 'AUTH_CANCELLED'; e.authCancelled = true; throw e; },
+      setTimeout
+    });
+    vm.runInContext(extract('attemptSaveMealPlan'), mpEnv51);
+    let mpErr51 = null;
+    try { await mpEnv51.attemptSaveMealPlan(null, 'test'); } catch (e) { mpErr51 = e; }
+
+    let pantryAttempts51 = 0;
+    const pantryEnv51 = vm.createContext({
+      _savePantryInFlight: 0,
+      _savePantryChain: Promise.resolve(),
+      _pantryCache: {},
+      bridgeReadPantry: async () => ({}),
+      mergePantryData: (a) => a,
+      normalizePantryData: (a) => a,
+      savePantryLocal: () => {},
+      ghPut: async () => { pantryAttempts51++; const e = new Error('Sign-in cancelled'); e.code = 'AUTH_CANCELLED'; e.authCancelled = true; throw e; },
+      setTimeout
+    });
+    vm.runInContext(extract('savePantry'), pantryEnv51);
+    let pantryErr51 = null;
+    try { await pantryEnv51.savePantry(null, 'test'); } catch (e) { pantryErr51 = e; }
+
+    let notesAttempts51 = 0;
+    const notesEnv51 = vm.createContext({
+      _saveStoreNotesInFlight: 0,
+      _saveStoreNotesChain: Promise.resolve(),
+      _storeNotesCache: {},
+      bridgeReadStoreNotes: async () => ({}),
+      mergeStoreNotes: (a) => a,
+      normalizeStoreNotes: (a) => a,
+      saveStoreNotesLocal: () => {},
+      ghPut: async () => { notesAttempts51++; const e = new Error('Sign-in cancelled'); e.code = 'AUTH_CANCELLED'; e.authCancelled = true; throw e; },
+      setTimeout
+    });
+    vm.runInContext(extract('saveStoreNotes'), notesEnv51);
+    let notesErr51 = null;
+    try { await notesEnv51.saveStoreNotes(null, 'test'); } catch (e) { notesErr51 = e; }
+
+    let syncShopSaved51 = 0;
+    let syncShopPrompted51 = 0;
+    const syncEnv51 = vm.createContext({
+      _shopSyncTimer: null,
+      _shopDirty: false,
+      navigator: { onLine: true },
+      location: { hash: '#/shopping' },
+      isSignedInForWrite: () => false,
+      requireAuthForWrite: async () => { syncShopPrompted51++; },
+      saveMealPlan: async () => { syncShopSaved51++; },
+      renderShopWrap: () => {}
+    });
+    vm.runInContext(extract('syncShop'), syncEnv51);
+    await syncEnv51.syncShop();
+
+    // Backstop behavior: 401 retries once; 409/500 never retry; multi-step 401 aborts with AUTH_MID_SEQUENCE
+    let bsSession51 = { valid: true, token: 'tok-old', email: 'yidireiss@gmail.com' };
+    let bsPrompts51 = 0;
+    let bsCleared51 = 0;
+    const bsEnv51 = vm.createContext({
+      getValidReceiptSession: () => bsSession51,
+      clearReceiptSession: () => { bsCleared51++; bsSession51 = null; },
+      updateHeaderAuthUI: () => {},
+      requireAuthForWrite: async () => { bsPrompts51++; bsSession51 = { valid: true, token: 'tok-new', email: 'yidireiss@gmail.com' }; return bsSession51; }
+    });
+    vm.runInContext([
+      'let _multiStepWriteDepth = 0;',
+      extract('makeAuthCancelledError'),
+      extract('isAuthCancelledError'),
+      extract('makeAuthMidSequenceError'),
+      extract('isAuthMidSequenceError'),
+      extract('withMultiStepWrite'),
+      extract('buildWriteHeaders'),
+      extract('fetchWriteWithAuthBackstop')
+    ].join('\n'), bsEnv51);
+
+    const singleCalls51 = [];
+    const res401Retry51 = await bsEnv51.fetchWriteWithAuthBackstop(async (hdrs) => {
+      singleCalls51.push(hdrs.Authorization);
+      return singleCalls51.length === 1 ? { status: 401, ok: false } : { status: 200, ok: true };
+    });
+
+    const promptsBefore409 = bsPrompts51;
+    const calls409 = [];
+    const res409 = await bsEnv51.fetchWriteWithAuthBackstop(async (hdrs) => {
+      calls409.push(hdrs.Authorization);
+      return { status: 409, ok: false };
+    });
+
+    const promptsBefore500 = bsPrompts51;
+    const calls500 = [];
+    const res500 = await bsEnv51.fetchWriteWithAuthBackstop(async (hdrs) => {
+      calls500.push(hdrs.Authorization);
+      return { status: 500, ok: false };
+    });
+
+    const promptsBeforeMulti = bsPrompts51;
+    let multiErr51 = null;
+    try {
+      await bsEnv51.withMultiStepWrite(async () => {
+        await bsEnv51.fetchWriteWithAuthBackstop(async () => ({ status: 401, ok: false }));
+      });
+    } catch (e) { multiErr51 = e; }
+
+    check('Section 51(c) (AUTH_CANCELLED loop bail, silent unsigned syncShop, 401 backstop): 3-attempt save loops bail on attempt 1 on AUTH_CANCELLED; syncShop skips silently when unsigned leaving _shopDirty=true; 401 retries once with fresh Bearer, 409/500 never prompt, multi-step 401 aborts with AUTH_MID_SEQUENCE',
+      mpAttempts51 === 1 && mpErr51 && mpErr51.code === 'AUTH_CANCELLED' &&
+      pantryAttempts51 === 1 && pantryErr51 && pantryErr51.code === 'AUTH_CANCELLED' &&
+      notesAttempts51 === 1 && notesErr51 && notesErr51.code === 'AUTH_CANCELLED' &&
+      syncShopSaved51 === 0 && syncShopPrompted51 === 0 && syncEnv51._shopDirty === true &&
+      singleCalls51.length === 2 && singleCalls51[0] === 'Bearer tok-old' && singleCalls51[1] === 'Bearer tok-new' && res401Retry51.status === 200 &&
+      calls409.length === 1 && res409.status === 409 && bsPrompts51 === promptsBefore409 &&
+      calls500.length === 1 && res500.status === 500 && bsPrompts51 === promptsBefore500 &&
+      multiErr51 && multiErr51.code === 'AUTH_MID_SEQUENCE' && multiErr51.message === 'Signed out mid-save — please sign in and retry.' && bsPrompts51 === promptsBeforeMulti && bsCleared51 >= 2);
+
+    // 51(d): Visible unsigned UI (header slot outside 4-pill nav, contextual strip, .needs-signin-cue, header sync on save/clear)
+    const navMatch51 = indexHtml51.match(/<nav class="main-nav"[\s\S]*?<\/nav>/);
+    const navHtml51 = navMatch51 ? navMatch51[0] : '';
+    const hdrSlotEl51 = { innerHTML: '' };
+    const fakeStore51 = new Map();
+    const storage51 = {
+      getItem: k => (fakeStore51.has(k) ? fakeStore51.get(k) : null),
+      setItem: (k, v) => fakeStore51.set(k, String(v)),
+      removeItem: k => fakeStore51.delete(k)
+    };
+    const uiEnv51 = vm.createContext({
+      RECEIPTS_TOKEN_KEY: 'reiss_receipt_token',
+      localStorage: storage51,
+      document: {},
+      $: (sel) => (sel === '#header-auth-slot' ? hdrSlotEl51 : null),
+      esc: s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
+      stopReceiptExtractPoll: () => {},
+      revokeReceiptObjectUrl: () => {},
+      clearStagedReceiptPhotos: () => {}
+    });
+    const isReceiptTokenValidSrc51 = SRC.slice(
+      SRC.indexOf('function isReceiptTokenValid('),
+      SRC.indexOf('\nfunction getValidReceiptSession(')
+    );
+    vm.runInContext([
+      isReceiptTokenValidSrc51,
+      extract('getValidReceiptSession'),
+      extract('saveReceiptSession'),
+      extract('clearReceiptSession'),
+      extract('isSignedInForWrite'),
+      extract('unsignedEditStripHTML'),
+      extract('updateHeaderAuthUI')
+    ].join('\n'), uiEnv51);
+
+    uiEnv51.updateHeaderAuthUI();
+    const hdrUnsigned51 = hdrSlotEl51.innerHTML;
+    const stripUnsigned51 = uiEnv51.unsignedEditStripHTML();
+    const validExp51 = Math.floor(Date.now() / 1000) + 3600;
+    const validTok3Part51 = Buffer.from('yidireiss@gmail.com').toString('base64url') + '.' + validExp51 + '.sig51';
+    uiEnv51.saveReceiptSession({ token: validTok3Part51, email: 'yidireiss@gmail.com', expires_at: validExp51 });
+    const hdrSigned51 = hdrSlotEl51.innerHTML;
+    const stripSigned51 = uiEnv51.unsignedEditStripHTML();
+    uiEnv51.clearReceiptSession();
+    const hdrAfterSignout51 = hdrSlotEl51.innerHTML;
+
+    check('Section 51(d) (Visible unsigned UI & header auth sync): #header-auth-slot sits outside 4-link .main-nav; unsignedEditStripHTML shows strip only when unsigned; saveReceiptSession/clearReceiptSession sync header Sign in <-> Sign out button',
+      indexHtml51.includes('id="header-auth-slot"') &&
+      !navHtml51.includes('header-auth-slot') &&
+      hdrUnsigned51.includes('data-header-auth="signin"') &&
+      hdrUnsigned51.includes('>Sign in<') &&
+      stripUnsigned51.includes('Sign in to edit') &&
+      hdrSigned51.includes('data-header-auth="signout"') &&
+      hdrSigned51.includes('yidireiss@gmail.com') &&
+      stripSigned51 === '' &&
+      hdrAfterSignout51.includes('data-header-auth="signin"'));
+
+    // 51(e): Worker authorizeWriteRequest + CORS + dry-run vs enforced + fail-closed when secret unset/placeholder
+    const receiptsMod51 = await import(pathToFileURL(path.join(SITE_DIR, 'receipts.js')).href);
+    const workerMod51 = await import(pathToFileURL(path.join(SITE_DIR, 'worker.js')).href);
+    const workerDefault51 = workerMod51.default;
+
+    const secret51 = 'test-session-secret-v20261125a';
+    const intake51 = 'test-intake-secret-v20261125a';
+    const nowSec51 = Math.floor(Date.now() / 1000);
+    const validUserTok51 = await receiptsMod51.signSessionToken('yidireiss@gmail.com', secret51, nowSec51 + 3600);
+    const expiredUserTok51 = await receiptsMod51.signSessionToken('yidireiss@gmail.com', secret51, nowSec51 - 60);
+
+    const makeReq51 = (method, urlPath, headers, bodyObj) => new Request('https://recipe-bridge.leibreiss.workers.dev' + urlPath, {
+      method,
+      headers: Object.assign({ 'Content-Type': 'application/json' }, headers || {}),
+      body: bodyObj !== undefined ? JSON.stringify(bodyObj) : undefined
+    });
+
+    const kvMap51 = new Map();
+    const fakeKv51 = {
+      async get(k) { return kvMap51.has(k) ? kvMap51.get(k) : null; },
+      async put(k, v) { kvMap51.set(k, String(v)); }
+    };
+    const baseEnv51 = {
+      RECEIPTS_SESSION_SECRET: secret51,
+      RECEIPTS_INTAKE_SECRET: intake51,
+      PRICE_CHECK_KV: fakeKv51,
+      GH_TOKEN: 'unused-token'
+    };
+
+    // Direct authorizeWriteRequest checks (valid user, valid intake, missing, expired, unset secret, placeholder secret)
+    const authUserOk51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', { Authorization: 'Bearer ' + validUserTok51 }, {}), baseEnv51, nowSec51);
+    const authIntakeOk51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', { Authorization: 'Bearer ' + intake51 }, {}), baseEnv51, nowSec51);
+    const authMissing51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', {}, {}), baseEnv51, nowSec51);
+    const authExpired51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', { Authorization: 'Bearer ' + expiredUserTok51 }, {}), baseEnv51, nowSec51);
+    const authUnsetSecret51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', { Authorization: 'Bearer ' + validUserTok51 }, {}), { RECEIPTS_INTAKE_SECRET: intake51 }, nowSec51);
+    const authPlaceholder51 = await receiptsMod51.authorizeWriteRequest(makeReq51('POST', '/save', { Authorization: 'Bearer ' + validUserTok51 }, {}), { RECEIPTS_SESSION_SECRET: 'RECEIPTS_SESSION_SECRET_PLACEHOLDER', RECEIPTS_INTAKE_SECRET: 'RECEIPTS_INTAKE_SECRET_PLACEHOLDER' }, nowSec51);
+
+    // CORS preflight
+    const optRes51 = await workerDefault51.fetch(new Request('https://recipe-bridge.leibreiss.workers.dev/save', { method: 'OPTIONS' }), baseEnv51);
+    const optAllowHdrs51 = optRes51.headers.get('Access-Control-Allow-Headers') || '';
+
+    // Dry-run mode (ENFORCE_WRITE_AUTH unset): logs [auth-dry-run] and allows POST /price-check-flag
+    const dryLogs51 = [];
+    const origLog51 = console.log;
+    console.log = (...args) => dryLogs51.push(args.join(' '));
+    let dryFlagRes51;
+    try {
+      dryFlagRes51 = await workerDefault51.fetch(makeReq51('POST', '/price-check-flag', {}, { requested: true, week: '2026-11-22' }), baseEnv51);
+    } finally {
+      console.log = origLog51;
+    }
+
+    // Enforced mode (ENFORCE_WRITE_AUTH === '1'): all 4 write endpoints reject unauthenticated with 401 + CORS before touching GitHub/KV
+    const enforcedEnv51 = Object.assign({}, baseEnv51, { ENFORCE_WRITE_AUTH: '1' });
+    const unauthSave51 = await workerDefault51.fetch(makeReq51('POST', '/save', {}, { path: 'data/meal-plan.json', content: '{}' }), enforcedEnv51);
+    const unauthSaveRec51 = await workerDefault51.fetch(makeReq51('POST', '/save-recipe', {}, { path: 'data/recipes/x.json', recipe: { id: 'x' } }), enforcedEnv51);
+    const unauthDel51 = await workerDefault51.fetch(makeReq51('POST', '/delete', {}, { path: 'data/recipes/x.json' }), enforcedEnv51);
+    const unauthFlag51 = await workerDefault51.fetch(makeReq51('POST', '/price-check-flag', {}, { requested: true }), enforcedEnv51);
+
+    // Enforced mode with valid user token AND with valid intake secret both succeed on POST /price-check-flag
+    const authedUserFlag51 = await workerDefault51.fetch(makeReq51('POST', '/price-check-flag', { Authorization: 'Bearer ' + validUserTok51 }, { requested: true, week: '2026-11-22' }), enforcedEnv51);
+    const authedIntakeFlag51 = await workerDefault51.fetch(makeReq51('POST', '/price-check-flag', { Authorization: 'Bearer ' + intake51 }, { requested: true, week: '2026-11-22' }), enforcedEnv51);
+
+    // Enforced mode keeps public read endpoints (/health, GET /price-check-flag) open without auth
+    const pubHealth51 = await workerDefault51.fetch(new Request('https://recipe-bridge.leibreiss.workers.dev/health', { method: 'GET' }), enforcedEnv51);
+    const pubFlagGet51 = await workerDefault51.fetch(new Request('https://recipe-bridge.leibreiss.workers.dev/price-check-flag', { method: 'GET' }), enforcedEnv51);
+
+    // Enforced mode fail-closed when RECEIPTS_SESSION_SECRET is unset
+    const unsetEnforcedEnv51 = { ENFORCE_WRITE_AUTH: '1', PRICE_CHECK_KV: fakeKv51 };
+    const failClosed51 = await workerDefault51.fetch(makeReq51('POST', '/price-check-flag', { Authorization: 'Bearer ' + validUserTok51 }, { requested: true }), unsetEnforcedEnv51);
+
+    check('Section 51(e) (Worker authorizeWriteRequest, CORS, dry-run, enforcement & fail-closed): OPTIONS & 401 carry Authorization CORS headers; authorizeWriteRequest validates user HMAC & intake secret and fails closed on unset/placeholder secret; dry-run logs [auth-dry-run] without rejecting; ENFORCE_WRITE_AUTH=1 returns 401 on all 4 unauthenticated writes while accepting user & intake Bearer tokens and keeping /health & GET /price-check-flag open',
+      workerSrc51.includes("'Access-Control-Allow-Headers': 'Content-Type, Authorization'") &&
+      optRes51.status === 204 &&
+      optAllowHdrs51.includes('Authorization') &&
+      authUserOk51.ok === true && authUserOk51.actorType === 'user' && authUserOk51.email === 'yidireiss@gmail.com' &&
+      authIntakeOk51.ok === true && authIntakeOk51.actorType === 'intake' && authIntakeOk51.email === null &&
+      authMissing51.ok === false &&
+      authExpired51.ok === false &&
+      authUnsetSecret51.ok === false &&
+      authPlaceholder51.ok === false &&
+      dryFlagRes51.status === 200 &&
+      dryLogs51.some(l => l.includes('[auth-dry-run]') && l.includes('/price-check-flag')) &&
+      unauthSave51.status === 401 && unauthSave51.headers.get('Access-Control-Allow-Origin') === '*' && (unauthSave51.headers.get('Access-Control-Allow-Headers') || '').includes('Authorization') &&
+      unauthSaveRec51.status === 401 && unauthSaveRec51.headers.get('Access-Control-Allow-Origin') === '*' &&
+      unauthDel51.status === 401 && unauthDel51.headers.get('Access-Control-Allow-Origin') === '*' &&
+      unauthFlag51.status === 401 && unauthFlag51.headers.get('Access-Control-Allow-Origin') === '*' &&
+      authedUserFlag51.status === 200 &&
+      authedIntakeFlag51.status === 200 &&
+      pubHealth51.status === 200 &&
+      pubFlagGet51.status === 200 &&
+      failClosed51.status === 401);
   }
 
   const failed = results.filter(r => !r.pass);
