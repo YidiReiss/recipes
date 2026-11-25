@@ -305,3 +305,29 @@ Verified by `qa/shop-sync-test.cjs` — 20 stateful scenarios (delete/uncheck/un
   - **Full cover (`have >= needed`):** Moves the row to **Already Have** with `pantryCovered: true` (`from pantry` badge), excludes it from the shopping list's estimated total, and counts it as covered for the store-picker verdict.
   - **Partial cover (`0 < have < needed`, or unconfirmed / unconvertible stock):** Keeps the row in **To Buy** with a `.shop-pantry-flag` button and adjusts the default buy quantity to the exact shortfall (`X - Y`). Tapping the flag opens `openPantryFlagDialog` (`"This recipe needs X [unit]. Your pantry has Y [unit]."`), allowing the user to confirm/edit `Y` (updating `data/pantry.json`) and override the week's buy quantity (`week.pantryOverrides`, merged across devices in `mergeWeekState`).
 
+## Progressive Web App (PWA) & Offline Support (`manifest.json`, `sw.js`, `index.html` — `v20261124a`)
+
+Makes `https://yidireiss.github.io/recipes/` installable (home-screen icon, standalone window on Chrome Android) and usable offline without altering online behavior or introducing a build step.
+
+- **Web App Manifest (`manifest.json`) & Icons (`assets/images/icon-192.png`, `icon-512.png`, `icon-512-maskable.png`):**
+  - Strictly subpath-relative (`id: "./"`, `scope: "./"`, `start_url: "./"`, relative `assets/images/...` icon paths) because the site is hosted at `/recipes/`, not domain root.
+  - Theme `#b4552d` (terracotta) and background `#faf6ee` (cream); `index.html` links the manifest, `theme-color`, Apple touch icon / web-app meta tags, and aligns the inline SVG favicon fill to `#b4552d`.
+  - Separate `any` (192×192, 512×512) and `maskable` (512×512) icon entries so Chrome Android crops maskable icons cleanly inside the safe area without squeezing standard icons.
+  - **No `"orientation"` field:** intentionally omitted because `"portrait"` would lock the installed app to portrait and break landscape Cook Mode (`styles.css` landscape/max-height-500px layout).
+- **Registration (`index.html`):** Registers `./sw.js` on `window.load` with `{ updateViaCache: 'none' }` (bypassing GitHub Pages' 10-minute HTTP cache on `sw.js`) and a silent `.catch(() => {})` fallback. No `controllerchange` auto-reload is wired, so an active deploy never interrupts unsaved recipe/planner edits, Cook Mode timers, or Nava's shopping-list tab.
+- **Two-Cache Service Worker (`sw.js`):**
+  - `SHELL_CACHE = "reiss-recipes-shell-v<label>"`: precaches strictly relative shell files (`./`, `./index.html`, `./styles.css?v=<label>`, `./app.js?v=<label>`, `./manifest.json`, and the 3 icon PNGs) on `install`, then calls `self.skipWaiting()`. On `activate`, deletes old shell caches only (keeping `DATA_CACHE`) and calls `self.clients.claim()`.
+  - `DATA_CACHE = "reiss-recipes-data-v1"`: runtime read-only data and static assets, preserved across deploys so a mid-session deploy never wipes cached offline recipes/photos before connectivity drops.
+  - **Version-label discipline:** Every deploy that bumps `styles.css?v=<label>` / `app.js?v=<label>` in `index.html` MUST bump `SHELL_CACHE` and the `SHELL` array in `sw.js` to the exact same label (enforced by Section 50(b) of `smart-planning/commit2-ui-test.cjs`).
+- **Fetch & Cache-Key Rules (`sw.js`):**
+  - Ignores all non-`GET` requests, non-`http(s)` schemes, and **any request carrying an `Authorization` header**.
+  - Writes via `cache.put` ONLY when `res.status === 200` and `res.type === 'basic' || res.type === 'cors'` (blocking 404/500/206/opaque responses). Never resolves to `undefined` — an offline double miss returns `Response('Offline', { status: 503 })`.
+  - **Navigations (`req.mode === 'navigate'`):** network-first, updating `SHELL_CACHE` on success and falling back to scope-resolved `./index.html` offline.
+  - **Same-origin read-only `data/*.json` (`meta.json`, recipe JSONs, `shopping-sections.json`, price/circular/shelf-life/unit-conversion JSONs):** **network-first** into `DATA_CACHE` with a **query-stripped cache key (`url.origin + url.pathname`)**. Because `boot()` and `ensureRecipe()` append `?v=Date.now()`, stripping the query ensures offline visits match previously loaded data rather than missing every time. Versioned shell files (`styles.css?v=<label>`, `app.js?v=<label>`) keep exact URL+query matching against `SHELL_CACHE`.
+  - **Why `/read`, `/receipts/*`, and mutable JSONs are strictly network-only:**
+    - Bridge `/read` and same-origin `data/meal-plan.json`, `data/pantry.json`, `data/store-notes.json`, and `data/inbox/*` must NEVER be served stale from Cache Storage: `bridgeReadMealPlan()`/`saveMealPlan()` expect network failures to throw cleanly and `mergeMealPlan()` lets server days win, so a stale cached `/read` could roll back newer planner days; `localStorage` (`loadShopLocal`, `loadPantryLocal`) is already the offline source of truth for mutable state.
+    - Bridge `/receipts/*` (and any `Authorization`-bearing request) carries private receipt totals, items, and photos and must NEVER be written to unauthenticated Cache Storage. Bridge `/price-check-flag` and `/health` are also skipped.
+    - On the bridge origin (`https://recipe-bridge.leibreiss.workers.dev`), `sw.js` allow-lists **only** public read-only `GET /price-history` and `GET /pantry-stock` (network-first into `DATA_CACHE`).
+  - **Other same-origin static assets (recipe photos, PDFs, `USER-GUIDE.md`):** stale-while-revalidate in `DATA_CACHE` (with `event.waitUntil` keeping background refreshes alive).
+
+
