@@ -509,7 +509,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-1xu6tsggj6",
-        "qty": 1.76,
+        "qty": 0,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
@@ -529,6 +529,13 @@
             "qtyAfter": 1.76,
             "kind": "cooked",
             "dish": "Dairy-Free Chicken Fettuccine Alfredo"
+          },
+          {
+            "at": "2026-11-26",
+            "delta": -1.76,
+            "qtyAfter": 0,
+            "kind": "cooked",
+            "dish": "Chicken Broccoli and Mushroom Stir Fry"
           }
         ],
         "boughtName": "Butterfly Chicken Cutlets",
@@ -539,8 +546,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795175027342
+    "consumedReceiptLots": [
+      "rcpt-2026-11-15-1xu6tsggj6"
+    ],
+    "updatedAt": 1795747804891
   },
   "veal neck bone": {
     "base": "veal neck bone",
@@ -1502,7 +1511,7 @@
         "category": "carrots",
         "packSize": "1.5",
         "expiresAt": "2026-11-22",
-        "status": "good"
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1623,7 +1632,7 @@
         "category": "milk",
         "packSize": "half gallon",
         "expiresAt": "2026-11-22",
-        "status": "good"
+        "status": "expired"
       }
     ],
     "consumedReceiptLots": [],
@@ -1711,17 +1720,26 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-01-17xav0i1h4",
-        "qty": 2.23,
+        "qty": 1.23,
         "unit": "lb",
         "addedAt": "2026-11-01",
         "receiptDate": "2026-11-01",
-        "storage": "pantry",
+        "storage": "fridge",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-26",
+            "delta": -1,
+            "qtyAfter": 1.23,
+            "kind": "cooked",
+            "dish": "Chicken Broccoli and Mushroom Stir Fry"
+          }
+        ],
         "boughtName": "Onion Yellow Globe - Loose",
         "category": "onions",
-        "expiresAt": "2026-12-01",
+        "openedAt": "2026-11-26",
+        "expiresAt": "2026-12-03",
         "status": "good"
       },
       {
@@ -1741,7 +1759,7 @@
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795128687711
+    "updatedAt": 1795747804909
   },
   "parsley italian": {
     "base": "parsley italian",
