@@ -3510,13 +3510,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "chicken-broccoli-and-mushroom-stir-fry",
+                "recipe": "chocolate-chip-oreo-cookie-cake",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week"
+                "reason": "Leftovers from Shabbat"
               }
             ]
           },
@@ -3547,13 +3547,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "macarone-paflotski",
+                "recipe": "chocolate-chip-oreo-cookie-cake",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week"
+                "reason": "Leftovers from Shabbat"
               }
             ]
           },
@@ -3584,15 +3584,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "gochujang-korean-tofu",
+                "recipe": "everything-kale-salad",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week",
-                "cookedAt": 1795747844573,
-                "pantryDeductions": []
+                "reason": "Leftovers from Shabbat"
               }
             ]
           },
@@ -3700,10 +3698,9 @@
             ]
           },
           "dinner": {
-            "recipe": null,
-            "custom": null,
-            "skipped": false,
-            "note": ""
+            "dishes": [],
+            "skipped": true,
+            "note": "Thanksgiving"
           }
         },
         {
@@ -3714,13 +3711,13 @@
             "note": "",
             "dishes": [
               {
-                "recipe": "margherita-pizza",
+                "recipe": "chocolate-chip-oreo-cookie-cake",
                 "leftovers": true,
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week"
+                "reason": "Leftovers from Shabbat"
               }
             ]
           },
@@ -3755,7 +3752,22 @@
         "eatOut": [],
         "useUp": []
       },
-      "carryInPool": {},
+      "carryInPool": {
+        "chocolate-chip-oreo-cookie-cake|": {
+          "recipe": "chocolate-chip-oreo-cookie-cake",
+          "variant": null,
+          "servings": 8,
+          "cookOffset": -2,
+          "source": "Friday dinner"
+        },
+        "everything-kale-salad|": {
+          "recipe": "everything-kale-salad",
+          "variant": null,
+          "servings": 4,
+          "cookOffset": -1,
+          "source": "Saturday lunch"
+        }
+      },
       "lunchWarnings": [],
       "haveGenerated": [],
       "manualItems": [],
