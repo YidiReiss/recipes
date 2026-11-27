@@ -3569,7 +3569,9 @@
                 "cookDate": null,
                 "drafted": true,
                 "locked": false,
-                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch"
+                "reason": "Fish / veg night · Favorite · Leftovers cover a lunch",
+                "cookedAt": 1795747838267,
+                "pantryDeductions": []
               }
             ]
           }
