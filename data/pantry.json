@@ -1720,7 +1720,7 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-01-17xav0i1h4",
-        "qty": 1.23,
+        "qty": 0.23,
         "unit": "lb",
         "addedAt": "2026-11-01",
         "receiptDate": "2026-11-01",
@@ -1732,6 +1732,13 @@
             "at": "2026-11-26",
             "delta": -1,
             "qtyAfter": 1.23,
+            "kind": "cooked",
+            "dish": "Chicken Broccoli and Mushroom Stir Fry"
+          },
+          {
+            "at": "2026-11-26",
+            "delta": -1,
+            "qtyAfter": 0.23,
             "kind": "cooked",
             "dish": "Chicken Broccoli and Mushroom Stir Fry"
           }
@@ -1759,7 +1766,7 @@
       }
     ],
     "consumedReceiptLots": [],
-    "updatedAt": 1795747804909
+    "updatedAt": 1795747808290
   },
   "parsley italian": {
     "base": "parsley italian",
