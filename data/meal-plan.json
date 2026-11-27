@@ -3532,7 +3532,9 @@
                 "cookDate": null,
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795747833805,
+                "pantryDeductions": []
               }
             ]
           }
