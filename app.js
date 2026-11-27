@@ -12672,7 +12672,7 @@ function openWriteAuthModal(opts) {
     : 'Sign in with your family Google account to save changes. Browsing recipes never needs sign-in.';
   const back = document.createElement('div');
   back.id = 'modal';
-  back.className = 'modal-back';
+  back.className = 'modal-backdrop';
   back.innerHTML =
     '<div class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">' +
       '<h3 id="auth-modal-title">Sign in to edit</h3>' +
