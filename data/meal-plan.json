@@ -3590,7 +3590,9 @@
                 "drafted": true,
                 "locked": false,
                 "variant": null,
-                "reason": "Leftovers from a dinner this week"
+                "reason": "Leftovers from a dinner this week",
+                "cookedAt": 1795747844573,
+                "pantryDeductions": []
               }
             ]
           },
