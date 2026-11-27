@@ -1,5 +1,9 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-26 — Gate sign-in modal placement fix (`app.js` `v=20261126a`, `index.html`, `sw.js`)
+
+- **What changed (Muse-built directly, small fix):** `openWriteAuthModal` set the sign-in backdrop class to `modal-back`, which matches no stylesheet rule, so the signed-out sign-in box rendered in page flow at the bottom of the page instead of as a centered overlay (signed-out battery Nov 25: 10/13 pass, 3 fails all this bug). Changed to `modal-backdrop`, the class `styles.css` defines and every other modal already uses. Cache-busters and SW shell cache bumped to `v20261126a`. No Worker change; no flow change.
+
 ## 2026-11-25 — Google-auth write gate (`app.js` `v=20261125a`, `styles.css` `v=20261125a`, `index.html`, `sw.js`, `worker.js`, `receipts.js`)
 
 - **What changed (Neon-built from Yidi's approved `gate-google-auth-PLAN.md`, Nov 25, 2026):**
