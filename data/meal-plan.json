@@ -3453,7 +3453,51 @@
                 "cookDate": null,
                 "drafted": false,
                 "reason": null,
-                "locked": true
+                "locked": true,
+                "cookedAt": 1795747822332,
+                "pantryDeductions": [
+                  {
+                    "baseKey": "onion yellow globe loose",
+                    "lotId": "rcpt-2026-11-01-17xav0i1h4",
+                    "deductedQty": 0.23,
+                    "rawConvertedQty": 0.72,
+                    "ceilingDeductedQty": 1,
+                    "exactFractionUsed": true,
+                    "unit": "lb",
+                    "dishTitle": "Chicken Broccoli and Mushroom Stir Fry",
+                    "prevLot": {
+                      "lotId": "rcpt-2026-11-01-17xav0i1h4",
+                      "qty": 0.23,
+                      "unit": "lb",
+                      "addedAt": "2026-11-01",
+                      "receiptDate": "2026-11-01",
+                      "storage": "fridge",
+                      "source": "receipt",
+                      "unconfirmed": false,
+                      "history": [
+                        {
+                          "at": "2026-11-26",
+                          "delta": -1,
+                          "qtyAfter": 1.23,
+                          "kind": "cooked",
+                          "dish": "Chicken Broccoli and Mushroom Stir Fry"
+                        },
+                        {
+                          "at": "2026-11-26",
+                          "delta": -1,
+                          "qtyAfter": 0.23,
+                          "kind": "cooked",
+                          "dish": "Chicken Broccoli and Mushroom Stir Fry"
+                        }
+                      ],
+                      "boughtName": "Onion Yellow Globe - Loose",
+                      "category": "onions",
+                      "openedAt": "2026-11-26",
+                      "expiresAt": "2026-12-03",
+                      "status": "good"
+                    }
+                  }
+                ]
               }
             ]
           }
