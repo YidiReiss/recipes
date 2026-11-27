@@ -314,6 +314,32 @@ async function main() {
       !wk.lunchWarnings.some(w => w.day === 2));
   }
 
+  /* ============ 8b. main-only buckets: desserts/sides never cover a lunch (2026-11-26) ============ */
+  {
+    const prevDays = blankDays();
+    prevDays[5].dinner.dishes = [{ recipe: 'fixture-cake' }];    // dessert at Shabbat dinner
+    prevDays[6].lunch.dishes = [{ recipe: 'fixture-feast' }];    // main at Sat lunch, serves 12 -> 10 left
+    const days = blankDays();
+    days[1].dinner.dishes = [{ recipe: 'fixture-salad' }];       // side at a weeknight dinner
+    setMeta([...FIX,
+      { id: 'fixture-feast', title: 'Feast', kosher_status: 'meat', categories: ['main'], tags: [],
+        prep_minutes: 10, cook_minutes: 30, servings: '12', leftover_friendly: false, search_text: 'beef potatoes' },
+      { id: 'fixture-cake', title: 'Fixture Cake', kosher_status: 'pareve', categories: ['dessert', 'baking'], tags: [],
+        prep_minutes: 10, cook_minutes: 30, servings: '12', leftover_friendly: false, search_text: 'chocolate cookies cream' },
+      { id: 'fixture-salad', title: 'Fixture Salad', kosher_status: 'pareve', categories: ['side', 'salad'], tags: [],
+        prep_minutes: 10, cook_minutes: 0, servings: '8', leftover_friendly: false, search_text: 'kale lemon' }]);
+    setPlan({ [PREV]: { days: prevDays }, [CUR]: { days } });
+    const wk = recomputeWeekLunches(CUR);
+    const lunch = d => slotDishes(wk, d, 'lunch');
+    check('main-only: dessert at Shabbat dinner does not enter the carry-in pool',
+      !!wk.carryInPool && !wk.carryInPool['fixture-cake|'] && wk.carryInPool['fixture-feast|'].servings === 10,
+      JSON.stringify(wk.carryInPool));
+    check('main-only: no lunch is covered by the dessert or the side',
+      [1, 2, 3, 4, 5].every(d => lunch(d).every(dish => dish.recipe !== 'fixture-cake' && dish.recipe !== 'fixture-salad')));
+    check('main-only: the Shabbat main still covers Mon + Tue lunches',
+      lunch(1)[0] && lunch(1)[0].recipe === 'fixture-feast' && lunch(2)[0] && lunch(2)[0].recipe === 'fixture-feast');
+  }
+
   /* ============ 9. draftWeek on fixtures: framework, Shabbat, leftovers night ============ */
   {
     setMeta(FIX);

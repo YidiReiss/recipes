@@ -1,5 +1,9 @@
 # Changelog — Reiss Family Recipes
 
+## 2026-11-26 — Planner: main-only leftover buckets (`app.js` `v=20261126b`, `index.html`, `sw.js`)
+
+- **What changed (Muse-built directly, small fix):** the leftover-bucket system treated every dish served at a dinner as a leftover source, with no main-only check — so a dessert hand-added to a Shabbat dinner (Chocolate Chip Oreo Cookie Cake, Nov 20) entered the carry-in pool and was drafted as the only dish at three weekday lunches, and a side salad at a fourth. `buildCarryInPool` and the dinner-bucket collection in `recomputeWeekLunches` now apply the same `mainEligible` gate the Draft Week generator uses: only mains (category `main`, uncategorized, or slotClass override) become leftover sources. New test 8b in `commit2-test.cjs` covers dessert-at-Shabbat-dinner and side-at-weeknight-dinner. Cache-busters and SW shell cache bumped to `v20261126b`. No Worker change. Existing bad placements are drafted+unlocked, so the next lunch recompute clears them.
+
 ## 2026-11-26 — Gate sign-in modal placement fix (`app.js` `v=20261126a`, `index.html`, `sw.js`)
 
 - **What changed (Muse-built directly, small fix):** `openWriteAuthModal` set the sign-in backdrop class to `modal-back`, which matches no stylesheet rule, so the signed-out sign-in box rendered in page flow at the bottom of the page instead of as a centered overlay (signed-out battery Nov 25: 10/13 pass, 3 fails all this bug). Changed to `modal-backdrop`, the class `styles.css` defines and every other modal already uses. Cache-busters and SW shell cache bumped to `v20261126a`. No Worker change; no flow change.

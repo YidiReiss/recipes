@@ -6267,7 +6267,7 @@ async function main() {
     const unsortedIdx44 = htmlDept44.indexOf('data-pantry-dept="Unsorted"');
     const expiredSectionPart44 = htmlDept44.split('pantry-expired-section')[1] || '';
     const indexHtml44 = fs.readFileSync(path.join(SITE_DIR, 'index.html'), 'utf8');
-    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261126a',
+    check('Section 44(h) (In Stock grouped by store department + cache-buster): In Stock renders Fresh Produce before Dairy before Unsorted with item counts, Expired section stays flat without department headers, and index.html uses ?v=20261126b',
       prodIdx44 > -1 &&
       dairyIdx44 > prodIdx44 &&
       unsortedIdx44 > dairyIdx44 &&
@@ -6275,8 +6275,8 @@ async function main() {
       htmlDept44.includes('<span class="pantry-dept-name">Dairy</span> <span class="pantry-dept-count">(1)</span>') &&
       htmlDept44.includes('<span class="pantry-dept-name">Unsorted</span> <span class="pantry-dept-count">(1)</span>') &&
       !expiredSectionPart44.includes('data-pantry-dept=') &&
-      indexHtml44.includes('styles.css?v=20261126a') &&
-      indexHtml44.includes('app.js?v=20261126a'));
+      indexHtml44.includes('styles.css?v=20261126b') &&
+      indexHtml44.includes('app.js?v=20261126b'));
 
     // Section 45 — v20261120c Pantry "Finished" button (behavior updated in
     // v20261120e, Section 47): button shows only while stock remains;
@@ -6633,8 +6633,8 @@ async function main() {
     const shellCacheMatch = swSrc49.match(/var\s+SHELL_CACHE\s*=\s*"reiss-recipes-shell-v([0-9a-z]+)"/);
     const dataCacheMatch = swSrc49.match(/var\s+DATA_CACHE\s*=\s*"(reiss-recipes-data-v\d+)"/);
     const verLabel49 = cssVerMatch ? cssVerMatch[1] : null;
-    check('Section 50(b) (index.html PWA tags & version-label parity): index.html has manifest, theme-color #b4552d, apple-touch-icon, Apple web-app tags, #b4552d SVG favicon, silent SW registration with updateViaCache:"none", no controllerchange reload, and matching v20261126a across index.html & sw.js',
-      verLabel49 === '20261126a' &&
+    check('Section 50(b) (index.html PWA tags & version-label parity): index.html has manifest, theme-color #b4552d, apple-touch-icon, Apple web-app tags, #b4552d SVG favicon, silent SW registration with updateViaCache:"none", no controllerchange reload, and matching v20261126b across index.html & sw.js',
+      verLabel49 === '20261126b' &&
       jsVerMatch && jsVerMatch[1] === verLabel49 &&
       shellCacheMatch && shellCacheMatch[1] === verLabel49 &&
       dataCacheMatch && dataCacheMatch[1] === 'reiss-recipes-data-v1' &&
@@ -6772,7 +6772,7 @@ async function main() {
     await sw49.dispatchLifecycle('install');
     await sw49.dispatchLifecycle('activate');
     const shellUrls49 = Array.from(sw49.sandbox.SHELL || []);
-    const shellStore49 = sw49.stores.get('reiss-recipes-shell-v20261126a');
+    const shellStore49 = sw49.stores.get('reiss-recipes-shell-v20261126b');
     const flags49 = sw49.getLifecycleFlags();
     check('Section 50(c) (SW lifecycle & two-cache separation): SHELL URLs strictly relative (no leading /), install precaches all 8 shell entries + calls skipWaiting, activate deletes old shell cache while keeping SHELL_CACHE and DATA_CACHE + calls clients.claim',
       shellUrls49.length === 8 &&
@@ -6875,9 +6875,9 @@ async function main() {
     const phOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/price-history' });
     const psOff49 = await sw49.dispatchFetch({ url: 'https://recipe-bridge.leibreiss.workers.dev/pantry-stock' });
     const img3Off49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/assets/images/chulent.jpg' });
-    const appExact49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=20261126a' });
+    const appExact49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=20261126b' });
     const appWrongVer49 = await sw49.dispatchFetch({ url: 'https://yidireiss.github.io/recipes/app.js?v=99999999z' });
-    check('Section 50(f) (allow-listed bridge GETs, static SWR & exact versioned shell match): /price-history and /pantry-stock cache cors 200 and serve offline; static images use SWR into DATA_CACHE; app.js?v=20261126a matches SHELL_CACHE strictly by version query',
+    check('Section 50(f) (allow-listed bridge GETs, static SWR & exact versioned shell match): /price-history and /pantry-stock cache cors 200 and serve offline; static images use SWR into DATA_CACHE; app.js?v=20261126b matches SHELL_CACHE strictly by version query',
       phOn49.intercepted && phOn49.response.status === 200 &&
       psOn49.intercepted && psOn49.response.status === 200 &&
       img1On49.intercepted && (await img1On49.response.text()) === 'jpg-v1' &&
@@ -6889,7 +6889,7 @@ async function main() {
       appWrongVer49.intercepted && appWrongVer49.response.status === 503);
   }
 
-  /* ============ 51. Google-auth write gate (v20261126a) — site + worker ============ */
+  /* ============ 51. Google-auth write gate (v20261126b) — site + worker ============ */
   {
     const vm = require('vm');
     const { pathToFileURL } = require('url');
@@ -7215,8 +7215,8 @@ async function main() {
     const workerMod51 = await import(pathToFileURL(path.join(SITE_DIR, 'worker.js')).href);
     const workerDefault51 = workerMod51.default;
 
-    const secret51 = 'test-session-secret-v20261126a';
-    const intake51 = 'test-intake-secret-v20261126a';
+    const secret51 = 'test-session-secret-v20261126b';
+    const intake51 = 'test-intake-secret-v20261126b';
     const nowSec51 = Math.floor(Date.now() / 1000);
     const validUserTok51 = await receiptsMod51.signSessionToken('yidireiss@gmail.com', secret51, nowSec51 + 3600);
     const expiredUserTok51 = await receiptsMod51.signSessionToken('yidireiss@gmail.com', secret51, nowSec51 - 60);

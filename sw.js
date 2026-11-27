@@ -1,8 +1,8 @@
-/* Reiss Family Recipes — service worker (v20261126a).
+/* Reiss Family Recipes — service worker (v20261126b).
    Makes https://yidireiss.github.io/recipes/ installable and usable offline
    without altering online behavior or compromising private/mutable sync data.
    - Two caches:
-     1) SHELL_CACHE (reiss-recipes-shell-v20261126a): precached app shell only;
+     1) SHELL_CACHE (reiss-recipes-shell-v20261126b): precached app shell only;
         old shell caches are purged on activate.
      2) DATA_CACHE (reiss-recipes-data-v1): runtime read-only data & static
         assets; preserved across deploys so offline recipes/photos survive.
@@ -28,14 +28,14 @@
        stale-while-revalidate in DATA_CACHE.
      * Everything else (POSTs, non-http(s), third-party): straight to network. */
 
-var SHELL_CACHE = "reiss-recipes-shell-v20261126a";
+var SHELL_CACHE = "reiss-recipes-shell-v20261126b";
 var DATA_CACHE = "reiss-recipes-data-v1";
 
 var SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20261126a",
-  "./app.js?v=20261126a",
+  "./styles.css?v=20261126b",
+  "./app.js?v=20261126b",
   "./manifest.json",
   "./assets/images/icon-192.png",
   "./assets/images/icon-512.png",
