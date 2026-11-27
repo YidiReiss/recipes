@@ -192,22 +192,31 @@
     "lots": [
       {
         "lotId": "rcpt-2026-11-15-df799n9wbm",
-        "qty": 1.26,
+        "qty": 0.86,
         "unit": "lb",
         "addedAt": "2026-11-15",
         "receiptDate": "2026-11-15",
         "storage": "pantry",
         "source": "receipt",
         "unconfirmed": false,
-        "history": [],
+        "history": [
+          {
+            "at": "2026-11-26",
+            "delta": -0.4,
+            "qtyAfter": 0.86,
+            "kind": "cooked",
+            "dish": "Margherita Pizza"
+          }
+        ],
         "boughtName": "Tomato Stem",
         "category": "tomatoes",
+        "openedAt": "2026-11-26",
         "expiresAt": null,
         "status": "good"
       },
       {
         "lotId": "rcpt-2026-11-01-1menk3sh34",
-        "qty": 0.6,
+        "qty": 0,
         "unit": "lb",
         "addedAt": "2026-11-01",
         "receiptDate": "2026-11-01",
@@ -227,6 +236,13 @@
             "qtyAfter": 0.6,
             "kind": "cooked",
             "dish": "Burritos"
+          },
+          {
+            "at": "2026-11-26",
+            "delta": -0.6,
+            "qtyAfter": 0,
+            "kind": "cooked",
+            "dish": "Margherita Pizza"
           }
         ],
         "boughtName": "Tomato Stem",
@@ -271,8 +287,10 @@
         "status": "good"
       }
     ],
-    "consumedReceiptLots": [],
-    "updatedAt": 1795175027342
+    "consumedReceiptLots": [
+      "rcpt-2026-11-01-1menk3sh34"
+    ],
+    "updatedAt": 1795747852697
   },
   "garlic loose": {
     "base": "garlic loose",
