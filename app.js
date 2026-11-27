@@ -9041,6 +9041,11 @@ function buildCarryInPool(weekKey) {
     if (s.skipped) return;
     s.dishes.forEach(dish => {
       if (!dish.recipe || dish.leftovers) return;
+      // Main-only buckets (2026-11-26): a dessert/side/salad served at a
+      // Shabbat meal must never become a leftover lunch. Same gate the
+      // Draft Week generator applies (mainEligible).
+      const pm = effectivePlanningMeta(dish.recipe);
+      if (!pm || !pm.mainEligible) return;
       pool[dish.recipe + '|' + (dish.variant || '')] = {
         recipe: dish.recipe,
         variant: dish.variant || null,
@@ -9106,6 +9111,9 @@ function recomputeWeekLunches(weekKey) {
     if (s.skipped) return;
     s.dishes.forEach(dish => {
       if (!dish.recipe || dish.leftovers) return;
+      // Main-only buckets (2026-11-26): same gate as the carry-in pool.
+      const pm = effectivePlanningMeta(dish.recipe);
+      if (!pm || !pm.mainEligible) return;
       const servings = leftoverServings(dish, recipeMeta(dish.recipe));
       if (servings > 0) {
         buckets.push({
